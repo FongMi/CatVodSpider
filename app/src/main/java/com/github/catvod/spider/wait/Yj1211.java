@@ -1,4 +1,4 @@
-package com.github.catvod.spider;
+package com.github.catvod.spider.wait;
 
 import android.text.TextUtils;
 
