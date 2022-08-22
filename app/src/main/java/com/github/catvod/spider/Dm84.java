@@ -44,7 +44,7 @@ public class Dm84 extends Spider {
         for (String text : texts) {
             if (text.isEmpty()) continue;
             JSONObject o = new JSONObject();
-            o.put("n", text.replace("按", "")));
+            o.put("n", text.replace("按", ""));
             o.put("v", key.equals("by") ? replaceBy(text) : text);
             array.put(o);
         }
@@ -166,7 +166,7 @@ public class Dm84 extends Spider {
             }
         }
         if (sites.size() > 0) {
-            vod.setVodPlayFrom(TextUtils.join("$$$", sites.keySet())));
+            vod.setVodPlayFrom(TextUtils.join("$$$", sites.keySet()));
             vod.setVodPlayUrl(TextUtils.join("$$$", sites.values()));
         }
         result.setList(Arrays.asList(vod));
