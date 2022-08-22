@@ -16,6 +16,12 @@ public class Result {
     private List<Vod> list;
     @SerializedName("filters")
     private JSONObject filters;
+    @SerializedName("parse")
+    private String parse;
+    @SerializedName("url")
+    private String url;
+    @SerializedName("ua")
+    private String ua;
 
     public void setClasses(List<Class> classes) {
         this.classes = classes;
@@ -27,6 +33,18 @@ public class Result {
 
     public void setFilters(JSONObject filters) {
         this.filters = filters;
+    }
+
+    public void setParse(String parse) {
+        this.parse = parse;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setUa(String ua) {
+        this.ua = ua;
     }
 
     @NotNull
