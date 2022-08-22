@@ -2,11 +2,14 @@ package com.github.catvod.bean;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Result {
@@ -16,7 +19,7 @@ public class Result {
     @SerializedName("list")
     private List<Vod> list;
     @SerializedName("filters")
-    private JSONObject filters;
+    private LinkedHashMap<String, List<Filter>> filters;
     @SerializedName("header")
     private String header;
     @SerializedName("parse")
@@ -38,8 +41,13 @@ public class Result {
         return list == null ? Collections.emptyList() : list;
     }
 
-    public void setFilters(JSONObject filters) {
+    public void setFilters(LinkedHashMap<String, List<Filter>> filters) {
         this.filters = filters;
+    }
+
+    public void setFilters(JSONObject object) {
+        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {}.getType();
+        this.filters = new Gson().fromJson(object.toString(), listType);
     }
 
     public void setHeader(String header) {

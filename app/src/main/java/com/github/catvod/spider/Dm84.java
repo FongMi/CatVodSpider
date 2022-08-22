@@ -3,6 +3,7 @@ package com.github.catvod.spider;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
+import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
@@ -10,9 +11,6 @@ import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -38,20 +36,15 @@ public class Dm84 extends Spider {
         return headers;
     }
 
-    private JSONObject addFilter(String name, String key, List<String> texts) throws JSONException {
-        JSONObject object = new JSONObject();
-        JSONArray array = new JSONArray();
+    private Filter addFilter(String name, String key, List<String> texts) {
+        List<Filter.Value> values = new ArrayList<>();
         for (String text : texts) {
             if (text.isEmpty()) continue;
-            JSONObject o = new JSONObject();
-            o.put("n", text.replace("按", ""));
-            o.put("v", key.equals("by") ? replaceBy(text) : text);
-            array.put(o);
+            String n = text.replace("按", "");
+            String v = key.equals("by") ? replaceBy(text) : text;
+            values.add(new Filter.Value(n, v));
         }
-        object.put("key", key);
-        object.put("name", name);
-        object.put("value", array);
-        return object;
+        return new Filter(key, name, values);
     }
 
     private String replaceBy(String text) {
@@ -60,9 +53,9 @@ public class Dm84 extends Spider {
 
     @Override
     public String homeContent(boolean filter) {
-        List<Class> classes = new ArrayList<>();
         List<Vod> videos = new ArrayList<>();
-        JSONObject filters = new JSONObject();
+        List<Class> classes = new ArrayList<>();
+        LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         Document doc = Jsoup.parse(OkHttpUtil.string(siteUrl, getHeaders()));
         for (Element element : doc.select("ul.nav_row > li > a")) {
             if (element.attr("href").startsWith("/list")) {
@@ -72,16 +65,13 @@ public class Dm84 extends Spider {
             }
         }
         for (Class item : classes) {
-            try {
-                JSONArray array = new JSONArray();
-                doc = Jsoup.parse(OkHttpUtil.string(siteUrl + "/list-" + item.getTypeId() + ".html", getHeaders()));
-                Elements elements = doc.select("ul.list_filter > li > div");
-                array.put(addFilter("類型", "type", elements.get(0).select("a").eachText()));
-                array.put(addFilter("時間", "year", elements.get(1).select("a").eachText()));
-                array.put(addFilter("排序", "by", elements.get(2).select("a").eachText()));
-                filters.put(item.getTypeId(), array);
-            } catch (Exception ignored) {
-            }
+            doc = Jsoup.parse(OkHttpUtil.string(siteUrl + "/list-" + item.getTypeId() + ".html", getHeaders()));
+            Elements elements = doc.select("ul.list_filter > li > div");
+            List<Filter> array = new ArrayList<>();
+            array.add(addFilter("類型", "type", elements.get(0).select("a").eachText()));
+            array.add(addFilter("時間", "year", elements.get(1).select("a").eachText()));
+            array.add(addFilter("排序", "by", elements.get(2).select("a").eachText()));
+            filters.put(item.getTypeId(), array);
         }
         for (Element element : doc.select("div.item")) {
             String img = element.select("a.cover").attr("data-bg");
