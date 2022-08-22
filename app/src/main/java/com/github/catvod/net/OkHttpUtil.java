@@ -121,6 +121,10 @@ public class OkHttpUtil {
         return callback.getResult();
     }
 
+    public static void post(String url, Map<String, String> paramsMap, Map<String, String> headerMap, OKCallBack callback) {
+        new OKRequest(METHOD_POST, url, paramsMap, headerMap, callback).execute(defaultClient());
+    }
+
     public static String postJson(String url, String jsonStr, Map<String, String> headerMap) {
         OKCallBack.OKCallBackString callback = new OKCallBack.OKCallBackString();
         new OKRequest(METHOD_POST, url, jsonStr, headerMap, callback).execute(defaultClient());
