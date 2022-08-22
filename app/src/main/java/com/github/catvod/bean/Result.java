@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Result {
@@ -29,6 +30,10 @@ public class Result {
 
     public void setList(List<Vod> list) {
         this.list = list;
+    }
+
+    public List<Vod> getList() {
+        return list == null ? Collections.emptyList() : list;
     }
 
     public void setFilters(JSONObject filters) {

@@ -70,7 +70,7 @@ public class TxtSubscribe {
             if (!noGroup.isEmpty()) {
                 allLives.put("未分類", noGroup);
             }
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -118,8 +118,8 @@ public class TxtSubscribe {
             ByteArrayInputStream baos = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
             result[2] = baos;
             return result;
-        } catch (Throwable th) {
-            th.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

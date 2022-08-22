@@ -55,8 +55,8 @@ public class JsonParallel {
                     for (int j = 0; j < futures.size(); j++) {
                         try {
                             futures.get(j).cancel(true);
-                        } catch (Throwable th) {
-                            SpiderDebug.log(th);
+                        } catch (Exception e) {
+                            SpiderDebug.log(e);
                         }
                     }
                     futures.clear();
