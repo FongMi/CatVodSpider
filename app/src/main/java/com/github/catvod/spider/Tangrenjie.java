@@ -39,7 +39,6 @@ public class Tangrenjie extends Spider {
     private final Pattern regexCategory = Pattern.compile("/vod/type/id/(\\d+).html");
     private final Pattern regexVid = Pattern.compile("/vod/detail/id/(\\d+).html");
     private final Pattern regexPlay = Pattern.compile("/vod/play/id/(\\d+)/sid/(\\d+)/nid/(\\d+).html");
-    private final Pattern regexPage = Pattern.compile("\\S+/page/(\\d+)\\S+");
     private JSONObject playerConfig;
     private JSONObject filterConfig;
 

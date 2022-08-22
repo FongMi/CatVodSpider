@@ -9,6 +9,10 @@ public class Class {
     @SerializedName("type_name")
     private String typeName;
 
+    public Class(int typeId, String typeName) {
+        this(String.valueOf(typeId), typeName);
+    }
+
     public Class(String typeId, String typeName) {
         this.typeId = typeId;
         this.typeName = typeName;
