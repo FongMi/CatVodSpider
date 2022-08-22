@@ -17,6 +17,8 @@ public class Result {
     private List<Vod> list;
     @SerializedName("filters")
     private JSONObject filters;
+    @SerializedName("header")
+    private String header;
     @SerializedName("parse")
     private String parse;
     @SerializedName("url")
@@ -38,6 +40,10 @@ public class Result {
 
     public void setFilters(JSONObject filters) {
         this.filters = filters;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
     }
 
     public void setParse(String parse) {
