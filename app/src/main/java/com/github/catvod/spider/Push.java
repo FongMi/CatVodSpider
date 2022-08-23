@@ -11,18 +11,12 @@ public class Push extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        try {
-            String url = ids.get(0).trim();
-            Vod vod = new Vod();
-            if (Misc.isVip(url)) setVod(vod, url, "官源");
-            else if (Misc.isVideoFormat(url)) setVod(vod, url, "直連");
-            else if (url.startsWith("magnet")) setVod(vod, url, "磁力");
-            else if (url.startsWith("http")) setVod(vod, url, "網頁");
-            return Result.string(vod);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
+        String url = ids.get(0).trim();
+        if (Misc.isVip(url)) return Result.string(vod(url, "官源"));
+        else if (Misc.isVideoFormat(url)) return Result.string(vod(url, "直連"));
+        else if (url.startsWith("magnet")) return Result.string(vod(url, "磁力"));
+        else if (url.startsWith("http")) return Result.string(vod(url, "網頁"));
+        else return "";
     }
 
     @Override
@@ -36,12 +30,14 @@ public class Push extends Spider {
         }
     }
 
-    private void setVod(Vod vod, String url, String type) {
+    private Vod vod(String url, String type) {
+        Vod vod = new Vod();
         vod.setTypeName(type);
         vod.setVodId(url);
         vod.setVodName(url);
         vod.setVodPlayFrom(type);
         vod.setVodPlayUrl("播放$" + url);
         vod.setVodPic("https://pic.rmb.bdstatic.com/bjh/1d0b02d0f57f0a42201f92caba5107ed.jpeg");
+        return vod;
     }
 }
