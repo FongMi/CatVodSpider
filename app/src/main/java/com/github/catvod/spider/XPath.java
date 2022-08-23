@@ -272,11 +272,7 @@ public class XPath extends Spider {
         fetchRule();
         String webUrl = rule.getPlayUrl().isEmpty() ? id : rule.getPlayUrl().replace("{playUrl}", id);
         SpiderDebug.log(webUrl);
-        Result result = new Result();
-        result.setParse("1");
-        if (!rule.getPlayUa().isEmpty()) result.setUa(rule.getPlayUa());
-        result.setUrl(webUrl);
-        return result.toString();
+        return Result.get().parse().url(webUrl).toString();
     }
 
     @Override

@@ -169,10 +169,7 @@ public class Biubiu extends Spider {
     public String playerContent(String flag, String id, List<String> vipFlags) {
         fetchRule();
         String webUrl = getRuleVal("url") + id;
-        Result result = new Result();
-        result.setParse("1");
-        result.setUrl(webUrl);
-        return result.toString();
+        return Result.get().parse().url(webUrl).toString();
     }
 
     @Override

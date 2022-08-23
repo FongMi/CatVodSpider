@@ -9,7 +9,6 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
-import com.google.gson.Gson;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,7 +16,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -81,16 +79,11 @@ public class Dm84 extends Spider {
             String id = url.split("/")[2];
             videos.add(new Vod(id, name, img, remark));
         }
-        Result result = new Result();
-        result.setFilters(filters);
-        result.setClasses(classes);
-        result.setList(videos);
-        return result.toString();
+        return Result.get(classes, filters, videos);
     }
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
-        Result result = new Result();
         List<Vod> videos = new ArrayList<>();
         if (extend.get("type") == null) extend.put("type", "");
         if (extend.get("year") == null) extend.put("year", "");
@@ -108,16 +101,11 @@ public class Dm84 extends Spider {
             String id = url.split("/")[2];
             videos.add(new Vod(id, name, img, remark));
         }
-        result.setList(videos);
-        return result.toString();
+        return Result.get(videos);
     }
 
     @Override
     public String detailContent(List<String> ids) {
-        Vod vod = new Vod();
-        Result result = new Result();
-        Map<String, String> sites = new LinkedHashMap<>();
-
         Document doc = Jsoup.parse(OkHttpUtil.string(siteUrl.concat("/v/").concat(ids.get(0)), getHeaders()));
         String name = doc.select("h1.v_title").text();
         String remarks = doc.select("p.v_desc > span.desc").text();
@@ -129,6 +117,7 @@ public class Dm84 extends Spider {
         String year = doc.select("meta[name=og:video:release_date]").attr("content");
         String director = doc.select("meta[name=og:video:director]").attr("content");
 
+        Vod vod = new Vod();
         vod.setVodId(ids.get(0));
         vod.setVodPic(img);
         vod.setVodYear(year);
@@ -140,6 +129,7 @@ public class Dm84 extends Spider {
         vod.setVodDirector(director);
         vod.setTypeName(type);
 
+        Map<String, String> sites = new LinkedHashMap<>();
         Elements sources = doc.select("ul.tab_control > li");
         Elements sourceList = doc.select("ul.play_list");
         for (int i = 0; i < sources.size(); i++) {
@@ -159,13 +149,11 @@ public class Dm84 extends Spider {
             vod.setVodPlayFrom(TextUtils.join("$$$", sites.keySet()));
             vod.setVodPlayUrl(TextUtils.join("$$$", sites.values()));
         }
-        result.setList(Arrays.asList(vod));
-        return result.toString();
+        return Result.get(vod);
     }
 
     @Override
     public String searchContent(String key, boolean quick) {
-        Result result = new Result();
         List<Vod> videos = new ArrayList<>();
         String target = siteUrl.concat("/s----------.html?wd=").concat(key);
         Document doc = Jsoup.parse(OkHttpUtil.string(target, getHeaders()));
@@ -177,18 +165,13 @@ public class Dm84 extends Spider {
             String id = url.split("/")[2];
             videos.add(new Vod(id, name, img, remark));
         }
-        result.setList(videos);
-        return result.toString();
+        return Result.get(videos);
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         Document doc = Jsoup.parse(OkHttpUtil.string(siteUrl.concat(id), getHeaders()));
         String url = doc.select("iframe").attr("src");
-        Result result = new Result();
-        result.setUrl(url);
-        result.setParse("1");
-        result.setHeader(new Gson().toJson(getHeaders()));
-        return result.toString();
+        return Result.get().url(url).parse().header(getHeaders()).toString();
     }
 }

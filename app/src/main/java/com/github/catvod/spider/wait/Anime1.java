@@ -8,7 +8,6 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttpUtil;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -306,7 +305,6 @@ public class Anime1 extends Spider {
         try {
             authority = "";
             String url = "https://v.anime1.me/api";
-            Result result = new Result();
             String jsonreq = URLDecoder.decode(id, "UTF-8");
             HashMap<String, String> reqpayload = new HashMap<>();
             reqpayload.put("d", jsonreq);
@@ -315,10 +313,7 @@ public class Anime1 extends Spider {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 3; i++) sb.append(respHeaderMap.get("set-cookie").get(i).split(";")[0]).append(";");
             cookies = sb.toString();
-            result.setUrl(getVideoUrl(response));
-            result.setHeader(new Gson().toJson(getHeaders1()));
-            result.setParse("0");
-            return result.toString();
+            return Result.get().url(getVideoUrl(response)).header(getHeaders1()).toString();
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
