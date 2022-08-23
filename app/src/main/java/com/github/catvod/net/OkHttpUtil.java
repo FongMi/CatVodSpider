@@ -19,7 +19,6 @@ public class OkHttpUtil {
 
     private static final Object lockO = new Object();
     private static OkHttpClient defaultClient = null;
-    private static OkHttpClient noRedirectClient = null;
     private static final int DEFAULT_TIMEOUT = 15;
 
     public static OkHttpClient defaultClient() {
@@ -32,26 +31,12 @@ public class OkHttpUtil {
         }
     }
 
-    public static OkHttpClient noRedirectClient() {
-        synchronized (lockO) {
-            if (noRedirectClient == null) {
-                OkHttpClient.Builder builder = new OkHttpClient.Builder().dns(safeDns()).readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).followRedirects(false).followSslRedirects(false).retryOnConnectionFailure(true).sslSocketFactory(new SSLSocketFactoryCompat(SSLSocketFactoryCompat.trustAllCert), SSLSocketFactoryCompat.trustAllCert);
-                noRedirectClient = builder.build();
-            }
-            return noRedirectClient;
-        }
-    }
-
     public static Dns safeDns() {
         try {
             return (Dns) Spider.class.getMethod("safeDns").invoke(null);
         } catch (Exception e) {
             return Dns.SYSTEM;
         }
-    }
-
-    public static String string(OkHttpClient client, String url, String tag, Map<String, String> paramsMap, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
-        return string(client, url, tag, paramsMap, headerMap, respHeaderMap, OkHttpUtil.METHOD_GET);
     }
 
     public static String string(OkHttpClient client, String url, String tag, Map<String, String> paramsMap, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap, String httpMethod) {
@@ -75,36 +60,32 @@ public class OkHttpUtil {
         return callback.getResult();
     }
 
-    public static String stringNoRedirect(String url, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
-        return string(noRedirectClient(), url, null, null, headerMap, respHeaderMap);
-    }
-
     public static String string(String url) {
-        return string(defaultClient(), url, null, null, null, null);
+        return string(url, null);
     }
 
     public static String string(String url, Map<String, String> headerMap) {
-        return string(defaultClient(), url, null, null, headerMap, null);
+        return string(url, headerMap, null);
     }
 
     public static String string(String url, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
-        return string(defaultClient(), url, null, null, headerMap, respHeaderMap);
+        return string(url, null, headerMap, respHeaderMap);
     }
 
-    public static String string(String url, String tag, Map<String, String> headerMap) {
-        return string(defaultClient(), url, tag, null, headerMap, null);
+    public static String string(String url, Map<String, String> paramsMap, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
+        return string(defaultClient(), url, null, paramsMap, headerMap, respHeaderMap, OkHttpUtil.METHOD_GET);
     }
 
-    public static void get(OkHttpClient client, String url, OKCallBack callBack) {
-        get(client, url, null, null, callBack);
+    public static void get(String url, OKCallBack callBack) {
+        get(url, null, callBack);
     }
 
-    public static void get(OkHttpClient client, String url, Map<String, String> paramsMap, OKCallBack callBack) {
-        get(client, url, paramsMap, null, callBack);
+    public static void get(String url, Map<String, String> paramsMap, OKCallBack callBack) {
+        get(url, paramsMap, null, callBack);
     }
 
-    public static void get(OkHttpClient client, String url, Map<String, String> paramsMap, Map<String, String> headerMap, OKCallBack callBack) {
-        new OKRequest(METHOD_GET, url, paramsMap, headerMap, callBack).execute(client);
+    public static void get(String url, Map<String, String> paramsMap, Map<String, String> headerMap, OKCallBack callBack) {
+        new OKRequest(METHOD_GET, url, paramsMap, headerMap, callBack).execute(defaultClient());
     }
 
     public static String post(String url) {
@@ -116,16 +97,14 @@ public class OkHttpUtil {
     }
 
     public static String post(String url, Map<String, String> paramsMap, Map<String, String> headerMap) {
-        OKCallBack.OKCallBackString callback = new OKCallBack.OKCallBackString();
-        new OKRequest(METHOD_POST, url, paramsMap, headerMap, callback).execute(defaultClient());
-        return callback.getResult();
+        return post(url, paramsMap, headerMap, null);
     }
 
-    public static void post(String url, Map<String, String> paramsMap, Map<String, String> headerMap, OKCallBack callback) {
-        new OKRequest(METHOD_POST, url, paramsMap, headerMap, callback).execute(defaultClient());
+    public static String post(String url, Map<String, String> paramsMap, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
+        return string(defaultClient(), url, null, paramsMap, headerMap, respHeaderMap, METHOD_POST);
     }
 
-    public static String postJson(String url, String jsonStr, Map<String, String> headerMap) {
+    public static String post(String url, String jsonStr, Map<String, String> headerMap) {
         OKCallBack.OKCallBackString callback = new OKCallBack.OKCallBackString();
         new OKRequest(METHOD_POST, url, jsonStr, headerMap, callback).execute(defaultClient());
         return callback.getResult();
@@ -147,12 +126,5 @@ public class OkHttpUtil {
 
     public static void cancel(Object tag) {
         cancel(defaultClient(), tag);
-    }
-
-    public static String getRedirectLocation(Map<String, List<String>> headers) {
-        if (headers == null) return null;
-        if (headers.containsKey("location")) return headers.get("location").get(0);
-        if (headers.containsKey("Location")) return headers.get("Location").get(0);
-        return null;
     }
 }

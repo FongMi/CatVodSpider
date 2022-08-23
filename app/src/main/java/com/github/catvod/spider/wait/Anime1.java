@@ -7,7 +7,6 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.net.OKCallBack;
 import com.github.catvod.net.OkHttpUtil;
 import com.google.gson.Gson;
 
@@ -29,9 +28,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * @author 不知名
@@ -308,41 +304,18 @@ public class Anime1 extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         try {
-            cookies = "";
             authority = "";
             String url = "https://v.anime1.me/api";
             Result result = new Result();
             String jsonreq = URLDecoder.decode(id, "UTF-8");
             HashMap<String, String> reqpayload = new HashMap<>();
             reqpayload.put("d", jsonreq);
-            OkHttpUtil.post(url, reqpayload, getHeaders2(), new OKCallBack<String>() {
-                @Override
-                protected String onParseResponse(Call call, Response response) {
-                    try {
-                        Map<String, List<String>> respHeader = new HashMap<>(response.headers().toMultimap());
-                        StringBuilder sb = new StringBuilder();
-                        for (int i = 0; i < 3; i++) sb.append(respHeader.get("set-cookie").get(i).split(";")[0]).append(";");
-                        cookies = sb.toString();
-                        return response.body().string();
-                    } catch (Exception e) {
-                        return "";
-                    }
-                }
-
-                @Override
-                protected void onResponse(String response) {
-                    try {
-                        JSONObject obj = new JSONObject(response);
-                        JSONArray objarray = obj.getJSONArray("s");
-                        JSONObject obj2 = objarray.getJSONObject(0);
-                        String videolink = obj2.getString("src");
-                        authority = videolink.split("/")[2];
-                        videolink = "https:" + videolink;
-                        result.setUrl(videolink);
-                    } catch (Exception ignored) {
-                    }
-                }
-            });
+            Map<String, List<String>> respHeaderMap = new HashMap<>();
+            String response = OkHttpUtil.string(url, reqpayload, getHeaders2(), respHeaderMap);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 3; i++) sb.append(respHeaderMap.get("set-cookie").get(i).split(";")[0]).append(";");
+            cookies = sb.toString();
+            result.setUrl(getVideoUrl(response));
             result.setHeader(new Gson().toJson(getHeaders1()));
             result.setParse("0");
             return result.toString();
@@ -350,6 +323,40 @@ public class Anime1 extends Spider {
             SpiderDebug.log(e);
             return "";
         }
+    }
+
+    private String getVideoUrl(String response) throws Exception {
+        JSONObject obj = new JSONObject(response);
+        JSONArray array = obj.getJSONArray("s");
+        String m3u8url = "";
+        String mp4url = "";
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject obj2 = array.getJSONObject(i);
+            String m3u8chk = obj2.getString("src");
+            if (m3u8chk.contains("m3u8")) {
+                m3u8url = m3u8chk;
+            } else {
+                mp4url = m3u8chk;
+            }
+        }
+        String videoUrl;
+        if (m3u8url.length() > 0) {
+            authority = m3u8url.split("/")[2];
+            videoUrl = "https:" + m3u8url;
+            String docm3u8 = OkHttpUtil.string(videoUrl, getHeaders1());
+            if (docm3u8.contains("1080p.m3u8")) {
+                videoUrl = videoUrl.replace("playlist", "1080p");
+            } else if (docm3u8.contains("720p.m3u8")) {
+                videoUrl = videoUrl.replace("playlist", "720p");
+            } else {
+                authority = mp4url.split("/")[2];
+                videoUrl = "https:" + mp4url;
+            }
+        } else {
+            authority = mp4url.split("/")[2];
+            videoUrl = "https:" + mp4url;
+        }
+        return videoUrl;
     }
 
     @Override
