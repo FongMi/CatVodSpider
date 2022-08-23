@@ -21,7 +21,6 @@ import org.jsoup.select.Elements;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -90,11 +89,7 @@ public class Tangrenjie extends Spider {
             String id = "1=" + matcher.group(1);
             videos.add(new Vod(id, title, cover, remark));
         }
-        Result result = new Result();
-        result.setFilters(filterConfig);
-        result.setClasses(classes);
-        result.setList(videos);
-        return result.toString();
+        return Result.string(classes, videos, filterConfig);
     }
 
     @Override
@@ -129,9 +124,7 @@ public class Tangrenjie extends Spider {
                 videos.add(new Vod(id, title, cover, remark));
             }
         }
-        Result result = new Result();
-        result.setList(videos);
-        return result.toString();
+        return Result.string(videos);
     }
 
     @Override
@@ -148,7 +141,6 @@ public class Tangrenjie extends Spider {
             htmlsrc = htmltemp;
         }
         Document doc = Jsoup.parse(htmlsrc);
-        Result result = new Result();
         String vid = doc.selectFirst("div.content_thumb a").attr("href");
         String cover = siteUrl + doc.selectFirst("div.content_thumb a").attr("data-original");
         String title = doc.selectFirst("div.content_thumb a").attr("title");
@@ -250,8 +242,7 @@ public class Tangrenjie extends Spider {
             vod.setVodPlayFrom(TextUtils.join("$$$", vod_play.keySet()));
             vod.setVodPlayUrl(TextUtils.join("$$$", vod_play.values()));
         }
-        result.setList(Arrays.asList(vod));
-        return result.toString();
+        return Result.string(vod);
     }
 
     @Override
@@ -305,7 +296,6 @@ public class Tangrenjie extends Spider {
         String url = siteUrl + "/vod/search.html?wd=" + URLEncoder.encode(key) + "&submit=";
         String html = OkHttpUtil.string(url, getHeaders());
         Document doc = Jsoup.parse(html);
-        Result result = new Result();
         List<Vod> videos = new ArrayList<>();
         Elements list = doc.select("li.searchlist_item");
         for (int i = 0; i < list.size(); i++) {
@@ -334,7 +324,6 @@ public class Tangrenjie extends Spider {
             String id = tid + "=" + matcher.group(1);
             videos.add(new Vod(id, title, cover, remark));
         }
-        result.setList(videos);
-        return result.toString();
+        return Result.string(videos);
     }
 }

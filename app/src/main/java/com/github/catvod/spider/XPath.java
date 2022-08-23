@@ -19,7 +19,6 @@ import org.seimicrawler.xpath.JXNode;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +43,6 @@ public class XPath extends Spider {
     @Override
     public String homeContent(boolean filter) {
         fetchRule();
-        Result result = new Result();
         List<Vod> videos = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
         if (rule.getCateManual().size() > 0) {
@@ -85,10 +83,7 @@ public class XPath extends Spider {
                 videos.add(new Vod(id, name, pic, mark));
             }
         }
-        result.setList(videos);
-        result.setClasses(classes);
-        result.setFilters(filter && rule.getFilter() != null ? rule.getFilter() : null);
-        return result.toString();
+        return Result.string(classes, videos, rule.getFilter());
     }
 
     @Override
@@ -127,9 +122,7 @@ public class XPath extends Spider {
             }
             videos.add(new Vod(id, name, pic, mark));
         }
-        Result result = new Result();
-        result.setList(videos);
-        return result.toString();
+        return Result.string(videos);
     }
 
     protected void detailContentExt(String content, Vod vod) {
@@ -262,9 +255,7 @@ public class XPath extends Spider {
         vod.setVodPlayFrom(vod_play_from);
         vod.setVodPlayUrl(vod_play_url);
         detailContentExt(webContent, vod);
-        Result result = new Result();
-        result.setList(Arrays.asList(vod));
-        return result.toString();
+        return Result.string(vod);
     }
 
     @Override
@@ -282,7 +273,6 @@ public class XPath extends Spider {
             if (rule.getSearchUrl().isEmpty()) return "";
             String webUrl = rule.getSearchUrl().replace("{wd}", URLEncoder.encode(key));
             String webContent = fetch(webUrl);
-            Result result = new Result();
             List<Vod> videos = new ArrayList<>();
             if (rule.getSearchVodNode().startsWith("json:")) {
                 String[] node = rule.getSearchVodNode().substring(5).split(">");
@@ -330,8 +320,7 @@ public class XPath extends Spider {
                     videos.add(new Vod(id, name, pic, mark));
                 }
             }
-            result.setList(videos);
-            return result.toString();
+            return Result.string(videos);
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";

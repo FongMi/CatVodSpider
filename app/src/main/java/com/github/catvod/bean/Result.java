@@ -29,73 +29,55 @@ public class Result {
     @SerializedName("url")
     private String url;
 
+    public static String string(List<Class> classes, List<Vod> list, LinkedHashMap<String, List<Filter>> filters) {
+        return Result.get().classes(classes).vod(list).filters(filters).string();
+    }
+
+    public static String string(List<Class> classes, List<Vod> list, JSONObject filters) {
+        return Result.get().classes(classes).vod(list).filters(filters).string();
+    }
+
+    public static String string(List<Class> classes, List<Vod> list) {
+        return Result.get().classes(classes).vod(list).string();
+    }
+
+    public static String string(List<Vod> list) {
+        return Result.get().vod(list).string();
+    }
+
+    public static String string(Vod item) {
+        return Result.get().vod(item).string();
+    }
+
     public static Result get() {
         return new Result();
     }
 
-    public static String get(List<Class> classes, List<Vod> list) {
-        return new Result(classes, list).toString();
-    }
-
-    public static String get(List<Class> classes, LinkedHashMap<String, List<Filter>> filters) {
-        return new Result(classes, filters).toString();
-    }
-
-    public static String get(List<Class> classes, LinkedHashMap<String, List<Filter>> filters, List<Vod> list) {
-        return new Result(classes, filters, list).toString();
-    }
-
-    public static String get(List<Vod> list) {
-        return new Result(list).toString();
-    }
-
-    public static String get(Vod vod) {
-        return new Result(vod).toString();
-    }
-
-    public Result() {
-    }
-
-    public Result(List<Vod> list) {
-        this.list = list;
-    }
-
-    public Result(List<Class> classes, List<Vod> list) {
+    public Result classes(List<Class> classes) {
         this.classes = classes;
-        this.list = list;
+        return this;
     }
 
-    public Result(List<Class> classes, LinkedHashMap<String, List<Filter>> filters) {
-        this.classes = classes;
+    public Result vod(List<Vod> list) {
+        this.list = list;
+        return this;
+    }
+
+    public Result vod(Vod item) {
+        this.list = Arrays.asList(item);
+        return this;
+    }
+
+    public Result filters(LinkedHashMap<String, List<Filter>> filters) {
         this.filters = filters;
+        return this;
     }
 
-    public Result(List<Class> classes, LinkedHashMap<String, List<Filter>> filters, List<Vod> list) {
-        this.classes = classes;
-        this.filters = filters;
-        this.list = list;
-    }
-
-    public Result(Vod vod) {
-        this.list = Arrays.asList(vod);
-    }
-
-    public void setClasses(List<Class> classes) {
-        this.classes = classes;
-    }
-
-    public void setList(List<Vod> list) {
-        this.list = list;
-    }
-
-    public List<Vod> getList() {
-        return list == null ? Collections.emptyList() : list;
-    }
-
-    public void setFilters(JSONObject object) {
+    public Result filters(JSONObject object) {
         Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {
         }.getType();
         this.filters = new Gson().fromJson(object.toString(), listType);
+        return this;
     }
 
     public Result header(HashMap<String, String> header) {
@@ -116,6 +98,14 @@ public class Result {
     public Result url(String url) {
         this.url = url;
         return this;
+    }
+
+    public List<Vod> getList() {
+        return list == null ? Collections.emptyList() : list;
+    }
+
+    public String string() {
+        return toString();
     }
 
     @NotNull

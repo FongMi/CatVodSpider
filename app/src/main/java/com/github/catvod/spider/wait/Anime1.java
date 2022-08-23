@@ -18,7 +18,6 @@ import org.jsoup.select.Elements;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -108,7 +107,6 @@ public class Anime1 extends Spider {
                 subobj.put("team", srcOrign.getJSONArray(i).get(5).toString());
                 srcArray.put(subobj);
             }
-            Result result = new Result();
             List<Class> classes = new ArrayList<>();
             Calendar cal = Calendar.getInstance();
             int year = cal.get(Calendar.YEAR) + 1;
@@ -129,9 +127,7 @@ public class Anime1 extends Spider {
                 String mark = srcArray.getJSONObject(i).getString("hit");
                 videos.add(new Vod(id, name, vodPic, mark));
             }
-            result.setClasses(classes);
-            result.setList(videos);
-            return result.toString();
+            return Result.string(classes, videos);
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
@@ -177,9 +173,7 @@ public class Anime1 extends Spider {
                 String mark = array.getJSONObject(i).getString("hit");
                 videos.add(new Vod(id, name, vodPic, mark));
             }
-            Result result = new Result();
-            result.setList(videos);
-            return result.toString();
+            return Result.string(videos);
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
@@ -202,7 +196,6 @@ public class Anime1 extends Spider {
             String season = dtinfo.getString("season");
             String team = dtinfo.getString("team");
 
-            Result result = new Result();
             Vod vod = new Vod();
             vod.setVodId(ids.get(0));
             vod.setVodName(title);
@@ -292,8 +285,7 @@ public class Anime1 extends Spider {
             vod_play.put("Anime1", playList);
             vod.setVodPlayFrom(TextUtils.join("$$$", vod_play.keySet()));
             vod.setVodPlayUrl(TextUtils.join("$$$", vod_play.values()));
-            result.setList(Arrays.asList(vod));
-            return result.toString();
+            return Result.string(vod);
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
@@ -363,7 +355,6 @@ public class Anime1 extends Spider {
                 String kw = srobj.getString("name");
                 if (kw.contains(key)) searchResult.put(srobj);
             }
-            Result result = new Result();
             List<Vod> videos = new ArrayList<>();
             if (searchResult.length() > 0) {
                 int ch = Math.min(searchResult.length(), 10);
@@ -374,8 +365,7 @@ public class Anime1 extends Spider {
                     videos.add(new Vod(id, name, vodPic, mark));
                 }
             }
-            result.setList(videos);
-            return result.toString();
+            return Result.string(videos);
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";

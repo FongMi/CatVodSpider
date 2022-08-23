@@ -14,7 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -42,15 +41,13 @@ public class Biubiu extends Spider {
     @Override
     public String homeContent(boolean filter) {
         fetchRule();
-        Result result = new Result();
         List<Class> classes = new ArrayList<>();
         String[] fenleis = getRuleVal("fenlei", "").split("#");
         for (String fenlei : fenleis) {
             String[] info = fenlei.split("\\$");
             classes.add(new Class(info[0], info[1]));
         }
-        result.setClasses(classes);
-        return result.toString();
+        return Result.get().classes(classes).string();
     }
 
     @Override
@@ -67,9 +64,7 @@ public class Biubiu extends Spider {
                 if (videos.size() >= 30) break;
             }
         }
-        Result result = new Result();
-        result.setList(videos);
-        return result.toString();
+        return Result.string(videos);
     }
 
     private Result category(String tid, String pg) {
@@ -103,9 +98,7 @@ public class Biubiu extends Spider {
                 break;
             }
         }
-        Result result = new Result();
-        result.setList(videos);
-        return result;
+        return Result.get().vod(videos);
     }
 
     @Override
@@ -160,16 +153,14 @@ public class Biubiu extends Spider {
         for (int i = 0; i < playList.size(); i++) playFrom.add("播放列表" + (i + 1));
         video.setVodPlayFrom(TextUtils.join("$$$", playFrom));
         video.setVodPlayUrl(TextUtils.join("$$$", playList));
-        Result result = new Result();
-        result.setList(Arrays.asList(video));
-        return result.toString();
+        return Result.string(video);
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         fetchRule();
         String webUrl = getRuleVal("url") + id;
-        return Result.get().parse().url(webUrl).toString();
+        return Result.get().parse().url(webUrl).string();
     }
 
     @Override
@@ -225,9 +216,7 @@ public class Biubiu extends Spider {
                     }
                 }
             }
-            Result result = new Result();
-            result.setList(videos);
-            return result.toString();
+            return Result.string(videos);
         } catch (Exception e) {
             e.printStackTrace();
             return "";

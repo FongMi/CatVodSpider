@@ -79,7 +79,7 @@ public class Dm84 extends Spider {
             String id = url.split("/")[2];
             videos.add(new Vod(id, name, img, remark));
         }
-        return Result.get(classes, filters, videos);
+        return Result.string(classes, videos, filters);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class Dm84 extends Spider {
             String id = url.split("/")[2];
             videos.add(new Vod(id, name, img, remark));
         }
-        return Result.get(videos);
+        return Result.string(videos);
     }
 
     @Override
@@ -149,7 +149,7 @@ public class Dm84 extends Spider {
             vod.setVodPlayFrom(TextUtils.join("$$$", sites.keySet()));
             vod.setVodPlayUrl(TextUtils.join("$$$", sites.values()));
         }
-        return Result.get(vod);
+        return Result.string(vod);
     }
 
     @Override
@@ -165,13 +165,13 @@ public class Dm84 extends Spider {
             String id = url.split("/")[2];
             videos.add(new Vod(id, name, img, remark));
         }
-        return Result.get(videos);
+        return Result.string(videos);
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         Document doc = Jsoup.parse(OkHttpUtil.string(siteUrl.concat(id), getHeaders()));
         String url = doc.select("iframe").attr("src");
-        return Result.get().url(url).parse().header(getHeaders()).toString();
+        return Result.get().url(url).parse().header(getHeaders()).string();
     }
 }
