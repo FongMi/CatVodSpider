@@ -73,7 +73,15 @@ public class OkHttpUtil {
     }
 
     public static String string(String url, Map<String, String> paramsMap, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
-        return string(defaultClient(), url, null, paramsMap, headerMap, respHeaderMap, OkHttpUtil.METHOD_GET);
+        return string(url, null, paramsMap, headerMap, respHeaderMap);
+    }
+
+    public static String string(String url, String tag, Map<String, String> headerMap) {
+        return string(url, tag, null, headerMap, null);
+    }
+
+    public static String string(String url, String tag, Map<String, String> paramsMap, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
+        return string(defaultClient(), url, tag, paramsMap, headerMap, respHeaderMap, OkHttpUtil.METHOD_GET);
     }
 
     public static void get(String url, OKCallBack callBack) {
