@@ -7,10 +7,12 @@ import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -21,7 +23,6 @@ import java.util.regex.Pattern;
 
 public class Biubiu extends Spider {
 
-    private String ext = null;
     private JSONObject rule = null;
 
     private HashMap<String, String> getHeaders() {
@@ -32,15 +33,23 @@ public class Biubiu extends Spider {
         return headers;
     }
 
+    private void fetchRule(String ext) {
+        try {
+            if (ext.startsWith("http")) rule = new JSONObject(OkHttpUtil.string(ext, null));
+            else rule = new JSONObject(ext);
+        } catch (Exception e) {
+            SpiderDebug.log(e);
+        }
+    }
+
     @Override
     public void init(Context context, String extend) {
         super.init(context, extend);
-        this.ext = extend;
+        fetchRule(extend);
     }
 
     @Override
     public String homeContent(boolean filter) {
-        fetchRule();
         List<Class> classes = new ArrayList<>();
         String[] fenleis = getRuleVal("fenlei", "").split("#");
         for (String fenlei : fenleis) {
@@ -52,7 +61,6 @@ public class Biubiu extends Spider {
 
     @Override
     public String homeVideoContent() {
-        fetchRule();
         if (getRuleVal("shouye").equals("1")) return "";
         List<Vod> videos = new ArrayList<>();
         String[] fenleis = getRuleVal("fenlei", "").split("#");
@@ -68,7 +76,6 @@ public class Biubiu extends Spider {
     }
 
     private Result category(String tid, String pg) {
-        fetchRule();
         String webUrl = getRuleVal("url") + tid + pg + getRuleVal("houzhui");
         String html = fetch(webUrl);
         String parseContent = html;
@@ -108,7 +115,6 @@ public class Biubiu extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        fetchRule();
         String[] idInfo = ids.get(0).split("\\$\\$\\$");
         String webUrl = getRuleVal("url") + idInfo[2];
         String html = fetch(webUrl);
@@ -158,80 +164,62 @@ public class Biubiu extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        fetchRule();
         String webUrl = getRuleVal("url") + id;
         return Result.get().parse().url(webUrl).string();
     }
 
     @Override
-    public String searchContent(String key, boolean quick) {
-        try {
-            fetchRule();
-            boolean ssmoshiJson = getRuleVal("ssmoshi").equals("0");
-            String webUrlTmp = getRuleVal("url") + getRuleVal("sousuoqian") + key + getRuleVal("sousuohou");
-            String webUrl = webUrlTmp.split(";")[0];
-            String webContent = webUrlTmp.contains(";post") ? fetchPost(webUrl) : fetch(webUrl);
-            List<Vod> videos = new ArrayList<>();
-            if (ssmoshiJson) {
-                JSONObject data = new JSONObject(webContent);
-                JSONArray vodArray = data.getJSONArray("list");
-                for (int j = 0; j < vodArray.length(); j++) {
-                    JSONObject vod = vodArray.getJSONObject(j);
-                    String name = vod.optString(getRuleVal("jsname")).trim();
-                    String id = vod.optString(getRuleVal("jsid")).trim();
-                    String pic = vod.optString(getRuleVal("jspic")).trim();
+    public String searchContent(String key, boolean quick) throws JSONException {
+        boolean ssmoshiJson = getRuleVal("ssmoshi").equals("0");
+        String webUrlTmp = getRuleVal("url") + getRuleVal("sousuoqian") + key + getRuleVal("sousuohou");
+        String webUrl = webUrlTmp.split(";")[0];
+        String webContent = webUrlTmp.contains(";post") ? fetchPost(webUrl) : fetch(webUrl);
+        List<Vod> videos = new ArrayList<>();
+        if (ssmoshiJson) {
+            JSONObject data = new JSONObject(webContent);
+            JSONArray vodArray = data.getJSONArray("list");
+            for (int j = 0; j < vodArray.length(); j++) {
+                JSONObject vod = vodArray.getJSONObject(j);
+                String name = vod.optString(getRuleVal("jsname")).trim();
+                String id = vod.optString(getRuleVal("jsid")).trim();
+                String pic = vod.optString(getRuleVal("jspic")).trim();
+                pic = Misc.fixUrl(webUrl, pic);
+                Vod video = new Vod();
+                video.setVodId(name + "$$$" + pic + "$$$" + getRuleVal("sousuohouzhui") + id);
+                video.setVodName(name);
+                video.setVodPic(pic);
+                videos.add(video);
+            }
+        } else {
+            String parseContent = webContent;
+            boolean shifouercijiequ = getRuleVal("sousuoshifouercijiequ").equals("1");
+            if (shifouercijiequ) {
+                String jiequqian = getRuleVal("ssjiequqian");
+                String jiequhou = getRuleVal("ssjiequhou");
+                parseContent = subContent(webContent, jiequqian, jiequhou).get(0);
+            }
+            String jiequshuzuqian = getRuleVal("ssjiequshuzuqian");
+            String jiequshuzuhou = getRuleVal("ssjiequshuzuhou");
+            ArrayList<String> jiequContents = subContent(parseContent, jiequshuzuqian, jiequshuzuhou);
+            for (int i = 0; i < jiequContents.size(); i++) {
+                try {
+                    String jiequContent = jiequContents.get(i);
+                    String title = subContent(jiequContent, getRuleVal("ssbiaotiqian"), getRuleVal("ssbiaotihou")).get(0);
+                    String pic = subContent(jiequContent, getRuleVal("sstupianqian"), getRuleVal("sstupianhou")).get(0);
                     pic = Misc.fixUrl(webUrl, pic);
+                    String link = subContent(jiequContent, getRuleVal("sslianjieqian"), getRuleVal("sslianjiehou")).get(0);
                     Vod video = new Vod();
-                    video.setVodId(name + "$$$" + pic + "$$$" + getRuleVal("sousuohouzhui") + id);
-                    video.setVodName(name);
+                    video.setVodId(title + "$$$" + pic + "$$$" + link);
+                    video.setVodName(title);
                     video.setVodPic(pic);
                     videos.add(video);
-                }
-            } else {
-                String parseContent = webContent;
-                boolean shifouercijiequ = getRuleVal("sousuoshifouercijiequ").equals("1");
-                if (shifouercijiequ) {
-                    String jiequqian = getRuleVal("ssjiequqian");
-                    String jiequhou = getRuleVal("ssjiequhou");
-                    parseContent = subContent(webContent, jiequqian, jiequhou).get(0);
-                }
-                String jiequshuzuqian = getRuleVal("ssjiequshuzuqian");
-                String jiequshuzuhou = getRuleVal("ssjiequshuzuhou");
-                ArrayList<String> jiequContents = subContent(parseContent, jiequshuzuqian, jiequshuzuhou);
-                for (int i = 0; i < jiequContents.size(); i++) {
-                    try {
-                        String jiequContent = jiequContents.get(i);
-                        String title = subContent(jiequContent, getRuleVal("ssbiaotiqian"), getRuleVal("ssbiaotihou")).get(0);
-                        String pic = subContent(jiequContent, getRuleVal("sstupianqian"), getRuleVal("sstupianhou")).get(0);
-                        pic = Misc.fixUrl(webUrl, pic);
-                        String link = subContent(jiequContent, getRuleVal("sslianjieqian"), getRuleVal("sslianjiehou")).get(0);
-                        Vod video = new Vod();
-                        video.setVodId(title + "$$$" + pic + "$$$" + link);
-                        video.setVodName(title);
-                        video.setVodPic(pic);
-                        videos.add(video);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        break;
-                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
                 }
             }
-            return Result.string(videos);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
         }
-    }
-
-    private void fetchRule() {
-        try {
-            if (rule != null) return;
-            if (ext == null) return;
-            if (ext.startsWith("http")) rule = new JSONObject(OkHttpUtil.string(ext, null));
-            else rule = new JSONObject(ext);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return Result.string(videos);
     }
 
     private String fetch(String webUrl) {

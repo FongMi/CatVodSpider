@@ -48,61 +48,46 @@ public class XPathMac extends XPath {
             }
             playerConfigJs = jsonObj.optString("pCfgJs").trim();
             playerConfigJsRegex = jsonObj.optString("pCfgJsR", playerConfigJsRegex).trim();
-        } catch (JSONException e) {
-            SpiderDebug.log(e);
-        }
-    }
-
-    @Override
-    public String homeContent(boolean filter) {
-        String result = super.homeContent(filter);
-        if (result.length() > 0 && playerConfigJs.length() > 0) { //嘗試通過playerConfigJs獲取展示和flag匹配關系
-            String webContent = fetch(playerConfigJs);
-            Matcher matcher = Pattern.compile(playerConfigJsRegex).matcher(webContent);
-            if (!matcher.find()) return result;
-            try {
-                JSONObject jsonObject = new JSONObject(matcher.group(1));
-                Iterator<String> keys = jsonObject.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    JSONObject keyObj = jsonObject.optJSONObject(key);
-                    if (keyObj == null) continue;
-                    String show = keyObj.optString("show").trim();
-                    if (show.isEmpty()) continue;
-                    show2VipFlag.put(show, key);
-                }
-            } catch (Exception e) {
-                SpiderDebug.log(e);
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public String detailContent(List<String> ids) {
-        String result = super.detailContent(ids);
-        if (!decodeVipFlag || result.isEmpty()) return result;
-        try {
-            JSONObject jsonObject = new JSONObject(result);
-            String[] playFrom = jsonObject.optJSONArray("list").getJSONObject(0).optString("vod_play_from").split("\\$\\$\\$");
-            if (playFrom.length > 0) {
-                for (int i = 0; i < playFrom.length; i++) {
-                    if (show2VipFlag.containsKey(playFrom[i])) {
-                        playFrom[i] = show2VipFlag.get(playFrom[i]);
-                    }
-                }
-                jsonObject.optJSONArray("list").getJSONObject(0).put("vod_play_from", TextUtils.join("$$$", playFrom));
-                result = jsonObject.toString();
-            }
         } catch (Exception e) {
             SpiderDebug.log(e);
         }
+    }
+
+    @Override
+    public String homeContent(boolean filter) throws JSONException {
+        String result = super.homeContent(filter);
+        if (result.isEmpty() || playerConfigJs.isEmpty()) return result;
+        //嘗試通過playerConfigJs獲取展示和flag匹配關系
+        String webContent = fetch(playerConfigJs);
+        Matcher matcher = Pattern.compile(playerConfigJsRegex).matcher(webContent);
+        if (!matcher.find()) return result;
+        JSONObject jsonObject = new JSONObject(matcher.group(1));
+        Iterator<String> keys = jsonObject.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            JSONObject keyObj = jsonObject.optJSONObject(key);
+            if (keyObj == null) continue;
+            String show = keyObj.optString("show").trim();
+            if (show.isEmpty()) continue;
+            show2VipFlag.put(show, key);
+        }
         return result;
+    }
+
+    @Override
+    public String detailContent(List<String> ids) throws JSONException {
+        String result = super.detailContent(ids);
+        if (!decodeVipFlag || result.isEmpty()) return result;
+        JSONObject jsonObject = new JSONObject(result);
+        String[] playFrom = jsonObject.optJSONArray("list").getJSONObject(0).optString("vod_play_from").split("\\$\\$\\$");
+        if (playFrom.length == 0) return result;
+        for (int i = 0; i < playFrom.length; i++) if (show2VipFlag.containsKey(playFrom[i])) playFrom[i] = show2VipFlag.get(playFrom[i]);
+        jsonObject.optJSONArray("list").getJSONObject(0).put("vod_play_from", TextUtils.join("$$$", playFrom));
+        return jsonObject.toString();
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        fetchRule();
         String webUrl = rule.getPlayUrl().isEmpty() ? id : rule.getPlayUrl().replace("{playUrl}", id);
         String videoUrl = null;
         // 嘗試分析直連
