@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author 小黄瓜
+ */
 public class Biubiu extends Spider {
 
     private JSONObject rule = null;
@@ -62,17 +65,17 @@ public class Biubiu extends Spider {
     @Override
     public String homeVideoContent() {
         if (getRuleVal("shouye").equals("1")) return "";
-        List<Vod> videos = new ArrayList<>();
+        List<Vod> list = new ArrayList<>();
         String[] fenleis = getRuleVal("fenlei", "").split("#");
         for (String fenlei : fenleis) {
             String[] info = fenlei.split("\\$");
             Result result = category(info[1], "1");
             for (int i = 0; i < result.getList().size(); i++) {
-                videos.add(result.getList().get(i));
-                if (videos.size() >= 30) break;
+                list.add(result.getList().get(i));
+                if (list.size() >= 30) break;
             }
         }
-        return Result.string(videos);
+        return Result.string(list);
     }
 
     private Result category(String tid, String pg) {
@@ -87,7 +90,7 @@ public class Biubiu extends Spider {
         }
         String jiequshuzuqian = getRuleVal("jiequshuzuqian");
         String jiequshuzuhou = getRuleVal("jiequshuzuhou");
-        List<Vod> videos = new ArrayList<>();
+        List<Vod> list = new ArrayList<>();
         ArrayList<String> jiequContents = subContent(parseContent, jiequshuzuqian, jiequshuzuhou);
         for (int i = 0; i < jiequContents.size(); i++) {
             try {
@@ -100,12 +103,12 @@ public class Biubiu extends Spider {
                 vod.setVodId(title + "$$$" + pic + "$$$" + link);
                 vod.setVodName(title);
                 vod.setVodPic(pic);
-                videos.add(vod);
+                list.add(vod);
             } catch (Exception e) {
                 break;
             }
         }
-        return Result.get().vod(videos);
+        return Result.get().vod(list);
     }
 
     @Override
@@ -152,14 +155,14 @@ public class Biubiu extends Spider {
             }
         }
 
-        Vod video = new Vod();
-        video.setVodId(ids.get(0));
-        video.setVodName(idInfo[0]);
-        video.setVodPic(idInfo[1]);
+        Vod vod = new Vod();
+        vod.setVodId(ids.get(0));
+        vod.setVodName(idInfo[0]);
+        vod.setVodPic(idInfo[1]);
         for (int i = 0; i < playList.size(); i++) playFrom.add("播放列表" + (i + 1));
-        video.setVodPlayFrom(TextUtils.join("$$$", playFrom));
-        video.setVodPlayUrl(TextUtils.join("$$$", playList));
-        return Result.string(video);
+        vod.setVodPlayFrom(TextUtils.join("$$$", playFrom));
+        vod.setVodPlayUrl(TextUtils.join("$$$", playList));
+        return Result.string(vod);
     }
 
     @Override
@@ -174,21 +177,21 @@ public class Biubiu extends Spider {
         String webUrlTmp = getRuleVal("url") + getRuleVal("sousuoqian") + key + getRuleVal("sousuohou");
         String webUrl = webUrlTmp.split(";")[0];
         String webContent = webUrlTmp.contains(";post") ? fetchPost(webUrl) : fetch(webUrl);
-        List<Vod> videos = new ArrayList<>();
+        List<Vod> list = new ArrayList<>();
         if (ssmoshiJson) {
             JSONObject data = new JSONObject(webContent);
             JSONArray vodArray = data.getJSONArray("list");
             for (int j = 0; j < vodArray.length(); j++) {
-                JSONObject vod = vodArray.getJSONObject(j);
-                String name = vod.optString(getRuleVal("jsname")).trim();
-                String id = vod.optString(getRuleVal("jsid")).trim();
-                String pic = vod.optString(getRuleVal("jspic")).trim();
+                JSONObject object = vodArray.getJSONObject(j);
+                String name = object.optString(getRuleVal("jsname")).trim();
+                String id = object.optString(getRuleVal("jsid")).trim();
+                String pic = object.optString(getRuleVal("jspic")).trim();
                 pic = Misc.fixUrl(webUrl, pic);
-                Vod video = new Vod();
-                video.setVodId(name + "$$$" + pic + "$$$" + getRuleVal("sousuohouzhui") + id);
-                video.setVodName(name);
-                video.setVodPic(pic);
-                videos.add(video);
+                Vod vod = new Vod();
+                vod.setVodId(name + "$$$" + pic + "$$$" + getRuleVal("sousuohouzhui") + id);
+                vod.setVodName(name);
+                vod.setVodPic(pic);
+                list.add(vod);
             }
         } else {
             String parseContent = webContent;
@@ -208,18 +211,18 @@ public class Biubiu extends Spider {
                     String pic = subContent(jiequContent, getRuleVal("sstupianqian"), getRuleVal("sstupianhou")).get(0);
                     pic = Misc.fixUrl(webUrl, pic);
                     String link = subContent(jiequContent, getRuleVal("sslianjieqian"), getRuleVal("sslianjiehou")).get(0);
-                    Vod video = new Vod();
-                    video.setVodId(title + "$$$" + pic + "$$$" + link);
-                    video.setVodName(title);
-                    video.setVodPic(pic);
-                    videos.add(video);
+                    Vod vod = new Vod();
+                    vod.setVodId(title + "$$$" + pic + "$$$" + link);
+                    vod.setVodName(title);
+                    vod.setVodPic(pic);
+                    list.add(vod);
                 } catch (Exception e) {
                     e.printStackTrace();
                     break;
                 }
             }
         }
-        return Result.string(videos);
+        return Result.string(list);
     }
 
     private String fetch(String webUrl) {

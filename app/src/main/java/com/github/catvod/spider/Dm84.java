@@ -51,7 +51,7 @@ public class Dm84 extends Spider {
 
     @Override
     public String homeContent(boolean filter) {
-        List<Vod> videos = new ArrayList<>();
+        List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         Document doc = Jsoup.parse(OkHttpUtil.string(siteUrl, getHeaders()));
@@ -77,14 +77,14 @@ public class Dm84 extends Spider {
             String name = element.select("a.title").text();
             String remark = element.select("span.desc").text();
             String id = url.split("/")[2];
-            videos.add(new Vod(id, name, img, remark));
+            list.add(new Vod(id, name, img, remark));
         }
-        return Result.string(classes, videos, filters);
+        return Result.string(classes, list, filters);
     }
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
-        List<Vod> videos = new ArrayList<>();
+        List<Vod> list = new ArrayList<>();
         if (extend.get("type") == null) extend.put("type", "");
         if (extend.get("year") == null) extend.put("year", "");
         if (extend.get("by") == null) extend.put("by", "time");
@@ -99,9 +99,9 @@ public class Dm84 extends Spider {
             String name = element.select("a.title").text();
             String remark = element.select("span.desc").text();
             String id = url.split("/")[2];
-            videos.add(new Vod(id, name, img, remark));
+            list.add(new Vod(id, name, img, remark));
         }
-        return Result.string(videos);
+        return Result.string(list);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class Dm84 extends Spider {
 
     @Override
     public String searchContent(String key, boolean quick) {
-        List<Vod> videos = new ArrayList<>();
+        List<Vod> list = new ArrayList<>();
         String target = siteUrl.concat("/s----------.html?wd=").concat(key);
         Document doc = Jsoup.parse(OkHttpUtil.string(target, getHeaders()));
         for (Element element : doc.select("div.item")) {
@@ -163,9 +163,9 @@ public class Dm84 extends Spider {
             String name = element.select("a.title").text();
             String remark = element.select("span.desc").text();
             String id = url.split("/")[2];
-            videos.add(new Vod(id, name, img, remark));
+            list.add(new Vod(id, name, img, remark));
         }
-        return Result.string(videos);
+        return Result.string(list);
     }
 
     @Override

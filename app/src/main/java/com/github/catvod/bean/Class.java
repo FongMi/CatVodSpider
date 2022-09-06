@@ -1,6 +1,11 @@
 package com.github.catvod.bean;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class Class {
 
@@ -8,6 +13,11 @@ public class Class {
     private String typeId;
     @SerializedName("type_name")
     private String typeName;
+
+    public static List<Class> arrayFrom(String str) {
+        Type listType = new TypeToken<List<Class>>() {}.getType();
+        return new Gson().fromJson(str, listType);
+    }
 
     public Class(int typeId, String typeName) {
         this(String.valueOf(typeId), typeName);

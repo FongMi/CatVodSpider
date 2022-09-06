@@ -120,14 +120,14 @@ public class Anime1 extends Spider {
                     classes.add(new Class(i, "更早"));
                 }
             }
-            List<Vod> videos = new ArrayList<>();
+            List<Vod> list = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
                 String id = srcArray.getJSONObject(i).getString("link");
                 String name = srcArray.getJSONObject(i).getString("name");
                 String mark = srcArray.getJSONObject(i).getString("hit");
-                videos.add(new Vod(id, name, vodPic, mark));
+                list.add(new Vod(id, name, vodPic, mark));
             }
-            return Result.string(classes, videos);
+            return Result.string(classes, list);
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
@@ -166,14 +166,14 @@ public class Anime1 extends Spider {
                     if (yearint < yy) array.put(subobj);
                 }
             }
-            List<Vod> videos = new ArrayList<>();
+            List<Vod> list = new ArrayList<>();
             for (int i = 0; i < array.length(); i++) {
                 String id = array.getJSONObject(i).getString("link");
                 String name = array.getJSONObject(i).getString("name");
                 String mark = array.getJSONObject(i).getString("hit");
-                videos.add(new Vod(id, name, vodPic, mark));
+                list.add(new Vod(id, name, vodPic, mark));
             }
-            return Result.string(videos);
+            return Result.string(list);
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
@@ -355,17 +355,17 @@ public class Anime1 extends Spider {
                 String kw = srobj.getString("name");
                 if (kw.contains(key)) searchResult.put(srobj);
             }
-            List<Vod> videos = new ArrayList<>();
+            List<Vod> list = new ArrayList<>();
             if (searchResult.length() > 0) {
                 int ch = Math.min(searchResult.length(), 10);
                 for (int i = 0; i < ch; i++) {
                     String id = searchResult.getJSONObject(i).getString("link");
                     String name = searchResult.getJSONObject(i).getString("name");
                     String mark = searchResult.getJSONObject(i).getString("hit");
-                    videos.add(new Vod(id, name, vodPic, mark));
+                    list.add(new Vod(id, name, vodPic, mark));
                 }
             }
-            return Result.string(videos);
+            return Result.string(list);
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";

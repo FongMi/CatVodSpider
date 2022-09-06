@@ -77,19 +77,19 @@ public class Tangrenjie extends Spider {
             }
         }
         Element homeList = doc.select("div.cbox1").get(1);
-        Elements list = homeList.select("ul.vodlist li.vodlist_item");
-        List<Vod> videos = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            Element vod = list.get(i);
+        elements = homeList.select("ul.vodlist li.vodlist_item");
+        List<Vod> list = new ArrayList<>();
+        for (int i = 0; i < elements.size(); i++) {
+            Element vod = elements.get(i);
             String title = vod.selectFirst("a.vodlist_thumb").attr("title");
             String cover = siteUrl + vod.selectFirst("a.vodlist_thumb").attr("data-original");
             String remark = vod.select("span.pic_text b").text();
             Matcher matcher = regexVid.matcher(vod.selectFirst("a.vodlist_thumb").attr("href"));
             if (!matcher.find()) continue;
             String id = "1=" + matcher.group(1);
-            videos.add(new Vod(id, title, cover, remark));
+            list.add(new Vod(id, title, cover, remark));
         }
-        return Result.string(classes, videos, filterConfig);
+        return Result.string(classes, list, filterConfig);
     }
 
     @Override
@@ -110,21 +110,21 @@ public class Tangrenjie extends Spider {
         url.append("/page/").append(pg).append(".html");
         String html = OkHttpUtil.string(url.toString(), getHeaders());
         Document doc = Jsoup.parse(html);
-        List<Vod> videos = new ArrayList<>();
+        List<Vod> list = new ArrayList<>();
         if (!html.contains("没有找到您想要的结果哦")) {
-            Elements list = doc.select("ul.vodlist li.vodlist_item");
-            for (int i = 0; i < list.size(); i++) {
-                Element vod = list.get(i);
+            Elements elements = doc.select("ul.vodlist li.vodlist_item");
+            for (int i = 0; i < elements.size(); i++) {
+                Element vod = elements.get(i);
                 String title = vod.selectFirst("a.vodlist_thumb").attr("title");
                 String cover = siteUrl + vod.selectFirst("a.vodlist_thumb").attr("data-original");
                 String remark = vod.select("span.pic_text b").text();
                 Matcher matcher = regexVid.matcher(vod.selectFirst("a.vodlist_thumb").attr("href"));
                 if (!matcher.find()) continue;
                 String id = tid + "=" + matcher.group(1);
-                videos.add(new Vod(id, title, cover, remark));
+                list.add(new Vod(id, title, cover, remark));
             }
         }
-        return Result.string(videos);
+        return Result.string(list);
     }
 
     @Override
@@ -296,10 +296,10 @@ public class Tangrenjie extends Spider {
         String url = siteUrl + "/vod/search.html?wd=" + URLEncoder.encode(key) + "&submit=";
         String html = OkHttpUtil.string(url, getHeaders());
         Document doc = Jsoup.parse(html);
-        List<Vod> videos = new ArrayList<>();
-        Elements list = doc.select("li.searchlist_item");
-        for (int i = 0; i < list.size(); i++) {
-            Element vod = list.get(i);
+        List<Vod> list = new ArrayList<>();
+        Elements elements = doc.select("li.searchlist_item");
+        for (int i = 0; i < elements.size(); i++) {
+            Element vod = elements.get(i);
             String classes = vod.selectFirst("h4.vodlist_title > a >span").text();
             String tid = "";
             switch (classes) {
@@ -322,8 +322,8 @@ public class Tangrenjie extends Spider {
             Matcher matcher = regexVid.matcher(vod.selectFirst("a.vodlist_thumb").attr("href"));
             if (!matcher.find()) continue;
             String id = tid + "=" + matcher.group(1);
-            videos.add(new Vod(id, title, cover, remark));
+            list.add(new Vod(id, title, cover, remark));
         }
-        return Result.string(videos);
+        return Result.string(list);
     }
 }

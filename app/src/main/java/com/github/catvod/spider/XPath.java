@@ -53,7 +53,7 @@ public class XPath extends Spider {
 
     @Override
     public String homeContent(boolean filter) throws JSONException {
-        List<Vod> videos = new ArrayList<>();
+        List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
         if (rule.getCateManual().size() > 0) {
             Set<String> keys = rule.getCateManual().keySet();
@@ -90,10 +90,10 @@ public class XPath extends Spider {
                         SpiderDebug.log(e);
                     }
                 }
-                videos.add(new Vod(id, name, pic, mark));
+                list.add(new Vod(id, name, pic, mark));
             }
         }
-        return Result.string(classes, videos, rule.getFilter());
+        return Result.string(classes, list, rule.getFilter());
     }
 
     protected String categoryUrl(String tid, String pg, boolean filter, HashMap<String, String> extend) {
@@ -103,7 +103,7 @@ public class XPath extends Spider {
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
         String webUrl = categoryUrl(tid, pg, filter, extend);
-        List<Vod> videos = new ArrayList<>();
+        List<Vod> list = new ArrayList<>();
         JXDocument doc = JXDocument.create(fetch(webUrl));
         List<JXNode> vodNodes = doc.selN(rule.getCateVodNode());
         for (int i = 0; i < vodNodes.size(); i++) {
@@ -123,9 +123,9 @@ public class XPath extends Spider {
                     SpiderDebug.log(e);
                 }
             }
-            videos.add(new Vod(id, name, pic, mark));
+            list.add(new Vod(id, name, pic, mark));
         }
-        return Result.string(videos);
+        return Result.string(list);
     }
 
     @Override
@@ -268,7 +268,7 @@ public class XPath extends Spider {
         if (rule.getSearchUrl().isEmpty()) return "";
         String webUrl = rule.getSearchUrl().replace("{wd}", URLEncoder.encode(key));
         String webContent = fetch(webUrl);
-        List<Vod> videos = new ArrayList<>();
+        List<Vod> list = new ArrayList<>();
         if (rule.getSearchVodNode().startsWith("json:")) {
             String[] node = rule.getSearchVodNode().substring(5).split(">");
             JSONObject data = new JSONObject(webContent);
@@ -286,7 +286,7 @@ public class XPath extends Spider {
                         pic = Misc.fixUrl(webUrl, pic);
                         String mark = vod.optString(rule.getSearchVodMark()).trim();
                         mark = rule.getSearchVodMarkR(mark);
-                        videos.add(new Vod(id, name, pic, mark));
+                        list.add(new Vod(id, name, pic, mark));
                     }
                 } else {
                     data = data.getJSONObject(node[i]);
@@ -312,10 +312,10 @@ public class XPath extends Spider {
                         SpiderDebug.log(e);
                     }
                 }
-                videos.add(new Vod(id, name, pic, mark));
+                list.add(new Vod(id, name, pic, mark));
             }
         }
-        return Result.string(videos);
+        return Result.string(list);
     }
 
     protected void loadRuleExt(String json) {
