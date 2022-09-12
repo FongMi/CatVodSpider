@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 public class Bili extends Spider {
 
-    private final String url = "https://www.bilibili.com";
+    private static final String url = "https://www.bilibili.com";
     private HashMap<String, String> header;
     private JSONObject ext;
 

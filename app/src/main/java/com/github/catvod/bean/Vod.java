@@ -28,6 +28,8 @@ public class Vod {
     private String vodPlayFrom;
     @SerializedName("vod_play_url")
     private String vodPlayUrl;
+    @SerializedName("vod_tag")
+    private String vodTag;
 
     public Vod() {
     }
@@ -85,5 +87,9 @@ public class Vod {
 
     public void setVodPlayUrl(String vodPlayUrl) {
         this.vodPlayUrl = vodPlayUrl;
+    }
+
+    public void setVodTag(String vodTag) {
+        this.vodTag = vodTag;
     }
 }
