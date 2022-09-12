@@ -35,8 +35,8 @@ public class Alist extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        this.ext = new JSONObject();
         try {
+            ext = new JSONObject();
             if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
             if (isJson(extend)) parseJson(extend);
             else parseText(extend);
