@@ -80,8 +80,8 @@ public class Result {
     }
 
     public Result filters(JSONObject object) {
-        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {
-        }.getType();
+        if (object == null) return this;
+        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {}.getType();
         this.filters = new Gson().fromJson(object.toString(), listType);
         return this;
     }
