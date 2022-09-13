@@ -57,7 +57,7 @@ public class XPath extends Spider {
         List<Class> classes = new ArrayList<>();
         if (rule.getCateManual().size() > 0) {
             Set<String> keys = rule.getCateManual().keySet();
-            for (String k : keys) classes.add(new Class(k, rule.getCateManual().get(k)));
+            for (String k : keys) classes.add(new Class(rule.getCateManual().get(k), k));
         }
         String webUrl = rule.getHomeUrl();
         JXDocument doc = JXDocument.create(fetch(webUrl));
