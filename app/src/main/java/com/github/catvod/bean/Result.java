@@ -24,12 +24,12 @@ public class Result {
     private LinkedHashMap<String, List<Filter>> filters;
     @SerializedName("header")
     private String header;
-    @SerializedName("parse")
-    private Integer parse;
-    @SerializedName("jx")
-    private Integer jx;
     @SerializedName("url")
     private String url;
+    @SerializedName("parse")
+    private int parse;
+    @SerializedName("jx")
+    private int jx;
 
     public static String string(List<Class> classes, List<Vod> list, LinkedHashMap<String, List<Filter>> filters) {
         return Result.get().classes(classes).vod(list).filters(filters).string();
