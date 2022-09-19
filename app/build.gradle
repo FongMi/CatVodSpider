@@ -7,7 +7,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.github.catvod"
+        applicationId "com.github.catvod.demo"
         minSdk 21
         targetSdk 32
     }

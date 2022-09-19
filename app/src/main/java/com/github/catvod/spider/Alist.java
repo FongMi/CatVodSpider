@@ -19,9 +19,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class Alist extends Spider {
 
+    private Map<String, String> map;
     private JSONObject ext;
 
     private boolean isJson(String json) {
@@ -36,6 +38,7 @@ public class Alist extends Spider {
     @Override
     public void init(Context context, String extend) {
         try {
+            map = new HashMap<>();
             ext = new JSONObject();
             if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
             if (isJson(extend)) parseJson(extend);
@@ -65,6 +68,11 @@ public class Alist extends Spider {
         }
     }
 
+    private String getVersion(String name) throws Exception {
+        if (!map.containsKey(name)) map.put(name, OkHttpUtil.string(ext.getString(name) + "/api/public/settings").contains("v3.") ? "3" : "2");
+        return map.get(name);
+    }
+
     @Override
     public String homeContent(boolean filter) {
         List<Class> classes = new ArrayList<>();
@@ -81,15 +89,16 @@ public class Alist extends Spider {
         int index = tid.indexOf('$');
         String name = tid.substring(0, index);
         String path = tid.substring(index + 1);
-        String url = ext.getString(name) + "/api/public/path";
+        boolean v3 = getVersion(name).equals("3");
+        String url = ext.getString(name) + (v3 ? "/api/fs/list" : "/api/public/path");
         JSONObject params = new JSONObject();
         params.put("path", path);
         String response = OkHttpUtil.postJson(url, params.toString());
-        JSONArray array = new JSONObject(response).getJSONObject("data").getJSONArray("files");
+        JSONArray array = new JSONObject(response).getJSONObject("data").getJSONArray(v3 ? "content" : "files");
         List<Vod> list = new ArrayList<>();
         for (int i = 0; i < array.length(); ++i) {
             JSONObject o = array.getJSONObject(i);
-            String pic = o.getString("thumbnail");
+            String pic = o.getString(v3 ? "thumb" : "thumbnail");
             boolean folder = o.getInt("type") == 1;
             if (pic.isEmpty() && folder) pic = "http://img1.3png.com/281e284a670865a71d91515866552b5f172b.png";
             Vod vod = new Vod();
@@ -110,21 +119,21 @@ public class Alist extends Spider {
         int index = tid.indexOf('$');
         String name = tid.substring(0, index);
         String path = tid.substring(index + 1);
-        String url = this.ext.getString(name) + "/api/public/path";
+        boolean v3 = getVersion(name).equals("3");
+        String url = ext.getString(name) + (v3 ? "/api/fs/get" : "/api/public/path");
         JSONObject params = new JSONObject();
         params.put("path", path);
         String response = OkHttpUtil.postJson(url, params.toString());
-        JSONArray files = new JSONObject(response).getJSONObject("data").getJSONArray("files");
-        JSONObject o = files.getJSONObject(0);
-        url = o.getString("url");
+        JSONObject data = v3 ? new JSONObject(response).getJSONObject("data") : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0);
+        url = data.getString(v3 ? "raw_url" : "url");
         if (url.indexOf("//") == 0) url = "http:" + url;
         Vod vod = new Vod();
-        vod.setVodId(tid + "/" + o.getString("name"));
-        vod.setVodName(o.getString("name"));
-        vod.setVodPic(o.getString("thumbnail"));
-        vod.setVodTag(o.getInt("type") == 1 ? "folder" : "file");
+        vod.setVodId(tid + "/" + data.getString("name"));
+        vod.setVodName(data.getString("name"));
+        vod.setVodPic(data.getString(v3 ? "thumb" : "thumbnail"));
+        vod.setVodTag(data.getInt("type") == 1 ? "folder" : "file");
         vod.setVodPlayFrom("播放");
-        vod.setVodPlayUrl(o.getString("name") + "$" + url);
+        vod.setVodPlayUrl(data.getString("name") + "$" + url);
         return Result.string(vod);
     }
 
