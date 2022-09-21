@@ -26,6 +26,8 @@ public class Result {
     private String header;
     @SerializedName("url")
     private String url;
+    @SerializedName("sub")
+    private String sub;
     @SerializedName("parse")
     private int parse;
     @SerializedName("jx")
@@ -108,6 +110,11 @@ public class Result {
 
     public Result url(String url) {
         this.url = url;
+        return this;
+    }
+
+    public Result sub(String sub) {
+        this.sub = sub;
         return this;
     }
 

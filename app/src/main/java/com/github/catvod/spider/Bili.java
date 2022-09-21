@@ -68,7 +68,6 @@ public class Bili extends Spider {
         String duration = extend.containsKey("duration") ? extend.get("duration") : "0";
         String url = "https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=" + URLEncoder.encode(tid) + "&duration=" + duration + "&page=" + pg;
         JSONObject resp = new JSONObject(OkHttpUtil.string(url, header));
-        System.out.println(resp.toString());
         JSONArray result = resp.getJSONObject("data").getJSONArray("result");
         List<Vod> list = new ArrayList<>();
         for (int i = 0; i < result.length(); ++i) {

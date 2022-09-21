@@ -39,6 +39,10 @@ public class OkHttpUtil {
         }
     }
 
+    public static String stringNoRedirect(String url, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
+        return string(new OkHttpClient.Builder().dns(safeDns()).readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).followRedirects(false).followSslRedirects(false).retryOnConnectionFailure(true).sslSocketFactory(new SSLSocketFactoryCompat(SSLSocketFactoryCompat.trustAllCert), SSLSocketFactoryCompat.trustAllCert).build(), url, null, null, headerMap, respHeaderMap, OkHttpUtil.METHOD_GET);
+    }
+
     public static String string(OkHttpClient client, String url, String tag, Map<String, String> paramsMap, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap, String httpMethod) {
         OKCallBack.OKCallBackString callback = new OKCallBack.OKCallBackString() {
             @Override

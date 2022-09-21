@@ -117,6 +117,18 @@ public class Misc {
         }
     }
 
+    public static String substring(String text) {
+        return substring(text, 1);
+    }
+
+    public static String substring(String text, int num) {
+        if (text != null && text.length() > num) {
+            return text.substring(0, text.length() - num);
+        } else {
+            return text;
+        }
+    }
+
     public static String MD5(String src) {
         return MD5(src, StandardCharsets.UTF_8);
     }
