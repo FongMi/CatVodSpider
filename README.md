@@ -38,6 +38,28 @@ https://github.com/CatVodTVOfficial/CatVodTVSpider
          "quickSearch":1,
          "filterable":1,
          "jar":"https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+      },
+      {
+         "key":"阿里盤搜",
+         "name":"阿里盤搜",
+         "type":3,
+         "api":"csp_AliPanSou",
+         "searchable":1,
+         "quickSearch":1,
+         "filterable":1,
+         "ext":"<ali-token>",
+         "jar":"https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+      },
+      {
+         "key":"push_agent",
+         "name":"推送",
+         "type":3,
+         "api":"csp_Push",
+         "searchable":1,
+         "quickSearch":1,
+         "filterable":1,
+         "ext":"<ali-token>",
+         "jar":"https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
       }
    ]
 }
