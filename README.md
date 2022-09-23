@@ -47,7 +47,7 @@ https://github.com/CatVodTVOfficial/CatVodTVSpider
          "searchable":1,
          "quickSearch":1,
          "filterable":1,
-         "ext":"<ali-token>",
+         "ext":"your ali token",
          "jar":"https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
       },
       {
@@ -58,7 +58,7 @@ https://github.com/CatVodTVOfficial/CatVodTVSpider
          "searchable":1,
          "quickSearch":1,
          "filterable":1,
-         "ext":"<ali-token>",
+         "ext":"your ali token",
          "jar":"https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
       }
    ]
