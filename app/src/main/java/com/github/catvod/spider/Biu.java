@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * @author 小黄瓜
  */
-public class Biubiu extends Spider {
+public class Biu extends Spider {
 
     private JSONObject rule = null;
 
