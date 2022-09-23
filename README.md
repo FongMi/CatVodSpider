@@ -28,7 +28,7 @@ https://github.com/CatVodTVOfficial/CatVodTVSpider
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "alist.json",
+      "ext": "https://github.com/FongMi/CatVodSpider/raw/main/json/alist.json",
       "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
     },
     {
