@@ -6,7 +6,7 @@ public class SpiderDebug {
 
     private static final String TAG = SpiderDebug.class.getSimpleName();
 
-    public static void log(Exception e) {
+    public static void log(Throwable e) {
         Log.d(TAG, e.getMessage());
     }
 
