@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.github.catvod.crawler.SpiderDebug;
+import com.github.catvod.utils.Trans;
 
 public class Init {
 
@@ -32,6 +33,7 @@ public class Init {
     public static void init(Context context) {
         SpiderDebug.log("自定義爬蟲代碼載入成功！");
         get().app = ((Application) context);
+        Trans.init();
     }
 
     public static void show(String msg) {

@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Result {
 
@@ -84,7 +85,9 @@ public class Result {
     public Result filters(JSONObject object) {
         if (object == null) return this;
         Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {}.getType();
-        this.filters = new Gson().fromJson(object.toString(), listType);
+        LinkedHashMap<String, List<Filter>> filters = new Gson().fromJson(object.toString(), listType);
+        for (Map.Entry<String, List<Filter>> entry : filters.entrySet()) for (Filter filter : entry.getValue()) filter.trans();
+        this.filters = filters;
         return this;
     }
 
