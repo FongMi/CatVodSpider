@@ -66,6 +66,7 @@ public class Bili extends Spider {
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
         String duration = extend.containsKey("duration") ? extend.get("duration") : "0";
+        if (extend.containsKey("tid")) tid = tid + " " + extend.get("tid");
         String url = "https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=" + URLEncoder.encode(tid) + "&duration=" + duration + "&page=" + pg;
         JSONObject resp = new JSONObject(OkHttpUtil.string(url, header));
         JSONArray result = resp.getJSONObject("data").getJSONArray("result");
