@@ -87,7 +87,7 @@ public class Vod {
     }
 
     public void setVodPlayUrl(String vodPlayUrl) {
-        this.vodPlayUrl = vodPlayUrl;
+        this.vodPlayUrl = Trans.get(vodPlayUrl);
     }
 
     public void setVodTag(String vodTag) {
