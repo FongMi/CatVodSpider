@@ -19,13 +19,11 @@ import java.util.Objects;
 
 public class YiSo extends Spider {
 
-    private Context ctx;
     private Ali ali;
 
     @Override
     public void init(Context context, String extend) {
         ali = new Ali(extend);
-        ctx = context;
     }
 
     @Override
@@ -42,7 +40,7 @@ public class YiSo extends Spider {
     public String searchContent(String key, boolean quick) {
         String url = "https://yiso.fun/api/search?name=" + URLEncoder.encode(key) + "&from=ali";
         Map<String, String> result = new HashMap<>();
-        Misc.loadWebView(ctx, url, getWebViewClient(result));
+        Misc.loadWebView(url, getWebViewClient(result));
         while (!result.containsKey("json")) SystemClock.sleep(250);
         String json = JsonParser.parseString(Objects.requireNonNull(result.get("json"))).getAsJsonPrimitive().getAsString();
         return Result.string(Item.objectFrom(json).getData().getList());
