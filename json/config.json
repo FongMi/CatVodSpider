@@ -10,7 +10,8 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "https://github.com/FongMi/CatVodSpider/raw/main/json/bili.json"
+      "ext": "https://github.com/FongMi/CatVodSpider/raw/main/json/bili.json",
+      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
     },
     {
       "key": "AList",
@@ -20,7 +21,8 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "https://github.com/FongMi/CatVodSpider/raw/main/json/alist.json"
+      "ext": "https://github.com/FongMi/CatVodSpider/raw/main/json/alist.json",
+      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
     },
     {
       "key": "巴士",
@@ -29,7 +31,8 @@
       "api": "csp_Dm84",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 1
+      "filterable": 1,
+      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
     },
     {
       "key": "紙條",
@@ -39,7 +42,8 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "your ali token"
+      "ext": "your ali token",
+      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
     },
     {
       "key": "易搜",
@@ -49,7 +53,8 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "your ali token"
+      "ext": "your ali token",
+      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
     },
     {
       "key": "盤搜",
@@ -59,7 +64,8 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "your ali token"
+      "ext": "your ali token",
+      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
     },
     {
       "key": "push_agent",
@@ -69,7 +75,8 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "your ali token"
+      "ext": "your ali token",
+      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
     }
   ]
 }
