@@ -6,6 +6,4 @@ https://github.com/CatVodTVOfficial/CatVodTVSpider
 
 ### Usage
 
-[a relative link](/json/config.json)
-
-```
+[Config](/json/config.json)
