@@ -1,8 +1,7 @@
 package com.github.catvod.utils;
 
-import android.content.Context;
 import android.net.Uri;
-import android.webkit.WebSettings;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -139,16 +138,14 @@ public class Misc {
         }
     }
 
-    public static void loadWebView(Context context, String url, WebViewClient client) {
+    public static void loadWebView(String url, WebViewClient client) {
         Init.run(() -> {
-            WebView webView = new WebView(context);
-            webView.getSettings().setUseWideViewPort(true);
+            WebView webView = new WebView(Init.context());
             webView.getSettings().setDatabaseEnabled(true);
             webView.getSettings().setDomStorageEnabled(true);
             webView.getSettings().setJavaScriptEnabled(true);
-            webView.getSettings().setLoadWithOverviewMode(true);
-            webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
-            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(0, 0);
+            Init.getActivity().addContentView(webView, params);
             webView.setWebViewClient(client);
             webView.loadUrl(url);
         });
