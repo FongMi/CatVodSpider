@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class Alist extends Spider {
+public class AList extends Spider {
 
     private Map<String, String> map;
     private JSONObject ext;
