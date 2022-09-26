@@ -70,5 +70,6 @@
       "filterable": 1,
       "ext": "your ali token"
     }
-  ]
+  ],
+  "parse": []
 }
