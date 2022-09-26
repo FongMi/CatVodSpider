@@ -22,6 +22,8 @@ public class Proxy extends Spider {
                 return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes(StandardCharsets.UTF_8))};
             case "live":
                 return TxtSubscribe.load(new String(Base64.decode(params.get("ext"), Base64.DEFAULT | Base64.URL_SAFE | Base64.NO_WRAP), StandardCharsets.UTF_8));
+            case "ali":
+                return Ali.vod(params);
             default:
                 return null;
         }

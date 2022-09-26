@@ -1,9 +1,10 @@
 {
   "spider": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar",
+  "parses": [],
   "sites": [
     {
-      "key": "哔哩哔哩",
-      "name": "哔哩哔哩",
+      "key": "哔哩",
+      "name": "哔哩",
       "type": 3,
       "api": "csp_Bili",
       "searchable": 1,
@@ -12,10 +13,10 @@
       "ext": "https://github.com/FongMi/CatVodSpider/raw/main/json/bili.json"
     },
     {
-      "key": "Alist",
-      "name": "Alist",
+      "key": "AList",
+      "name": "AList",
       "type": 3,
-      "api": "csp_Alist",
+      "api": "csp_AList",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
@@ -70,6 +71,5 @@
       "filterable": 1,
       "ext": "your ali token"
     }
-  ],
-  "parses": []
+  ]
 }

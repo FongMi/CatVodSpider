@@ -1,8 +1,12 @@
 package com.github.catvod.utils;
 
 import android.net.Uri;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.RelativeLayout;
 
 import com.github.catvod.crawler.SpiderDebug;
+import com.github.catvod.spider.Init;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class Misc {
 
-    public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.62 Safari/537.36";
+    public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
     private static final Pattern SNIFFER = Pattern.compile("http((?!http).){20,}?\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg)\\?.*|http((?!http).){20,}\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg)|http((?!http).){20,}?\\/m3u8\\?pt=m3u8.*|http((?!http).)*?default\\.ixigua\\.com\\/.*|http((?!http).)*?cdn-tos[^\\?]*|http((?!http).)*?\\/obj\\/tos[^\\?]*|http.*?\\/player\\/m3u8play\\.php\\?url=.*|http.*?\\/player\\/.*?[pP]lay\\.php\\?url=.*|http.*?\\/playlist\\/m3u8\\/\\?vid=.*|http.*?\\.php\\?type=m3u8&.*|http.*?\\/download.aspx\\?.*|http.*?\\/api\\/up_api.php\\?.*|https.*?\\.66yk\\.cn.*|http((?!http).)*?netease\\.com\\/file\\/.*");
 
     public static boolean isVip(String url) {
@@ -45,8 +49,7 @@ public class Misc {
     }
 
     public static boolean isVideoFormat(String url) {
-        if (url.contains("=http") || url.contains("=https") || url.contains("=https%3a%2f") || url.contains("=http%3a%2f")) return false;
-        if (url.contains("cdn-tos") || url.contains(".js") || url.contains(".css") || url.contains(".ico")) return false;
+        if (url.contains("=http") || url.contains("=https") || url.contains("=https%3a%2f") || url.contains("=http%3a%2f") || url.contains(".js") || url.contains(".css")) return false;
         return SNIFFER.matcher(url).find();
     }
 
@@ -66,17 +69,16 @@ public class Misc {
     }
 
     public static JSONObject fixJsonVodHeader(JSONObject headers, String input, String url) throws JSONException {
-        if (headers == null)
-            headers = new JSONObject();
+        if (headers == null) headers = new JSONObject();
         if (input.contains("www.mgtv.com")) {
-            headers.put("Referer", " ");
-            headers.put("User-Agent", " Mozilla/5.0");
+            headers.put("Referer", "");
+            headers.put("User-Agent", "Mozilla/5.0");
         } else if (url.contains("titan.mgtv")) {
-            headers.put("Referer", " ");
-            headers.put("User-Agent", " Mozilla/5.0");
+            headers.put("Referer", "");
+            headers.put("User-Agent", "Mozilla/5.0");
         } else if (input.contains("bilibili")) {
-            headers.put("Referer", " https://www.bilibili.com/");
-            headers.put("User-Agent", " " + Misc.CHROME);
+            headers.put("Referer", "https://www.bilibili.com/");
+            headers.put("User-Agent", Misc.CHROME);
         }
         return headers;
     }
@@ -84,24 +86,14 @@ public class Misc {
     public static JSONObject jsonParse(String input, String json) throws JSONException {
         JSONObject jsonPlayData = new JSONObject(json);
         String url = jsonPlayData.getString("url");
-        if (url.startsWith("//")) {
-            url = "https:" + url;
-        }
-        if (!url.startsWith("http")) {
-            return null;
-        }
-        if (url.equals(input)) {
-            if (isVip(url) || !isVideoFormat(url)) return null;
-        }
+        if (url.startsWith("//")) url = "https:" + url;
+        if (!url.startsWith("http")) return null;
+        if (url.equals(input)) if (isVip(url) || !isVideoFormat(url)) return null;
         JSONObject headers = new JSONObject();
         String ua = jsonPlayData.optString("user-agent", "");
-        if (ua.trim().length() > 0) {
-            headers.put("User-Agent", " " + ua);
-        }
+        if (ua.trim().length() > 0) headers.put("User-Agent", ua);
         String referer = jsonPlayData.optString("referer", "");
-        if (referer.trim().length() > 0) {
-            headers.put("Referer", " " + referer);
-        }
+        if (referer.trim().length() > 0) headers.put("Referer", referer);
         headers = Misc.fixJsonVodHeader(headers, input, url);
         JSONObject taskResult = new JSONObject();
         taskResult.put("header", headers);
@@ -144,5 +136,23 @@ public class Misc {
         } catch (NoSuchAlgorithmException e) {
             return "";
         }
+    }
+
+    public static void loadWebView(String url) {
+        loadWebView(url, new WebViewClient());
+    }
+
+    public static void loadWebView(String url, WebViewClient client) {
+        Init.run(() -> {
+            WebView webView = new WebView(Init.context());
+            webView.getSettings().setDatabaseEnabled(true);
+            webView.getSettings().setDomStorageEnabled(true);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(client);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, 0);
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            Init.getActivity().addContentView(webView, params);
+            webView.loadUrl(url);
+        });
     }
 }
