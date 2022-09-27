@@ -42,6 +42,10 @@ public class Result {
         return Result.get().classes(classes).vod(list).filters(filters).string();
     }
 
+    public static String string(List<Class> classes, LinkedHashMap<String, List<Filter>> filters) {
+        return Result.get().classes(classes).filters(filters).string();
+    }
+
     public static String string(List<Class> classes, JSONObject filters) {
         return Result.get().classes(classes).filters(filters).string();
     }
