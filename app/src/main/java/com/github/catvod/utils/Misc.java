@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class Misc {
@@ -51,6 +52,33 @@ public class Misc {
     public static boolean isVideoFormat(String url) {
         if (url.contains("=http") || url.contains("=https") || url.contains("=https%3a%2f") || url.contains("=http%3a%2f") || url.contains(".js") || url.contains(".css")) return false;
         return SNIFFER.matcher(url).find();
+    }
+
+    public static boolean isSub(String ext) {
+        return ext.equals("srt") || ext.equals("ass") || ext.equals("ssa");
+    }
+
+    public static String getSubMimeType(String type) {
+        if (type.equals("srt")) return "application/x-subrip";
+        if (type.equals("ass") || type.equals("ssa")) return "text/x-ssa";
+        return "application/x-subrip";
+    }
+
+    public static String getSize(double size) {
+        if (size == 0) return "";
+        if (size > 1024 * 1024 * 1024 * 1024.0) {
+            size /= (1024 * 1024 * 1024 * 1024.0);
+            return String.format(Locale.getDefault(), "%.2f%s", size, "TB");
+        } else if (size > 1024 * 1024 * 1024.0) {
+            size /= (1024 * 1024 * 1024.0);
+            return String.format(Locale.getDefault(), "%.2f%s", size, "GB");
+        } else if (size > 1024 * 1024.0) {
+            size /= (1024 * 1024.0);
+            return String.format(Locale.getDefault(), "%.2f%s", size, "MB");
+        } else {
+            size /= 1024.0;
+            return String.format(Locale.getDefault(), "%.2f%s", size, "KB");
+        }
     }
 
     public static String fixUrl(String base, String src) {

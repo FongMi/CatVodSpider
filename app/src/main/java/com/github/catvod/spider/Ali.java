@@ -142,7 +142,7 @@ public class Ali {
                 name2id.put(name, shareId + "+" + shareToken + "+" + fileId);
                 continue;
             }
-            if (isSubFile(ext)) {
+            if (Misc.isSub(ext)) {
                 name = name.replace("." + ext, "");
                 if (!subMap.containsKey(name)) subMap.put(name, new ArrayList<>());
                 Objects.requireNonNull(subMap.get(name)).add(name + "@" + fileId + "@" + ext);
@@ -180,8 +180,9 @@ public class Ali {
         name = name.substring(0, name.lastIndexOf("."));
         List<String> subs = subMap.get(name);
         if (subs != null && subs.size() > 0) return combineSubs(subs);
-        for (Map.Entry<String, List<String>> entry : subMap.entrySet()) if (entry.getKey().contains(name)) return combineSubs(entry.getValue());
-        return "";
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, List<String>> entry : subMap.entrySet()) sb.append(combineSubs(entry.getValue()));
+        return sb.toString();
     }
 
     private String combineSubs(List<String> subs) {
@@ -196,20 +197,9 @@ public class Ali {
             if (!text.contains("@")) continue;
             String[] arr = text.split("@");
             String url = Proxy.getUrl() + "?do=ali&type=sub&share_id=" + shareId + "&share_token=" + shareToken + "&file_id=" + arr[1];
-            sb.append(arr[0]).append("#").append(getSubMimeType(arr[2])).append("#").append(url).append("$$$");
-            return Misc.substring(sb.toString(), 3);
+            sb.append(arr[0]).append("#").append(Misc.getSubMimeType(arr[2])).append("#").append(url).append("$$$");
         }
-        return "";
-    }
-
-    private boolean isSubFile(String ext) {
-        return ext.equals("srt") || ext.equals("ass") || ext.equals("ssa");
-    }
-
-    private String getSubMimeType(String type) {
-        if (type.equals("srt")) return "application/x-subrip";
-        if (type.equals("ass") || type.equals("ssa")) return "text/x-ssa";
-        return "application/x-subrip";
+        return Misc.substring(sb.toString(), 3);
     }
 
     private String getShareToken(String shareId) {
