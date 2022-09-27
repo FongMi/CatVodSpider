@@ -46,7 +46,7 @@ public class Paper extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        types = new ArrayList<>();
+        types = Arrays.asList("hyds", "rhds", "omds", "qtds", "hydy", "rhdy", "omdy", "qtdy", "hydm", "rhdm", "omdm", "jlp", "zyp", "jypx", "qtsp");
         ali = new Ali(extend);
     }
 
@@ -67,7 +67,6 @@ public class Paper extends Spider {
                 } else {
                     String value = td.select("a").attr("onclick").split("'")[1];
                     values.add(new Filter.Value(td.text(), value));
-                    types.add(value);
                 }
             }
         }
