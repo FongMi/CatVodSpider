@@ -12,7 +12,6 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -51,17 +50,17 @@ public class Paper extends Spider {
     }
 
     @Override
-    public String homeContent(boolean filter) throws JSONException {
+    public String homeContent(boolean filter) {
         Document doc = Jsoup.parse(OkHttpUtil.string("https://u.gitcafe.net/", getHeaders()));
         Elements trs = doc.select("table.tableizer-table > tbody > tr");
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         List<Class> classes = new ArrayList<>();
         for (Element tr : trs) {
-            if (tr.text().contains("音乐")) break;
             List<Filter.Value> values = new ArrayList<>();
             for (Element td : tr.select("td")) {
                 if (td.hasClass("tableizer-title")) {
                     String typeId = td.select("a").attr("href").replace("#", "");
+                    if (!types.contains(typeId)) continue;
                     classes.add(new Class(typeId, td.text()));
                     filters.put(typeId, Arrays.asList(new Filter("type", "類型", values)));
                 } else {
@@ -70,11 +69,16 @@ public class Paper extends Spider {
                 }
             }
         }
+        return Result.string(classes, filters);
+    }
+
+    @Override
+    public String homeVideoContent() throws Exception {
         List<Vod> list = new ArrayList<>();
         JSONObject homeData = new JSONObject(OkHttpUtil.string("https://gitcafe.net/alipaper/home.json", getHeaders()));
         List<Data> items = Data.arrayFrom(homeData.getJSONObject("info").getJSONArray("new").toString());
         for (Data item : items) if (types.contains(item.getCat())) list.add(item.getVod());
-        return Result.string(classes, list, filters);
+        return Result.string(list);
     }
 
     @Override
