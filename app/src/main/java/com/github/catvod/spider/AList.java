@@ -64,9 +64,17 @@ public class AList extends Spider {
         return map.get(name);
     }
 
+    private List<Filter> getFilter() {
+        List<Filter> items = new ArrayList<>();
+        items.add(new Filter("type", "排序類型", Arrays.asList(new Filter.Value("名稱", "name"), new Filter.Value("大小", "size"), new Filter.Value("修改時間", "date"))));
+        items.add(new Filter("order", "排序方式", Arrays.asList(new Filter.Value("⬆", "asc"), new Filter.Value("⬇", "desc"))));
+        return items;
+    }
+
     @Override
     public void init(Context context, String extend) {
         try {
+            sub = new HashMap<>();
             map = new HashMap<>();
             ext = new LinkedHashMap<>();
             if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
@@ -81,25 +89,26 @@ public class AList extends Spider {
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (String entry : ext.keySet()) classes.add(new Class(entry, entry, "1"));
-        for (Class item : classes) filters.put(item.getTypeId(), Arrays.asList(new Filter("type", "排序", Arrays.asList(new Filter.Value("名稱", "name"), new Filter.Value("大小", "size"), new Filter.Value("修改時間", "date")))));
+        for (Class item : classes) filters.put(item.getTypeId(), getFilter());
         return Result.string(classes, filters);
     }
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
-        String type = extend.containsKey("type") ? extend.get("type") : "";
+        String type = extend.containsKey("type") ? extend.get("type") : "name";
+        String order = extend.containsKey("order") ? extend.get("order") : "asc";
         List<Item> folders = new ArrayList<>();
         List<Item> files = new ArrayList<>();
         List<Vod> list = new ArrayList<>();
-        sub = new HashMap<>();
+        sub.clear();
         for (Item item : getList(tid)) {
             if (item.ignore()) continue;
             if (item.isSub()) addSub(tid, item);
             else if (item.isFolder()) folders.add(item);
             else files.add(item);
         }
-        Sorter.sort(type, folders);
-        Sorter.sort(type, files);
+        Sorter.sort(type, order, folders);
+        Sorter.sort(type, order, files);
         for (Item item : folders) list.add(item.getVod(tid));
         for (Item item : files) list.add(item.getVod(tid));
         return Result.string(list);
