@@ -51,7 +51,7 @@ public class Item {
     }
 
     public String getThumb() {
-        return thumb;
+        return TextUtils.isEmpty(thumb) ? "" : thumb;
     }
 
     public String getUrl() {
@@ -75,24 +75,17 @@ public class Item {
         return getType() == 1;
     }
 
-    public boolean isMedia() {
-        return getType() == 2 || getType() == 3 || getType() == 4 || getType() == 6;
-    }
-
-    public boolean isSub() {
-        return getType() == 5 && Misc.isSub(getExt());
-    }
-
-    public boolean ignore() {
-        return !isFolder() && !isMedia() && !isSub();
+    public boolean ignore(boolean v3) {
+        if (v3) return getType() == 0 || getType() == 4;
+        return getType() == 0 || getType() == 2 || getType() == 5;
     }
 
     public String getExt() {
         return getName().substring(getName().lastIndexOf(".") + 1);
     }
 
-    public String getVodId(String tid) {
-        return tid + "/" + getName();
+    public String getVodId(String id) {
+        return id + "/" + getName();
     }
 
     public String getPic() {
@@ -107,7 +100,7 @@ public class Item {
         return isFolder() ? "folder" : "file";
     }
 
-    public Vod getVod(String tid) {
-        return new Vod(getVodId(tid), getName(), getPic(), getRemark(), getVodTag());
+    public Vod getVod(String id) {
+        return new Vod(getVodId(id), getName(), getPic(), getRemark(), getVodTag());
     }
 }
