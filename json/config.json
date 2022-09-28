@@ -1,6 +1,5 @@
 {
   "spider": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar",
-  "parses": [],
   "sites": [
     {
       "key": "哔哩",
