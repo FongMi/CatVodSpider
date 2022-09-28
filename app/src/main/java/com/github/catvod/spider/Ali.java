@@ -28,15 +28,12 @@ import java.util.regex.Pattern;
 public class Ali {
 
     private final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
+    private final String refreshToken;
     private static String accessToken;
-    private String refreshToken;
 
     public Ali(String token) {
-        checkToken(token);
-    }
-
-    private void checkToken(String token) {
         if (TextUtils.isEmpty(token)) Init.show("尚未設定阿里Token");
+        if (token.startsWith("http")) token = OkHttpUtil.string(token);
         refreshToken = token;
     }
 
