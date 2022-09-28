@@ -1,7 +1,6 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +30,6 @@ import java.util.Objects;
 public class AList extends Spider {
 
     private LinkedHashMap<String, String> ext;
-    private Map<String, List<String>> sub;
     private Map<String, String> map;
 
     private boolean isJson(String json) {
@@ -59,9 +58,9 @@ public class AList extends Spider {
         }
     }
 
-    private String getVersion(String name) {
+    private boolean v3(String name) {
         if (!map.containsKey(name)) map.put(name, OkHttpUtil.string(ext.get(name) + "/api/public/settings").contains("v3.") ? "3" : "2");
-        return map.get(name);
+        return Objects.equals(map.get(name), "3");
     }
 
     private List<Filter> getFilter() {
@@ -74,7 +73,6 @@ public class AList extends Spider {
     @Override
     public void init(Context context, String extend) {
         try {
-            sub = new HashMap<>();
             map = new HashMap<>();
             ext = new LinkedHashMap<>();
             if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
@@ -100,11 +98,8 @@ public class AList extends Spider {
         List<Item> folders = new ArrayList<>();
         List<Item> files = new ArrayList<>();
         List<Vod> list = new ArrayList<>();
-        sub.clear();
-        for (Item item : getList(tid)) {
-            if (item.ignore()) continue;
-            if (item.isSub()) addSub(tid, item);
-            else if (item.isFolder()) folders.add(item);
+        for (Item item : getList(tid, true)) {
+            if (item.isFolder()) folders.add(item);
             else files.add(item);
         }
         Sorter.sort(type, order, folders);
@@ -116,15 +111,17 @@ public class AList extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        String tid = ids.get(0);
-        Item item = getDetail(tid);
+        String id = ids.get(0);
+        Item item = getDetail(id);
+        String path = id.substring(0, id.lastIndexOf("/"));
+        List<Item> parents = getList(path, false);
         Vod vod = new Vod();
-        vod.setVodId(item.getVodId(tid));
+        vod.setVodId(item.getVodId(id));
         vod.setVodName(item.getName());
         vod.setVodPic(item.getPic());
         vod.setVodTag(item.getVodTag());
         vod.setVodPlayFrom("播放");
-        vod.setVodPlayUrl(item.getName() + "$" + item.getUrl() + findSubs(item.getName()));
+        vod.setVodPlayUrl(item.getName() + "$" + item.getUrl() + findSubs(path, parents));
         return Result.string(vod);
     }
 
@@ -134,56 +131,42 @@ public class AList extends Spider {
         return Result.get().url(ids[0]).sub(getSub(ids)).string();
     }
 
-    private List<Item> getList(String tid) {
+    private List<Item> getList(String id, boolean filter) {
         try {
-            String key = tid.contains("/") ? tid.substring(0, tid.indexOf("/")) : tid;
-            String path = tid.contains("/") ? tid.substring(tid.indexOf("/") + 1) : "";
-            boolean v3 = getVersion(key).equals("3");
-            String url = ext.get(key) + (v3 ? "/api/fs/list" : "/api/public/path");
+            String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
+            String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
+            String url = ext.get(key) + (v3(key) ? "/api/fs/list" : "/api/public/path");
             JSONObject params = new JSONObject();
             params.put("path", path);
             String response = OkHttpUtil.postJson(url, params.toString());
-            String json = new JSONObject(response).getJSONObject("data").getJSONArray(v3 ? "content" : "files").toString();
-            return Item.arrayFrom(json);
+            String json = new JSONObject(response).getJSONObject("data").getJSONArray(v3(key) ? "content" : "files").toString();
+            List<Item> items = Item.arrayFrom(json);
+            Iterator<Item> iterator = items.iterator();
+            if (filter) while (iterator.hasNext()) if (iterator.next().ignore(v3(key))) iterator.remove();
+            return items;
         } catch (Exception e) {
             return Collections.emptyList();
         }
     }
 
-    private Item getDetail(String tid) {
+    private Item getDetail(String id) {
         try {
-            String key = tid.contains("/") ? tid.substring(0, tid.indexOf("/")) : tid;
-            String path = tid.contains("/") ? tid.substring(tid.indexOf("/") + 1) : "";
-            boolean v3 = getVersion(key).equals("3");
-            String url = ext.get(key) + (v3 ? "/api/fs/get" : "/api/public/path");
+            String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
+            String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
+            String url = ext.get(key) + (v3(key) ? "/api/fs/get" : "/api/public/path");
             JSONObject params = new JSONObject();
             params.put("path", path);
             String response = OkHttpUtil.postJson(url, params.toString());
-            String json = v3 ? new JSONObject(response).getJSONObject("data").toString() : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
+            String json = v3(key) ? new JSONObject(response).getJSONObject("data").toString() : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
             return Item.objectFrom(json);
         } catch (Exception e) {
             return new Item();
         }
     }
 
-    private void addSub(String tid, Item item) {
-        String name = item.getName().substring(0, item.getName().lastIndexOf("."));
-        if (!sub.containsKey(name)) sub.put(name, new ArrayList<>());
-        Objects.requireNonNull(sub.get(name)).add(item.getName() + "@" + item.getVodId(tid) + "@" + item.getExt());
-    }
-
-    private String findSubs(String name) {
-        name = name.substring(0, name.lastIndexOf("."));
-        List<String> subs = sub.get(name);
-        if (subs != null && subs.size() > 0) return combineSubs(subs);
+    private String findSubs(String path, List<Item> items) {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, List<String>> entry : sub.entrySet()) sb.append(combineSubs(entry.getValue()));
-        return sb.toString();
-    }
-
-    private String combineSubs(List<String> subs) {
-        StringBuilder sb = new StringBuilder();
-        for (String sub : subs) sb.append("+").append(sub);
+        for (Item item : items) if (Misc.isSub(item.getExt())) sb.append("+").append(item.getName()).append("@").append(Misc.getSubMimeType(item.getExt())).append("@").append(item.getVodId(path));
         return sb.toString();
     }
 
@@ -192,9 +175,7 @@ public class AList extends Spider {
         for (String text : ids) {
             if (!text.contains("@")) continue;
             String[] arr = text.split("@");
-            String url = getDetail(arr[1]).getUrl();
-            if (TextUtils.isEmpty(url)) continue;
-            sb.append(arr[0]).append("#").append(Misc.getSubMimeType(arr[2])).append("#").append(url).append("$$$");
+            sb.append(arr[0]).append("#").append(arr[1]).append("#").append(getDetail(arr[2]).getUrl()).append("$$$");
         }
         return Misc.substring(sb.toString(), 3);
     }
