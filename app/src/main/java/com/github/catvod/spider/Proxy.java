@@ -1,10 +1,7 @@
 package com.github.catvod.spider;
 
-import android.util.Base64;
-
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.live.TxtSubscribe;
 import com.github.catvod.net.OkHttpUtil;
 
 import java.io.ByteArrayInputStream;
@@ -20,8 +17,6 @@ public class Proxy extends Spider {
         switch (Objects.requireNonNull(params.get("do"))) {
             case "ck":
                 return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes(StandardCharsets.UTF_8))};
-            case "live":
-                return TxtSubscribe.load(new String(Base64.decode(params.get("ext"), Base64.DEFAULT | Base64.URL_SAFE | Base64.NO_WRAP), StandardCharsets.UTF_8));
             case "ali":
                 return Ali.vod(params);
             default:
