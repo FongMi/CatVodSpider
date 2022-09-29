@@ -32,6 +32,11 @@ public class Filter {
         @SerializedName("v")
         private String v;
 
+        public Value(String value) {
+            this.n = Trans.get(value);
+            this.v = value;
+        }
+
         public Value(String n, String v) {
             this.n = Trans.get(n);
             this.v = v;

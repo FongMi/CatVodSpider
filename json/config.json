@@ -1,5 +1,5 @@
 {
-  "spider": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar",
+  "spider": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar;md5;f56657fee19cd217607a458809c350b4",
   "sites": [
     {
       "key": "哔哩",
@@ -9,8 +9,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "https://github.com/FongMi/CatVodSpider/raw/main/json/bili.json",
-      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+      "ext": "https://github.com/FongMi/CatVodSpider/raw/main/json/bili.json"
     },
     {
       "key": "AList",
@@ -20,8 +19,16 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "https://github.com/FongMi/CatVodSpider/raw/main/json/alist.json",
-      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+      "ext": "https://github.com/FongMi/CatVodSpider/raw/main/json/alist.json"
+    },
+    {
+      "key": "櫻花",
+      "name": "櫻花",
+      "type": 3,
+      "api": "csp_Ying",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
     },
     {
       "key": "巴士",
@@ -30,18 +37,16 @@
       "api": "csp_Dm84",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 1,
-      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+      "filterable": 1
     },
     {
-      "key": "異世界",
-      "name": "異世界",
+      "key": "異界",
+      "name": "異界",
       "type": 3,
       "api": "csp_Ysj",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 1,
-      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+      "filterable": 1
     },
     {
       "key": "紙條",
@@ -51,8 +56,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "3865f0ab8f124688ad786a262af9b940",
-      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+      "ext": "3865f0ab8f124688ad786a262af9b940"
     },
     {
       "key": "易搜",
@@ -62,8 +66,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "3865f0ab8f124688ad786a262af9b940",
-      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+      "ext": "3865f0ab8f124688ad786a262af9b940"
     },
     {
       "key": "盤搜",
@@ -73,8 +76,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "3865f0ab8f124688ad786a262af9b940",
-      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+      "ext": "3865f0ab8f124688ad786a262af9b940"
     },
     {
       "key": "push_agent",
@@ -84,8 +86,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
-      "ext": "3865f0ab8f124688ad786a262af9b940",
-      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+      "ext": "3865f0ab8f124688ad786a262af9b940"
     }
   ]
 }

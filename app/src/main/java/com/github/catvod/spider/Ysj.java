@@ -38,7 +38,7 @@ public class Ysj extends Spider {
         return headers;
     }
 
-    private Filter addFilter(String name, String key, List<String> texts) {
+    private Filter getFilter(String name, String key, List<String> texts) {
         List<Filter.Value> values = new ArrayList<>();
         for (String text : texts) {
             if (text.isEmpty()) continue;
@@ -49,15 +49,15 @@ public class Ysj extends Spider {
 
     @Override
     public String homeContent(boolean filter) {
-        LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
+        List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
         List<Filter> array = new ArrayList<>();
-        List<Vod> list = new ArrayList<>();
+        LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         Document doc = Jsoup.parse(OkHttpUtil.string(homeUrl, getHeaders()));
-        array.add(addFilter("地區", "area", doc.select("div#hl03").select("a").eachText()));
-        array.add(addFilter("年份", "year", doc.select("div#hl04").select("a").eachText()));
-        array.add(addFilter("語言", "lang", doc.select("div#hl05").select("a").eachText()));
-        array.add(addFilter("字母", "letter", doc.select("div#hl06").select("a").eachText()));
+        array.add(getFilter("地區", "area", doc.select("div#hl03").select("a").eachText()));
+        array.add(getFilter("年份", "year", doc.select("div#hl04").select("a").eachText()));
+        array.add(getFilter("語言", "lang", doc.select("div#hl05").select("a").eachText()));
+        array.add(getFilter("字母", "letter", doc.select("div#hl06").select("a").eachText()));
         for (Element element : doc.select("div#hl02").select("a")) {
             String typeId = element.attr("href").split("/")[5];
             typeId = typeId.contains(".html") ? "" : typeId;
@@ -119,7 +119,7 @@ public class Ysj extends Spider {
         vod.setVodActor(actor);
         vod.setVodContent(content);
         vod.setVodDirector(director);
-        vod.setVodName(type);
+        vod.setTypeName(type);
 
         Map<String, String> sites = new LinkedHashMap<>();
         Elements sources = doc.select("div.play_source_tab > a");
