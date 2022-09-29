@@ -143,4 +143,11 @@ public class OkHttpUtil {
     public static void cancel(Object tag) {
         cancel(defaultClient(), tag);
     }
+
+    public static String getRedirectLocation(Map<String, List<String>> headers) {
+        if (headers == null) return null;
+        if (headers.containsKey("location")) return headers.get("location").get(0);
+        if (headers.containsKey("Location")) return headers.get("Location").get(0);
+        return null;
+    }
 }

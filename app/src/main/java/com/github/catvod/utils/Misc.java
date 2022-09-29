@@ -149,6 +149,11 @@ public class Misc {
         }
     }
 
+    public static String getVar(String data, String param) {
+        for (String var : data.split("var")) if (var.contains(param)) return var.split("'")[1];
+        return "";
+    }
+
     public static String MD5(String src) {
         return MD5(src, StandardCharsets.UTF_8);
     }
