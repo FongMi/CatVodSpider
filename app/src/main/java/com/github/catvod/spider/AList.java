@@ -11,6 +11,7 @@ import com.github.catvod.bean.alist.Sorter;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Trans;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
@@ -121,7 +122,7 @@ public class AList extends Spider {
         vod.setVodPic(item.getPic());
         vod.setVodTag(item.getVodTag());
         vod.setVodPlayFrom("播放");
-        vod.setVodPlayUrl(item.getName() + "$" + item.getUrl() + findSubs(path, parents));
+        vod.setVodPlayUrl(Trans.get(item.getName()) + "$" + item.getUrl() + findSubs(path, parents));
         return Result.string(vod);
     }
 
@@ -166,7 +167,7 @@ public class AList extends Spider {
 
     private String findSubs(String path, List<Item> items) {
         StringBuilder sb = new StringBuilder();
-        for (Item item : items) if (Misc.isSub(item.getExt())) sb.append("+").append(item.getName()).append("@").append(Misc.getSubMimeType(item.getExt())).append("@").append(item.getVodId(path));
+        for (Item item : items) if (Misc.isSub(item.getExt())) sb.append("+").append(Trans.get(item.getName())).append("@").append(Misc.getSubMimeType(item.getExt())).append("@").append(item.getVodId(path));
         return sb.toString();
     }
 
