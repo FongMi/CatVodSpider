@@ -236,7 +236,7 @@ public class Ali {
             JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
             Map<String, List<String>> respHeaders = new HashMap<>();
             OkHttpUtil.stringNoRedirect(getPreviewQuality(taskList), getHeaders(), respHeaders);
-            return respHeaders.get("location").get(0);
+            return OkHttpUtil.getRedirectLocation(respHeaders);
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -252,7 +252,7 @@ public class Ali {
             String url = new JSONObject(json).optString("download_url");
             Map<String, List<String>> respHeaders = new HashMap<>();
             OkHttpUtil.stringNoRedirect(url, getHeaders(), respHeaders);
-            return respHeaders.get("location").get(0);
+            return OkHttpUtil.getRedirectLocation(respHeaders);
         } catch (Exception e) {
             e.printStackTrace();
             return "";

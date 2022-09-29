@@ -35,6 +35,12 @@ public class Vod {
     public Vod() {
     }
 
+    public Vod(String vodId, String vodName, String vodPic) {
+        setVodId(vodId);
+        setVodName(vodName);
+        setVodPic(vodPic);
+    }
+
     public Vod(String vodId, String vodName, String vodPic, String vodRemarks) {
         setVodId(vodId);
         setVodName(vodName);

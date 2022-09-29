@@ -12,6 +12,33 @@
       "ext": "9T$https://drive.9t.ee#木偶$https://www.kugutsu.ml"
     },
     {
+      "key": "朱古力",
+      "name": "朱古力",
+      "type": 1,
+      "api": "csp_Pig",
+      "quickSearch": 1,
+      "searchable": 1,
+      "filterable": 1
+    },
+    {
+      "key": "Jable",
+      "name": "Jable",
+      "type": 1,
+      "api": "csp_Jable",
+      "quickSearch": 1,
+      "searchable": 1,
+      "filterable": 1
+    },
+    {
+      "key": "Supjav",
+      "name": "Supjav",
+      "type": 1,
+      "api": "csp_Supjav",
+      "quickSearch": 1,
+      "searchable": 1,
+      "filterable": 1
+    },
+    {
       "key": "madouse.la",
       "name": "成人01",
       "type": 1,
