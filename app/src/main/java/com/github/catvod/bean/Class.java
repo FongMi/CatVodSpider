@@ -24,6 +24,10 @@ public class Class {
         return items;
     }
 
+    public Class(String typeId) {
+        this(typeId, typeId);
+    }
+
     public Class(String typeId, String typeName) {
         this(typeId, typeName, "");
     }
