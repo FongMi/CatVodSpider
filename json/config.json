@@ -34,6 +34,16 @@
       "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
     },
     {
+      "key": "異世界",
+      "name": "異世界",
+      "type": 3,
+      "api": "csp_Ysj",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "jar": "https://github.com/FongMi/CatVodSpider/raw/main/jar/custom_spider.jar"
+    },
+    {
       "key": "紙條",
       "name": "紙條",
       "type": 3,
