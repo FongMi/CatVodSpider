@@ -6,6 +6,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Trans;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,7 +96,7 @@ public class Ali {
         List<String> playUrls = new ArrayList<>();
         List<String> names = new ArrayList<>(name2id.keySet());
         Collections.sort(names);
-        for (String name : names) playUrls.add(name + "$" + name2id.get(name) + findSubs(name, subMap));
+        for (String name : names) playUrls.add(Trans.get(name) + "$" + name2id.get(name) + findSubs(name, subMap));
         List<String> sourceUrls = new ArrayList<>();
         sourceUrls.add(TextUtils.join("#", playUrls));
         sourceUrls.add(TextUtils.join("#", playUrls));
@@ -194,7 +195,7 @@ public class Ali {
             if (!text.contains("@")) continue;
             String[] arr = text.split("@");
             String url = Proxy.getUrl() + "?do=ali&type=sub&share_id=" + shareId + "&share_token=" + shareToken + "&file_id=" + arr[1];
-            sb.append(arr[0]).append("#").append(Misc.getSubMimeType(arr[2])).append("#").append(url).append("$$$");
+            sb.append(Trans.get(arr[0])).append("#").append(Misc.getSubMimeType(arr[2])).append("#").append(url).append("$$$");
         }
         return Misc.substring(sb.toString(), 3);
     }

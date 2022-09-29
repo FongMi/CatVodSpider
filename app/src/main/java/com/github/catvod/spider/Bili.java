@@ -9,6 +9,7 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Trans;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -98,7 +99,7 @@ public class Bili extends Spider {
         for (int i = 0; i < pages.length(); ++i) {
             JSONObject page = pages.getJSONObject(i);
             String title = page.getString("part").replace("$", "_").replace("#", "_");
-            playlist.add(title + "$" + aid + "+ " + page.getLong("cid"));
+            playlist.add(Trans.get(title) + "$" + aid + "+ " + page.getLong("cid"));
         }
         Vod vod = new Vod();
         vod.setVodId(bvid);

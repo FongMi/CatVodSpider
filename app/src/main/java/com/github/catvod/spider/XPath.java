@@ -10,6 +10,7 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Trans;
 import com.github.catvod.xpath.XPathRule;
 
 import org.json.JSONArray;
@@ -233,7 +234,7 @@ public class XPath extends Spider {
                 name = rule.getDetailUrlNameR(name);
                 String id = urlNodes.get(j).selOne(rule.getDetailUrlId()).asString().trim();
                 id = rule.getDetailUrlIdR(id);
-                vodItems.add(name + "$" + id);
+                vodItems.add(Trans.get(name) + "$" + id);
             }
             if (vodItems.size() == 0 && playFrom.size() > i) {
                 playFrom.set(i, "");
@@ -249,10 +250,8 @@ public class XPath extends Spider {
         for (int i = playList.size() - 1; i >= 0; i--) {
             if (i >= playFrom.size()) playList.remove(i);
         }
-        String vod_play_from = TextUtils.join("$$$", playFrom);
-        String vod_play_url = TextUtils.join("$$$", playList);
-        vod.setVodPlayFrom(vod_play_from);
-        vod.setVodPlayUrl(vod_play_url);
+        vod.setVodPlayFrom(TextUtils.join("$$$", playFrom));
+        vod.setVodPlayUrl(TextUtils.join("$$$", playList));
         return Result.string(vod);
     }
 
