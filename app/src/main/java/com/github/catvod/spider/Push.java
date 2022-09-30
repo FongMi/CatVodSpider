@@ -31,7 +31,7 @@ public class Push extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        if (flag.contains("AliYun")) return ali.playerContent(flag, id);
+        if (flag.contains("畫")) return ali.playerContent(flag, id);
         if (flag.equals("官源")) return Result.get().parse().jx().url(id).string();
         if (flag.equals("直連")) return Result.get().url(id).string();
         return Result.get().parse().url(id).string();

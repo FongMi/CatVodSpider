@@ -1,6 +1,15 @@
 {
-  "spider": "https://raw.githubusercontents.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;ff678226422bf7377f15b573bb0ee0e0",
+  "spider": "https://raw.githubusercontents.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;debe17d2daafb0cc953ddb0034e1fa12",
   "sites": [
+    {
+      "key": "AList",
+      "name": "AList",
+      "type": 3,
+      "api": "csp_AList",
+      "searchable": 1,
+      "quickSearch": 1,
+      "ext": "https://raw.githubusercontents.com/FongMi/CatVodSpider/main/json/alist.json"
+    },
     {
       "key": "哔哩",
       "name": "哔哩",
@@ -11,13 +20,62 @@
       "ext": "https://raw.githubusercontents.com/FongMi/CatVodSpider/main/json/bili.json"
     },
     {
-      "key": "AList",
-      "name": "AList",
+      "key": "泥巴",
+      "name": "泥巴",
       "type": 3,
-      "api": "csp_AList",
+      "api": "csp_Nbys",
+      "searchable": 1,
+      "filterable": 1
+    },
+    {
+      "key": "快播",
+      "name": "快播",
+      "type": 1,
+      "api": "https://www.kuaibozy.com/api.php/provide/vod/",
       "searchable": 1,
       "quickSearch": 1,
-      "ext": "https://raw.githubusercontents.com/FongMi/CatVodSpider/main/json/alist.json"
+      "filterable": 0,
+      "categories": [
+        "动漫",
+        "国产剧",
+        "日韩剧",
+        "港台剧",
+        "欧美剧",
+        "泰剧",
+        "动作片",
+        "喜剧片",
+        "爱情片",
+        "科幻片",
+        "恐怖片",
+        "剧情片",
+        "战争片",
+        "纪录片",
+        "综艺"
+      ]
+    },
+    {
+      "key": "百度",
+      "name": "百度",
+      "type": 1,
+      "api": "https://api.apibdzy.com/api.php/provide/vod?ac=list",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "国产动漫",
+        "日韩动漫",
+        "大陆剧",
+        "欧美剧",
+        "韩剧",
+        "日剧",
+        "动作片",
+        "喜剧片",
+        "爱情片",
+        "科幻片",
+        "恐怖片",
+        "剧情片",
+        "战争片"
+      ]
     },
     {
       "key": "櫻花",

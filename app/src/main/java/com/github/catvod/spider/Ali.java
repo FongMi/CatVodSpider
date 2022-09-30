@@ -33,7 +33,7 @@ public class Ali {
     private static String accessToken;
 
     public Ali(String token) {
-        if (TextUtils.isEmpty(token)) Init.show("尚未設定阿里Token");
+        if (TextUtils.isEmpty(token)) Init.show("尚未設定 Token");
         if (token.startsWith("http")) token = OkHttpUtil.string(token);
         refreshToken = token;
     }
@@ -75,7 +75,7 @@ public class Ali {
         String sub = getSub(shareId, shareToken, ids);
         refreshAccessToken();
         if (TextUtils.isEmpty(accessToken)) return "";
-        if (flag.contains("原畫")) {
+        if (flag.equals("原畫")) {
             return Result.get().url(getDownloadUrl(shareId, shareToken, fileId)).sub(sub).header(getHeaders()).string();
         } else {
             return Result.get().url(getPreviewUrl(shareId, shareToken, fileId)).sub(sub).header(getHeaders()).string();
@@ -106,7 +106,7 @@ public class Ali {
         vod.setVodPic(object.getString("avatar"));
         vod.setVodName(object.getString("share_name"));
         vod.setVodPlayUrl(TextUtils.join("$$$", sourceUrls));
-        vod.setVodPlayFrom("AliYun$$$AliYun原畫");
+        vod.setVodPlayFrom("原畫$$$普畫");
         vod.setTypeName("阿里雲盤");
         return vod;
     }
@@ -169,7 +169,7 @@ public class Ali {
             JSONObject object = new JSONObject(post("token/refresh", body));
             accessToken = object.getString("token_type") + " " + object.getString("access_token");
         } catch (JSONException e) {
-            Init.show("阿里Token已失效");
+            Init.show("Token 已失效");
             e.printStackTrace();
         }
     }
