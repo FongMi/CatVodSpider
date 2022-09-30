@@ -2,7 +2,7 @@
   "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;dc15e22025ea87f5fdfad864e3b99529",
   "sites": [
     {
-      "key": "AList",
+      "key": "762fba5d3480288f49d4e2547786aa37",
       "name": "AList",
       "type": 3,
       "api": "csp_AList",
@@ -11,7 +11,7 @@
       "ext": "9T$https://drive.9t.ee#木偶$https://www.kugutsu.ml"
     },
     {
-      "key": "泥巴",
+      "key": "7cdad36aedaa6fd510b47588d98a9dca",
       "name": "泥巴",
       "type": 3,
       "api": "csp_Nbys",
