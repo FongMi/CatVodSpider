@@ -6,4 +6,4 @@ https://github.com/CatVodTVOfficial/CatVodTVSpider
 
 ### Usage
 
-[https://github.com/FongMi/CatVodSpider/raw/main/json/config.json](https://github.com/FongMi/CatVodSpider/raw/main/json/config.json)
+[https://fongmi.page.link/cat](https://fongmi.page.link/cat)
