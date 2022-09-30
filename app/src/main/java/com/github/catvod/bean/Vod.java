@@ -64,10 +64,6 @@ public class Vod {
         this.vodId = vodId;
     }
 
-    public String getVodName() {
-        return vodName;
-    }
-
     public void setVodName(String vodName) {
         this.vodName = Trans.get(vodName);
     }
