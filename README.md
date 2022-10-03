@@ -6,5 +6,6 @@ https://github.com/CatVodTVOfficial/CatVodTVSpider
 
 ### Usage
 
-[https://fongmi.page.link/cat](https://fongmi.page.link/cat)  
-[https://raw.iqiq.io/FongMi/CatVodSpider/main/json/config.json](https://raw.iqiq.io/FongMi/CatVodSpider/main/json/config.json)
+1. [iqiq](https://raw.iqiq.io/FongMi/CatVodSpider/main/json/config.json)  
+2. [ghproxy](https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/config.json)
+3. [https://fongmi.page.link/cat](https://fongmi.page.link/cat)  
