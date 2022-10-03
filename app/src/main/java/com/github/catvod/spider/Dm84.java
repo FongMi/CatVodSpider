@@ -16,6 +16,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -90,7 +91,7 @@ public class Dm84 extends Spider {
         if (extend.get("year") == null) extend.put("year", "");
         if (extend.get("by") == null) extend.put("by", "time");
         String by = extend.get("by");
-        String type = Misc.encode(extend.get("type"));
+        String type = URLEncoder.encode(extend.get("type"));
         String year = extend.get("year");
         String target = siteUrl + String.format("/show-%s--%s-%s--%s-%s.html", tid, by, type, year, pg);
         Document doc = Jsoup.parse(OkHttpUtil.string(target, getHeaders()));
