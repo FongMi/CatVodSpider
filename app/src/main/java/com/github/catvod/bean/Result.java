@@ -96,6 +96,7 @@ public class Result {
     }
 
     public Result header(HashMap<String, String> header) {
+        if (header.isEmpty()) return this;
         this.header = new Gson().toJson(header);
         return this;
     }

@@ -250,6 +250,10 @@ public class XPathRule {
      * 播放解析調用ua
      */
     private String playUa;
+    /**
+     * 播放解析調用referer
+     */
+    private String playReferer;
 
     /**
      * 搜尋頁地址
@@ -391,6 +395,7 @@ public class XPathRule {
             rule.dtUrlNameR = getPattern(jsonObj, "dtUrlNameR");
             rule.playUrl = jsonObj.optString("playUrl");
             rule.playUa = jsonObj.optString("playUa");
+            rule.playReferer = jsonObj.optString("playReferer");
             rule.searchUrl = jsonObj.optString("searchUrl");
             rule.scVodNode = jsonObj.optString("scVodNode").trim();
             rule.scVodName = jsonObj.optString("scVodName").trim();
@@ -642,6 +647,10 @@ public class XPathRule {
 
     public String getPlayUa() {
         return playUa;
+    }
+
+    public String getPlayReferer() {
+        return playReferer;
     }
 
     public String getSearchUrl() {
