@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.bean.ali.Item;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
@@ -92,7 +93,7 @@ public class Ali {
         JSONObject object = new JSONObject(json);
         Map<String, String> name2id = new HashMap<>();
         Map<String, List<String>> subMap = new HashMap<>();
-        listFiles(0, name2id, subMap, shareId, shareToken, getParentFileId(fileId, object));
+        listFiles(new Item(getParentFileId(fileId, object)), name2id, subMap, shareId, shareToken);
         List<String> playUrls = new ArrayList<>();
         List<String> names = new ArrayList<>(name2id.keySet());
         Collections.sort(names);
@@ -111,12 +112,12 @@ public class Ali {
         return vod;
     }
 
-    private void listFiles(int level, Map<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken, String parentFileId) throws Exception {
+    private void listFiles(Item folder, Map<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken) throws Exception {
         JSONObject body = new JSONObject();
         body.put("marker", "");
         body.put("limit", 200);
         body.put("share_id", shareId);
-        body.put("parent_file_id", parentFileId);
+        body.put("parent_file_id", folder.getId());
         body.put("order_by", "updated_at");
         body.put("order_direction", "DESC");
         body.put("image_url_process", "image/resize,w_1920/format,jpeg");
@@ -124,7 +125,6 @@ public class Ali {
         body.put("video_thumbnail_process", "video/snapshot,t_1000,f_jpg,ar_auto,w_300");
         String json = post("adrive/v3/file/list", body, shareToken);
         JSONArray items = new JSONObject(json).getJSONArray("items");
-        List<String> folders = new ArrayList<>();
         for (int j = 0; j < items.length(); ++j) {
             JSONObject item = items.getJSONObject(j);
             String type = item.optString("type");
@@ -133,11 +133,11 @@ public class Ali {
             String category = item.optString("category", "");
             String ext = item.optString("file_extension", "");
             if (type.equals("folder")) {
-                folders.add(fileId);
+                listFiles(new Item(fileId, name), name2id, subMap, shareId, shareToken);
                 continue;
             }
             if (category.equals("video")) {
-                name2id.put(name, shareId + "+" + shareToken + "+" + fileId);
+                name2id.put(folder.getName(name), shareId + "+" + shareToken + "+" + fileId);
                 continue;
             }
             if (Misc.isSub(ext)) {
@@ -145,10 +145,6 @@ public class Ali {
                 if (!subMap.containsKey(name)) subMap.put(name, new ArrayList<>());
                 Objects.requireNonNull(subMap.get(name)).add(name + "@" + fileId + "@" + ext);
             }
-        }
-        for (String folder : folders) {
-            if (level == 2) break;
-            listFiles(++level, name2id, subMap, shareId, shareToken, folder);
         }
     }
 
@@ -248,6 +244,7 @@ public class Ali {
             JSONObject body = new JSONObject();
             body.put("file_id", fileId);
             body.put("share_id", shareId);
+            body.put("expire_sec", 600);
             String json = post("v2/file/get_share_link_download_url", body, shareToken);
             String url = new JSONObject(json).optString("download_url");
             Map<String, List<String>> respHeaders = new HashMap<>();
