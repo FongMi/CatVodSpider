@@ -259,7 +259,10 @@ public class XPath extends Spider {
     public String playerContent(String flag, String id, List<String> vipFlags) {
         String webUrl = rule.getPlayUrl().isEmpty() ? id : rule.getPlayUrl().replace("{playUrl}", id);
         SpiderDebug.log(webUrl);
-        return Result.get().parse().url(webUrl).toString();
+        HashMap<String, String> headers = new HashMap<>();
+        if (rule.getPlayUa().length() > 0) headers.put("User-Agent", rule.getPlayUa());
+        if (rule.getPlayReferer().length() > 0) headers.put("Referer", rule.getPlayReferer());
+        return Result.get().parse().url(webUrl).header(headers).string();
     }
 
     @Override
