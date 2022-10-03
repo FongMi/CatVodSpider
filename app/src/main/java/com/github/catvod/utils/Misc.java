@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigInteger;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -127,14 +126,6 @@ public class Misc {
         taskResult.put("header", headers);
         taskResult.put("url", url);
         return taskResult;
-    }
-
-    public static String encode(String s) {
-        try {
-            return URLEncoder.encode(s, "UTF-8");
-        } catch (Exception e) {
-            return "";
-        }
     }
 
     public static String substring(String text) {

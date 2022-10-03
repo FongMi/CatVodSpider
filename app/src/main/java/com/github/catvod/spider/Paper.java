@@ -7,7 +7,6 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.paper.Data;
-import com.github.catvod.bean.paper.Item;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
@@ -23,24 +22,21 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ColaMint & FongMi
  */
 public class Paper extends Spider {
 
+    private final String URL = "https://gitcafe.net/alipaper/";
     private List<String> types;
-    private List<Data> all;
     private Ali ali;
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Misc.CHROME);
         return headers;
-    }
-
-    private List<Data> getAll() {
-        return all = all != null ? all : Item.objectFrom(OkHttpUtil.string("https://gitcafe.net/alipaper/all.json", getHeaders())).getData();
     }
 
     @Override
@@ -51,7 +47,7 @@ public class Paper extends Spider {
 
     @Override
     public String homeContent(boolean filter) {
-        Document doc = Jsoup.parse(OkHttpUtil.string("https://u.gitcafe.net/", getHeaders()));
+        Document doc = Jsoup.parse(OkHttpUtil.string(URL, getHeaders()));
         Elements trs = doc.select("table.tableizer-table > tbody > tr");
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         List<Class> classes = new ArrayList<>();
@@ -75,7 +71,7 @@ public class Paper extends Spider {
     @Override
     public String homeVideoContent() throws Exception {
         List<Vod> list = new ArrayList<>();
-        JSONObject homeData = new JSONObject(OkHttpUtil.string("https://gitcafe.net/alipaper/home.json", getHeaders()));
+        JSONObject homeData = new JSONObject(OkHttpUtil.string(URL + "home.json", getHeaders()));
         List<Data> items = Data.arrayFrom(homeData.getJSONObject("info").getJSONArray("new").toString());
         for (Data item : items) if (types.contains(item.getCat())) list.add(item.getVod());
         return Result.string(list);
@@ -85,7 +81,7 @@ public class Paper extends Spider {
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
         List<Vod> list = new ArrayList<>();
         String type = extend.containsKey("type") ? extend.get("type") : tid;
-        List<Data> items = Data.arrayFrom(OkHttpUtil.string("https://gitcafe.net/alipaper/data/" + type + ".json", getHeaders()));
+        List<Data> items = Data.arrayFrom(OkHttpUtil.string(URL + "data/" + type + ".json", getHeaders()));
         for (Data item : items) list.add(item.getVod());
         return Result.string(list);
     }
@@ -98,7 +94,11 @@ public class Paper extends Spider {
     @Override
     public String searchContent(String key, boolean quick) {
         List<Vod> list = new ArrayList<>();
-        for (Data item : getAll()) if (types.contains(item.getCat()) && item.getTitle().contains(key)) list.add(item.getVod());
+        Map<String, String> params = new HashMap<>();
+        params.put("action", "search");
+        params.put("keyword", key);
+        String result = OkHttpUtil.post("https://gitcafe.net/tool/alipaper/", params, getHeaders());
+        for (Data item : Data.arrayFrom(result)) if (types.contains(item.getCat()) && item.getTitle().contains(key)) list.add(item.getVod());
         return Result.string(list);
     }
 

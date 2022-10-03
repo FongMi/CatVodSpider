@@ -1,5 +1,5 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;dc15e22025ea87f5fdfad864e3b99529",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;5c71cb0dd237522712e08afea49d8cf1",
   "sites": [
     {
       "key": "AList",
