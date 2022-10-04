@@ -16,8 +16,8 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,11 +54,13 @@ public class Ali {
     }
 
     private String post(String url, JSONObject body) {
-        return OkHttpUtil.postJson("https://api.aliyundrive.com/" + url, body.toString(), getHeaders());
+        url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
+        return OkHttpUtil.postJson(url, body.toString(), getHeaders());
     }
 
     private static String post(String url, JSONObject body, String shareToken) {
-        return OkHttpUtil.postJson("https://api.aliyundrive.com/" + url, body.toString(), getHeaders(shareToken));
+        url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
+        return OkHttpUtil.postJson(url, body.toString(), getHeaders(shareToken));
     }
 
     public String detailContent(List<String> ids) throws Exception {
@@ -91,12 +93,11 @@ public class Ali {
         body.put("share_id", shareId);
         String json = post("adrive/v3/share_link/get_share_by_anonymous", body);
         JSONObject object = new JSONObject(json);
-        Map<String, String> name2id = new HashMap<>();
+        LinkedHashMap<String, String> name2id = new LinkedHashMap<>();
         Map<String, List<String>> subMap = new HashMap<>();
         listFiles(new Item(getParentFileId(fileId, object)), name2id, subMap, shareId, shareToken);
         List<String> playUrls = new ArrayList<>();
         List<String> names = new ArrayList<>(name2id.keySet());
-        Collections.sort(names);
         for (String name : names) playUrls.add(Trans.get(name) + "$" + name2id.get(name) + findSubs(name, subMap));
         List<String> sourceUrls = new ArrayList<>();
         sourceUrls.add(TextUtils.join("#", playUrls));
@@ -112,17 +113,12 @@ public class Ali {
         return vod;
     }
 
-    private void listFiles(Item folder, Map<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken) throws Exception {
+    private void listFiles(Item folder, LinkedHashMap<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken) throws Exception {
         JSONObject body = new JSONObject();
-        body.put("marker", "");
-        body.put("limit", 200);
         body.put("share_id", shareId);
         body.put("parent_file_id", folder.getId());
-        body.put("order_by", "updated_at");
-        body.put("order_direction", "DESC");
-        body.put("image_url_process", "image/resize,w_1920/format,jpeg");
-        body.put("image_thumbnail_process", "image/resize,w_160/format,jpeg");
-        body.put("video_thumbnail_process", "video/snapshot,t_1000,f_jpg,ar_auto,w_300");
+        body.put("order_by", "name");
+        body.put("order_direction", "ASC");
         String json = post("adrive/v3/file/list", body, shareToken);
         JSONArray items = new JSONObject(json).getJSONArray("items");
         for (int j = 0; j < items.length(); ++j) {
@@ -162,7 +158,8 @@ public class Ali {
         try {
             JSONObject body = new JSONObject();
             body.put("refresh_token", refreshToken);
-            JSONObject object = new JSONObject(post("token/refresh", body));
+            body.put("grant_type", "refresh_token");
+            JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
             accessToken = object.getString("token_type") + " " + object.getString("access_token");
         } catch (JSONException e) {
             Init.show("Token 已失效");
