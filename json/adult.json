@@ -1,5 +1,5 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;f491cfb7367a7dcc57bbc7a484614a24",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;0555de475e5d35fba55d58abb5c4568e",
   "sites": [
     {
       "key": "AList",
@@ -31,6 +31,14 @@
       "name": "Jable",
       "type": 3,
       "api": "csp_Jable",
+      "searchable": 1,
+      "filterable": 1
+    },
+    {
+      "key": "MissAV",
+      "name": "MissAV",
+      "type": 3,
+      "api": "csp_Miss",
       "searchable": 1,
       "filterable": 1
     },

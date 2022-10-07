@@ -32,7 +32,7 @@ public class Eighteen extends Spider {
             String typeName = a.text();
             String typeId = a.attr("href").replace(url, "");
             if (!typeId.contains("random/all/")) continue;
-            if (typeName.contains("18H漫畫")) break;
+            if (typeName.contains("18H")) break;
             classes.add(new Class(typeId, typeName));
         }
         for (Element div : doc.select("div.post")) {
