@@ -98,7 +98,7 @@ public class Eighteen extends Spider {
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         HashMap<String, String> result = new HashMap<>();
         Misc.loadWebView(url + id, getClient(result));
-        while (result.isEmpty()) SystemClock.sleep(250);
+        while (result.isEmpty()) SystemClock.sleep(10);
         return Result.get().url(result.get("url")).string();
     }
 
