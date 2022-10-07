@@ -16,6 +16,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -25,26 +27,8 @@ public class Misc {
     private static final Pattern SNIFFER = Pattern.compile("http((?!http).){20,}?\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg)\\?.*|http((?!http).){20,}\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg)|http((?!http).){20,}?\\/m3u8\\?pt=m3u8.*|http((?!http).)*?default\\.ixigua\\.com\\/.*|http((?!http).)*?cdn-tos[^\\?]*|http((?!http).)*?\\/obj\\/tos[^\\?]*|http.*?\\/player\\/m3u8play\\.php\\?url=.*|http.*?\\/player\\/.*?[pP]lay\\.php\\?url=.*|http.*?\\/playlist\\/m3u8\\/\\?vid=.*|http.*?\\.php\\?type=m3u8&.*|http.*?\\/download.aspx\\?.*|http.*?\\/api\\/up_api.php\\?.*|https.*?\\.66yk\\.cn.*|http((?!http).)*?netease\\.com\\/file\\/.*");
 
     public static boolean isVip(String url) {
-        try {
-            boolean isVip = false;
-            String host = Uri.parse(url).getHost();
-            String[] vipWebsites = new String[]{"iqiyi.com", "v.qq.com", "youku.com", "le.com", "tudou.com", "mgtv.com", "sohu.com", "acfun.cn", "bilibili.com", "baofeng.com", "pptv.com"};
-            for (String vipWebsite : vipWebsites) {
-                if (host.contains(vipWebsite)) {
-                    if ("iqiyi.com".equals(vipWebsite)) {
-                        if (url.contains("iqiyi.com/a_") || url.contains("iqiyi.com/w_") || url.contains("iqiyi.com/v_")) {
-                            isVip = true;
-                            break;
-                        }
-                    } else {
-                        isVip = true;
-                        break;
-                    }
-                }
-            }
-            return isVip;
-        } catch (Exception ignored) {
-        }
+        List<String> hosts = Arrays.asList("iqiyi.com", "v.qq.com", "youku.com", "le.com", "tudou.com", "mgtv.com", "sohu.com", "acfun.cn", "bilibili.com", "baofeng.com", "pptv.com");
+        for (String host : hosts) if (url.contains(host)) return true;
         return false;
     }
 
