@@ -28,7 +28,7 @@ public class Doll extends Spider {
         List<Class> classes = new ArrayList<>();
         List<Vod> list = new ArrayList<>();
         Document doc = Jsoup.parse(OkHttpUtil.string(url));
-        for (Element a : doc.select("ul#side-menu > li > a")) {
+        for (Element a : doc.select("ul#side-menu").get(0).select("li > a")) {
             String typeName = a.text();
             String typeId = a.attr("href").replace(url, "");
             classes.add(new Class(typeId, typeName));
