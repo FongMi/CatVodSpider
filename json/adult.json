@@ -19,10 +19,10 @@
       "filterable": 1
     },
     {
-      "key": "朱古力",
-      "name": "朱古力",
+      "key": "18AV",
+      "name": "18AV",
       "type": 3,
-      "api": "csp_Pig",
+      "api": "csp_Eighteen",
       "searchable": 1,
       "filterable": 1
     },
@@ -43,10 +43,18 @@
       "filterable": 1
     },
     {
-      "key": "18AV",
-      "name": "18AV",
+      "key": "Supjav",
+      "name": "Supjav",
       "type": 3,
-      "api": "csp_Eighteen",
+      "api": "csp_Supjav",
+      "searchable": 1,
+      "filterable": 1
+    },
+    {
+      "key": "朱古力",
+      "name": "朱古力",
+      "type": 3,
+      "api": "csp_Pig",
       "searchable": 1,
       "filterable": 1
     },
@@ -55,14 +63,6 @@
       "name": "玩偶姐姐",
       "type": 3,
       "api": "csp_Doll",
-      "searchable": 1,
-      "filterable": 1
-    },
-    {
-      "key": "Supjav",
-      "name": "Supjav",
-      "type": 3,
-      "api": "csp_Supjav",
       "searchable": 1,
       "filterable": 1
     },
