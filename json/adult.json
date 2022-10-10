@@ -27,8 +27,8 @@
       "filterable": 1
     },
     {
-      "key": "朱古力",
-      "name": "朱古力",
+      "key": "Pig",
+      "name": "Pig",
       "type": 3,
       "api": "csp_Pig",
       "searchable": 1,
