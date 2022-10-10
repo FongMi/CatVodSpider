@@ -1,5 +1,5 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;0555de475e5d35fba55d58abb5c4568e",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;ba4abbb214c642e38dd0e284fd0e54fe",
   "sites": [
     {
       "key": "AList",
@@ -47,6 +47,14 @@
       "name": "18AV",
       "type": 3,
       "api": "csp_Eighteen",
+      "searchable": 1,
+      "filterable": 1
+    },
+    {
+      "key": "玩偶姐姐",
+      "name": "玩偶姐姐",
+      "type": 3,
+      "api": "csp_Doll",
       "searchable": 1,
       "filterable": 1
     },
