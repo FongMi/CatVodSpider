@@ -48,7 +48,7 @@ public class Dm84 extends Spider {
     }
 
     private String replaceBy(String text) {
-        return text.replace("按时间", "time").replace("按人气", "hist").replace("按评分", "score");
+        return text.replace("按时间", "time").replace("按人气", "hits").replace("按评分", "score");
     }
 
     @Override
