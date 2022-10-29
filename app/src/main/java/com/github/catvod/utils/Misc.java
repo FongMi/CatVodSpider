@@ -31,7 +31,6 @@ public class Misc {
     }
 
     public static boolean isVideoFormat(String url) {
-        if (url.contains(".js") || url.contains(".css")) return false;
         return Sniffer.RULE.matcher(url).find();
     }
 
