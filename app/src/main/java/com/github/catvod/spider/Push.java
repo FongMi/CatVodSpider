@@ -23,9 +23,8 @@ public class Push extends Spider {
         String url = ids.get(0).trim();
         if (url.contains("aliyundrive")) return ali.detailContent(ids);
         if (Misc.isVip(url)) return Result.string(vod(url, "官源"));
-        if (url.startsWith("magnet")) return Result.string(vod(url, "磁力"));
-        if (url.startsWith("http") && url.endsWith("html")) return Result.string(vod(url, "網頁"));
-        return Result.string(vod(url, "直連"));
+        if (Misc.isVideoFormat(url)) return Result.string(vod(url, "直連"));
+        return Result.string(vod(url, "網頁"));
     }
 
     @Override
