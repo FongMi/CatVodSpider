@@ -6,6 +6,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.utils.Misc;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -13,20 +14,27 @@ import org.jsoup.select.Elements;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author ColaMint & FongMi
  */
 public class PanSou extends Spider {
 
-    private final Pattern regexAliUrl = Pattern.compile("(https:\\/\\/www.aliyundrive.com\\/s\\/[^\\\"]+)");
     private final String siteUrl = "https://www.alipansou.com";
+    private HashMap<String, String> header;
     private Ali ali;
+
+    private Map<String, String> getHeaders(String id) {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", Misc.CHROME);
+        headers.put("Referer", siteUrl + id);
+        headers.put("_bid", "d1810141fb539895ce233cdf66414ca7");
+        return headers;
+    }
 
     @Override
     public void init(Context context, String extend) {
@@ -35,15 +43,11 @@ public class PanSou extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        String url = ids.get(0);
-        Matcher matcher = regexAliUrl.matcher(url);
-        if (matcher.find()) return ali.detailContent(ids);
-        url = siteUrl + ids.get(0);
-        String html = OkHttpUtil.string(url);
-        matcher = regexAliUrl.matcher(html);
-        if (!matcher.find()) return "";
-        ids.set(0, matcher.group(1).replace("\\/", "/"));
-        return ali.detailContent(ids);
+        String url = siteUrl + ids.get(0).replace("s", "cv");
+        Map<String, List<String>> respHeaders = new HashMap<>();
+        OkHttpUtil.stringNoRedirect(url, getHeaders(ids.get(0)), respHeaders);
+        url = OkHttpUtil.getRedirectLocation(respHeaders);
+        return ali.detailContent(Arrays.asList(url));
     }
 
     @Override
