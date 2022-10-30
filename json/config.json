@@ -103,7 +103,7 @@
       "type": 3,
       "api": "csp_Paper",
       "searchable": 1,
-      "ext": "f6fcd2d1c0e54601805413721d89e0ca"
+      "ext": "339541c49aab4f6c878119930894f7ab"
     },
     {
       "key": "易搜",
@@ -112,7 +112,7 @@
       "api": "csp_YiSo",
       "searchable": 1,
       "filterable": 0,
-      "ext": "f6fcd2d1c0e54601805413721d89e0ca"
+      "ext": "339541c49aab4f6c878119930894f7ab"
     },
     {
       "key": "盤搜",
@@ -121,7 +121,7 @@
       "api": "csp_PanSou",
       "searchable": 1,
       "filterable": 0,
-      "ext": "f6fcd2d1c0e54601805413721d89e0ca"
+      "ext": "339541c49aab4f6c878119930894f7ab"
     },
     {
       "key": "push_agent",
@@ -130,7 +130,7 @@
       "api": "csp_Push",
       "searchable": 1,
       "filterable": 0,
-      "ext": "f6fcd2d1c0e54601805413721d89e0ca"
+      "ext": "339541c49aab4f6c878119930894f7ab"
     }
   ]
 }
