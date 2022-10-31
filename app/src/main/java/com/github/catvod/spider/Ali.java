@@ -1,25 +1,22 @@
 package com.github.catvod.spider;
 
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
+import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.view.Gravity;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.bean.ali.Code;
 import com.github.catvod.bean.ali.Item;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Prefers;
+import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Trans;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +30,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 public class Ali {
 
     private final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
+    private ScheduledExecutorService service;
     private static String accessToken;
     private String refreshToken;
     private ImageView code;
@@ -90,7 +91,7 @@ public class Ali {
         String fileId = ids[2];
         String sub = getSub(shareId, shareToken, ids);
         refreshAccessToken();
-        if (TextUtils.isEmpty(accessToken)) return "";
+        while (TextUtils.isEmpty(accessToken)) SystemClock.sleep(250);
         if (flag.equals("原畫")) {
             return Result.get().url(getDownloadUrl(shareId, shareToken, fileId)).sub(sub).header(getHeaders()).string();
         } else {
@@ -278,42 +279,37 @@ public class Ali {
         return result;
     }
 
-    private void getToken() {
-        Misc.loadWebView("https://easy-token.cooluc.com/", new WebViewClient() {
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                if (url.endsWith("/ck")) {
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> view.evaluateJavascript("document.getElementsByTagName('input')[0].value", value -> saveToken(value)), 1000);
-                } else if (url.endsWith("/qr")) {
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> view.evaluateJavascript("document.getElementsByTagName('img')[0].src", value -> showQRCode(value)), 3000);
-                }
-            }
-        });
+    public void getToken() {
+        if (service != null) service.shutdownNow();
+        Code code = Code.objectFrom(OkHttpUtil.string("https://easy-token.cooluc.com/qr"));
+        Init.run(() -> showQRCode(code.getData().getCodeContent()));
+        service = Executors.newScheduledThreadPool(2);
+        service.scheduleAtFixedRate(() -> {
+            JsonObject params = new JsonObject();
+            params.addProperty("t", code.getData().getT());
+            params.addProperty("ck", code.getData().getCk());
+            Code result = Code.objectFrom(OkHttpUtil.postJson("https://easy-token.cooluc.com/ck", params.toString()));
+            if (result.hasToken()) saveToken(result.getResult().getRefreshToken());
+        }, 1, 1, TimeUnit.SECONDS);
     }
 
     private void saveToken(String value) {
-        if (value.length() == 2) return;
-        Prefers.put("token", refreshToken = value.replace("\"", ""));
-        Init.show("請重新進入播放頁");
-        code.setVisibility(View.GONE);
-        Misc.removeView(code);
+        Prefers.put("token", refreshToken = value);
+        Init.run(() -> code.setVisibility(View.GONE));
+        service.shutdownNow();
     }
 
-    private void showQRCode(String value) {
-        if (!value.contains("base64,")) return;
-        byte[] bytes = Base64.decode(value.split("base64,")[1], Base64.DEFAULT);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Misc.dp2px(250), Misc.dp2px(250));
+    private void showQRCode(String text) {
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
-        Misc.addView(code = create(bytes), params);
+        Misc.addView(code = create(text), params);
         Init.show("請使用阿里雲盤 App 掃描二維碼");
     }
 
-    private ImageView create(byte[] bytes) {
+    private ImageView create(String value) {
         ImageView view = new ImageView(Init.context());
-        view.setBackgroundColor(Color.WHITE);
         view.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        view.setPadding(Misc.dp2px(20), Misc.dp2px(20), Misc.dp2px(20), Misc.dp2px(20));
-        view.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+        view.setImageBitmap(QRCode.getBitmap(value, 250, 2));
         return view;
     }
 }

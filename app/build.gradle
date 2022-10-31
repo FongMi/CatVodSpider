@@ -35,5 +35,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.google.code.gson:gson:2.9.1'
     implementation 'cn.wanghaomiao:JsoupXpath:2.5.1'
+    implementation 'com.google.zxing:core:3.5.0'
     implementation 'org.jsoup:jsoup:1.15.3'
 }
