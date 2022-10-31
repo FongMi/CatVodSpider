@@ -300,15 +300,19 @@ public class Ali {
     }
 
     private void showQRCode(String value) {
-        code = new ImageView(Init.context());
-        code.setPadding(Misc.dp2px(20), Misc.dp2px(20), Misc.dp2px(20), Misc.dp2px(20));
-        code.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        code.setBackgroundColor(Color.WHITE);
         byte[] bytes = Base64.decode(value.split("base64,")[1], Base64.DEFAULT);
-        code.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Misc.dp2px(250), Misc.dp2px(250));
-        Init.show("請使用阿里雲盤 App 掃描二維碼");
         params.gravity = Gravity.CENTER;
-        Misc.addView(code, params);
+        Misc.addView(code = create(bytes), params);
+        Init.show("請使用阿里雲盤 App 掃描二維碼");
+    }
+
+    private ImageView create(byte[] bytes) {
+        ImageView view = new ImageView(Init.context());
+        view.setBackgroundColor(Color.WHITE);
+        view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        view.setPadding(Misc.dp2px(20), Misc.dp2px(20), Misc.dp2px(20), Misc.dp2px(20));
+        view.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+        return view;
     }
 }
