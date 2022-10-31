@@ -1,6 +1,9 @@
 package com.github.catvod.utils;
 
 import android.net.Uri;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -143,14 +146,31 @@ public class Misc {
         }
     }
 
+    public static DisplayMetrics getDisplayMetrics() {
+        return Init.context().getResources().getDisplayMetrics();
+    }
+
+    public static int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getDisplayMetrics());
+    }
+
+    public static void addView(View view, ViewGroup.LayoutParams params) {
+        ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+        group.addView(view, params);
+    }
+
+    public static void removeView(View view) {
+        ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+        group.removeView(view);
+    }
+
     public static void loadWebView(String url, WebViewClient client) {
         Init.run(() -> {
             WebView webView = new WebView(Init.context());
             webView.getSettings().setDatabaseEnabled(true);
             webView.getSettings().setDomStorageEnabled(true);
             webView.getSettings().setJavaScriptEnabled(true);
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(0, 0);
-            Init.getActivity().addContentView(webView, params);
+            addView(webView, new ViewGroup.LayoutParams(0, 0));
             webView.setWebViewClient(client);
             webView.loadUrl(url);
         });
