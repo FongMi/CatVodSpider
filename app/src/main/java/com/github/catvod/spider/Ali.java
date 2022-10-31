@@ -296,6 +296,7 @@ public class Ali {
         Prefers.put("token", refreshToken = value.replace("\"", ""));
         Init.show("請重新進入播放頁");
         code.setVisibility(View.GONE);
+        Misc.removeView(code);
     }
 
     private void showQRCode(String value) {
@@ -303,7 +304,7 @@ public class Ali {
         byte[] bytes = Base64.decode(value.split("base64,")[1], Base64.DEFAULT);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Misc.dp2px(250), Misc.dp2px(250));
         params.gravity = Gravity.CENTER;
-        Init.getActivity().addContentView(code = create(bytes), params);
+        Misc.addView(code = create(bytes), params);
         Init.show("請使用阿里雲盤 App 掃描二維碼");
     }
 
