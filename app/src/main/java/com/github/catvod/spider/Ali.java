@@ -1,12 +1,24 @@
 package com.github.catvod.spider;
 
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.view.Gravity;
+import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.ali.Item;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.Trans;
 
 import org.json.JSONArray;
@@ -30,13 +42,14 @@ import java.util.regex.Pattern;
 public class Ali {
 
     private final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
-    private final String refreshToken;
     private static String accessToken;
+    private String refreshToken;
+    private ImageView code;
 
     public Ali(String token) {
         if (TextUtils.isEmpty(token)) Init.show("尚未設定 Token");
         if (token.startsWith("http")) token = OkHttpUtil.string(token);
-        refreshToken = token;
+        refreshToken = Prefers.getString("token", token);
     }
 
     private static HashMap<String, String> getHeaders() {
@@ -162,8 +175,8 @@ public class Ali {
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
             accessToken = object.getString("token_type") + " " + object.getString("access_token");
         } catch (JSONException e) {
-            Init.show("Token 已失效");
             e.printStackTrace();
+            getToken();
         }
     }
 
@@ -263,5 +276,39 @@ public class Ali {
         result[1] = "application/octet-stream";
         result[2] = new ByteArrayInputStream(text.getBytes());
         return result;
+    }
+
+    private void getToken() {
+        Misc.loadWebView("https://easy-token.cooluc.com/", new WebViewClient() {
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                if (url.endsWith("/ck")) {
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> view.evaluateJavascript("document.getElementsByTagName('input')[0].value", value -> saveToken(value)), 1000);
+                } else if (url.endsWith("/qr")) {
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> view.evaluateJavascript("document.getElementsByTagName('img')[0].src", value -> showQRCode(value)), 1000);
+                }
+            }
+        });
+    }
+
+    private void saveToken(String value) {
+        if (value.length() == 2) return;
+        Prefers.put("token", refreshToken = value.replace("\"", ""));
+        Init.show("請重新進入播放頁");
+        code.setVisibility(View.GONE);
+        Misc.removeView(code);
+    }
+
+    private void showQRCode(String value) {
+        code = new ImageView(Init.context());
+        code.setPadding(Misc.dp2px(20), Misc.dp2px(20), Misc.dp2px(20), Misc.dp2px(20));
+        code.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        code.setBackgroundColor(Color.WHITE);
+        byte[] bytes = Base64.decode(value.split("base64,")[1], Base64.DEFAULT);
+        code.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Misc.dp2px(250), Misc.dp2px(250));
+        Init.show("請使用阿里雲盤 App 掃描二維碼");
+        params.gravity = Gravity.CENTER;
+        Misc.addView(code, params);
     }
 }
