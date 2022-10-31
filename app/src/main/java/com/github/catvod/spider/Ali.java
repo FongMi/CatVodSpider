@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
-import com.github.catvod.bean.ali.Code;
+import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
@@ -178,7 +178,7 @@ public class Ali {
             accessToken = null;
             e.printStackTrace();
             checkService();
-            getToken();
+            getQRCode();
         }
     }
 
@@ -280,31 +280,31 @@ public class Ali {
         return result;
     }
 
-    public void getToken() {
-        Code code = Code.objectFrom(OkHttpUtil.string("https://easy-token.cooluc.com/qr"));
-        Init.run(() -> showQRCode(code.getData().getCodeContent()));
-        service = Executors.newScheduledThreadPool(1);
-        service.scheduleAtFixedRate(() -> {
-            JsonObject params = new JsonObject();
-            params.addProperty("t", code.getData().getT());
-            params.addProperty("ck", code.getData().getCk());
-            Code result = Code.objectFrom(OkHttpUtil.postJson("https://easy-token.cooluc.com/ck", params.toString()));
-            if (result.hasToken()) saveToken(result.getResult().getRefreshToken());
-        }, 1, 1, TimeUnit.SECONDS);
-    }
-
     private void checkService() {
         if (service != null) service.shutdownNow();
         if (view != null) Init.run(() -> Misc.removeView(view));
     }
 
-    private void saveToken(String value) {
+    private void getQRCode() {
+        Data data = Data.objectFrom(OkHttpUtil.string("https://easy-token.cooluc.com/qr"));
+        Init.run(() -> showCode(data.getData().getCodeContent()));
+        service = Executors.newScheduledThreadPool(1);
+        service.scheduleAtFixedRate(() -> {
+            JsonObject params = new JsonObject();
+            params.addProperty("t", data.getData().getT());
+            params.addProperty("ck", data.getData().getCk());
+            Data result = Data.objectFrom(OkHttpUtil.postJson("https://easy-token.cooluc.com/ck", params.toString()));
+            if (result.hasToken()) setToken(result.getData().getRefreshToken());
+        }, 1, 1, TimeUnit.SECONDS);
+    }
+
+    private void setToken(String value) {
         Prefers.put("token", refreshToken = value);
         Init.show("請重新進入播放頁");
         checkService();
     }
 
-    private void showQRCode(String text) {
+    private void showCode(String text) {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
         Misc.addView(view = create(text), params);
