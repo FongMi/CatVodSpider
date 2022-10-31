@@ -285,7 +285,7 @@ public class Ali {
                 if (url.endsWith("/ck")) {
                     new Handler(Looper.getMainLooper()).postDelayed(() -> view.evaluateJavascript("document.getElementsByTagName('input')[0].value", value -> saveToken(value)), 1000);
                 } else if (url.endsWith("/qr")) {
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> view.evaluateJavascript("document.getElementsByTagName('img')[0].src", value -> showQRCode(value)), 1000);
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> view.evaluateJavascript("document.getElementsByTagName('img')[0].src", value -> showQRCode(value)), 3000);
                 }
             }
         });
@@ -300,6 +300,7 @@ public class Ali {
     }
 
     private void showQRCode(String value) {
+        if (!value.contains("base64,")) return;
         byte[] bytes = Base64.decode(value.split("base64,")[1], Base64.DEFAULT);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Misc.dp2px(250), Misc.dp2px(250));
         params.gravity = Gravity.CENTER;
