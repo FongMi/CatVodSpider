@@ -3,7 +3,6 @@ package com.github.catvod.spider;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -45,7 +44,7 @@ public class Ali {
     private ScheduledExecutorService service;
     private static String accessToken;
     private String refreshToken;
-    private ImageView code;
+    private ImageView view;
 
     public Ali(String token) {
         if (TextUtils.isEmpty(token)) Init.show("尚未設定 Token");
@@ -178,6 +177,7 @@ public class Ali {
         } catch (JSONException e) {
             accessToken = null;
             e.printStackTrace();
+            checkService();
             getToken();
         }
     }
@@ -281,7 +281,6 @@ public class Ali {
     }
 
     public void getToken() {
-        if (service != null) service.shutdownNow();
         Code code = Code.objectFrom(OkHttpUtil.string("https://easy-token.cooluc.com/qr"));
         Init.run(() -> showQRCode(code.getData().getCodeContent()));
         service = Executors.newScheduledThreadPool(1);
@@ -294,17 +293,21 @@ public class Ali {
         }, 1, 1, TimeUnit.SECONDS);
     }
 
+    private void checkService() {
+        if (service != null) service.shutdownNow();
+        if (view != null) Init.run(() -> Misc.removeView(view));
+    }
+
     private void saveToken(String value) {
         Prefers.put("token", refreshToken = value);
-        Init.run(() -> code.setVisibility(View.GONE));
         Init.show("請重新進入播放頁");
-        service.shutdownNow();
+        checkService();
     }
 
     private void showQRCode(String text) {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
-        Misc.addView(code = create(text), params);
+        Misc.addView(view = create(text), params);
         Init.show("請使用阿里雲盤 App 掃描二維碼");
     }
 
