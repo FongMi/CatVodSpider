@@ -45,7 +45,7 @@ public class Init {
     }
 
     public static void show(String msg) {
-        get().handler.post(() -> Toast.makeText(context(), msg, Toast.LENGTH_SHORT).show());
+        get().handler.post(() -> Toast.makeText(context(), msg, Toast.LENGTH_LONG).show());
     }
 
     public static Activity getActivity() {
