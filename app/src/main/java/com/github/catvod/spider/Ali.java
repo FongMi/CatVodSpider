@@ -176,6 +176,7 @@ public class Ali {
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
             accessToken = object.getString("token_type") + " " + object.getString("access_token");
         } catch (JSONException e) {
+            accessToken = null;
             e.printStackTrace();
             getToken();
         }
@@ -283,7 +284,7 @@ public class Ali {
         if (service != null) service.shutdownNow();
         Code code = Code.objectFrom(OkHttpUtil.string("https://easy-token.cooluc.com/qr"));
         Init.run(() -> showQRCode(code.getData().getCodeContent()));
-        service = Executors.newScheduledThreadPool(2);
+        service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(() -> {
             JsonObject params = new JsonObject();
             params.addProperty("t", code.getData().getT());
@@ -296,6 +297,7 @@ public class Ali {
     private void saveToken(String value) {
         Prefers.put("token", refreshToken = value);
         Init.run(() -> code.setVisibility(View.GONE));
+        Init.show("請重新進入播放頁");
         service.shutdownNow();
     }
 
