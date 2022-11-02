@@ -19,7 +19,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author ColaMint & FongMi
@@ -32,15 +31,9 @@ public class Bili extends Spider {
 
     private void initHeader() {
         header = new HashMap<>();
+        header.put("cookie", "_uuid=5E4B2B98-1014A-84D8-FA33-EC210C5BEC10DA82367infoc; buvid3=E9D0A426-85E9-E6C7-C75E-206A3E1BEB4D81910infoc; b_nut=1666168082; buvid4=4FC87B9C-3540-2275-688C-8612D3EA719B81910-022101916-ZLe640jXRAMHySuaCe9aUw==; rpdid=|(k|u)YYm)uY0J'uYYYuY)uuu; i-wanna-go-back=-1; fingerprint=9c214a6da0197a48e576ccf22e9f0ac7; buvid_fp_plain=undefined; nostalgia_conf=-1; bsource=search_google; SESSDATA=812a26d8,1682867071,bd749*b1; bili_jct=00fb1a02247592c6876c7a502aec8785; DedeUserID=3493076028885079; DedeUserID__ckMd5=60a8757a1f4d6ae9; buvid_fp=9c214a6da0197a48e576ccf22e9f0ac7; sid=5hnizp80; CURRENT_QUALITY=80; innersign=0; b_ut=5; b_lsid=4D21BEAC_18434540FF6; CURRENT_FNVAL=4048; PVID=1");
         header.put("User-Agent", Misc.CHROME);
-        HashMap<String, List<String>> respHeaderMap = new HashMap<>();
-        OkHttpUtil.string(url, header, respHeaderMap);
-        for (String text : Objects.requireNonNull(respHeaderMap.get("set-cookie"))) {
-            if (!text.contains("buvid3")) continue;
-            header.put("cookie", text.split(";")[0]);
-            header.put("Referer", url);
-            break;
-        }
+        header.put("Referer", url);
     }
 
     @Override
@@ -123,7 +116,7 @@ public class Bili extends Spider {
         String[] ids = id.split("\\+");
         String aid = ids[0];
         String cid = ids[1];
-        String url = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid= " + cid + "&qn=112";
+        String url = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid= " + cid + "&qn=120&fnver&128=128&fourk=1";
         JSONObject resp = new JSONObject(OkHttpUtil.string(url, header));
         url = resp.getJSONObject("data").getJSONArray("durl").getJSONObject(0).getString("url");
         return Result.get().url(url).header(header).string();
