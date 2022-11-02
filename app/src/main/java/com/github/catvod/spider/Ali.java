@@ -287,9 +287,9 @@ public class Ali {
 
     private void getQRCode() {
         Data data = Data.objectFrom(OkHttpUtil.string("https://easy-token.cooluc.com/qr"));
-        Init.run(() -> showCode(data.getData().getCodeContent()));
+        if (data != null) Init.run(() -> showCode(data));
         service = Executors.newScheduledThreadPool(1);
-        service.scheduleAtFixedRate(() -> {
+        if (data != null) service.scheduleAtFixedRate(() -> {
             JsonObject params = new JsonObject();
             params.addProperty("t", data.getData().getT());
             params.addProperty("ck", data.getData().getCk());
@@ -304,10 +304,10 @@ public class Ali {
         checkService();
     }
 
-    private void showCode(String text) {
+    private void showCode(Data data) {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
-        Misc.addView(view = create(text), params);
+        Misc.addView(view = create(data.getData().getCodeContent()), params);
         Init.show("請使用阿里雲盤 App 掃描二維碼");
     }
 
