@@ -31,7 +31,7 @@ public class Bili extends Spider {
 
     private void initHeader() {
         header = new HashMap<>();
-        header.put("cookie", "_uuid=5E4B2B98-1014A-84D8-FA33-EC210C5BEC10DA82367infoc; buvid3=E9D0A426-85E9-E6C7-C75E-206A3E1BEB4D81910infoc; b_nut=1666168082; buvid4=4FC87B9C-3540-2275-688C-8612D3EA719B81910-022101916-ZLe640jXRAMHySuaCe9aUw==; rpdid=|(k|u)YYm)uY0J'uYYYuY)uuu; i-wanna-go-back=-1; fingerprint=9c214a6da0197a48e576ccf22e9f0ac7; buvid_fp_plain=undefined; nostalgia_conf=-1; bsource=search_google; SESSDATA=812a26d8,1682867071,bd749*b1; bili_jct=00fb1a02247592c6876c7a502aec8785; DedeUserID=3493076028885079; DedeUserID__ckMd5=60a8757a1f4d6ae9; buvid_fp=9c214a6da0197a48e576ccf22e9f0ac7; sid=5hnizp80; CURRENT_QUALITY=80; innersign=0; b_ut=5; b_lsid=4D21BEAC_18434540FF6; CURRENT_FNVAL=4048; PVID=1");
+        header.put("cookie", "_uuid=5D5B10137-1328-6FA7-F1078-7299610109934F45334infoc; bg_view_12044=386583; buvid3=185689C8-03A5-751C-1AAF-03F69282AA9E47110infoc; b_nut=1667308447; buvid4=1AB69C99-50B4-D973-BF32-2CB8367580C147110-122110121-JleLtcqrjFz2MFF2u1deMQ%3D%3D; buvid_fp_plain=undefined; fingerprint3=dd53d137790289498f103b2fbf3fb252; fingerprint=7cc2faedec7082808a3099d0e3188c38; DedeUserID=429617357; DedeUserID__ckMd5=58f591cbe4b64558; SESSDATA=b70d8210%2C1682860530%2C600cd*b1; bili_jct=30fa4e1fd12981b4ae980d7ad5252894; i-wanna-go-back=-1; b_ut=5; buvid_fp=18ca78cc62eef7ce8dba4a806e9fdfa6; bg_view_41410=691613%7C478176; bg_view_43141=690880; sid=5tu2zjlx; b_lsid=10515334D_184366495CB; theme_style=light; nostalgia_conf=-1; innersign=1; rpdid=|(J|k~|)lk~k0J'uYY~JY|)|Y; CURRENT_FNVAL=16; CURRENT_QUALITY=120");
         header.put("User-Agent", Misc.CHROME);
         header.put("Referer", url);
     }
@@ -92,7 +92,7 @@ public class Bili extends Spider {
         for (int i = 0; i < pages.length(); ++i) {
             JSONObject page = pages.getJSONObject(i);
             String title = page.getString("part").replace("$", "_").replace("#", "_");
-            playlist.add(Trans.get(title) + "$" + aid + "+ " + page.getLong("cid"));
+            playlist.add(Trans.get(title) + "$" + aid + "+" + page.getLong("cid"));
         }
         Vod vod = new Vod();
         vod.setVodId(bvid);
@@ -116,7 +116,7 @@ public class Bili extends Spider {
         String[] ids = id.split("\\+");
         String aid = ids[0];
         String cid = ids[1];
-        String url = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid= " + cid + "&qn=120&fnver&128=128&fourk=1";
+        String url = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + cid + "&qn=120&fourk=1";
         JSONObject resp = new JSONObject(OkHttpUtil.string(url, header));
         url = resp.getJSONObject("data").getJSONArray("durl").getJSONObject(0).getString("url");
         return Result.get().url(url).header(header).string();
