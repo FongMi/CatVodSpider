@@ -1,5 +1,6 @@
 {
   "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;1d0b9871d95075f2b2ccaf08b62ac64b",
+  "wallpaper": "https://gao.chuqiuyu.tk",
   "lives": [
     {
       "name": "直播",
@@ -14,6 +15,7 @@
       "type": 3,
       "api": "csp_AList",
       "searchable": 1,
+      "filterable": 1,
       "ext": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/alist.json"
     },
     {
@@ -22,6 +24,7 @@
       "type": 3,
       "api": "csp_Bili",
       "searchable": 1,
+      "filterable": 1,
       "ext": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/bili.json"
     },
     {
@@ -110,6 +113,7 @@
       "type": 3,
       "api": "csp_Paper",
       "searchable": 1,
+      "filterable": 1,
       "ext": "339541c49aab4f6c878119930894f7ab"
     },
     {
