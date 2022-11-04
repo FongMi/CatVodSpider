@@ -120,6 +120,7 @@ public class Ali {
         vod.setVodContent(url);
         vod.setVodPic(object.getString("avatar"));
         vod.setVodName(object.getString("share_name"));
+        if (sourceUrls.isEmpty()) Init.show("來晚啦，該分享已失效。");
         vod.setVodPlayUrl(TextUtils.join("$$$", sourceUrls));
         vod.setVodPlayFrom("原畫$$$普畫");
         vod.setTypeName("阿里雲盤");
@@ -216,6 +217,7 @@ public class Ali {
             String json = post("v2/share_link/get_share_token", body);
             return new JSONObject(json).getString("share_token");
         } catch (JSONException e) {
+            Init.show("來晚啦，該分享已失效。");
             e.printStackTrace();
             return "";
         }
