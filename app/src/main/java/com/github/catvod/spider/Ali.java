@@ -112,6 +112,7 @@ public class Ali {
         List<String> playUrls = new ArrayList<>();
         List<String> names = new ArrayList<>(name2id.keySet());
         for (String name : names) playUrls.add(Trans.get(name) + "$" + name2id.get(name) + findSubs(name, subMap));
+        if (playUrls.isEmpty()) Init.show("來晚啦，該分享已失效。");
         List<String> sourceUrls = new ArrayList<>();
         sourceUrls.add(TextUtils.join("#", playUrls));
         sourceUrls.add(TextUtils.join("#", playUrls));
@@ -120,7 +121,6 @@ public class Ali {
         vod.setVodContent(url);
         vod.setVodPic(object.getString("avatar"));
         vod.setVodName(object.getString("share_name"));
-        if (sourceUrls.isEmpty()) Init.show("來晚啦，該分享已失效。");
         vod.setVodPlayUrl(TextUtils.join("$$$", sourceUrls));
         vod.setVodPlayFrom("原畫$$$普畫");
         vod.setTypeName("阿里雲盤");
