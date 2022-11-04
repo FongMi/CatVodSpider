@@ -79,10 +79,14 @@ public class Paper extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
-        List<Vod> list = new ArrayList<>();
         String type = extend.containsKey("type") ? extend.get("type") : tid;
-        List<Data> items = Data.arrayFrom(OkHttpUtil.string(URL + "data/" + type + ".json", getHeaders()));
-        for (Data item : items) list.add(item.getVod());
+        List<Vod> list = new ArrayList<>();
+        Map<String, String> params = new HashMap<>();
+        params.put("action", "viewcat");
+        params.put("cat", type);
+        params.put("num", pg);
+        String result = OkHttpUtil.post("https://gitcafe.net/tool/alipaper/", params, getHeaders());
+        for (Data item : Data.arrayFrom(result)) list.add(item.getVod());
         return Result.string(list);
     }
 
