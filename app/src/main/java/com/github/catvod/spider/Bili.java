@@ -32,7 +32,7 @@ public class Bili extends Spider {
 
     private String getCookie(String cookie) {
         if (TextUtils.isEmpty(cookie)) return "buvid3=84B0395D-C9F2-C490-E92E-A09AB48FE26E71636infoc";
-        if (cookie.startsWith("http")) return OkHttpUtil.string(cookie);
+        if (cookie.startsWith("http")) return OkHttpUtil.string(cookie).replace("\r|\n", "");
         return cookie;
     }
 
