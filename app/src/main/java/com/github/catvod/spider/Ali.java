@@ -122,7 +122,7 @@ public class Ali {
         vod.setVodPic(object.getString("avatar"));
         vod.setVodName(object.getString("share_name"));
         vod.setVodPlayUrl(TextUtils.join("$$$", sourceUrls));
-        vod.setVodPlayFrom("原畫$$$普畫");
+        vod.setVodPlayFrom("普畫$$$原畫");
         vod.setTypeName("阿里雲盤");
         return vod;
     }
