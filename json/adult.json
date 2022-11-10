@@ -5,7 +5,8 @@
     {
       "name": "直播",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/jackson0829/jackson0829.github.io/main/TW.txt"
+      "url": "https://raw.githubusercontent.com/jackson0829/jackson0829.github.io/main/TW.txt",
+      "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}"
     }
   ],
   "sites": [
