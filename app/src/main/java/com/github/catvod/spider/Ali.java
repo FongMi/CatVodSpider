@@ -131,6 +131,7 @@ public class Ali {
         JSONObject body = new JSONObject();
         body.put("share_id", shareId);
         body.put("parent_file_id", folder.getId());
+        body.put("limit", 200);
         body.put("order_by", "name");
         body.put("order_direction", "ASC");
         String json = post("adrive/v3/file/list", body, shareToken);
