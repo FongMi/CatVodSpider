@@ -14,7 +14,6 @@ public class Item {
     private List<Item> items;
     @SerializedName("next_marker")
     private String nextMarker;
-
     @SerializedName("file_id")
     private String fileId;
     @SerializedName("share_id")
