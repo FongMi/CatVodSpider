@@ -128,34 +128,35 @@ public class Ali {
     }
 
     private void listFiles(Item folder, LinkedHashMap<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken) throws Exception {
+        listFiles(folder, name2id, subMap, shareId, shareToken, "");
+    }
+
+    private void listFiles(Item folder, LinkedHashMap<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken, String marker) throws Exception {
         JSONObject body = new JSONObject();
-        body.put("share_id", shareId);
-        body.put("parent_file_id", folder.getId());
         body.put("limit", 200);
+        body.put("share_id", shareId);
+        body.put("parent_file_id", folder.getFileId());
         body.put("order_by", "name");
         body.put("order_direction", "ASC");
-        String json = post("adrive/v3/file/list", body, shareToken);
-        JSONArray items = new JSONObject(json).getJSONArray("items");
-        for (int j = 0; j < items.length(); ++j) {
-            JSONObject item = items.getJSONObject(j);
-            String type = item.optString("type");
-            String name = item.optString("name");
-            String fileId = item.optString("file_id");
-            String category = item.optString("category", "");
-            String ext = item.optString("file_extension", "");
-            if (type.equals("folder")) {
-                listFiles(new Item(fileId, name), name2id, subMap, shareId, shareToken);
+        if (marker.length() > 0) body.put("marker", marker);
+        Item item = Item.objectFrom(post("adrive/v3/file/list", body, shareToken));
+        for (Item file : item.getItems()) {
+            if (file.getType().equals("folder")) {
+                listFiles(file, name2id, subMap, shareId, shareToken);
                 continue;
             }
-            if (category.equals("video")) {
-                name2id.put(folder.getName(name), shareId + "+" + shareToken + "+" + fileId);
+            if (file.getCategory().equals("video")) {
+                name2id.put(folder.getDisplayName(file.getName()), shareId + "+" + shareToken + "+" + file.getFileId());
                 continue;
             }
-            if (Misc.isSub(ext)) {
-                name = name.replace("." + ext, "");
+            if (Misc.isSub(file.getExt())) {
+                String name = file.removeExt();
                 if (!subMap.containsKey(name)) subMap.put(name, new ArrayList<>());
-                Objects.requireNonNull(subMap.get(name)).add(name + "@" + fileId + "@" + ext);
+                Objects.requireNonNull(subMap.get(name)).add(name + "@" + file.getFileId() + "@" + file.getExt());
             }
+        }
+        if (item.getNextMarker().length() > 0) {
+            listFiles(folder, name2id, subMap, shareId, shareToken, item.getNextMarker());
         }
     }
 
