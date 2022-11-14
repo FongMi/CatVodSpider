@@ -134,7 +134,7 @@ public class Ali {
     private void listFiles(Item parent, LinkedHashMap<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken, String marker) throws Exception {
         JSONObject body = new JSONObject();
         List<Item> folders = new ArrayList<>();
-        body.put("limit", 1000);
+        body.put("limit", 200);
         body.put("share_id", shareId);
         body.put("parent_file_id", parent.getFileId());
         body.put("order_by", "name");
