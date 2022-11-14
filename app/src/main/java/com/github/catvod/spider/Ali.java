@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +44,7 @@ public class Ali {
     private static String accessToken;
     private String refreshToken;
     private ImageView view;
+    private int index;
 
     public Ali(String token) {
         if (TextUtils.isEmpty(token)) Init.show("尚未設定 Token");
@@ -131,32 +131,32 @@ public class Ali {
         listFiles(folder, name2id, subMap, shareId, shareToken, "");
     }
 
-    private void listFiles(Item folder, LinkedHashMap<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken, String marker) throws Exception {
+    private void listFiles(Item parent, LinkedHashMap<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken, String marker) throws Exception {
         JSONObject body = new JSONObject();
-        body.put("limit", 200);
+        List<Item> folders = new ArrayList<>();
+        body.put("limit", 1000);
         body.put("share_id", shareId);
-        body.put("parent_file_id", folder.getFileId());
+        body.put("parent_file_id", parent.getFileId());
         body.put("order_by", "name");
         body.put("order_direction", "ASC");
         if (marker.length() > 0) body.put("marker", marker);
         Item item = Item.objectFrom(post("adrive/v3/file/list", body, shareToken));
         for (Item file : item.getItems()) {
             if (file.getType().equals("folder")) {
-                listFiles(file, name2id, subMap, shareId, shareToken);
-                continue;
-            }
-            if (file.getCategory().equals("video")) {
-                name2id.put(folder.getDisplayName(file.getName()), shareId + "+" + shareToken + "+" + file.getFileId());
-                continue;
-            }
-            if (Misc.isSub(file.getExt())) {
-                String name = file.removeExt();
-                if (!subMap.containsKey(name)) subMap.put(name, new ArrayList<>());
-                Objects.requireNonNull(subMap.get(name)).add(name + "@" + file.getFileId() + "@" + file.getExt());
+                folders.add(file);
+            } else if (file.getCategory().equals("video") || file.getCategory().equals("audio")) {
+                name2id.put(parent.getDisplayName(file.getName()), shareId + "+" + shareToken + "+" + file.getFileId());
+            } else if (Misc.isSub(file.getExt())) {
+                String key = file.removeExt();
+                if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());
+                subMap.get(key).add(key + "@" + file.getFileId() + "@" + file.getExt());
             }
         }
         if (item.getNextMarker().length() > 0) {
-            listFiles(folder, name2id, subMap, shareId, shareToken, item.getNextMarker());
+            listFiles(parent, name2id, subMap, shareId, shareToken, item.getNextMarker());
+        }
+        for (Item folder : folders) {
+            listFiles(folder, name2id, subMap, shareId, shareToken);
         }
     }
 

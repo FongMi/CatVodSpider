@@ -59,9 +59,9 @@ public class AList extends Spider {
         }
     }
 
-    private boolean v3(String name) {
-        if (!map.containsKey(name)) map.put(name, OkHttpUtil.string(ext.get(name) + "/api/public/settings").contains("v3.") ? "3" : "2");
-        return Objects.equals(map.get(name), "3");
+    private boolean v3(String key) {
+        if (!map.containsKey(key)) map.put(key, OkHttpUtil.string(ext.get(key) + "/api/public/settings").contains("v3.") ? "3" : "2");
+        return Objects.equals(map.get(key), "3");
     }
 
     private List<Filter> getFilter() {
@@ -87,7 +87,7 @@ public class AList extends Spider {
     public String homeContent(boolean filter) {
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        for (String entry : ext.keySet()) classes.add(new Class(entry, entry, "1"));
+        for (String key : ext.keySet()) classes.add(new Class(key, key, "1"));
         for (Class item : classes) filters.put(item.getTypeId(), getFilter());
         return Result.string(classes, filters);
     }
@@ -127,9 +127,34 @@ public class AList extends Spider {
     }
 
     @Override
+    public String searchContent(String keyword, boolean quick) throws Exception {
+        List<Vod> list = new ArrayList<>();
+        JSONObject params = new JSONObject();
+        params.put("path", "/");
+        params.put("keyword", keyword);
+        for (String key : ext.keySet()) list.addAll(getList(params.toString(), key));
+        return Result.string(list);
+    }
+
+    @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         String[] ids = id.split("\\+");
         return Result.get().url(ids[0]).sub(getSub(ids)).string();
+    }
+
+    private List<Vod> getList(String param, String key) {
+        try {
+            if (v3(key)) return Collections.emptyList();
+            List<Vod> list = new ArrayList<>();
+            String url = ext.get(key) + "/api/public/search";
+            String response = OkHttpUtil.postJson(url, param);
+            String json = new JSONObject(response).getJSONArray("data").toString();
+            List<Item> items = Item.arrayFrom(json);
+            for (Item item : items) if (!item.isFolder() && !item.ignore(false)) list.add(item.getVod(key));
+            return list;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     private List<Item> getList(String id, boolean filter) {
