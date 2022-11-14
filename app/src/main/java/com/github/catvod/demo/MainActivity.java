@@ -14,7 +14,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         Init.init(getApplicationContext());
         new Thread(() -> {
-            
+
         }).start();
     }
 }
