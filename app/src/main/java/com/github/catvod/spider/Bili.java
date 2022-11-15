@@ -42,9 +42,14 @@ public class Bili extends Spider {
         header.put("Referer", url);
     }
 
+    private void fetchExt() {
+        String result = OkHttpUtil.string(extend);
+        if (!TextUtils.isEmpty(result)) extend = result;
+    }
+
     private void fetchRule() throws Exception {
         if (header.containsKey("cookie") && header.get("cookie").length() > 0) return;
-        if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
+        if (extend.startsWith("http")) fetchExt();
         ext = new JSONObject(extend);
         setHeader();
     }
