@@ -44,7 +44,6 @@ public class Ali {
     private static String accessToken;
     private String refreshToken;
     private ImageView view;
-    private int index;
 
     public Ali(String token) {
         if (TextUtils.isEmpty(token)) Init.show("尚未設定 Token");

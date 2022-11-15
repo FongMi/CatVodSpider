@@ -12,7 +12,6 @@ import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
@@ -29,6 +28,7 @@ public class Bili extends Spider {
     private static final String url = "https://www.bilibili.com";
     private HashMap<String, String> header;
     private JSONObject ext;
+    private String extend;
 
     private String getCookie(String cookie) {
         if (TextUtils.isEmpty(cookie)) return "buvid3=84B0395D-C9F2-C490-E92E-A09AB48FE26E71636infoc";
@@ -36,19 +36,25 @@ public class Bili extends Spider {
         return cookie;
     }
 
-    private void initHeader(JSONObject ext) throws JSONException {
-        header = new HashMap<>();
+    private void setHeader() throws Exception {
         header.put("cookie", getCookie(ext.getString("cookie")));
         header.put("User-Agent", Misc.CHROME);
         header.put("Referer", url);
     }
 
+    private void fetchRule() throws Exception {
+        if (ext != null && !header.isEmpty()) return;
+        if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
+        ext = new JSONObject(extend);
+        setHeader();
+    }
+
     @Override
     public void init(Context context, String extend) {
         try {
-            if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
-            ext = new JSONObject(extend);
-            initHeader(ext);
+            this.extend = extend;
+            this.header = new HashMap<>();
+            fetchRule();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,6 +62,7 @@ public class Bili extends Spider {
 
     @Override
     public String homeContent(boolean filter) throws Exception {
+        fetchRule();
         return Result.string(Class.arrayFrom(ext.getJSONArray("classes").toString()), ext.getJSONObject("filter"));
     }
 

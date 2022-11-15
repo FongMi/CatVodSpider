@@ -32,6 +32,7 @@ public class AList extends Spider {
 
     private LinkedHashMap<String, String> ext;
     private Map<String, String> map;
+    private String extend;
 
     private boolean isJson(String json) {
         try {
@@ -45,6 +46,7 @@ public class AList extends Spider {
     private void parseJson(String extend) throws Exception {
         JSONObject object = new JSONObject(extend);
         JSONArray array = object.names();
+        ext = new LinkedHashMap<>();
         for (int i = 0; i < array.length(); i++) {
             String key = array.getString(i);
             ext.put(key, object.getString(key));
@@ -53,6 +55,7 @@ public class AList extends Spider {
 
     private void parseText(String extend) {
         String[] array = extend.split("#");
+        ext = new LinkedHashMap<>();
         for (String text : array) {
             String[] arr = text.split("\\$");
             if (arr.length == 2) ext.put(arr[0], arr[1]);
@@ -71,20 +74,26 @@ public class AList extends Spider {
         return items;
     }
 
+    private void fetchRule() throws Exception {
+        if (ext != null && !ext.isEmpty()) return;
+        if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
+        if (isJson(extend)) parseJson(extend);
+        else parseText(extend);
+    }
+
     @Override
     public void init(Context context, String extend) {
         try {
-            map = new HashMap<>();
-            ext = new LinkedHashMap<>();
-            if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
-            if (isJson(extend)) parseJson(extend);
-            else parseText(extend);
+            this.map = new HashMap<>();
+            this.extend = extend;
+            fetchRule();
         } catch (Exception ignored) {
         }
     }
 
     @Override
-    public String homeContent(boolean filter) {
+    public String homeContent(boolean filter) throws Exception {
+        fetchRule();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (String key : ext.keySet()) classes.add(new Class(key, key, "1"));
