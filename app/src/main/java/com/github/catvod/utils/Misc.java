@@ -15,10 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -130,10 +127,10 @@ public class Misc {
     }
 
     public static String MD5(String src) {
-        return MD5(src, StandardCharsets.UTF_8);
+        return MD5(src, "UTF-8");
     }
 
-    public static String MD5(String src, Charset charset) {
+    public static String MD5(String src, String charset) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] messageDigest = md.digest(src.getBytes(charset));
@@ -141,7 +138,7 @@ public class Misc {
             StringBuilder sb = new StringBuilder(no.toString(16));
             while (sb.length() < 32) sb.insert(0, "0");
             return sb.toString().toLowerCase();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             return "";
         }
     }
