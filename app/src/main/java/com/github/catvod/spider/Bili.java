@@ -43,7 +43,7 @@ public class Bili extends Spider {
     }
 
     private void fetchRule() throws Exception {
-        if (ext != null && !header.isEmpty()) return;
+        if (header.containsKey("cookie") && header.get("cookie").length() > 0) return;
         if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
         ext = new JSONObject(extend);
         setHeader();
@@ -68,6 +68,7 @@ public class Bili extends Spider {
 
     @Override
     public String homeVideoContent() throws Exception {
+        fetchRule();
         return categoryContent("窗 白噪音", "1", true, new HashMap<>());
     }
 
