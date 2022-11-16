@@ -1,10 +1,12 @@
 package com.github.catvod.utils;
 
 import android.net.Uri;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -149,6 +151,15 @@ public class Misc {
 
     public static int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getDisplayMetrics());
+    }
+
+    public static void loadUrl(WebView webView, String script) {
+        loadUrl(webView, script, null);
+    }
+
+    public static void loadUrl(WebView webView, String script, ValueCallback<String> callback) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) webView.evaluateJavascript(script, callback);
+        else webView.loadUrl(script);
     }
 
     public static void addView(View view, ViewGroup.LayoutParams params) {
