@@ -83,6 +83,7 @@ public class Ali {
     }
 
     public String playerContent(String flag, String id) {
+        if (id.equals("无数据")) return "";
         String[] ids = id.split("\\+");
         String shareId = ids[0];
         String shareToken = ids[1];
@@ -111,7 +112,10 @@ public class Ali {
         List<String> playUrls = new ArrayList<>();
         List<String> names = new ArrayList<>(name2id.keySet());
         for (String name : names) playUrls.add(Trans.get(name) + "$" + name2id.get(name) + findSubs(name, subMap));
-        if (playUrls.isEmpty()) Init.show("來晚啦，該分享已失效。");
+        if (playUrls.isEmpty()) {
+            playUrls.add("无数据$无数据");
+            Init.show("來晚啦，該分享已失效。");
+        }
         List<String> sourceUrls = new ArrayList<>();
         sourceUrls.add(TextUtils.join("#", playUrls));
         sourceUrls.add(TextUtils.join("#", playUrls));
