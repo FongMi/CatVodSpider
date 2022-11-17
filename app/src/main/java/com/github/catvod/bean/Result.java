@@ -33,13 +33,13 @@ public class Result {
     @SerializedName("jx")
     private int jx;
     @SerializedName("page")
-    private int Page;
+    private int page;
     @SerializedName("pagecount")
-    private int PageCount;
+    private int pagecount;
     @SerializedName("limit")
-    private int Limit;
+    private int limit;
     @SerializedName("total")
-    private int Total;
+    private int total;
 
     public static String string(List<Class> classes, List<Vod> list, LinkedHashMap<String, List<Filter>> filters) {
         return Result.get().classes(classes).vod(list).filters(filters).string();
@@ -95,7 +95,8 @@ public class Result {
 
     public Result filters(JSONObject object) {
         if (object == null) return this;
-        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {}.getType();
+        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {
+        }.getType();
         LinkedHashMap<String, List<Filter>> filters = new Gson().fromJson(object.toString(), listType);
         for (Map.Entry<String, List<Filter>> entry : filters.entrySet()) for (Filter filter : entry.getValue()) filter.trans();
         this.filters = filters;
@@ -133,6 +134,18 @@ public class Result {
         return this;
     }
 
+    public Result page() {
+        return page(1, 1, 0, 1);
+    }
+
+    public Result page(int page, int count, int limit, int total) {
+        this.page = page > 0 ? page : Integer.MAX_VALUE;
+        this.limit = limit > 0 ? limit : Integer.MAX_VALUE;
+        this.total = total > 0 ? total : Integer.MAX_VALUE;
+        this.pagecount = count > 0 ? page : Integer.MAX_VALUE;
+        return this;
+    }
+
     public List<Vod> getList() {
         return list == null ? Collections.emptyList() : list;
     }
@@ -144,29 +157,5 @@ public class Result {
     @Override
     public String toString() {
         return new Gson().toJson(this);
-    }
-
-    public Result pageSetup(int Page, int PageCount, int Limit, int Total) {
-        if (Page > 0) {
-            this.Page = Page;
-        } else {
-            this.Page = Integer.MAX_VALUE;
-        }
-        if (PageCount > 0) {
-            this.PageCount = PageCount;
-        } else {
-            this.PageCount = Integer.MAX_VALUE;
-        }
-        if (Limit > 0) {
-            this.Limit = Limit;
-        } else {
-            this.Limit = Integer.MAX_VALUE;
-        }
-        if (Total > 0) {
-            this.Total = Total;
-        } else {
-            this.Total = Integer.MAX_VALUE;
-        }
-        return this;
     }
 }

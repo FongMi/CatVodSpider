@@ -116,7 +116,7 @@ public class AList extends Spider {
         Sorter.sort(type, order, files);
         for (Item item : folders) list.add(item.getVod(tid));
         for (Item item : files) list.add(item.getVod(tid));
-        return Result.get().vod(list).pageSetup(1, 1, 0, 1).string();
+        return Result.get().vod(list).page().string();
     }
 
     @Override
