@@ -144,7 +144,7 @@ public class Ali {
             if (file.getType().equals("folder")) {
                 folders.add(file);
             } else if (file.getCategory().equals("video") || file.getCategory().equals("audio")) {
-                name2id.put(parent.getDisplayName(file.getName()), shareId + "+" + shareToken + "+" + file.getFileId());
+                name2id.put(parent.getDisplayName(file.getName(), file.getSize()), shareId + "+" + shareToken + "+" + file.getFileId());
             } else if (Misc.isSub(file.getExt())) {
                 String key = file.removeExt();
                 if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());

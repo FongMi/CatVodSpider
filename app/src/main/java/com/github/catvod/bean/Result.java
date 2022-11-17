@@ -32,6 +32,14 @@ public class Result {
     private int parse;
     @SerializedName("jx")
     private int jx;
+    @SerializedName("page")
+    private int Page;
+    @SerializedName("pagecount")
+    private int PageCount;
+    @SerializedName("limit")
+    private int Limit;
+    @SerializedName("total")
+    private int Total;
 
     public static String string(List<Class> classes, List<Vod> list, LinkedHashMap<String, List<Filter>> filters) {
         return Result.get().classes(classes).vod(list).filters(filters).string();
@@ -136,5 +144,29 @@ public class Result {
     @Override
     public String toString() {
         return new Gson().toJson(this);
+    }
+
+    public Result pageSetup(int Page, int PageCount, int Limit, int Total) {
+        if (Page > 0) {
+            this.Page = Page;
+        } else {
+            this.Page = Integer.MAX_VALUE;
+        }
+        if (PageCount > 0) {
+            this.PageCount = PageCount;
+        } else {
+            this.PageCount = Integer.MAX_VALUE;
+        }
+        if (Limit > 0) {
+            this.Limit = Limit;
+        } else {
+            this.Limit = Integer.MAX_VALUE;
+        }
+        if (Total > 0) {
+            this.Total = Total;
+        } else {
+            this.Total = Integer.MAX_VALUE;
+        }
+        return this;
     }
 }

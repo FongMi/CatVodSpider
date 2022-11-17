@@ -2,6 +2,7 @@ package com.github.catvod.bean.ali;
 
 import android.text.TextUtils;
 
+import com.github.catvod.utils.Misc;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -26,6 +27,8 @@ public class Item {
     private String fileExtension;
     @SerializedName("category")
     private String category;
+    @SerializedName("size")
+    private double size;
 
     public static Item objectFrom(String str) {
         return new Gson().fromJson(str, Item.class);
@@ -67,11 +70,11 @@ public class Item {
         return TextUtils.isEmpty(category) ? "" : category;
     }
 
-    public String getDisplayName(String fileName) {
-        return getName().isEmpty() ? fileName : "[" + getName() + "] " + fileName;
-    }
+    public String getDisplayName(String fileName, String size) { return getSize().isEmpty() ? "[" + size + "]" + fileName : fileName; }
 
     public String removeExt() {
         return getName().indexOf(".") > 0 ? getName().substring(0, getName().lastIndexOf(".")) : getName();
     }
+
+    public String getSize() { return TextUtils.isEmpty(Misc.getSize(size)) ? "" : Misc.getSize(size); }
 }
