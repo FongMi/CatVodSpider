@@ -112,10 +112,7 @@ public class Ali {
         List<String> playUrls = new ArrayList<>();
         List<String> names = new ArrayList<>(name2id.keySet());
         for (String name : names) playUrls.add(Trans.get(name) + "$" + name2id.get(name) + findSubs(name, subMap));
-        if (playUrls.isEmpty()) {
-            playUrls.add("无数据$无数据");
-            Init.show("來晚啦，該分享已失效。");
-        }
+        if (playUrls.isEmpty()) playUrls.add("无数据$无数据");
         List<String> sourceUrls = new ArrayList<>();
         sourceUrls.add(TextUtils.join("#", playUrls));
         sourceUrls.add(TextUtils.join("#", playUrls));
@@ -148,7 +145,7 @@ public class Ali {
             if (file.getType().equals("folder")) {
                 folders.add(file);
             } else if (file.getCategory().equals("video") || file.getCategory().equals("audio")) {
-                name2id.put(parent.getDisplayName(file.getName(), file.getSize()), shareId + "+" + shareToken + "+" + file.getFileId());
+                name2id.put(file.getDisplayName(), shareId + "+" + shareToken + "+" + file.getFileId());
             } else if (Misc.isSub(file.getExt())) {
                 String key = file.removeExt();
                 if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());

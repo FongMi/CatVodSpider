@@ -70,11 +70,15 @@ public class Item {
         return TextUtils.isEmpty(category) ? "" : category;
     }
 
-    public String getDisplayName(String fileName, String size) { return getSize().isEmpty() ? "[" + size + "]" + fileName : fileName; }
+    public double getSize() {
+        return size;
+    }
+
+    public String getDisplayName() {
+        return getSize() == 0 ? getName() : "[" + Misc.getSize(getSize()) + "] " + getName();
+    }
 
     public String removeExt() {
         return getName().indexOf(".") > 0 ? getName().substring(0, getName().lastIndexOf(".")) : getName();
     }
-
-    public String getSize() { return TextUtils.isEmpty(Misc.getSize(size)) ? "" : Misc.getSize(size); }
 }
