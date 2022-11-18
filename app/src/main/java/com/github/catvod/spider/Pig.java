@@ -33,7 +33,7 @@ public class Pig extends Spider {
         for (Element element : doc.select("li.menu-item > a")) {
             String typeId = element.attr("href").replace(siteUrl, "");
             String typeName = element.text();
-            if (typeId.contains("goav.one")) break;
+            if (typeId.contains("nowav.tv")) break;
             classes.add(new Class(typeId, typeName));
         }
         for (Element element : doc.select("div.media")) {
