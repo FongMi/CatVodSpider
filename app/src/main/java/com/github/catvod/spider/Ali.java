@@ -106,12 +106,12 @@ public class Ali {
         body.put("share_id", shareId);
         String json = post("adrive/v3/share_link/get_share_by_anonymous", body);
         JSONObject object = new JSONObject(json);
-        LinkedHashMap<String, String> name2id = new LinkedHashMap<>();
+        LinkedHashMap<Item, String> fileMap = new LinkedHashMap<>();
         Map<String, List<String>> subMap = new HashMap<>();
-        listFiles(new Item(getParentFileId(fileId, object)), name2id, subMap, shareId, shareToken);
+        listFiles(new Item(getParentFileId(fileId, object)), fileMap, subMap, shareId, shareToken);
         List<String> playUrls = new ArrayList<>();
-        List<String> names = new ArrayList<>(name2id.keySet());
-        for (String name : names) playUrls.add(Trans.get(name) + "$" + name2id.get(name) + findSubs(name, subMap));
+        List<Item> files = new ArrayList<>(fileMap.keySet());
+        for (Item file : files) playUrls.add(Trans.get(file.getDisplayName()) + "$" + fileMap.get(file) + findSubs(file.getName(), subMap));
         if (playUrls.isEmpty()) playUrls.add("无数据$无数据");
         List<String> sourceUrls = new ArrayList<>();
         sourceUrls.add(TextUtils.join("#", playUrls));
@@ -127,11 +127,11 @@ public class Ali {
         return vod;
     }
 
-    private void listFiles(Item folder, LinkedHashMap<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken) throws Exception {
+    private void listFiles(Item folder, LinkedHashMap<Item, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken) throws Exception {
         listFiles(folder, name2id, subMap, shareId, shareToken, "");
     }
 
-    private void listFiles(Item parent, LinkedHashMap<String, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken, String marker) throws Exception {
+    private void listFiles(Item parent, LinkedHashMap<Item, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken, String marker) throws Exception {
         JSONObject body = new JSONObject();
         List<Item> folders = new ArrayList<>();
         body.put("limit", 200);
@@ -145,7 +145,7 @@ public class Ali {
             if (file.getType().equals("folder")) {
                 folders.add(file);
             } else if (file.getCategory().equals("video") || file.getCategory().equals("audio")) {
-                name2id.put(file.getDisplayName(), shareId + "+" + shareToken + "+" + file.getFileId());
+                name2id.put(file, shareId + "+" + shareToken + "+" + file.getFileId());
             } else if (Misc.isSub(file.getExt())) {
                 String key = file.removeExt();
                 if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());
@@ -226,7 +226,7 @@ public class Ali {
     }
 
     private String getPreviewQuality(JSONArray taskList) throws Exception {
-        for (String templateId : Arrays.asList("UHD", "QHD", "FHD", "HD", "SD", "LD")) {
+        for (String templateId : Arrays.asList("FHD", "HD", "SD", "LD")) {
             for (int i = 0; i < taskList.length(); ++i) {
                 JSONObject task = taskList.getJSONObject(i);
                 if (task.getString("template_id").equals(templateId)) {
