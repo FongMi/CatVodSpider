@@ -3,10 +3,14 @@
   "wallpaper": "https://gao.chuqiuyu.tk",
   "lives": [
     {
-      "name": "直播",
+      "name": "Adult",
       "type": 0,
-      "url": "https://raw.githubusercontent.com/jackson0829/jackson0829.github.io/main/TW.txt",
-      "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}"
+      "url": "https://raw.githubusercontent.com/YanG-1989/m3u/main/Adult.m3u"
+    },
+    {
+      "name": "10086",
+      "type": 0,
+      "url": "https://agit.ai/VivoMax/Fu/raw/branch/master/Flzb/drzb.txt"
     }
   ],
   "sites": [
