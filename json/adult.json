@@ -81,6 +81,14 @@
       "filterable": 1
     },
     {
+      "key": "Hanime",
+      "name": "Hanime",
+      "type": 3,
+      "api": "csp_Hanime",
+      "searchable": 1,
+      "filterable": 1
+    },
+    {
       "key": "madouse.la",
       "name": "成人01",
       "type": 1,
