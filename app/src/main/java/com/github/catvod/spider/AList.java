@@ -17,6 +17,9 @@ import com.google.gson.JsonSyntaxException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -141,7 +144,10 @@ public class AList extends Spider {
         JSONObject params = new JSONObject();
         params.put("path", "/");
         params.put("keyword", keyword);
-        for (String key : ext.keySet()) list.addAll(getList(params.toString(), key));
+        for (String key : ext.keySet()) {
+            if (v3(key)) list.addAll(getV3List(keyword, key));
+            else list.addAll(getV2List(params.toString(), key));
+        }
         return Result.string(list);
     }
 
@@ -151,7 +157,26 @@ public class AList extends Spider {
         return Result.get().url(ids[0]).sub(getSub(ids)).string();
     }
 
-    private List<Vod> getList(String param, String key) {
+    private List<Vod> getV3List(String param, String key) {
+        String url = ext.get(key) + "/search?box=" + param + "&url=";
+        Document doc = Jsoup.parse(OkHttpUtil.string(url));
+        List<Vod> items = new ArrayList<>();
+        for (Element a : doc.select("ul > a")) {
+            String text = a.text();
+            String[] splits = text.split("\\.");
+            boolean file = splits.length > 1 && splits[1].length() == 3;
+            Item item = new Item();
+            int index = text.lastIndexOf("/");
+            if (index == -1) continue;
+            item.setPath("/" + text.substring(0, index));
+            item.setName(text.substring(index + 1, text.length()));
+            item.setType(file ? 0 : 1);
+            items.add(item.getVod(key));
+        }
+        return items;
+    }
+
+    private List<Vod> getV2List(String param, String key) {
         try {
             if (v3(key)) return Collections.emptyList();
             List<Vod> list = new ArrayList<>();
@@ -159,7 +184,7 @@ public class AList extends Spider {
             String response = OkHttpUtil.postJson(url, param);
             String json = new JSONObject(response).getJSONArray("data").toString();
             List<Item> items = Item.arrayFrom(json);
-            for (Item item : items) if (!item.isFolder() && !item.ignore(false)) list.add(item.getVod(key));
+            for (Item item : items) if (!item.ignore(false)) list.add(item.getVod(key));
             return list;
         } catch (Exception e) {
             return Collections.emptyList();
