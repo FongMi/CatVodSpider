@@ -44,12 +44,24 @@ public class Item {
         return TextUtils.isEmpty(name) ? "" : name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getPath() {
         return TextUtils.isEmpty(path) ? "" : path;
     }
 
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public int getType() {
         return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public long getSize() {
