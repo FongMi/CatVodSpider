@@ -169,7 +169,7 @@ public class AList extends Spider {
             int index = text.lastIndexOf("/");
             if (index == -1) continue;
             item.setPath("/" + text.substring(0, index));
-            item.setName(text.substring(index + 1, text.length()));
+            item.setName(text.substring(index + 1));
             item.setType(file ? 0 : 1);
             items.add(item.getVod(key));
         }
