@@ -105,7 +105,8 @@ public class AList extends Spider {
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
+        fetchRule();
         String type = extend.containsKey("type") ? extend.get("type") : "name";
         String order = extend.containsKey("order") ? extend.get("order") : "asc";
         List<Item> folders = new ArrayList<>();
@@ -123,7 +124,8 @@ public class AList extends Spider {
     }
 
     @Override
-    public String detailContent(List<String> ids) {
+    public String detailContent(List<String> ids) throws Exception {
+        fetchRule();
         String id = ids.get(0);
         Item item = getDetail(id);
         String path = id.substring(0, id.lastIndexOf("/"));
@@ -140,6 +142,7 @@ public class AList extends Spider {
 
     @Override
     public String searchContent(String keyword, boolean quick) throws Exception {
+        fetchRule();
         List<Vod> list = new ArrayList<>();
         JSONObject params = new JSONObject();
         params.put("path", "/");
