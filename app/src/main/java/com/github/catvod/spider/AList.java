@@ -1,6 +1,7 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
@@ -156,7 +157,7 @@ public class AList extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        String[] ids = id.split("\\+");
+        String[] ids = id.split("~~~");
         return Result.get().url(ids[0]).sub(getSub(ids)).string();
     }
 
@@ -218,6 +219,7 @@ public class AList extends Spider {
             String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
             String url = ext.get(key) + (v3(key) ? "/api/fs/get" : "/api/public/path");
             JSONObject params = new JSONObject();
+            Log.e("DDD",path);
             params.put("path", path);
             String response = OkHttpUtil.postJson(url, params.toString());
             String json = v3(key) ? new JSONObject(response).getJSONObject("data").toString() : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
@@ -229,7 +231,7 @@ public class AList extends Spider {
 
     private String findSubs(String path, List<Item> items) {
         StringBuilder sb = new StringBuilder();
-        for (Item item : items) if (Misc.isSub(item.getExt())) sb.append("+").append(Trans.get(item.getName())).append("@").append(Misc.getSubMimeType(item.getExt())).append("@").append(item.getVodId(path));
+        for (Item item : items) if (Misc.isSub(item.getExt())) sb.append("~~~").append(Trans.get(item.getName())).append("@").append(Misc.getSubMimeType(item.getExt())).append("@").append(item.getVodId(path));
         return sb.toString();
     }
 
