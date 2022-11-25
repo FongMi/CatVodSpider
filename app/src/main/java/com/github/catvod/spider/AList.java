@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 public class AList extends Spider {
 
@@ -140,57 +141,18 @@ public class AList extends Spider {
         return Result.string(vod);
     }
 
-    @Override
-    public String searchContent(String keyword, boolean quick) throws Exception {
-        fetchRule();
-        List<Vod> list = new ArrayList<>();
-        JSONObject params = new JSONObject();
-        params.put("path", "/");
-        params.put("keyword", keyword);
-        for (String key : ext.keySet()) {
-            if (v3(key)) list.addAll(getV3List(keyword, key));
-            else list.addAll(getV2List(params.toString(), key));
-        }
-        return Result.string(list);
-    }
-
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) {
-        String[] ids = id.split("~~~");
-        return Result.get().url(ids[0]).sub(getSub(ids)).string();
-    }
-
-    private List<Vod> getV3List(String param, String key) {
-        String url = ext.get(key) + "/search?box=" + param + "&url=";
-        Document doc = Jsoup.parse(OkHttpUtil.string(url));
-        List<Vod> items = new ArrayList<>();
-        for (Element a : doc.select("ul > a")) {
-            String text = a.text();
-            String[] splits = text.split("\\.");
-            boolean file = splits.length > 1 && splits[1].length() == 3;
-            Item item = new Item();
-            int index = text.lastIndexOf("/");
-            if (index == -1) continue;
-            item.setPath("/" + text.substring(0, index));
-            item.setName(text.substring(index + 1));
-            item.setType(file ? 0 : 1);
-            items.add(item.getVod(key));
-        }
-        return items;
-    }
-
-    private List<Vod> getV2List(String param, String key) {
+    private Item getDetail(String id) {
         try {
-            if (v3(key)) return Collections.emptyList();
-            List<Vod> list = new ArrayList<>();
-            String url = ext.get(key) + "/api/public/search";
-            String response = OkHttpUtil.postJson(url, param);
-            String json = new JSONObject(response).getJSONArray("data").toString();
-            List<Item> items = Item.arrayFrom(json);
-            for (Item item : items) if (!item.ignore(false)) list.add(item.getVod(key));
-            return list;
+            String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
+            String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
+            String url = ext.get(key) + (v3(key) ? "/api/fs/get" : "/api/public/path");
+            JSONObject params = new JSONObject();
+            params.put("path", path);
+            String response = OkHttpUtil.postJson(url, params.toString());
+            String json = v3(key) ? new JSONObject(response).getJSONObject("data").toString() : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
+            return Item.objectFrom(json);
         } catch (Exception e) {
-            return Collections.emptyList();
+            return new Item();
         }
     }
 
@@ -212,18 +174,65 @@ public class AList extends Spider {
         }
     }
 
-    private Item getDetail(String id) {
+    @Override
+    public String searchContent(String keyword, boolean quick) throws Exception {
+        fetchRule();
+        List<Vod> list = new ArrayList<>();
+        CountDownLatch cd = new CountDownLatch(ext.size());
+        for (String key : ext.keySet()) new Thread(() -> search(cd, list, key, keyword)).start();
+        cd.await();
+        return Result.string(list);
+    }
+
+    @Override
+    public String playerContent(String flag, String id, List<String> vipFlags) {
+        String[] ids = id.split("~~~");
+        return Result.get().url(ids[0]).sub(getSub(ids)).string();
+    }
+
+    private String getParams(String keyword) {
         try {
-            String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
-            String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
-            String url = ext.get(key) + (v3(key) ? "/api/fs/get" : "/api/public/path");
             JSONObject params = new JSONObject();
-            params.put("path", path);
-            String response = OkHttpUtil.postJson(url, params.toString());
-            String json = v3(key) ? new JSONObject(response).getJSONObject("data").toString() : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
-            return Item.objectFrom(json);
+            params.put("path", "/");
+            params.put("keyword", keyword);
+            return params.toString();
         } catch (Exception e) {
-            return new Item();
+            return "";
+        }
+    }
+
+    private void search(CountDownLatch cd, List<Vod> list, String key, String keyword) {
+        if (v3(key)) searchV3(list, key, keyword);
+        else searchV2(list, key, getParams(keyword));
+        cd.countDown();
+    }
+
+    private void searchV3(List<Vod> list, String key, String param) {
+        String url = ext.get(key) + "/search?box=" + param + "&url=";
+        Document doc = Jsoup.parse(OkHttpUtil.string(url));
+        for (Element a : doc.select("ul > a")) {
+            String text = a.text();
+            String[] splits = text.split("\\.");
+            boolean file = splits.length > 1 && splits[1].length() == 3;
+            Item item = new Item();
+            int index = text.lastIndexOf("/");
+            if (index == -1) continue;
+            item.setPath("/" + text.substring(0, index));
+            item.setName(text.substring(index + 1));
+            item.setType(file ? 0 : 1);
+            list.add(item.getVod(key));
+        }
+    }
+
+    private void searchV2(List<Vod> list, String key, String param) {
+        try {
+            String url = ext.get(key) + "/api/public/search";
+            String response = OkHttpUtil.postJson(url, param);
+            String json = new JSONObject(response).getJSONArray("data").toString();
+            List<Item> items = Item.arrayFrom(json);
+            for (Item item : items) if (!item.ignore(false)) list.add(item.getVod(key));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
