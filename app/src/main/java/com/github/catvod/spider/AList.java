@@ -1,7 +1,6 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
@@ -219,7 +218,6 @@ public class AList extends Spider {
             String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
             String url = ext.get(key) + (v3(key) ? "/api/fs/get" : "/api/public/path");
             JSONObject params = new JSONObject();
-            Log.e("DDD",path);
             params.put("path", path);
             String response = OkHttpUtil.postJson(url, params.toString());
             String json = v3(key) ? new JSONObject(response).getJSONObject("data").toString() : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
