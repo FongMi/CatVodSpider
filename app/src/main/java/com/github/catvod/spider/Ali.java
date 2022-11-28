@@ -10,6 +10,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
+import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Prefers;
@@ -41,8 +42,9 @@ public class Ali {
 
     private final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
     private ScheduledExecutorService service;
-    private static String accessToken;
+    private static String authorization;
     private String refreshToken;
+    private long expiresTime;
     private ImageView view;
 
     public Ali(String token) {
@@ -60,7 +62,7 @@ public class Ali {
 
     private static HashMap<String, String> getHeaders(String shareToken) {
         HashMap<String, String> headers = getHeaders();
-        if (accessToken != null) headers.put("authorization", accessToken);
+        if (authorization != null) headers.put("authorization", authorization);
         headers.put("x-share-token", shareToken);
         return headers;
     }
@@ -89,8 +91,8 @@ public class Ali {
         String shareToken = ids[1];
         String fileId = ids[2];
         String sub = getSub(shareId, shareToken, ids);
-        refreshAccessToken();
-        while (TextUtils.isEmpty(accessToken)) SystemClock.sleep(250);
+        if (System.currentTimeMillis() > expiresTime) refreshAccessToken();
+        while (TextUtils.isEmpty(authorization)) SystemClock.sleep(250);
         if (flag.equals("原畫")) {
             return Result.get().url(getDownloadUrl(shareId, shareToken, fileId)).sub(sub).header(getHeaders()).string();
         } else {
@@ -176,11 +178,12 @@ public class Ali {
             body.put("refresh_token", refreshToken);
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
-            accessToken = object.getString("token_type") + " " + object.getString("access_token");
+            authorization = object.getString("token_type") + " " + object.getString("access_token");
+            expiresTime = System.currentTimeMillis() + object.getInt("expires_in") * 1000L;
             refreshToken = object.getString("refresh_token");
-            Prefers.put("token", refreshToken);
+            SpiderDebug.log("refresh token: " + refreshToken);
         } catch (JSONException e) {
-            accessToken = null;
+            authorization = null;
             e.printStackTrace();
             checkService();
             getQRCode();
