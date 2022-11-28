@@ -23,8 +23,7 @@ public class Config {
     private int version;
 
     public static List<Config> arrayFrom(String str) {
-        Type listType = new TypeToken<ArrayList<Config>>() {
-        }.getType();
+        Type listType = new TypeToken<ArrayList<Config>>() {}.getType();
         return new Gson().fromJson(str, listType);
     }
 
