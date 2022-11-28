@@ -5,14 +5,14 @@ import android.text.TextUtils;
 import com.github.catvod.bean.Class;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Config {
+public class Drive {
 
+    @SerializedName("drives")
+    private List<Drive> drives;
     @SerializedName("name")
     private String name;
     @SerializedName("server")
@@ -22,12 +22,15 @@ public class Config {
     @SerializedName("version")
     private int version;
 
-    public static List<Config> arrayFrom(String str) {
-        Type listType = new TypeToken<ArrayList<Config>>() {}.getType();
-        return new Gson().fromJson(str, listType);
+    public static Drive objectFrom(String str) {
+        return new Gson().fromJson(str, Drive.class);
     }
 
-    public Config(String name) {
+    public List<Drive> getDrives() {
+        return drives == null ? new ArrayList<>() : drives;
+    }
+
+    public Drive(String name) {
         this.name = name;
     }
 
@@ -82,8 +85,8 @@ public class Config {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Config)) return false;
-        Config it = (Config) obj;
+        if (!(obj instanceof Drive)) return false;
+        Drive it = (Drive) obj;
         return getName().equals(it.getName());
     }
 }
