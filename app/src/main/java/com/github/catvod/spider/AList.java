@@ -6,16 +6,14 @@ import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.bean.alist.Config;
 import com.github.catvod.bean.alist.Item;
 import com.github.catvod.bean.alist.Sorter;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,48 +26,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 public class AList extends Spider {
 
-    private LinkedHashMap<String, String> ext;
-    private Map<String, String> map;
-    private String extend;
-
-    private boolean isJson(String json) {
-        try {
-            JsonParser.parseString(json);
-            return true;
-        } catch (JsonSyntaxException e) {
-            return false;
-        }
-    }
-
-    private void parseJson(String extend) throws Exception {
-        JSONObject object = new JSONObject(extend);
-        JSONArray array = object.names();
-        ext = new LinkedHashMap<>();
-        for (int i = 0; i < array.length(); i++) {
-            String key = array.getString(i);
-            ext.put(key, object.getString(key));
-        }
-    }
-
-    private void parseText(String extend) {
-        String[] array = extend.split("#");
-        ext = new LinkedHashMap<>();
-        for (String text : array) {
-            String[] arr = text.split("\\$");
-            if (arr.length == 2) ext.put(arr[0], arr[1]);
-        }
-    }
-
-    private boolean v3(String key) {
-        if (!map.containsKey(key)) map.put(key, OkHttpUtil.string(ext.get(key) + "/api/public/settings").contains("v3.") ? "3" : "2");
-        return Objects.equals(map.get(key), "3");
-    }
+    private List<Config> configs;
+    private String ext;
 
     private List<Filter> getFilter() {
         List<Filter> items = new ArrayList<>();
@@ -78,18 +40,21 @@ public class AList extends Spider {
         return items;
     }
 
-    private void fetchRule() throws Exception {
-        if (ext != null && !ext.isEmpty()) return;
-        if (extend.startsWith("http")) extend = OkHttpUtil.string(extend);
-        if (isJson(extend)) parseJson(extend);
-        else parseText(extend);
+    private void fetchRule() {
+        if (configs != null && !configs.isEmpty()) return;
+        configs = Config.arrayFrom(ext);
+    }
+
+    private Config getConfig(String name) {
+        Config config = configs.get(configs.indexOf(new Config(name)));
+        if (config.getVersion() == 0) config.setVersion(OkHttpUtil.string(config.settingsApi()).contains("v3.") ? 3 : 2);
+        return config;
     }
 
     @Override
     public void init(Context context, String extend) {
         try {
-            this.map = new HashMap<>();
-            this.extend = extend;
+            ext = extend;
             fetchRule();
         } catch (Exception ignored) {
         }
@@ -100,7 +65,7 @@ public class AList extends Spider {
         fetchRule();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        for (String key : ext.keySet()) classes.add(new Class(key, key, "1"));
+        for (Config config : configs) classes.add(config.toType());
         for (Class item : classes) filters.put(item.getTypeId(), getFilter());
         return Result.string(classes, filters);
     }
@@ -145,11 +110,12 @@ public class AList extends Spider {
         try {
             String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
             String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
-            String url = ext.get(key) + (v3(key) ? "/api/fs/get" : "/api/public/path");
+            Config config = getConfig(key);
             JSONObject params = new JSONObject();
             params.put("path", path);
-            String response = OkHttpUtil.postJson(url, params.toString());
-            String json = v3(key) ? new JSONObject(response).getJSONObject("data").toString() : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
+            params.put("password", config.getPassword());
+            String response = OkHttpUtil.postJson(config.getApi(), params.toString());
+            String json = config.isNew() ? new JSONObject(response).getJSONObject("data").toString() : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
             return Item.objectFrom(json);
         } catch (Exception e) {
             return new Item();
@@ -160,14 +126,15 @@ public class AList extends Spider {
         try {
             String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
             String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
-            String url = ext.get(key) + (v3(key) ? "/api/fs/list" : "/api/public/path");
+            Config config = getConfig(key);
             JSONObject params = new JSONObject();
             params.put("path", path);
-            String response = OkHttpUtil.postJson(url, params.toString());
-            String json = new JSONObject(response).getJSONObject("data").getJSONArray(v3(key) ? "content" : "files").toString();
+            params.put("password", config.getPassword());
+            String response = OkHttpUtil.postJson(config.listApi(), params.toString());
+            String json = new JSONObject(response).getJSONObject("data").getJSONArray(config.isNew() ? "content" : "files").toString();
             List<Item> items = Item.arrayFrom(json);
             Iterator<Item> iterator = items.iterator();
-            if (filter) while (iterator.hasNext()) if (iterator.next().ignore(v3(key))) iterator.remove();
+            if (filter) while (iterator.hasNext()) if (iterator.next().ignore(config.isNew())) iterator.remove();
             return items;
         } catch (Exception e) {
             return Collections.emptyList();
@@ -178,8 +145,8 @@ public class AList extends Spider {
     public String searchContent(String keyword, boolean quick) throws Exception {
         fetchRule();
         List<Vod> list = new ArrayList<>();
-        CountDownLatch cd = new CountDownLatch(ext.size());
-        for (String key : ext.keySet()) new Thread(() -> search(cd, list, key, keyword)).start();
+        CountDownLatch cd = new CountDownLatch(configs.size());
+        for (Config config : configs) new Thread(() -> search(cd, list, config, keyword)).start();
         cd.await();
         return Result.string(list);
     }
@@ -201,15 +168,14 @@ public class AList extends Spider {
         }
     }
 
-    private void search(CountDownLatch cd, List<Vod> list, String key, String keyword) {
-        if (v3(key)) searchV3(list, key, keyword);
-        else searchV2(list, key, getParams(keyword));
+    private void search(CountDownLatch cd, List<Vod> list, Config config, String keyword) {
+        if (config.isNew()) searchV3(list, config, keyword);
+        else searchV2(list, config, getParams(keyword));
         cd.countDown();
     }
 
-    private void searchV3(List<Vod> list, String key, String param) {
-        String url = ext.get(key) + "/search?box=" + param + "&url=";
-        Document doc = Jsoup.parse(OkHttpUtil.string(url));
+    private void searchV3(List<Vod> list, Config config, String param) {
+        Document doc = Jsoup.parse(OkHttpUtil.string(config.searchApi(param)));
         for (Element a : doc.select("ul > a")) {
             String text = a.text();
             String[] splits = text.split("\\.");
@@ -220,17 +186,16 @@ public class AList extends Spider {
             item.setPath("/" + text.substring(0, index));
             item.setName(text.substring(index + 1));
             item.setType(file ? 0 : 1);
-            list.add(item.getVod(key));
+            list.add(item.getVod(config.getName()));
         }
     }
 
-    private void searchV2(List<Vod> list, String key, String param) {
+    private void searchV2(List<Vod> list, Config config, String param) {
         try {
-            String url = ext.get(key) + "/api/public/search";
-            String response = OkHttpUtil.postJson(url, param);
+            String response = OkHttpUtil.postJson(config.searchApi(), param);
             String json = new JSONObject(response).getJSONArray("data").toString();
             List<Item> items = Item.arrayFrom(json);
-            for (Item item : items) if (!item.ignore(false)) list.add(item.getVod(key));
+            for (Item item : items) if (!item.ignore(false)) list.add(item.getVod(config.getName()));
         } catch (Exception e) {
             e.printStackTrace();
         }
