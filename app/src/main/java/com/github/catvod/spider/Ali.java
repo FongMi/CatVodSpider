@@ -177,6 +177,8 @@ public class Ali {
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
             accessToken = object.getString("token_type") + " " + object.getString("access_token");
+            refreshToken = object.getString("refresh_token");
+            Prefers.put("token", refreshToken);
         } catch (JSONException e) {
             accessToken = null;
             e.printStackTrace();
