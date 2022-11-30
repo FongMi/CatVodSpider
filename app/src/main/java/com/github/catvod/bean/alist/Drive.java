@@ -85,7 +85,7 @@ public class Drive {
     }
 
     private void checkVersion() {
-        if (getVersion() == 0) setVersion(OkHttpUtil.string(settingsApi()).contains("v3.") ? 3 : 2);
+        if (version == 0) setVersion(OkHttpUtil.string(settingsApi()).contains("v3.") ? 3 : 2);
     }
 
     @Override
