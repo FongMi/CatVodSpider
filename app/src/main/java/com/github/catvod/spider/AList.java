@@ -102,14 +102,34 @@ public class AList extends Spider {
         List<Item> parents = getList(path, false);
         Sorter.sort("name", "asc", parents);
         List<String> playUrls = new ArrayList<>();
-        for (Item item : parents) if (item.isVideo(drive.isNew())) playUrls.add(Trans.get(item.getName()) + "$" + item.getUrl() + findSubs(path, parents));
+        for (Item item : parents) {
+            if (item.isVideo(drive.isNew())) {
+                playUrls.add(Trans.get(item.getName()) + "$" + item.getVodId(path) + findSubs(path, parents));
+            }
+        }
         Vod vod = new Vod();
         vod.setVodId(id);
         vod.setVodName(name);
-        vod.setVodPlayFrom("AList");
+        vod.setVodPlayFrom(key);
         vod.setVodPlayUrl(TextUtils.join("#", playUrls));
         vod.setVodPic("http://img1.3png.com/281e284a670865a71d91515866552b5f172b.png");
         return Result.string(vod);
+    }
+
+    @Override
+    public String searchContent(String keyword, boolean quick) throws Exception {
+        fetchRule();
+        List<Vod> list = new ArrayList<>();
+        CountDownLatch cd = new CountDownLatch(drives.size());
+        for (Drive drive : drives) new Thread(() -> search(cd, list, drive, keyword)).start();
+        cd.await();
+        return Result.string(list);
+    }
+
+    @Override
+    public String playerContent(String flag, String id, List<String> vipFlags) {
+        String[] ids = id.split("~~~");
+        return Result.get().url(getDetail(ids[0]).getUrl()).sub(getSub(ids)).string();
     }
 
     private Item getDetail(String id) {
@@ -145,22 +165,6 @@ public class AList extends Spider {
         } catch (Exception e) {
             return Collections.emptyList();
         }
-    }
-
-    @Override
-    public String searchContent(String keyword, boolean quick) throws Exception {
-        fetchRule();
-        List<Vod> list = new ArrayList<>();
-        CountDownLatch cd = new CountDownLatch(drives.size());
-        for (Drive drive : drives) new Thread(() -> search(cd, list, drive, keyword)).start();
-        cd.await();
-        return Result.string(list);
-    }
-
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) {
-        String[] ids = id.split("~~~");
-        return Result.get().url(ids[0]).sub(getSub(ids)).string();
     }
 
     private String getParams(String keyword) {
