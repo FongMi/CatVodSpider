@@ -3,6 +3,7 @@ package com.github.catvod.bean.alist;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
+import com.github.catvod.net.OkHttpUtil;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -47,6 +48,7 @@ public class Drive {
     }
 
     public int getVersion() {
+        checkVersion();
         return version;
     }
 
@@ -80,6 +82,10 @@ public class Drive {
 
     public String searchApi(String param) {
         return getServer() + "/search?box=" + param + "&url=";
+    }
+
+    private void checkVersion() {
+        if (getVersion() == 0) setVersion(OkHttpUtil.string(settingsApi()).contains("v3.") ? 3 : 2);
     }
 
     @Override
