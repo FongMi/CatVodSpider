@@ -48,7 +48,7 @@ public class AList extends Spider {
     }
 
     private Drive getDrive(String name) {
-        return drives.get(drives.indexOf(new Drive(name)));
+        return drives.get(drives.indexOf(new Drive(name))).check();
     }
 
     @Override
@@ -119,7 +119,7 @@ public class AList extends Spider {
         fetchRule();
         List<Vod> list = new ArrayList<>();
         CountDownLatch cd = new CountDownLatch(drives.size());
-        for (Drive drive : drives) new Thread(() -> search(cd, list, drive, keyword)).start();
+        for (Drive drive : drives) new Thread(() -> search(cd, list, drive.check(), keyword)).start();
         cd.await();
         return Result.string(list);
     }
