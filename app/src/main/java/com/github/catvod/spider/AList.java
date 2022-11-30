@@ -1,6 +1,7 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
@@ -94,16 +95,20 @@ public class AList extends Spider {
     public String detailContent(List<String> ids) throws Exception {
         fetchRule();
         String id = ids.get(0);
-        Item item = getDetail(id);
+        String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
         String path = id.substring(0, id.lastIndexOf("/"));
+        String name = path.substring(path.lastIndexOf("/") + 1);
+        Drive drive = getDrive(key);
         List<Item> parents = getList(path, false);
+        Sorter.sort("name", "asc", parents);
+        List<String> playUrls = new ArrayList<>();
+        for (Item item : parents) if (item.isVideo(drive.isNew())) playUrls.add(Trans.get(item.getName()) + "$" + item.getUrl() + findSubs(path, parents));
         Vod vod = new Vod();
-        vod.setVodId(item.getVodId(id));
-        vod.setVodName(item.getName());
-        vod.setVodPic(item.getPic());
-        vod.setVodTag(item.getVodTag());
-        vod.setVodPlayFrom("播放");
-        vod.setVodPlayUrl(Trans.get(item.getName()) + "$" + item.getUrl() + findSubs(path, parents));
+        vod.setVodId(id);
+        vod.setVodName(name);
+        vod.setVodPlayFrom("AList");
+        vod.setVodPlayUrl(TextUtils.join("#", playUrls));
+        vod.setVodPic("http://img1.3png.com/281e284a670865a71d91515866552b5f172b.png");
         return Result.string(vod);
     }
 
