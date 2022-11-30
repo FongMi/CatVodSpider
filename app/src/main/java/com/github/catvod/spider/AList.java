@@ -47,10 +47,14 @@ public class AList extends Spider {
         drives = Drive.objectFrom(ext).getDrives();
     }
 
-    private Drive getDrive(String name) {
-        Drive drive = drives.get(drives.indexOf(new Drive(name)));
+    private Drive checkVersion(Drive drive) {
         if (drive.getVersion() == 0) drive.setVersion(OkHttpUtil.string(drive.settingsApi()).contains("v3.") ? 3 : 2);
         return drive;
+    }
+
+    private Drive getDrive(String name) {
+        Drive drive = drives.get(drives.indexOf(new Drive(name)));
+        return checkVersion(drive);
     }
 
     @Override
@@ -121,7 +125,7 @@ public class AList extends Spider {
         fetchRule();
         List<Vod> list = new ArrayList<>();
         CountDownLatch cd = new CountDownLatch(drives.size());
-        for (Drive drive : drives) new Thread(() -> search(cd, list, drive, keyword)).start();
+        for (Drive drive : drives) new Thread(() -> search(cd, list, checkVersion(drive), keyword)).start();
         cd.await();
         return Result.string(list);
     }
