@@ -48,7 +48,6 @@ public class Drive {
     }
 
     public int getVersion() {
-        checkVersion();
         return version;
     }
 
@@ -84,8 +83,9 @@ public class Drive {
         return getServer() + "/search?box=" + param + "&url=";
     }
 
-    private void checkVersion() {
-        if (version == 0) setVersion(OkHttpUtil.string(settingsApi()).contains("v3.") ? 3 : 2);
+    public Drive check() {
+        if (getVersion() == 0) setVersion(OkHttpUtil.string(settingsApi()).contains("v3.") ? 3 : 2);
+        return this;
     }
 
     @Override
