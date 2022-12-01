@@ -101,7 +101,7 @@ public class AList extends Spider {
         Sorter.sort("name", "asc", parents);
         List<String> playUrls = new ArrayList<>();
         for (Item item : parents) {
-            if (item.isVideo(drive.isNew())) {
+            if (item.isMedia(drive.isNew())) {
                 playUrls.add(Trans.get(item.getName()) + "$" + item.getVodId(path) + findSubs(path, parents));
             }
         }

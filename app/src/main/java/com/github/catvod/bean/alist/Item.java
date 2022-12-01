@@ -93,8 +93,9 @@ public class Item {
         return getType() == 1;
     }
 
-    public boolean isVideo(boolean v3) {
-        return getType() == (v3 ? 2 : 3);
+    public boolean isMedia(boolean v3) {
+        if (v3) return getType() == 2 || getType() == 3;
+        return getType() == 3 || getType() == 4;
     }
 
     public boolean ignore(boolean v3) {
