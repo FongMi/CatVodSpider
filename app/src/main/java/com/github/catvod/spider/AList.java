@@ -14,7 +14,6 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
-import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -25,7 +24,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class AList extends Spider {
@@ -138,8 +136,7 @@ public class AList extends Spider {
             params.put("path", path);
             params.put("password", drive.getPassword());
             String response = OkHttpUtil.postJson(drive.getApi(), params.toString());
-            String json = drive.isNew() ? new JSONObject(response).getJSONObject("data").toString() : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
-            return Item.objectFrom(json);
+            return Item.objectFrom(getDetailJson(drive.isNew(), response));
         } catch (Exception e) {
             return new Item();
         }
@@ -154,8 +151,7 @@ public class AList extends Spider {
             params.put("path", path);
             params.put("password", drive.getPassword());
             String response = OkHttpUtil.postJson(drive.listApi(), params.toString());
-            String json = new JSONObject(response).getJSONObject("data").getJSONArray(drive.isNew() ? "content" : "files").toString();
-            List<Item> items = Item.arrayFrom(json);
+            List<Item> items = Item.arrayFrom(getListJson(drive.isNew(), response));
             Iterator<Item> iterator = items.iterator();
             if (filter) while (iterator.hasNext()) if (iterator.next().ignore(drive.isNew())) iterator.remove();
             return items;
@@ -164,30 +160,39 @@ public class AList extends Spider {
         }
     }
 
-    private String getParams(boolean isNew, String keyword) {
-        Map<String, Object> params = new HashMap<>();
-        if (isNew) {
-            params.put("keywords", keyword);
-            params.put("page", 1);
-            params.put("parent", "/");
-            params.put("per_page", 100);
-        } else {
-            params.put("keyword", keyword);
-            params.put("path", "/");
-        }
-        return new Gson().toJson(params);
-    }
-
     private void search(CountDownLatch cd, List<Vod> list, Drive drive, String keyword) {
         try {
-            String response = OkHttpUtil.postJson(drive.searchApi(), getParams(drive.isNew(), keyword));
-            String json = drive.isNew() ? new JSONObject(response).getJSONObject("data").getJSONArray("content").toString() : new JSONObject(response).getJSONArray("data").toString();
-            List<Item> items = Item.arrayFrom(json);
+            String response = OkHttpUtil.postJson(drive.searchApi(), drive.params(keyword));
+            List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
             for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive.getName()));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             cd.countDown();
+        }
+    }
+
+    private String getListJson(boolean isNew, String response) throws Exception {
+        if (isNew) {
+            return new JSONObject(response).getJSONObject("data").getJSONArray("content").toString();
+        } else {
+            return new JSONObject(response).getJSONObject("data").getJSONArray("files").toString();
+        }
+    }
+
+    private String getDetailJson(boolean isNew, String response) throws Exception {
+        if (isNew) {
+            return new JSONObject(response).getJSONObject("data").toString();
+        } else {
+            return new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
+        }
+    }
+
+    private String getSearchJson(boolean isNew, String response) throws Exception {
+        if (isNew) {
+            return new JSONObject(response).getJSONObject("data").getJSONArray("content").toString();
+        } else {
+            return new JSONObject(response).getJSONArray("data").toString();
         }
     }
 
