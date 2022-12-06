@@ -15,6 +15,31 @@
   ],
   "sites": [
     {
+      "key": "AList",
+      "name": "AList",
+      "type": 3,
+      "api": "csp_AList",
+      "searchable": 1,
+      "filterable": 1,
+      "ext": {
+        "drives": [
+          {
+            "name": "9T",
+            "server": "https://drive.9t.ee"
+          },
+          {
+            "name": "木偶",
+            "server": "https://www.kugutsu.ml"
+          },
+          {
+            "name": "秋雨",
+            "server": "https://share.laowang.me",
+            "password": "s8;K^h[j<b"
+          }
+        ]
+      }
+    },
+    {
       "key": "泥巴",
       "name": "泥巴",
       "type": 3,
