@@ -8,7 +8,9 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Drive {
 
@@ -82,6 +84,22 @@ public class Drive {
     public Drive check() {
         if (getVersion() == 0) setVersion(OkHttpUtil.string(settingsApi()).contains("v3.") ? 3 : 2);
         return this;
+    }
+
+    public String params(String keyword) {
+        if (isNew()) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("keywords", keyword);
+            params.put("page", 1);
+            params.put("parent", "/");
+            params.put("per_page", 100);
+            return new Gson().toJson(params);
+        } else {
+            Map<String, Object> params = new HashMap<>();
+            params.put("keyword", keyword);
+            params.put("path", "/");
+            return new Gson().toJson(params);
+        }
     }
 
     @Override
