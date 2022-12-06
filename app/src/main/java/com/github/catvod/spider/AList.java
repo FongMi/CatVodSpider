@@ -14,11 +14,9 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttpUtil;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class AList extends Spider {
@@ -165,47 +164,30 @@ public class AList extends Spider {
         }
     }
 
-    private String getParams(String keyword) {
-        try {
-            JSONObject params = new JSONObject();
-            params.put("path", "/");
+    private String getParams(boolean isNew, String keyword) {
+        Map<String, Object> params = new HashMap<>();
+        if (isNew) {
+            params.put("keywords", keyword);
+            params.put("page", 1);
+            params.put("parent", "/");
+            params.put("per_page", 100);
+        } else {
             params.put("keyword", keyword);
-            return params.toString();
-        } catch (Exception e) {
-            return "";
+            params.put("path", "/");
         }
+        return new Gson().toJson(params);
     }
 
     private void search(CountDownLatch cd, List<Vod> list, Drive drive, String keyword) {
-        if (drive.isNew()) searchV3(list, drive, keyword);
-        else searchV2(list, drive, getParams(keyword));
-        cd.countDown();
-    }
-
-    private void searchV3(List<Vod> list, Drive drive, String param) {
-        Document doc = Jsoup.parse(OkHttpUtil.string(drive.searchApi(param)));
-        for (Element a : doc.select("ul > a")) {
-            String text = a.text();
-            String[] splits = text.split("\\.");
-            boolean file = splits.length > 1 && splits[1].length() == 3;
-            Item item = new Item();
-            int index = text.lastIndexOf("/");
-            if (index == -1) continue;
-            item.setPath("/" + text.substring(0, index));
-            item.setName(text.substring(index + 1));
-            item.setType(file ? 0 : 1);
-            list.add(item.getVod(drive.getName()));
-        }
-    }
-
-    private void searchV2(List<Vod> list, Drive drive, String param) {
         try {
-            String response = OkHttpUtil.postJson(drive.searchApi(), param);
-            String json = new JSONObject(response).getJSONArray("data").toString();
+            String response = OkHttpUtil.postJson(drive.searchApi(), getParams(drive.isNew(), keyword));
+            String json = drive.isNew() ? new JSONObject(response).getJSONObject("data").getJSONArray("content").toString() : new JSONObject(response).getJSONArray("data").toString();
             List<Item> items = Item.arrayFrom(json);
-            for (Item item : items) if (!item.ignore(false)) list.add(item.getVod(drive.getName()));
+            for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive.getName()));
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            cd.countDown();
         }
     }
 

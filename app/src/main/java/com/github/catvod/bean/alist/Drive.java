@@ -76,11 +76,7 @@ public class Drive {
     }
 
     public String searchApi() {
-        return getServer() + "/api/public/search";
-    }
-
-    public String searchApi(String param) {
-        return getServer() + "/search?box=" + param + "&url=";
+        return getServer() + (isNew() ? "/api/fs/search" : "/api/public/search");
     }
 
     public Drive check() {

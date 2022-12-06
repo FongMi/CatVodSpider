@@ -18,7 +18,7 @@ public class Item {
 
     @SerializedName("name")
     private String name;
-    @SerializedName("path")
+    @SerializedName(value = "path", alternate = "parent")
     private String path;
     @SerializedName("type")
     private int type;
@@ -93,13 +93,13 @@ public class Item {
         return getType() == 1;
     }
 
-    public boolean isMedia(boolean v3) {
-        if (v3) return getType() == 2 || getType() == 3;
+    public boolean isMedia(boolean isNew) {
+        if (isNew) return getType() == 2 || getType() == 3;
         return getType() == 3 || getType() == 4;
     }
 
-    public boolean ignore(boolean v3) {
-        if (v3) return getType() == 0 || getType() == 4;
+    public boolean ignore(boolean isNew) {
+        if (isNew) return getType() == 0 || getType() == 4;
         return getType() == 0 || getType() == 2 || getType() == 5;
     }
 
