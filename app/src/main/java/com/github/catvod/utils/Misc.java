@@ -163,13 +163,19 @@ public class Misc {
     }
 
     public static void addView(View view, ViewGroup.LayoutParams params) {
-        ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-        group.addView(view, params);
+        try {
+            ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            group.addView(view, params);
+        } catch (Exception ignored) {
+        }
     }
 
     public static void removeView(View view) {
-        ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-        group.removeView(view);
+        try {
+            ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            group.removeView(view);
+        } catch (Exception ignored) {
+        }
     }
 
     public static void loadWebView(String url, WebViewClient client) {
