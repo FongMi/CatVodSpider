@@ -82,7 +82,7 @@ public class Drive {
     }
 
     public Drive check() {
-        if (getVersion() == 0) setVersion(OkHttpUtil.string(settingsApi()).contains("v3.") ? 3 : 2);
+        if (getVersion() == 0) setVersion(OkHttpUtil.string(settingsApi()).contains("v2.") ? 2 : 3);
         return this;
     }
 
