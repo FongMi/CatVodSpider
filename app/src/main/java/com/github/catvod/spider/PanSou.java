@@ -25,7 +25,6 @@ import java.util.Map;
 public class PanSou extends Spider {
 
     private final String siteUrl = "https://www.alipansou.com";
-    private HashMap<String, String> header;
     private Ali ali;
 
     private Map<String, String> getHeaders(String id) {
