@@ -3,6 +3,7 @@ package com.github.catvod.bean.upyun;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Data {
@@ -17,10 +18,10 @@ public class Data {
     }
 
     public Data getResult() {
-        return result;
+        return result == null ? new Data() : result;
     }
 
     public List<Item> getItems() {
-        return items;
+        return items == null ? Collections.emptyList() : items;
     }
 }
