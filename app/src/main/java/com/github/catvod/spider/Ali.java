@@ -109,7 +109,7 @@ public class Ali {
         String json = post("adrive/v3/share_link/get_share_by_anonymous", body);
         JSONObject object = new JSONObject(json);
         LinkedHashMap<Item, String> fileMap = new LinkedHashMap<>();
-        Map<String, List<String>> subMap = new HashMap<>();
+        LinkedHashMap<String, List<String>> subMap = new LinkedHashMap<>();
         listFiles(new Item(getParentFileId(fileId, object)), fileMap, subMap, shareId, shareToken);
         List<String> playUrls = new ArrayList<>();
         List<Item> files = new ArrayList<>(fileMap.keySet());
@@ -129,11 +129,11 @@ public class Ali {
         return vod;
     }
 
-    private void listFiles(Item folder, LinkedHashMap<Item, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken) throws Exception {
+    private void listFiles(Item folder, LinkedHashMap<Item, String> name2id, LinkedHashMap<String, List<String>> subMap, String shareId, String shareToken) throws Exception {
         listFiles(folder, name2id, subMap, shareId, shareToken, "");
     }
 
-    private void listFiles(Item parent, LinkedHashMap<Item, String> name2id, Map<String, List<String>> subMap, String shareId, String shareToken, String marker) throws Exception {
+    private void listFiles(Item parent, LinkedHashMap<Item, String> name2id, LinkedHashMap<String, List<String>> subMap, String shareId, String shareToken, String marker) throws Exception {
         JSONObject body = new JSONObject();
         List<Item> folders = new ArrayList<>();
         body.put("limit", 200);
