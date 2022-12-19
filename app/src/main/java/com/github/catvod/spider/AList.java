@@ -198,15 +198,15 @@ public class AList extends Spider {
 
     private String findSubs(String path, List<Item> items) {
         StringBuilder sb = new StringBuilder();
-        for (Item item : items) if (Misc.isSub(item.getExt())) sb.append("~~~").append(Trans.get(item.getName())).append("@").append(Misc.getSubMimeType(item.getExt())).append("@").append(item.getVodId(path));
+        for (Item item : items) if (Misc.isSub(item.getExt())) sb.append("~~~").append(Trans.get(item.getName())).append("@@@").append(Misc.getSubMimeType(item.getExt())).append("@@@").append(item.getVodId(path));
         return sb.toString();
     }
 
     private String getSub(String[] ids) {
         StringBuilder sb = new StringBuilder();
         for (String text : ids) {
-            if (!text.contains("@")) continue;
-            String[] arr = text.split("@");
+            if (!text.contains("@@@")) continue;
+            String[] arr = text.split("@@@");
             sb.append(arr[0]).append("#").append(arr[1]).append("#").append(getDetail(arr[2]).getUrl()).append("$$$");
         }
         return Misc.substring(sb.toString(), 3);

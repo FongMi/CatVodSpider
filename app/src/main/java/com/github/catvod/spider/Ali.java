@@ -151,7 +151,7 @@ public class Ali {
             } else if (Misc.isSub(file.getExt())) {
                 String key = file.removeExt();
                 if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());
-                subMap.get(key).add(key + "@" + file.getFileId() + "@" + file.getExt());
+                subMap.get(key).add(key + "@@@" + file.getFileId() + "@@@" + file.getExt());
             }
         }
         if (item.getNextMarker().length() > 0) {
@@ -208,8 +208,8 @@ public class Ali {
     private String getSub(String shareId, String shareToken, String[] ids) {
         StringBuilder sb = new StringBuilder();
         for (String text : ids) {
-            if (!text.contains("@")) continue;
-            String[] arr = text.split("@");
+            if (!text.contains("@@@")) continue;
+            String[] arr = text.split("@@@");
             String url = Proxy.getUrl() + "?do=ali&type=sub&share_id=" + shareId + "&share_token=" + shareToken + "&file_id=" + arr[1];
             sb.append(Trans.get(arr[0])).append("#").append(Misc.getSubMimeType(arr[2])).append("#").append(url).append("$$$");
         }
