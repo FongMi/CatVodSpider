@@ -1,5 +1,5 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;e889b257fb9dbaf519f3c095231c12ea",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;ab26f4c02fd48605758977c6004e316c",
   "wallpaper": "http://www.kf666888.cn/api/tvbox/img",
   "lives": [
     {
@@ -32,7 +32,7 @@
       "key": "泥巴",
       "name": "泥巴",
       "type": 3,
-      "api": "csp_Nbys",
+      "api": "csp_NiNi",
       "searchable": 1,
       "filterable": 1
     },

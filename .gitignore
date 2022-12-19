@@ -2,5 +2,5 @@
 .idea
 *build
 *.jks
-Nbys.java
+*i.java
 /local.properties
