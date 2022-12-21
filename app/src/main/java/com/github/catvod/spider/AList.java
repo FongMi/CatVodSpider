@@ -130,7 +130,7 @@ public class AList extends Spider {
     private Item getDetail(String id) {
         try {
             String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
-            String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
+            String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
             Drive drive = getDrive(key);
             JSONObject params = new JSONObject();
             params.put("path", path);
@@ -145,7 +145,7 @@ public class AList extends Spider {
     private List<Item> getList(String id, boolean filter) {
         try {
             String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
-            String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
+            String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
             Drive drive = getDrive(key);
             JSONObject params = new JSONObject();
             params.put("path", path);
