@@ -17,7 +17,6 @@ import com.github.catvod.utils.Trans;
 
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -134,7 +133,7 @@ public class AList extends Spider {
             String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
             Drive drive = getDrive(key);
             JSONObject params = new JSONObject();
-            params.put("path", URLEncoder.encode(path));
+            params.put("path", path);
             params.put("password", drive.getPassword());
             String response = OkHttpUtil.postJson(drive.getApi(), params.toString());
             return Item.objectFrom(getDetailJson(drive.isNew(), response));
@@ -149,7 +148,7 @@ public class AList extends Spider {
             String path = id.contains("/") ? id.substring(id.indexOf("/") + 1) : "";
             Drive drive = getDrive(key);
             JSONObject params = new JSONObject();
-            params.put("path", URLEncoder.encode(path));
+            params.put("path", path);
             params.put("password", drive.getPassword());
             String response = OkHttpUtil.postJson(drive.listApi(), params.toString());
             List<Item> items = Item.arrayFrom(getListJson(drive.isNew(), response));
