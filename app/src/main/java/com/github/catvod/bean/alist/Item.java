@@ -126,4 +126,8 @@ public class Item {
     public Vod getVod(String id) {
         return new Vod(getVodId(id), getName(), getPic(), getRemark(), getVodTag());
     }
+
+    public Vod getVod(Drive drive) {
+        return new Vod(getVodId(drive.getName()), getName(), getPic(), drive.getName(), getVodTag());
+    }
 }
