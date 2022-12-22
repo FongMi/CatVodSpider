@@ -164,7 +164,7 @@ public class AList extends Spider {
         try {
             String response = OkHttpUtil.postJson(drive.searchApi(), drive.params(keyword));
             List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
-            for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive.getName()));
+            for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
