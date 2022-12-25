@@ -8,7 +8,6 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttpUtil;
-import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
 
@@ -163,13 +162,6 @@ public class Ysj extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        String data = OkHttpUtil.string(siteUrl + playUrl + id, getHeaders());
-        for (String text : data.split("var")) {
-            if (!text.contains("player_aaaa")) continue;
-            data = text.split("=")[1];
-            data = data.substring(0, data.indexOf("}") + 1);
-            break;
-        }
-        return Result.get().url(Json.getString(data, "url")).header(getHeaders()).string();
+        return Result.get().url(siteUrl + playUrl + id).parse().header(getHeaders()).string();
     }
 }
