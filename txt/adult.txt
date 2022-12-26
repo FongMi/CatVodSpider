@@ -562,7 +562,7 @@ JUFD-717,https://t11.cdn2020.com:12336/video/m3u8/2021/09/28/0493761c/index.m3u8
 JUFD-830,https://t12.cdn2020.com:12337/video/m3u8/2021/10/13/c0f7052b/index.m3u8
 JUFD-874,https://t12.cdn2020.com:12337/video/m3u8/2021/10/17/3004ce2d/index.m3u8
 JUFE-067,https://t12.cdn2020.com:12337/video/m3u8/2021/10/13/42528843/index.m3u8
-JUFE-104,https://siwazywcdn2.com:5278//zhongwenzimu/4TrvxJeg/index.m3u8
+JUFE-104,https://siwazywcdn2.com:5278/zhongwenzimu/4TrvxJeg/index.m3u8
 JUFE-313,https://t10.cdn2020.com:12335/video/m3u8/2021/08/07/e06a4275/index.m3u8
 JUFE-317,https://siwazywcdn2.com:5278/zhongwenzimu/jO6fu8ZG/index.m3u8
 JUFE-318,https://t10.cdn2020.com:12335/video/m3u8/2021/08/20/ddf54845/index.m3u8
