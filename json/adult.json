@@ -3,7 +3,7 @@
   "wallpaper": "https://gao.chuqiuyu.tk",
   "lives": [
     {
-      "name": "Adult",
+      "name": "直播",
       "type": 0,
       "url": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/txt/adult.txt"
     }
