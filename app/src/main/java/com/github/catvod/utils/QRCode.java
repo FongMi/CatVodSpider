@@ -37,6 +37,7 @@ public class QRCode {
             hints.put(EncodeHintType.MARGIN, margin);
             return createBitmap(new MultiFormatWriter().encode(contents, BarcodeFormat.QR_CODE, Misc.dp2px(size), Misc.dp2px(size), hints));
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

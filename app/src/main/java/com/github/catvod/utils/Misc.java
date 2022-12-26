@@ -3,6 +3,7 @@ package com.github.catvod.utils;
 import android.net.Uri;
 import android.os.Build;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import java.util.Locale;
 
 public class Misc {
 
-    public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
+    public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
 
     public static boolean isVip(String url) {
         List<String> hosts = Arrays.asList("iqiyi.com", "v.qq.com", "youku.com", "le.com", "tudou.com", "mgtv.com", "sohu.com", "acfun.cn", "bilibili.com", "baofeng.com", "pptv.com");
@@ -166,7 +167,8 @@ public class Misc {
         try {
             ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
             group.addView(view, params);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -174,7 +176,8 @@ public class Misc {
         try {
             ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
             group.removeView(view);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

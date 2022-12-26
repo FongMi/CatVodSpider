@@ -295,7 +295,9 @@ public class Ali {
     }
 
     private void getQRCode() {
-        Data data = Data.objectFrom(OkHttpUtil.string("https://easy-token.cooluc.com/qr"));
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", Misc.CHROME);
+        Data data = Data.objectFrom(OkHttpUtil.string("https://easy-token.cooluc.com/qr", headers));
         if (data != null) Init.run(() -> showCode(data));
         service = Executors.newScheduledThreadPool(1);
         if (data != null) service.scheduleAtFixedRate(() -> {
