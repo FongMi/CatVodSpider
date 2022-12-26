@@ -693,7 +693,6 @@ MEYD-127,https://t12.cdn2020.com:12337/video/m3u8/2021/10/09/10dfd375/index.m3u8
 MEYD-367,https://t10.cdn2020.com:12335/video/m3u8/2021/08/10/f404dc5f/index.m3u8
 MEYD-379,https://t10.cdn2020.com:12335/video/m3u8/2021/08/10/15b94733/index.m3u8
 MEYD-647,https://siwazywcdn2.com:5278/zhongwenzimu/3YPtObjx/index.m3u8
-MEYD-695,https://siwazywcdn2.com:5278/zhongwenzimu/mqkTS3cV/index.m3u8
 MEYD-695,https://t10.cdn2020.com:12335/video/m3u8/2021/08/18/fe2a1dd7/index.m3u8
 MEYD-698,https://t11.cdn2020.com:12336/video/m3u8/2021/09/25/2e795f67/index.m3u8
 MEYD-711,https://t12.cdn2020.com:12337/video/m3u8/2021/10/30/cf6643f0/index.m3u8
@@ -1067,7 +1066,6 @@ SSNI-803,https://t4s.cdn2020.com/video/m3u8/2020/09/03/0250496e/index.m3u8
 SSNI-808,https://siwazywcdn2.com:5278/zhongwenzimu/L9kmreDA/index.m3u8
 SSNI-821,https://t4s.cdn2020.com/video/m3u8/2020/08/14/f04b4566/index.m3u8
 SSNI-824,https://siwazywcdn2.com:5278/zhongwenzimu/XNlqgRve/index.m3u8
-SSNI-828,https://siwazywcdn2.com:5278/zhongwenzimu/FMriTsOa/index.m3u8
 SSNI-828,https://t4s.cdn2020.com/video/m3u8/2020/08/06/b199dd1a/index.m3u8
 SSNI-832,https://siwazywcdn2.com:5278/zhongwenzimu/WMkiBKyw/index.m3u8
 SSNI-833,https://t4s.cdn2020.com/video/m3u8/2020/09/06/169a9a85/index.m3u8
@@ -1110,7 +1108,6 @@ STARS-258,https://t12.cdn2020.com:12337/video/m3u8/2021/11/01/232731d5/index.m3u
 STARS-260,https://t5s.cdn2020.com/video/m3u8/2020/10/21/08e793f0/index.m3u8
 STARS-263,https://t4s.cdn2020.com/video/m3u8/2020/08/29/bbc9b4f9/index.m3u8
 STARS-265,https://t4s.cdn2020.com/video/m3u8/2020/10/14/c8e82dca/index.m3u8
-STARS-266,https://siwazywcdn2.com:5278/zhongwenzimu/nT7jF5hV/index.m3u8
 STARS-266,https://t6s.cdn2020.com/video/m3u8/2021/03/10/1e9063a3/index.m3u8
 STARS-267,https://t5s.cdn2020.com/video/m3u8/2020/10/30/2e46bd4e/index.m3u8
 STARS-268,https://t5s.cdn2020.com/video/m3u8/2020/11/15/3d807364/index.m3u8
