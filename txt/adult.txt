@@ -6,7 +6,7 @@ Compilation,http://cdn.adultiptv.net/compilation.m3u8
 Fetish,http://cdn.adultiptv.net/fetish.m3u8
 Gay,http://cdn.adultiptv.net/gay.m3u8
 LiveCams,http://cdn.adultiptv.net/livecams.m3u8
-Pornstar,http://cdn.adultiptv.net/pornstar.m3u8
+PornStar,http://cdn.adultiptv.net/pornstar.m3u8
 POV,http://cdn.adultiptv.net/pov.m3u8
 Rough,http://cdn.adultiptv.net/rough.m3u8
 Teen,http://cdn.adultiptv.net/teen.m3u8
