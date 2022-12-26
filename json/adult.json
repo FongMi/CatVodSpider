@@ -5,12 +5,7 @@
     {
       "name": "Adult",
       "type": 0,
-      "url": "https://ghproxy.com/https://raw.githubusercontent.com/YanG-1989/m3u/main/Adult.m3u"
-    },
-    {
-      "name": "10086",
-      "type": 0,
-      "url": "https://agit.ai/VivoMax/Fu/raw/branch/master/drzb.txt"
+      "url": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/txt/adult.txt"
     }
   ],
   "sites": [
