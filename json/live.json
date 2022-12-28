@@ -42,6 +42,7 @@
           "http://111.59.189.40:8445/tsfile/live/1022_1.m3u8 "
         ],
         "number": "003",
+        "epg": "凤凰电影",
         "name": "凤凰电影"
       },
       {
@@ -79,6 +80,7 @@
           "http://hms563nc1880172786.live.aikan.miguvideo.com/wh7f454c46tw3279865347_1298155843/PLTV/88888888/224/3221231733/1.m3u8 "
         ],
         "number": "007",
+        "epg": "tvb影视",
         "name": "tvb影视"
       },
       {
@@ -86,6 +88,7 @@
           "https://cn-hbyc2-dx-live-01.bilivideo.com/live-bvc/545768/live_179302204_68184269.m3u8 "
         ],
         "number": "008",
+        "epg": "功夫台",
         "name": "功夫台"
       },
       {
@@ -134,6 +137,7 @@
           "http://120.84.96.74:808/hls/86/index.m3u8 "
         ],
         "number": "012",
+        "epg": "财经体育资讯台",
         "name": "财经体育资讯台"
       },
       {
@@ -163,6 +167,7 @@
           "http://120.84.96.222:808/hls/79/index.m3u8 "
         ],
         "number": "014",
+        "epg": "星空卫视",
         "name": "星空卫视"
       },
       {
@@ -170,6 +175,7 @@
           "https://video.bread-tv.com:8091/hls-live24/online/index.m3u8 "
         ],
         "number": "015",
+        "epg": "面包台",
         "name": "面包台"
       },
       {
@@ -177,6 +183,7 @@
           "https://livecdn.fptplay.net/sdb/htv3_hls.smil/chunklist_b2500000.m3u8"
         ],
         "number": "016",
+        "epg": "HTV3",
         "name": "HTV3"
       },
       {
@@ -184,6 +191,7 @@
           "https://livecdn.fptplay.net/sdb/htv4_hls.smil/chunklist_b2500000.m3u8"
         ],
         "number": "017",
+        "epg": "HTV4",
         "name": "HTV4"
       },
       {
@@ -191,6 +199,7 @@
           "http://198.16.64.10:8278/rhk32_twn/playlist.m3u8?tid=MBCB4455322944553229&ct=19226&tsum=60bac13753ada5abc8873783d6611ebd"
         ],
         "number": "018",
+        "epg": "RTHK32",
         "name": "RTHK32"
       },
       {
@@ -198,6 +207,7 @@
           "http://198.16.64.10:8278/viu_twn/playlist.m3u8?tid=MF2F6219999362199993&ct=19225&tsum=0315b071e42f6b8b6f49b6ca58b7393b"
         ],
         "number": "019",
+        "epg": "VIUTV",
         "name": "VIUTV"
       },
       {
@@ -205,6 +215,7 @@
           "http://198.16.64.10:8278/viusix_twn/playlist.m3u8?tid=MC6C1412376614123766&ct=19225&tsum=f4273425d435057616c3380b9e2a0287"
         ],
         "number": "020",
+        "epg": "VIUTV6",
         "name": "VIUTV6"
       },
       {
@@ -217,6 +228,7 @@
           "http://61.244.22.4/ch3/ch3.live/chunklist_w1228316132.m3u8"
         ],
         "number": "021",
+        "epg": "澳门Macau",
         "name": "澳门Macau"
       },
       {
@@ -224,6 +236,7 @@
           "http://anren.live/HK/BiIOU11uLA.m3u8"
         ],
         "number": "022",
+        "epg": "澳门莲花",
         "name": "澳门莲花"
       },
       {
@@ -233,6 +246,7 @@
           "http://61.244.22.5/ch1/ch1.live/playelist.m3u8"
         ],
         "number": "023",
+        "epg": "澳视澳门",
         "name": "澳视澳门"
       },
       {
@@ -244,6 +258,7 @@
           "http://61.244.22.4/ch2/ch2.live/playelist.m3u8"
         ],
         "number": "024",
+        "epg": "澳视葡文",
         "name": "澳视葡文"
       },
       {
@@ -253,6 +268,7 @@
           "http://61.244.22.4/ch5/info_ch5.live/chunklist_w1046558591.m3u8"
         ],
         "number": "025",
+        "epg": "澳门资讯",
         "name": "澳门资讯"
       },
       {
@@ -264,6 +280,7 @@
           "http://61.244.22.4/ch6/_definst_/hd_ch6.live/playlist.m3u8 "
         ],
         "number": "026",
+        "epg": "澳门综艺",
         "name": "澳门综艺"
       },
       {
@@ -273,6 +290,7 @@
           "http://103.233.191.134:1935/ch4/sport_ch4.live/playlist.m3u8"
         ],
         "number": "027",
+        "epg": "澳门体育",
         "name": "澳门体育"
       },
       {
@@ -280,6 +298,7 @@
           "http://198.16.64.10:8278/Wlt/playlist.m3u8?tid=MC9C7523788875237888&ct=19225&tsum=fc74aa160d3ca61369c2e5f3ae79ee8e"
         ],
         "number": "028",
+        "epg": "华丽台",
         "name": "华丽台"
       },
       {
@@ -287,6 +306,7 @@
           "http://198.16.64.10:8278/Shuangxing/playlist.m3u8?tid=MB0B7558160375581603&ct=19226&tsum=1625699c9d4f1dfe61991065455cb256"
         ],
         "number": "029",
+        "epg": "双星",
         "name": "双星"
       },
       {
@@ -294,6 +314,7 @@
           "http://198.16.64.10:8278/Quanjia/playlist.m3u8?tid=MFFF3293542732935427&ct=19226&tsum=27c80d1bed9942e20443c39f523846fb"
         ],
         "number": "030",
+        "epg": "全佳",
         "name": "全佳"
       },
       {
@@ -301,6 +322,7 @@
           "http://198.16.64.10:8278/Huahee/playlist.m3u8?tid=MACA4355211343552113&ct=19225&tsum=ac0abb0a68c5c3600edaec9002729496"
         ],
         "number": "031",
+        "epg": "欢喜台",
         "name": "欢喜台"
       },
       {
@@ -309,6 +331,7 @@
           "http://198.16.64.10:8278/Xiaotaiyang/playlist.m3u8?tid=MB3B7040387670403876&ct=19225&tsum=7406552381d844c4a83251cf91e80384"
         ],
         "number": "032",
+        "epg": "小太阳",
         "name": "小太阳"
       },
       {
@@ -363,6 +386,7 @@
           "http://152.69.224.242:9500/jmsytb.m3u8?c=21 "
         ],
         "number": "037",
+        "epg": "华视新闻",
         "name": "华视新闻"
       },
       {
@@ -384,6 +408,7 @@
           "http://198.16.64.10:8278/ctiasia_twn/playlist.m3u8?tid=MC3C8838319088383190&ct=19226&tsum=6eaf7a477dd08b06a5dc54b4c05e52e1"
         ],
         "number": "039",
+        "epg": "中天亚洲台",
         "name": "中天亚洲台"
       },
       {
@@ -431,6 +456,7 @@
           "http://58.99.33.16:1935/liveedge17/live_854_3.stream/chunklist.m3u8"
         ],
         "number": "044",
+        "epg": "云林新闻网",
         "name": "云林新闻网"
       },
       {
@@ -438,6 +464,7 @@
           "http://58.99.33.16:1935/liveedge17/live_853_3.stream/chunklist.m3u8"
         ],
         "number": "045",
+        "epg": "南投新闻网",
         "name": "南投新闻网"
       },
       {
@@ -445,6 +472,7 @@
           "http://198.16.64.10:8278/Celestial/playlist.m3u8?tid=MCFC1164333411643334&ct=19225&tsum=3668a5dd07515bbf30cfeebe267936ff"
         ],
         "number": "046",
+        "epg": "天映频道",
         "name": "天映频道"
       },
       {
@@ -471,6 +499,7 @@
           "http://50.7.220.74:8278/xingwei_movie/playlist.m3u8?tid=MBAB2096754620967546&ct=18392&tsum=2c800c1f0b6cc98d2404608c294dcbc2 "
         ],
         "number": "049",
+        "epg": "星卫电影台",
         "name": "星卫电影台"
       },
       {
@@ -479,6 +508,7 @@
           "http://198.16.64.10:8278/lungxiangtime_twn/playlist.m3u8?tid=MFFF9299444992994449&ct=19226&tsum=98d6988c4c94e299cb1c151856c909a8"
         ],
         "number": "050",
+        "epg": "龙祥时代",
         "name": "龙祥时代"
       },
       {
@@ -531,6 +561,7 @@
           "http://198.16.64.10:8278/jingtianintl_twn/playlist.m3u8?tid=ME4E7632479576324795&ct=19226&tsum=9922eeed6392b21e1710ba791cc599d6"
         ],
         "number": "056",
+        "epg": "靖天国际台",
         "name": "靖天国际台"
       },
       {
@@ -596,6 +627,7 @@
           "http://218.32.47.179:8538/http/192.168.1.9:8081/hls/61/803/ch03.m3u8"
         ],
         "number": "063",
+        "epg": "华视新闻资讯台",
         "name": "华视新闻资讯台"
       },
       {
@@ -747,6 +779,7 @@
           "http://38.64.72.148:80/hls/modn/list/2024/chunklist0.m3u8"
         ],
         "number": "078",
+        "epg": "東森卫视",
         "name": "東森卫视"
       },
       {
@@ -775,6 +808,7 @@
           "http://198.16.64.10:8278/tvbs/playlist.m3u8?tid=MDED5111960351119603&ct=19226&tsum=49931e2d3885c468d56ffae2c2db9e6e"
         ],
         "number": "081",
+        "epg": "TVBS HD",
         "name": "TVBS HD"
       },
       {
@@ -845,6 +879,7 @@
           "http://50.7.220.74:8278/badafirst/playlist.m3u8?tid=MBDB5904995459049954&ct=19193&tsum=ab627e00a84b423b5747a65289eec076"
         ],
         "number": "088",
+        "epg": "八大第1台",
         "name": "八大第1台"
       },
       {
@@ -889,6 +924,7 @@
           "http://198.16.64.10:8278/meiyamovie_twn/playlist.m3u8?tid=MFEF1001328410013284&ct=19226&tsum=9839709ca0f37641c5d1ba962c3bc739"
         ],
         "number": "093",
+        "epg": "美亚电影台",
         "name": "美亚电影台"
       },
       {
@@ -896,6 +932,7 @@
           "http://198.16.64.10:8278/discoverytwn_twn/playlist.m3u8?tid=MCEC2689621926896219&ct=19225&tsum=1739c52807970a89c1c15d7afea86b26"
         ],
         "number": "094",
+        "epg": "探索亚洲",
         "name": "探索亚洲"
       },
       {
@@ -903,6 +940,7 @@
           "http://198.16.64.10:8278/discoveryturbo_twn/playlist.m3u8?tid=MD5D5964869459648694&ct=19225&tsum=a21251b62069dff5c52601a3e4bc4a6d"
         ],
         "number": "095",
+        "epg": "探索动力",
         "name": "探索动力"
       },
       {
@@ -910,6 +948,7 @@
           "http://198.16.64.10:8278/discoverysc_twn/playlist.m3u8?tid=MA9A4194864841948648&ct=19225&tsum=d87ede28c5152d8a730038fd5fb8207f"
         ],
         "number": "096",
+        "epg": "探索科学",
         "name": "探索科学"
       },
       {
@@ -917,6 +956,7 @@
           "http://198.16.64.10:8278/discoveryhd_twn/playlist.m3u8?tid=ME6E2405719624057196&ct=19225&tsum=57a7c421c65e00c1b8f68f67c30141dc"
         ],
         "number": "097",
+        "epg": "探索频道",
         "name": "探索频道"
       },
       {
@@ -969,6 +1009,7 @@
           "http://198.16.64.10:8278/momo1_twn/playlist.m3u8?tid=MA0A4898983648989836&ct=19225&tsum=bd109117d126916f203880b1f2063d5e"
         ],
         "number": "103",
+        "epg": "CN卡通頻道",
         "name": "CN卡通頻道"
       },
       {
@@ -996,6 +1037,7 @@
           "http://38.64.72.148:80/hls/modn/list/4003/chunklist0.m3u8"
         ],
         "number": "106",
+        "epg": "华语电视",
         "name": "华语电视"
       },
       {
@@ -1004,6 +1046,7 @@
           "http://50.7.220.74:8278/chcfamily/playlist.m3u8?tid=ME7E3282776332827763&ct=18393&tsum=c098f25f9c140478d2a814b22a7ccbd3"
         ],
         "number": "107",
+        "epg": "长城精品",
         "name": "长城精品"
       },
       {
@@ -1039,6 +1082,7 @@
           "http://58.99.33.16:1935/liveedge17/live_070_3.stream/chunklist.m3u8"
         ],
         "number": "111",
+        "epg": "美丽人生",
         "name": "美丽人生"
       },
       {
@@ -1046,6 +1090,7 @@
           "http://80.94.54.42/fashiontv/stream/playlist.m3u8"
         ],
         "number": "112",
+        "epg": "时尚台FTV",
         "name": "时尚台FTV"
       },
       {
@@ -1053,6 +1098,7 @@
           "http://58.99.33.16:1935/liveedge17/live_852_3.stream/chunklist.m3u8"
         ],
         "number": "113",
+        "epg": "中台湾生活网",
         "name": "中台湾生活网"
       },
       {
@@ -1061,6 +1107,7 @@
           "https://streamipcf.akamaized.net/live/_definst_/smil:live.smil/chunklist_b3000.m3u8?cuac=guest&cref=https%3A%2F%2Fwww.ipcf.org.tw%2F "
         ],
         "number": "114",
+        "epg": "原住民电视台",
         "name": "原住民电视台"
       },
       {
@@ -1069,6 +1116,7 @@
           "http://61.216.67.119:1935/TWHG/E1/chunklist_w705811302.m3u8 "
         ],
         "number": "115",
+        "epg": "番薯",
         "name": "番薯"
       },
       {
@@ -1103,6 +1151,7 @@
           "http://198.16.64.10:8278/good2_twn/playlist.m3u8?tid=ME9E3966510439665104&ct=19225&tsum=a2788b2ccea04a8a8082d663fb7838e5"
         ],
         "number": "119",
+        "epg": "好消息2台",
         "name": "好消息2台"
       },
       {
@@ -1128,6 +1177,7 @@
           "http://198.16.64.10:8278/bosigolf2_twn/playlist.m3u8?tid=MF5F9848925298489252&ct=19225&tsum=2600464749aadbcd55d1c32ec071e36e"
         ],
         "number": "122",
+        "epg": "博斯高球Ⅱ",
         "name": "博斯高球Ⅱ"
       },
       {
@@ -1162,6 +1212,7 @@
           "http://198.16.64.10:8278/bs181_japan/playlist.m3u8?tid=MEBE3981057839810578&ct=19225&tsum=d6fa49cd7b45b3bea924647730100283"
         ],
         "number": "126",
+        "epg": "ELEVEN 1",
         "name": "ELEVEN 1"
       },
       {
@@ -1169,6 +1220,7 @@
           "http://198.16.64.10:8278/bsfuji_japan/playlist.m3u8?tid=MEFE1641904216419042&ct=19225&tsum=e49ffeb9a6df295150be1cd8f9b0ea30"
         ],
         "number": "127",
+        "epg": "ELEVEN 2",
         "name": "ELEVEN 2"
       }
     ],
@@ -1402,6 +1454,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226921/index.m3u8"
         ],
         "number": "144",
+        "epg": "CCTV16",
         "name": "CCTV16"
       },
       {
@@ -1539,6 +1592,7 @@
           "http://111.32.169.222/bkhlsliveali-cdn.ysp.cctv.cn/ysp/2012513503.m3u8"
         ],
         "number": "158",
+        "epg": "卫生健康",
         "name": "卫生健康"
       },
       {
@@ -1547,6 +1601,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226981/index.m3u8"
         ],
         "number": "159",
+        "epg": "央视文化精品",
         "name": "央视文化精品"
       },
       {
@@ -1564,6 +1619,7 @@
           "https://livear.cgtn.com/1000a/prog_index.m3u8"
         ],
         "number": "161",
+        "epg": "CGTN阿语",
         "name": "CGTN阿语"
       },
       {
@@ -1572,6 +1628,7 @@
           "https://livees.cgtn.com/1000e/prog_index.m3u8"
         ],
         "number": "162",
+        "epg": "CGTN西班牙语",
         "name": "CGTN西班牙语"
       },
       {
@@ -1580,6 +1637,7 @@
           "https://livefr.cgtn.com/1000f/prog_index.m3u8"
         ],
         "number": "163",
+        "epg": "CGTN法语",
         "name": "CGTN法语"
       },
       {
@@ -1589,6 +1647,7 @@
           "http://39.135.138.60:18890/PLTV/88888888/224/3221225694/index.m3u8"
         ],
         "number": "164",
+        "epg": "CNC中文",
         "name": "CNC中文"
       },
       {
@@ -1597,6 +1656,7 @@
           "http://39.135.138.58:18890/PLTV/88888888/224/3221225693/index.m3u8"
         ],
         "number": "165",
+        "epg": "CNC英文",
         "name": "CNC英文"
       },
       {
@@ -1605,6 +1665,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226462/index.m3u8"
         ],
         "number": "166",
+        "epg": "CHC家庭影院",
         "name": "CHC家庭影院"
       },
       {
@@ -1649,6 +1710,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226951/index.m3u8"
         ],
         "number": "171",
+        "epg": "哒啵电竞",
         "name": "哒啵电竞"
       },
       {
@@ -1656,6 +1718,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226954/index.m3u8"
         ],
         "number": "172",
+        "epg": "哒啵赛事",
         "name": "哒啵赛事"
       },
       {
@@ -1663,6 +1726,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225753/index.m3u8"
         ],
         "number": "173",
+        "epg": "CETV1",
         "name": "CETV1"
       },
       {
@@ -1670,6 +1734,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225756/index.m3u8"
         ],
         "number": "174",
+        "epg": "CETV2",
         "name": "CETV2"
       },
       {
@@ -1677,6 +1742,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226226/index.m3u8"
         ],
         "number": "175",
+        "epg": "CETV3",
         "name": "CETV3"
       },
       {
@@ -1684,6 +1750,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226225/index.m3u8"
         ],
         "number": "176",
+        "epg": "CETV4",
         "name": "CETV4"
       }
     ],
@@ -2023,6 +2090,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225722/index.m3u8"
         ],
         "number": "203",
+        "epg": "旅游卫视",
         "name": "旅游卫视"
       },
       {
@@ -2111,6 +2179,7 @@
           "http://media.vtibet.com/masvod/HLSLive/7/zangyuTV_q1.m3u8"
         ],
         "number": "211",
+        "epg": "西藏藏语卫视",
         "name": "西藏藏语卫视"
       },
       {
@@ -2140,6 +2209,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226229/index.m3u8"
         ],
         "number": "214",
+        "epg": "农林卫视",
         "name": "农林卫视"
       },
       {
@@ -2148,6 +2218,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226228/index.m3u8"
         ],
         "number": "215",
+        "epg": "安多卫视",
         "name": "安多卫视"
       },
       {
@@ -2155,6 +2226,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226238/index.m3u8"
         ],
         "number": "216",
+        "epg": "山东教育",
         "name": "山东教育"
       },
       {
@@ -2207,6 +2279,7 @@
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225743/index.m3u8"
         ],
         "number": "222",
+        "epg": "北京卡酷",
         "name": "北京卡酷"
       },
       {
@@ -2872,6 +2945,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225786/2/index.m3u8"
         ],
         "number": "242",
+        "epg": "4KUHD",
         "name": "4KUHD"
       },
       {
@@ -2912,6 +2986,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225869/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "244",
+        "epg": "CETV1",
         "name": "CETV1"
       },
       {
@@ -2926,6 +3001,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227192/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "245",
+        "epg": "CETV4",
         "name": "CETV4"
       },
       {
@@ -2933,6 +3009,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225693/2/index.m3u8"
         ],
         "number": "246",
+        "epg": "CNC英文",
         "name": "CNC英文"
       },
       {
@@ -2940,6 +3017,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225694/2/index.m3u8"
         ],
         "number": "247",
+        "epg": "CNC中文",
         "name": "CNC中文"
       },
       {
@@ -2948,6 +3026,7 @@
           "http://[2409:8087:1020:301:2026::15]:80/wh7f454c46tw4119802051_438147111/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225727/10000100000000060000000000000764_0.smil/01.m3u8?fmt=ts2hls"
         ],
         "number": "248",
+        "epg": "CGTN英语",
         "name": "CGTN英语"
       },
       {
@@ -2955,6 +3034,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225645/2/index.m3u8"
         ],
         "number": "249",
+        "epg": "CGTN记录",
         "name": "CGTN记录"
       },
       {
@@ -3152,6 +3232,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225581/2/index.m3u8"
         ],
         "number": "260",
+        "epg": "梨园频道",
         "name": "梨园频道"
       },
       {
@@ -3374,6 +3455,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225615/2/index.m3u8"
         ],
         "number": "273",
+        "epg": "江西新闻",
         "name": "江西新闻"
       },
       {
@@ -3382,6 +3464,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225768/2/index.m3u8"
         ],
         "number": "274",
+        "epg": "超级综艺",
         "name": "超级综艺"
       },
       {
@@ -3391,6 +3474,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225767/2/index.m3u8"
         ],
         "number": "275",
+        "epg": "超级体育",
         "name": "超级体育"
       },
       {
@@ -3399,6 +3483,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225766/2/index.m3u8"
         ],
         "number": "276",
+        "epg": "超级电影",
         "name": "超级电影"
       },
       {
@@ -3407,6 +3492,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225765/2/index.m3u8"
         ],
         "number": "277",
+        "epg": "超级电视剧",
         "name": "超级电视剧"
       },
       {
@@ -3416,6 +3502,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225895/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "278",
+        "epg": "武博世界",
         "name": "武博世界"
       },
       {
@@ -3426,6 +3513,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225896/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "279",
+        "epg": "中国功夫",
         "name": "中国功夫"
       },
       {
@@ -3435,6 +3523,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225887/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "280",
+        "epg": "军旅剧场",
         "name": "军旅剧场"
       },
       {
@@ -3444,6 +3533,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225878/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "281",
+        "epg": "黑莓动画",
         "name": "黑莓动画"
       },
       {
@@ -3452,6 +3542,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225676/2/index.m3u8"
         ],
         "number": "282",
+        "epg": "北京体育",
         "name": "北京体育"
       },
       {
@@ -3459,6 +3550,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225677/2/index.m3u8"
         ],
         "number": "283",
+        "epg": "北京卡酷",
         "name": "北京卡酷"
       },
       {
@@ -3468,6 +3560,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225880/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "284",
+        "epg": "古装剧场",
         "name": "古装剧场"
       },
       {
@@ -3515,6 +3608,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226699/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "287",
+        "epg": "炫舞未来",
         "name": "炫舞未来"
       },
       {
@@ -3524,6 +3618,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226107/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "288",
+        "epg": "潮妈辣婆",
         "name": "潮妈辣婆"
       },
       {
@@ -3531,6 +3626,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225709/2/index.m3u8"
         ],
         "number": "289",
+        "epg": "精品体育",
         "name": "精品体育"
       },
       {
@@ -3538,6 +3634,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225710/2/index.m3u8"
         ],
         "number": "290",
+        "epg": "精品记录",
         "name": "精品记录"
       },
       {
@@ -3547,6 +3644,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225884/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "291",
+        "epg": "金牌综艺",
         "name": "金牌综艺"
       },
       {
@@ -3556,6 +3654,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225882/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "292",
+        "epg": "家庭剧场",
         "name": "家庭剧场"
       },
       {
@@ -3565,6 +3664,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225889/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "293",
+        "epg": "精品大剧",
         "name": "精品大剧"
       },
       {
@@ -3572,6 +3672,7 @@
           "http://[2409:8087:3869:8021:1001::e5]:6610/PLTV/88888888/224/3221225716/2/index.m3u8"
         ],
         "number": "294",
+        "epg": "动画HD",
         "name": "动画HD"
       },
       {
@@ -3583,6 +3684,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225891/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "295",
+        "epg": "黑莓电影",
         "name": "黑莓电影"
       },
       {
@@ -3592,6 +3694,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225873/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "296",
+        "epg": "山东教育",
         "name": "山东教育"
       },
       {
@@ -3759,6 +3862,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225890/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "308",
+        "epg": "军事评论",
         "name": "军事评论"
       },
       {
@@ -3774,6 +3878,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226565/index.m3u8"
         ],
         "number": "310",
+        "epg": "新密新闻频道",
         "name": "新密新闻频道"
       },
       {
@@ -3781,6 +3886,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226566/index.m3u8"
         ],
         "number": "311",
+        "epg": "河南公共频道",
         "name": "河南公共频道"
       },
       {
@@ -3811,6 +3917,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226575/index.m3u8"
         ],
         "number": "314",
+        "epg": "南阳",
         "name": "南阳"
       },
       {
@@ -3818,6 +3925,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226576/index.m3u8"
         ],
         "number": "315",
+        "epg": "河南乡村频道",
         "name": "河南乡村频道"
       },
       {
@@ -3825,6 +3933,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226577/index.m3u8"
         ],
         "number": "316",
+        "epg": "新郑1综合",
         "name": "新郑1综合"
       },
       {
@@ -3832,6 +3941,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226580/index.m3u8"
         ],
         "number": "317",
+        "epg": "清丰电视台",
         "name": "清丰电视台"
       },
       {
@@ -3839,6 +3949,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226581/index.m3u8"
         ],
         "number": "318",
+        "epg": "河南调解剧场",
         "name": "河南调解剧场"
       },
       {
@@ -3846,6 +3957,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226582/index.m3u8"
         ],
         "number": "319",
+        "epg": "周口新闻综合",
         "name": "周口新闻综合"
       },
       {
@@ -3865,6 +3977,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226585/index.m3u8"
         ],
         "number": "321",
+        "epg": "中华特产",
         "name": "中华特产"
       },
       {
@@ -3902,6 +4015,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226588/index.m3u8"
         ],
         "number": "323",
+        "epg": "河南国际",
         "name": "河南国际"
       },
       {
@@ -3909,6 +4023,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226589/index.m3u8"
         ],
         "number": "324",
+        "epg": "睛彩中原",
         "name": "睛彩中原"
       },
       {
@@ -3916,6 +4031,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226593/index.m3u8"
         ],
         "number": "325",
+        "epg": "平顶山公共频道",
         "name": "平顶山公共频道"
       },
       {
@@ -3923,6 +4039,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226595/index.m3u8"
         ],
         "number": "326",
+        "epg": "封丘1新闻综合",
         "name": "封丘1新闻综合"
       },
       {
@@ -3930,6 +4047,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226596/index.m3u8"
         ],
         "number": "327",
+        "epg": "上海哈哈炫动",
         "name": "上海哈哈炫动"
       },
       {
@@ -3956,6 +4074,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227148/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "328",
+        "epg": "CCTV16",
         "name": "CCTV16"
       },
       {
@@ -3963,6 +4082,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226598/index.m3u8"
         ],
         "number": "329",
+        "epg": "驻马店3科教频道",
         "name": "驻马店3科教频道"
       },
       {
@@ -3979,6 +4099,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226601/index.m3u8"
         ],
         "number": "331",
+        "epg": "广东嘉佳卡通",
         "name": "广东嘉佳卡通"
       },
       {
@@ -3986,6 +4107,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226602/index.m3u8"
         ],
         "number": "332",
+        "epg": "河南棋牌汇",
         "name": "河南棋牌汇"
       },
       {
@@ -3993,6 +4115,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226603/index.m3u8"
         ],
         "number": "333",
+        "epg": "新乡县综合",
         "name": "新乡县综合"
       },
       {
@@ -4000,6 +4123,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226604/index.m3u8"
         ],
         "number": "334",
+        "epg": "焦作综合",
         "name": "焦作综合"
       },
       {
@@ -4007,6 +4131,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226606/index.m3u8"
         ],
         "number": "335",
+        "epg": "江苏优漫卡通",
         "name": "江苏优漫卡通"
       },
       {
@@ -4027,6 +4152,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227071/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "337",
+        "epg": "动漫秀场",
         "name": "动漫秀场"
       },
       {
@@ -4043,6 +4169,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226613/index.m3u8"
         ],
         "number": "339",
+        "epg": "驻马店1新闻综合频道",
         "name": "驻马店1新闻综合频道"
       },
       {
@@ -4050,6 +4177,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226615/index.m3u8"
         ],
         "number": "340",
+        "epg": "禹州综合",
         "name": "禹州综合"
       },
       {
@@ -4057,6 +4185,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226616/index.m3u8"
         ],
         "number": "341",
+        "epg": "焦作公共",
         "name": "焦作公共"
       },
       {
@@ -4064,6 +4193,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226618/index.m3u8"
         ],
         "number": "342",
+        "epg": "郑州1新闻综合",
         "name": "郑州1新闻综合"
       },
       {
@@ -4071,6 +4201,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226619/index.m3u8"
         ],
         "number": "343",
+        "epg": "渑池新闻综合",
         "name": "渑池新闻综合"
       },
       {
@@ -4078,6 +4209,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226620/index.m3u8"
         ],
         "number": "344",
+        "epg": "南阳3科教",
         "name": "南阳3科教"
       },
       {
@@ -4089,6 +4221,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226680/index.m3u8"
         ],
         "number": "345",
+        "epg": "大美河南",
         "name": "大美河南"
       },
       {
@@ -4096,6 +4229,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226624/index.m3u8"
         ],
         "number": "346",
+        "epg": "湖南金鹰卡通",
         "name": "湖南金鹰卡通"
       },
       {
@@ -4103,6 +4237,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226625/index.m3u8"
         ],
         "number": "347",
+        "epg": "江西风尚购物",
         "name": "江西风尚购物"
       },
       {
@@ -4110,6 +4245,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226626/index.m3u8"
         ],
         "number": "348",
+        "epg": "周口公共频道",
         "name": "周口公共频道"
       },
       {
@@ -4117,6 +4253,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226627/index.m3u8"
         ],
         "number": "349",
+        "epg": "郑州3文体旅游",
         "name": "郑州3文体旅游"
       },
       {
@@ -4124,6 +4261,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226628/index.m3u8"
         ],
         "number": "350",
+        "epg": "河南移动戏曲",
         "name": "河南移动戏曲"
       },
       {
@@ -4131,6 +4269,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226629/index.m3u8"
         ],
         "number": "351",
+        "epg": "国学频道",
         "name": "国学频道"
       },
       {
@@ -4138,6 +4277,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226633/index.m3u8"
         ],
         "number": "352",
+        "epg": "湖南快乐购",
         "name": "湖南快乐购"
       },
       {
@@ -4145,6 +4285,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226634/index.m3u8"
         ],
         "number": "353",
+        "epg": "安阳新闻综合",
         "name": "安阳新闻综合"
       },
       {
@@ -4152,6 +4293,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226636/index.m3u8"
         ],
         "number": "354",
+        "epg": "周口教育频道",
         "name": "周口教育频道"
       },
       {
@@ -4159,6 +4301,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226638/index.m3u8"
         ],
         "number": "355",
+        "epg": "河南文博",
         "name": "河南文博"
       },
       {
@@ -4166,6 +4309,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226640/index.m3u8"
         ],
         "number": "356",
+        "epg": "北京卡酷少儿",
         "name": "北京卡酷少儿"
       },
       {
@@ -4173,6 +4317,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226641/index.m3u8"
         ],
         "number": "357",
+        "epg": "河南欢腾购物",
         "name": "河南欢腾购物"
       },
       {
@@ -4180,6 +4325,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226642/index.m3u8"
         ],
         "number": "358",
+        "epg": "安阳科教",
         "name": "安阳科教"
       },
       {
@@ -4187,6 +4333,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226643/index.m3u8"
         ],
         "number": "359",
+        "epg": "濮阳综合",
         "name": "濮阳综合"
       },
       {
@@ -4194,6 +4341,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226645/index.m3u8"
         ],
         "number": "360",
+        "epg": "河南影视戏曲",
         "name": "河南影视戏曲"
       },
       {
@@ -4201,6 +4349,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226646/index.m3u8"
         ],
         "number": "361",
+        "epg": "信阳综合",
         "name": "信阳综合"
       },
       {
@@ -4208,6 +4357,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226647/index.m3u8"
         ],
         "number": "362",
+        "epg": "湖南茶频道",
         "name": "湖南茶频道"
       },
       {
@@ -4215,6 +4365,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226648/index.m3u8"
         ],
         "number": "363",
+        "epg": "焦作教育",
         "name": "焦作教育"
       },
       {
@@ -4222,6 +4373,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226649/index.m3u8"
         ],
         "number": "364",
+        "epg": "河南都市频道",
         "name": "河南都市频道"
       },
       {
@@ -4229,6 +4381,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226650/index.m3u8"
         ],
         "number": "365",
+        "epg": "郑州2商都频道",
         "name": "郑州2商都频道"
       },
       {
@@ -4236,6 +4389,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226651/index.m3u8"
         ],
         "number": "366",
+        "epg": "浉河广电中心",
         "name": "浉河广电中心"
       },
       {
@@ -4243,6 +4397,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226653/index.m3u8"
         ],
         "number": "367",
+        "epg": "许昌农业科教",
         "name": "许昌农业科教"
       },
       {
@@ -4250,6 +4405,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226654/index.m3u8"
         ],
         "number": "368",
+        "epg": "中央新影老故事",
         "name": "中央新影老故事"
       },
       {
@@ -4260,6 +4416,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227176/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "369",
+        "epg": "法治天地",
         "name": "法治天地"
       },
       {
@@ -4267,6 +4424,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226658/index.m3u8"
         ],
         "number": "370",
+        "epg": "信阳公共",
         "name": "信阳公共"
       },
       {
@@ -4288,6 +4446,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226661/index.m3u8"
         ],
         "number": "372",
+        "epg": "登封综合",
         "name": "登封综合"
       },
       {
@@ -4295,6 +4454,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226663/index.m3u8"
         ],
         "number": "373",
+        "epg": "北京家有购物",
         "name": "北京家有购物"
       },
       {
@@ -4302,6 +4462,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226664/index.m3u8"
         ],
         "number": "374",
+        "epg": "濮阳公共",
         "name": "濮阳公共"
       },
       {
@@ -4309,6 +4470,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226665/index.m3u8"
         ],
         "number": "375",
+        "epg": "河南IPTV导视",
         "name": "河南IPTV导视"
       },
       {
@@ -4325,6 +4487,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226667/index.m3u8"
         ],
         "number": "377",
+        "epg": "新乡公共",
         "name": "新乡公共"
       },
       {
@@ -4332,6 +4495,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226668/index.m3u8"
         ],
         "number": "378",
+        "epg": "湖南金鹰纪实",
         "name": "湖南金鹰纪实"
       },
       {
@@ -4339,6 +4503,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226670/index.m3u8"
         ],
         "number": "379",
+        "epg": "湖南快乐垂钓",
         "name": "湖南快乐垂钓"
       },
       {
@@ -4346,6 +4511,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226671/index.m3u8"
         ],
         "number": "380",
+        "epg": "南阳1新闻综合",
         "name": "南阳1新闻综合"
       },
       {
@@ -4353,6 +4519,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226672/index.m3u8"
         ],
         "number": "381",
+        "epg": "嵩县",
         "name": "嵩县"
       },
       {
@@ -4360,6 +4527,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226674/index.m3u8"
         ],
         "number": "382",
+        "epg": "信阳教育台",
         "name": "信阳教育台"
       },
       {
@@ -4367,6 +4535,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226675/index.m3u8"
         ],
         "number": "383",
+        "epg": "央广购物",
         "name": "央广购物"
       },
       {
@@ -4374,6 +4543,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226677/index.m3u8"
         ],
         "number": "384",
+        "epg": "大象新闻",
         "name": "大象新闻"
       },
       {
@@ -4381,6 +4551,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226679/index.m3u8"
         ],
         "number": "385",
+        "epg": "湖南先锋乒羽",
         "name": "湖南先锋乒羽"
       },
       {
@@ -4388,6 +4559,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226683/index.m3u8"
         ],
         "number": "386",
+        "epg": "平桥广电中心",
         "name": "平桥广电中心"
       },
       {
@@ -4395,6 +4567,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226685/index.m3u8"
         ],
         "number": "387",
+        "epg": "河南民生频道",
         "name": "河南民生频道"
       },
       {
@@ -4402,6 +4575,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226686/index.m3u8"
         ],
         "number": "388",
+        "epg": "郑州5妇女儿童",
         "name": "郑州5妇女儿童"
       },
       {
@@ -4409,6 +4583,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226688/index.m3u8"
         ],
         "number": "389",
+        "epg": "新乡新闻综合",
         "name": "新乡新闻综合"
       },
       {
@@ -4416,6 +4591,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226689/index.m3u8"
         ],
         "number": "390",
+        "epg": "开封1新闻综合",
         "name": "开封1新闻综合"
       },
       {
@@ -4423,6 +4599,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226690/index.m3u8"
         ],
         "number": "391",
+        "epg": "驻马店2公共频道",
         "name": "驻马店2公共频道"
       },
       {
@@ -4430,6 +4607,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226691/index.m3u8"
         ],
         "number": "392",
+        "epg": "新蔡",
         "name": "新蔡"
       },
       {
@@ -4437,6 +4615,7 @@
           "http://[2409:8087:4400:20:1:a0f:11:9]/iptv.cdn.ha.chinamobile.com/PLTV/88888888/224/3221226692/index.m3u8"
         ],
         "number": "393",
+        "epg": "河南功夫",
         "name": "河南功夫"
       },
       {
@@ -4445,6 +4624,7 @@
           "http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225525/index.m3u8"
         ],
         "number": "394",
+        "epg": "NewTV金牌综艺",
         "name": "NewTV金牌综艺"
       },
       {
@@ -4452,6 +4632,7 @@
           "http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225734/index.m3u8"
         ],
         "number": "395",
+        "epg": "大庆公共",
         "name": "大庆公共"
       },
       {
@@ -4460,6 +4641,7 @@
           "http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225990/index.m3u8"
         ],
         "number": "396",
+        "epg": "黑龙江都市",
         "name": "黑龙江都市"
       },
       {
@@ -4468,6 +4650,7 @@
           "http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225994/index.m3u8"
         ],
         "number": "397",
+        "epg": "黑龙江公共",
         "name": "黑龙江公共"
       },
       {
@@ -4476,6 +4659,7 @@
           "http://[2409:8087:1a01:df::4077]/ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226304/index.m3u8"
         ],
         "number": "398",
+        "epg": "黑龙江少儿",
         "name": "黑龙江少儿"
       },
       {
@@ -4484,6 +4668,7 @@
           "http://[2409:8087:1a01:df::4077]/ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226239/index.m3u8"
         ],
         "number": "399",
+        "epg": "黑龙江文体",
         "name": "黑龙江文体"
       },
       {
@@ -4492,6 +4677,7 @@
           "http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225967/index.m3u8"
         ],
         "number": "400",
+        "epg": "黑龙江新闻",
         "name": "黑龙江新闻"
       },
       {
@@ -4500,6 +4686,7 @@
           "http://[2409:8087:1a01:df::4077]/ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226298/index.m3u8"
         ],
         "number": "401",
+        "epg": "黑龙江影视",
         "name": "黑龙江影视"
       },
       {
@@ -4507,6 +4694,7 @@
           "http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225904/index.m3u8"
         ],
         "number": "402",
+        "epg": "咪咕音乐",
         "name": "咪咕音乐"
       },
       {
@@ -4523,6 +4711,7 @@
           "http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225993/index.m3u8"
         ],
         "number": "404",
+        "epg": "西安新闻",
         "name": "西安新闻"
       },
       {
@@ -4542,6 +4731,7 @@
           "http://[2409:8087:1020:301:2026::2b]:80/wh7f454c46tw4202609999_-893197627/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225969/10000100000000060000000000890997_0.smil/01.m3u8?fmt=ts2hls"
         ],
         "number": "406",
+        "epg": "CCTV4欧洲",
         "name": "CCTV4欧洲"
       },
       {
@@ -4550,6 +4740,7 @@
           "http://[2409:8087:1020:301:2026::18]:80/wh7f454c46tw4202898867_317667261/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225970/10000100000000060000000000890996_0.smil/01.m3u8?fmt=ts2hls"
         ],
         "number": "407",
+        "epg": "CCTV4美洲",
         "name": "CCTV4美洲"
       },
       {
@@ -4560,6 +4751,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227206/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "408",
+        "epg": "CETV2",
         "name": "CETV2"
       },
       {
@@ -4568,6 +4760,7 @@
           "http://[2409:8087:1070:301:2028::22]/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225975/index.m3u8?fmt=ts2hls"
         ],
         "number": "409",
+        "epg": "CGTN阿语",
         "name": "CGTN阿语"
       },
       {
@@ -4576,6 +4769,7 @@
           "http://[2409:8087:1070:301:2028::22]/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225976/index.m3u8?fmt=ts2hls"
         ],
         "number": "410",
+        "epg": "CGTN俄语",
         "name": "CGTN俄语"
       },
       {
@@ -4584,6 +4778,7 @@
           "http://[2409:8087:1070:301:2028::11]/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225974/index.m3u8?fmt=ts2hls"
         ],
         "number": "411",
+        "epg": "CGTN法语",
         "name": "CGTN法语"
       },
       {
@@ -4592,6 +4787,7 @@
           "http://[2409:8087:1070:301:2028::11]/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225973/index.m3u8?fmt=ts2hls"
         ],
         "number": "412",
+        "epg": "CGTN西语",
         "name": "CGTN西语"
       },
       {
@@ -4611,6 +4807,7 @@
           "http://[2409:8087:1020:301:2026::1a]:80/wh7f454c46tw4044874748_806087062/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225681/10000100000000060000000000000718_0.smil/01.m3u8?fmt=ts2hls"
         ],
         "number": "414",
+        "epg": "IPTV3+",
         "name": "IPTV3+"
       },
       {
@@ -4619,6 +4816,7 @@
           "http://[2409:8087:1020:301:2026::1f]/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225762/index.m3u8?fmt=ts2hls"
         ],
         "number": "415",
+        "epg": "IPTV5+",
         "name": "IPTV5+"
       },
       {
@@ -4626,6 +4824,7 @@
           "http://[2409:8087:1020:301:2026::2a]:80/wh7f454c46tw4044282384_-988874052/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225678/10000100000000060000000000000715_0.smil/01.m3u8?fmt=ts2hls"
         ],
         "number": "416",
+        "epg": "IPTV6+",
         "name": "IPTV6+"
       },
       {
@@ -4633,6 +4832,7 @@
           "http://[2409:8087:1020:301:2026::21]:80/wh7f454c46tw4046052005_236007101/gslbserv.iptv.nm.chinamobile.com/PLTV/88888890/224/3221225685/10000100000000060000000000000722_0.smil/01.m3u8?fmt=ts2hls"
         ],
         "number": "417",
+        "epg": "IPTV8+",
         "name": "IPTV8+"
       },
       {
@@ -4664,6 +4864,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/jbtygqCHCjtyyH265_4000.m3u8"
         ],
         "number": "420",
+        "epg": "CHC家庭影院",
         "name": "CHC家庭影院"
       },
       {
@@ -4672,6 +4873,7 @@
           "http://[2409:8087:7000:20:1000::22]:6060/yinhe/2/ch00000090990000001268/index.m3u8?virtualDomain=yinhe.live_hls.zte.com"
         ],
         "number": "421",
+        "epg": "LBRTV",
         "name": "LBRTV"
       },
       {
@@ -4680,6 +4882,7 @@
           "http://[2409:8087:7000:20:1000::22]:6060/yinhe/2/ch00000090990000001440/index.m3u8?virtualDomain=yinhe.live_hls.zte.com"
         ],
         "number": "422",
+        "epg": "LYTV",
         "name": "LYTV"
       },
       {
@@ -4688,6 +4891,7 @@
           "http://[2409:8087:7000:20:1000::22]:6060/yinhe/2/ch00000090990000001829/index.m3u8?virtualDomain=yinhe.live_hls.zte.com"
         ],
         "number": "423",
+        "epg": "宝鸡1",
         "name": "宝鸡1"
       },
       {
@@ -4696,6 +4900,7 @@
           "http://[2409:8087:7000:20:1000::22]:6060/yinhe/2/ch00000090990000001737/index.m3u8?virtualDomain=yinhe.live_hls.zte.com"
         ],
         "number": "424",
+        "epg": "宝鸡2",
         "name": "宝鸡2"
       },
       {
@@ -4726,6 +4931,7 @@
           "http://[2409:8087:7000:20:1000::22]:6060/yinhe/2/ch00000090990000002375/index.m3u8?virtualDomain=yinhe.live_hls.zte.com"
         ],
         "number": "427",
+        "epg": "城固",
         "name": "城固"
       },
       {
@@ -4759,6 +4965,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227204/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "429",
+        "epg": "都市剧场",
         "name": "都市剧场"
       },
       {
@@ -4766,6 +4973,7 @@
           "http://[2409:8087:7000:20:1000::22]:6060/yinhe/2/ch00000090990000001929/index.m3u8?virtualDomain=yinhe.live_hls.zte.com"
         ],
         "number": "430",
+        "epg": "佛坪",
         "name": "佛坪"
       },
       {
@@ -4773,6 +4981,7 @@
           "http://[2409:8087:7000:20:1000::22]:6060/yinhe/2/ch00000090990000001277/index.m3u8?virtualDomain=yinhe.live_hls.zte.com"
         ],
         "number": "431",
+        "epg": "购物",
         "name": "购物"
       },
       {
@@ -4780,6 +4989,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/emdy4k_8000.m3u8"
         ],
         "number": "432",
+        "epg": "4K电影",
         "name": "4K电影"
       },
       {
@@ -4787,6 +4997,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/fssh_4000.m3u8"
         ],
         "number": "433",
+        "epg": "CBN风尚生活",
         "name": "CBN风尚生活"
       },
       {
@@ -4794,6 +5005,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/mryy_4000.m3u8"
         ],
         "number": "434",
+        "epg": "CBN每日影院",
         "name": "CBN每日影院"
       },
       {
@@ -4801,6 +5013,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/xfjc_4000.m3u8"
         ],
         "number": "435",
+        "epg": "CBN幸福剧场",
         "name": "CBN幸福剧场"
       },
       {
@@ -4808,6 +5021,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/xfyl_4000.m3u8"
         ],
         "number": "436",
+        "epg": "CBN幸福娱乐",
         "name": "CBN幸福娱乐"
       },
       {
@@ -4824,6 +5038,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/ajxw_2000.m3u8"
         ],
         "number": "438",
+        "epg": "安居综合",
         "name": "安居综合"
       },
       {
@@ -4831,6 +5046,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/bzxw_4000.m3u8"
         ],
         "number": "439",
+        "epg": "巴州",
         "name": "巴州"
       },
       {
@@ -4838,6 +5054,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/bxdst_2000.m3u8"
         ],
         "number": "440",
+        "epg": "宝兴新闻",
         "name": "宝兴新闻"
       },
       {
@@ -4845,6 +5062,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/bzetH264.m3u8"
         ],
         "number": "441",
+        "epg": "巴中文旅",
         "name": "巴中文旅"
       },
       {
@@ -4852,6 +5070,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/bzytH265.m3u8"
         ],
         "number": "442",
+        "epg": "巴中综合",
         "name": "巴中综合"
       },
       {
@@ -4859,6 +5078,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/bcxwHD.m3u8"
         ],
         "number": "443",
+        "epg": "北川综合",
         "name": "北川综合"
       },
       {
@@ -4886,6 +5106,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/ctxwzh_2000.m3u8"
         ],
         "number": "446",
+        "epg": "朝天新闻",
         "name": "朝天新闻"
       },
       {
@@ -4902,6 +5123,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/cdgxdstgq_2000.m3u8"
         ],
         "number": "448",
+        "epg": "成都高新区",
         "name": "成都高新区"
       },
       {
@@ -4945,6 +5167,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/czyt_4000.m3u8"
         ],
         "number": "453",
+        "epg": "崇州一套",
         "name": "崇州一套"
       },
       {
@@ -4952,6 +5175,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/csxw_2000.m3u8"
         ],
         "number": "454",
+        "epg": "船山综合",
         "name": "船山综合"
       },
       {
@@ -4959,6 +5183,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/dcxwzh_2000.m3u8"
         ],
         "number": "455",
+        "epg": "达川新闻",
         "name": "达川新闻"
       },
       {
@@ -4966,6 +5191,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/dzgg_2000.m3u8"
         ],
         "number": "456",
+        "epg": "达州公共",
         "name": "达州公共"
       },
       {
@@ -4973,6 +5199,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/dzxwzh_2000.m3u8"
         ],
         "number": "457",
+        "epg": "达州新闻",
         "name": "达州新闻"
       },
       {
@@ -4980,6 +5207,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/dyytH265_4000.m3u8"
         ],
         "number": "458",
+        "epg": "大邑",
         "name": "大邑"
       },
       {
@@ -4987,6 +5215,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/dcxw.m3u8"
         ],
         "number": "459",
+        "epg": "德昌",
         "name": "德昌"
       },
       {
@@ -5004,6 +5233,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/djyzh_4000.m3u8"
         ],
         "number": "461",
+        "epg": "都江堰",
         "name": "都江堰"
       },
       {
@@ -5011,6 +5241,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/emdygqH265_4000.m3u8"
         ],
         "number": "462",
+        "epg": "峨眉电影",
         "name": "峨眉电影"
       },
       {
@@ -5018,6 +5249,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/emsxw_2000.m3u8"
         ],
         "number": "463",
+        "epg": "峨眉综合",
         "name": "峨眉综合"
       },
       {
@@ -5025,6 +5257,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/eyxw_2000.m3u8"
         ],
         "number": "464",
+        "epg": "恩阳新闻",
         "name": "恩阳新闻"
       },
       {
@@ -5054,6 +5287,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/fcgq.m3u8"
         ],
         "number": "467",
+        "epg": "涪城综合",
         "name": "涪城综合"
       },
       {
@@ -5061,6 +5295,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/fszh_2000.m3u8"
         ],
         "number": "468",
+        "epg": "富顺综合",
         "name": "富顺综合"
       },
       {
@@ -5068,6 +5303,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/gzxwzh_2000.m3u8"
         ],
         "number": "469",
+        "epg": "甘孜综合",
         "name": "甘孜综合"
       },
       {
@@ -5075,6 +5311,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/gxt_2000.m3u8"
         ],
         "number": "470",
+        "epg": "高县综合",
         "name": "高县综合"
       },
       {
@@ -5082,6 +5319,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/gxzh_2000.m3u8"
         ],
         "number": "471",
+        "epg": "珙县新闻",
         "name": "珙县新闻"
       },
       {
@@ -5089,6 +5327,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/gagg_2000.m3u8"
         ],
         "number": "472",
+        "epg": "广安公共",
         "name": "广安公共"
       },
       {
@@ -5097,6 +5336,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/gaqxw_2000.m3u8"
         ],
         "number": "473",
+        "epg": "广安新闻",
         "name": "广安新闻"
       },
       {
@@ -5104,6 +5344,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/ghxwzh_2000.m3u8"
         ],
         "number": "474",
+        "epg": "广汉综合",
         "name": "广汉综合"
       },
       {
@@ -5111,6 +5352,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/gyggH265_4000.m3u8"
         ],
         "number": "475",
+        "epg": "广元公共",
         "name": "广元公共"
       },
       {
@@ -5118,6 +5360,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/gyzhH265_4000.m3u8"
         ],
         "number": "476",
+        "epg": "广元综合",
         "name": "广元综合"
       },
       {
@@ -5125,6 +5368,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/hyxwzh_2000.m3u8"
         ],
         "number": "477",
+        "epg": "汉源新闻",
         "name": "汉源新闻"
       },
       {
@@ -5132,6 +5376,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/hjxw_2000.m3u8"
         ],
         "number": "478",
+        "epg": "合江新闻",
         "name": "合江新闻"
       },
       {
@@ -5139,6 +5384,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/hyzh_2000.m3u8"
         ],
         "number": "479",
+        "epg": "洪雅新闻",
         "name": "洪雅新闻"
       },
       {
@@ -5168,6 +5414,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/jjxw_2000.m3u8"
         ],
         "number": "482",
+        "epg": "夹江新闻",
         "name": "夹江新闻"
       },
       {
@@ -5186,6 +5433,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/jtlc_4000.m3u8"
         ],
         "number": "484",
+        "epg": "家庭理财",
         "name": "家庭理财"
       },
       {
@@ -5193,6 +5441,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/qwxwzh_2000.m3u8"
         ],
         "number": "485",
+        "epg": "犍为新闻",
         "name": "犍为新闻"
       },
       {
@@ -5200,6 +5449,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/jgxwzhH265_4000.m3u8"
         ],
         "number": "486",
+        "epg": "剑阁综合",
         "name": "剑阁综合"
       },
       {
@@ -5207,6 +5457,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/jat_2000.m3u8"
         ],
         "number": "487",
+        "epg": "江安",
         "name": "江安"
       },
       {
@@ -5214,6 +5465,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/jkhdst_2000.m3u8"
         ],
         "number": "488",
+        "epg": "金口河综合",
         "name": "金口河综合"
       },
       {
@@ -5221,6 +5473,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/jnyx_2000.m3u8"
         ],
         "number": "489",
+        "epg": "金牛",
         "name": "金牛"
       },
       {
@@ -5228,6 +5481,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/jtzhpd_2000.m3u8"
         ],
         "number": "490",
+        "epg": "金堂",
         "name": "金堂"
       },
       {
@@ -5244,6 +5498,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/jpdsH265_4000.m3u8"
         ],
         "number": "492",
+        "epg": "精品导视",
         "name": "精品导视"
       },
       {
@@ -5251,6 +5506,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/jyxwzh_2000.m3u8"
         ],
         "number": "493",
+        "epg": "井研新闻",
         "name": "井研新闻"
       },
       {
@@ -5262,6 +5518,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226963/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "494",
+        "epg": "卡酷少儿",
         "name": "卡酷少儿"
       },
       {
@@ -5269,6 +5526,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/kjxwzh_2000.m3u8"
         ],
         "number": "495",
+        "epg": "开江新闻",
         "name": "开江新闻"
       },
       {
@@ -5300,6 +5558,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/lzxw_2000.m3u8"
         ],
         "number": "498",
+        "epg": "阆中综合",
         "name": "阆中综合"
       },
       {
@@ -5307,6 +5566,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/lsggpd_4000.m3u8"
         ],
         "number": "499",
+        "epg": "乐山公共",
         "name": "乐山公共"
       },
       {
@@ -5314,6 +5574,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/lsxwzh_4000.m3u8"
         ],
         "number": "500",
+        "epg": "乐山新闻",
         "name": "乐山新闻"
       },
       {
@@ -5330,6 +5591,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/lzxwzh_2000.m3u8"
         ],
         "number": "502",
+        "epg": "利州综合",
         "name": "利州综合"
       },
       {
@@ -5337,6 +5599,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/lsxw_2000.m3u8"
         ],
         "number": "503",
+        "epg": "邻水综合",
         "name": "邻水综合"
       },
       {
@@ -5344,6 +5607,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/lqxw_2000.m3u8"
         ],
         "number": "504",
+        "epg": "龙泉综合",
         "name": "龙泉综合"
       },
       {
@@ -5351,6 +5615,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/lzgg_2000.m3u8"
         ],
         "number": "505",
+        "epg": "泸州公共",
         "name": "泸州公共"
       },
       {
@@ -5358,6 +5623,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/ljxwzh_2000.m3u8"
         ],
         "number": "506",
+        "epg": "罗江综合",
         "name": "罗江综合"
       },
       {
@@ -5365,6 +5631,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/mbxwzh_2000.m3u8"
         ],
         "number": "507",
+        "epg": "马边综合",
         "name": "马边综合"
       },
       {
@@ -5372,6 +5639,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/mlyy_4000.m3u8"
         ],
         "number": "508",
+        "epg": "魅力足球",
         "name": "魅力足球"
       },
       {
@@ -5379,6 +5647,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/myxwzh_2000.m3u8"
         ],
         "number": "509",
+        "epg": "米易综合",
         "name": "米易综合"
       },
       {
@@ -5386,6 +5655,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/myetH265_4000.m3u8"
         ],
         "number": "510",
+        "epg": "绵阳公共",
         "name": "绵阳公共"
       },
       {
@@ -5393,6 +5663,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/myytH265_4000.m3u8"
         ],
         "number": "511",
+        "epg": "绵阳新闻",
         "name": "绵阳新闻"
       },
       {
@@ -5400,6 +5671,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/mzxwzh_2000.m3u8"
         ],
         "number": "512",
+        "epg": "绵竹综合",
         "name": "绵竹综合"
       },
       {
@@ -5407,6 +5679,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/mnxw_2000.m3u8"
         ],
         "number": "513",
+        "epg": "冕宁",
         "name": "冕宁"
       },
       {
@@ -5414,6 +5687,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/mcxw_2000.m3u8"
         ],
         "number": "514",
+        "epg": "沐川综合",
         "name": "沐川综合"
       },
       {
@@ -5421,6 +5695,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/nxxw_2000.m3u8"
         ],
         "number": "515",
+        "epg": "纳溪一套",
         "name": "纳溪一套"
       },
       {
@@ -5428,6 +5703,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/nbxw_2000.m3u8"
         ],
         "number": "516",
+        "epg": "南部新闻",
         "name": "南部新闻"
       },
       {
@@ -5435,6 +5711,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/ncxwzh_2000.m3u8"
         ],
         "number": "517",
+        "epg": "南充综合",
         "name": "南充综合"
       },
       {
@@ -5442,6 +5719,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/njxw_2000.m3u8"
         ],
         "number": "518",
+        "epg": "南江",
         "name": "南江"
       },
       {
@@ -5449,6 +5727,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/nxt_2000.m3u8"
         ],
         "number": "519",
+        "epg": "南溪综合",
         "name": "南溪综合"
       },
       {
@@ -5456,6 +5735,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/njgg_4000.m3u8"
         ],
         "number": "520",
+        "epg": "内江公共",
         "name": "内江公共"
       },
       {
@@ -5463,6 +5743,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/njzh_4000.m3u8"
         ],
         "number": "521",
+        "epg": "内江综合",
         "name": "内江综合"
       },
       {
@@ -5483,6 +5764,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/pzhytH265_4000.m3u8"
         ],
         "number": "523",
+        "epg": "攀枝花新闻",
         "name": "攀枝花新闻"
       },
       {
@@ -5490,6 +5772,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/pgxwzh_2000.m3u8"
         ],
         "number": "524",
+        "epg": "攀钢新闻",
         "name": "攀钢新闻"
       },
       {
@@ -5497,6 +5780,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/pszh_2000.m3u8"
         ],
         "number": "525",
+        "epg": "彭山综合",
         "name": "彭山综合"
       },
       {
@@ -5504,6 +5788,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/pzxwzh_2000.m3u8"
         ],
         "number": "526",
+        "epg": "彭州综合",
         "name": "彭州综合"
       },
       {
@@ -5511,6 +5796,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/pazh_2000.m3u8"
         ],
         "number": "527",
+        "epg": "蓬安综合",
         "name": "蓬安综合"
       },
       {
@@ -5518,6 +5804,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/pxxw_2000.m3u8"
         ],
         "number": "528",
+        "epg": "蓬溪新闻",
         "name": "蓬溪新闻"
       },
       {
@@ -5525,6 +5812,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/pxds1_2000.m3u8"
         ],
         "number": "529",
+        "epg": "郫县新闻",
         "name": "郫县新闻"
       },
       {
@@ -5532,6 +5820,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/pcxw_2000.m3u8"
         ],
         "number": "530",
+        "epg": "平昌新闻",
         "name": "平昌新闻"
       },
       {
@@ -5539,6 +5828,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/pjxw_4000.m3u8"
         ],
         "number": "531",
+        "epg": "蒲江新闻",
         "name": "蒲江新闻"
       },
       {
@@ -5546,6 +5836,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/qfxw_2000.m3u8"
         ],
         "number": "532",
+        "epg": "前锋综合",
         "name": "前锋综合"
       },
       {
@@ -5553,6 +5844,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/qbjxwzh_2000.m3u8"
         ],
         "number": "533",
+        "epg": "青白江综合",
         "name": "青白江综合"
       },
       {
@@ -5560,6 +5852,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/qcxwzhH265_4000.m3u8"
         ],
         "number": "534",
+        "epg": "青川新闻",
         "name": "青川新闻"
       },
       {
@@ -5567,6 +5860,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/qszh_2000.m3u8"
         ],
         "number": "535",
+        "epg": "青神综合",
         "name": "青神综合"
       },
       {
@@ -5574,6 +5868,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/qxxwzh_2000.m3u8"
         ],
         "number": "536",
+        "epg": "渠县新闻",
         "name": "渠县新闻"
       },
       {
@@ -5592,6 +5887,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/rxzh_2000.m3u8"
         ],
         "number": "538",
+        "epg": "荣县",
         "name": "荣县"
       },
       {
@@ -5599,6 +5895,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/swxwzh_2000.m3u8"
         ],
         "number": "539",
+        "epg": "沙湾",
         "name": "沙湾"
       },
       {
@@ -5606,6 +5903,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/sdjy_4000.m3u8"
         ],
         "number": "540",
+        "epg": "山东教育卫视",
         "name": "山东教育卫视"
       },
       {
@@ -5613,6 +5911,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/sfx_2000.m3u8"
         ],
         "number": "541",
+        "epg": "什邡新闻",
         "name": "什邡新闻"
       },
       {
@@ -5620,6 +5919,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/smxwzh_2000.m3u8"
         ],
         "number": "542",
+        "epg": "石棉新闻",
         "name": "石棉新闻"
       },
       {
@@ -5663,6 +5963,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/SCTV-2-H265_4000.m3u8"
         ],
         "number": "547",
+        "epg": "四川文旅",
         "name": "四川文旅"
       },
       {
@@ -5697,6 +5998,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/dyxwzhH265_4000.m3u8"
         ],
         "number": "551",
+        "epg": "遂宁大英",
         "name": "遂宁大英"
       },
       {
@@ -5704,6 +6006,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/tqzh_2000.m3u8"
         ],
         "number": "552",
+        "epg": "天全综合",
         "name": "天全综合"
       },
       {
@@ -5711,6 +6014,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/tcq_2000.m3u8"
         ],
         "number": "553",
+        "epg": "通川",
         "name": "通川"
       },
       {
@@ -5718,6 +6022,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/tjxwH265_4000.m3u8"
         ],
         "number": "554",
+        "epg": "通江综合",
         "name": "通江综合"
       },
       {
@@ -5725,6 +6030,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/wyxwzh_2000.m3u8"
         ],
         "number": "555",
+        "epg": "万源",
         "name": "万源"
       },
       {
@@ -5732,6 +6038,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/wcxwzhH265_4000.m3u8"
         ],
         "number": "556",
+        "epg": "旺苍新闻",
         "name": "旺苍新闻"
       },
       {
@@ -5739,6 +6046,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/wtqxwzh_2000.m3u8"
         ],
         "number": "557",
+        "epg": "五通桥",
         "name": "五通桥"
       },
       {
@@ -5746,6 +6054,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/wsxw_2000.m3u8"
         ],
         "number": "558",
+        "epg": "武胜综合",
         "name": "武胜综合"
       },
       {
@@ -5753,6 +6062,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/xczh_2000.m3u8"
         ],
         "number": "559",
+        "epg": "西充综合",
         "name": "西充综合"
       },
       {
@@ -5769,6 +6079,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/xdzhpd_2000.m3u8"
         ],
         "number": "561",
+        "epg": "新都综合",
         "name": "新都综合"
       },
       {
@@ -5776,6 +6087,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/xjzh_4000.m3u8"
         ],
         "number": "562",
+        "epg": "新津",
         "name": "新津"
       },
       {
@@ -5801,6 +6113,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/xwt_2000.m3u8"
         ],
         "number": "565",
+        "epg": "兴文",
         "name": "兴文"
       },
       {
@@ -5808,6 +6121,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/xyxw_2000.m3u8"
         ],
         "number": "566",
+        "epg": "叙永",
         "name": "叙永"
       },
       {
@@ -5815,6 +6129,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/xhxwzh_2000.m3u8"
         ],
         "number": "567",
+        "epg": "宣汉新闻",
         "name": "宣汉新闻"
       },
       {
@@ -5822,6 +6137,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/yagg_2000.m3u8"
         ],
         "number": "568",
+        "epg": "雅安公共",
         "name": "雅安公共"
       },
       {
@@ -5829,6 +6145,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/ycpd_2000.m3u8"
         ],
         "number": "569",
+        "epg": "雅安雨城",
         "name": "雅安雨城"
       },
       {
@@ -5836,6 +6153,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/yazh_2000.m3u8"
         ],
         "number": "570",
+        "epg": "雅安综合",
         "name": "雅安综合"
       },
       {
@@ -5843,6 +6161,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/ybtgq_2000.m3u8"
         ],
         "number": "571",
+        "epg": "盐边",
         "name": "盐边"
       },
       {
@@ -5850,6 +6169,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/yjxw_2000.m3u8"
         ],
         "number": "572",
+        "epg": "雁江",
         "name": "雁江"
       },
       {
@@ -5857,6 +6177,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/ylxw_2000.m3u8"
         ],
         "number": "573",
+        "epg": "仪陇新闻",
         "name": "仪陇新闻"
       },
       {
@@ -5864,6 +6185,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/ysxw_2000.m3u8"
         ],
         "number": "574",
+        "epg": "营山综合",
         "name": "营山综合"
       },
       {
@@ -5871,6 +6193,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/ycxw_2000.m3u8"
         ],
         "number": "575",
+        "epg": "岳池",
         "name": "岳池"
       },
       {
@@ -5878,6 +6201,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/zhxwzh_2000.m3u8"
         ],
         "number": "576",
+        "epg": "昭化综合",
         "name": "昭化综合"
       },
       {
@@ -5885,6 +6209,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/zjxwzh_2000.m3u8"
         ],
         "number": "577",
+        "epg": "中江新闻",
         "name": "中江新闻"
       },
       {
@@ -5893,6 +6218,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/fxzl.m3u8"
         ],
         "number": "578",
+        "epg": "中央新影-发现之旅",
         "name": "中央新影-发现之旅"
       },
       {
@@ -5901,6 +6227,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/lgs.m3u8"
         ],
         "number": "579",
+        "epg": "中央新影-老故事",
         "name": "中央新影-老故事"
       },
       {
@@ -5908,6 +6235,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/zyxwzh_2000.m3u8"
         ],
         "number": "580",
+        "epg": "资阳新闻",
         "name": "资阳新闻"
       },
       {
@@ -5915,6 +6243,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/zggg_4000.m3u8"
         ],
         "number": "581",
+        "epg": "自贡公共",
         "name": "自贡公共"
       },
       {
@@ -5922,6 +6251,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/zgxw_4000.m3u8山东综艺"
         ],
         "number": "582",
+        "epg": "自贡新闻",
         "name": "自贡新闻"
       },
       {
@@ -5932,6 +6262,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227210/index.m3u8?servicetype=1&IASHttpS"
         ],
         "number": "583",
+        "epg": "中国天气",
         "name": "中国天气"
       },
       {
@@ -5939,6 +6270,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/zxs.m3u8"
         ],
         "number": "584",
+        "epg": "中央新影-中学生",
         "name": "中央新影-中学生"
       },
       {
@@ -5946,6 +6278,7 @@
           "http://[2409:8087:3428:20:500::100f]:6610/PLTV/88888888/224/3221226825/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "585",
+        "epg": "CCTV﻿4K",
         "name": "CCTV﻿4K"
       },
       {
@@ -5954,6 +6287,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227067/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "586",
+        "epg": "CETV 1",
         "name": "CETV 1"
       },
       {
@@ -5962,6 +6296,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225877/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "587",
+        "epg": "爱情喜剧",
         "name": "爱情喜剧"
       },
       {
@@ -6004,6 +6339,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226573/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "588",
+        "epg": "百事通",
         "name": "百事通"
       },
       {
@@ -6012,6 +6348,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227087/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "589",
+        "epg": "地方财经",
         "name": "地方财经"
       },
       {
@@ -6066,6 +6403,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226664/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "594",
+        "epg": "多屏",
         "name": "多屏"
       },
       {
@@ -6074,6 +6412,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227202/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "595",
+        "epg": "福建",
         "name": "福建"
       },
       {
@@ -6082,6 +6421,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227079/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "596",
+        "epg": "福建电视剧",
         "name": "福建电视剧"
       },
       {
@@ -6090,6 +6430,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227153/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "597",
+        "epg": "福建公共",
         "name": "福建公共"
       },
       {
@@ -6098,6 +6439,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227184/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "598",
+        "epg": "福建经济",
         "name": "福建经济"
       },
       {
@@ -6106,6 +6448,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227190/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "599",
+        "epg": "福建梨园",
         "name": "福建梨园"
       },
       {
@@ -6114,6 +6457,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227194/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "600",
+        "epg": "福建少儿",
         "name": "福建少儿"
       },
       {
@@ -6122,6 +6466,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227188/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "601",
+        "epg": "福建文体",
         "name": "福建文体"
       },
       {
@@ -6130,6 +6475,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227180/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "602",
+        "epg": "福建新闻",
         "name": "福建新闻"
       },
       {
@@ -6140,6 +6486,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227218/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "603",
+        "epg": "福建综合",
         "name": "福建综合"
       },
       {
@@ -6148,6 +6495,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226981/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "604",
+        "epg": "福州",
         "name": "福州"
       },
       {
@@ -6156,6 +6504,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227157/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "605",
+        "epg": "福州1",
         "name": "福州1"
       },
       {
@@ -6164,6 +6513,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227198/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "606",
+        "epg": "海峡卫视",
         "name": "海峡卫视"
       },
       {
@@ -6172,6 +6522,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227234/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "607",
+        "epg": "江西陶瓷",
         "name": "江西陶瓷"
       },
       {
@@ -6180,6 +6531,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227208/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "608",
+        "epg": "金色学堂",
         "name": "金色学堂"
       },
       {
@@ -6188,6 +6540,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225885/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "609",
+        "epg": "惊悚悬疑",
         "name": "惊悚悬疑"
       },
       {
@@ -6196,6 +6549,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225888/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "610",
+        "epg": "精品纪录",
         "name": "精品纪录"
       },
       {
@@ -6204,6 +6558,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227041/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "611",
+        "epg": "联众",
         "name": "联众"
       },
       {
@@ -6212,6 +6567,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227200/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "612",
+        "epg": "龙岩综合",
         "name": "龙岩综合"
       },
       {
@@ -6228,6 +6584,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227158/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "613",
+        "epg": "咪咕",
         "name": "咪咕"
       },
       {
@@ -6246,6 +6603,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227066/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "615",
+        "epg": "南平",
         "name": "南平"
       },
       {
@@ -6254,6 +6612,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226956/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "616",
+        "epg": "南平2",
         "name": "南平2"
       },
       {
@@ -6262,6 +6621,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227196/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "617",
+        "epg": "宁德综合",
         "name": "宁德综合"
       },
       {
@@ -6270,6 +6630,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227161/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "618",
+        "epg": "莆田",
         "name": "莆田"
       },
       {
@@ -6288,6 +6649,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227165/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "620",
+        "epg": "泉州",
         "name": "泉州"
       },
       {
@@ -6324,6 +6686,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227173/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "623",
+        "epg": "厦门1",
         "name": "厦门1"
       },
       {
@@ -6332,6 +6695,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226777/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "624",
+        "epg": "厦门2",
         "name": "厦门2"
       },
       {
@@ -6340,6 +6704,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226814/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "625",
+        "epg": "厦门3",
         "name": "厦门3"
       },
       {
@@ -6379,6 +6744,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226715/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "629",
+        "epg": "熊猫",
         "name": "熊猫"
       },
       {
@@ -6387,6 +6753,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221225883/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "630",
+        "epg": "怡伴健康",
         "name": "怡伴健康"
       },
       {
@@ -6415,6 +6782,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221227169/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "633",
+        "epg": "漳州",
         "name": "漳州"
       },
       {
@@ -6424,6 +6792,7 @@
           "http://[2409:8087:3428:20:500::1009]:6610/PLTV/88888888/224/3221226987/index.m3u8?servicetype=1&IASHttpSessionId=RR423820220409134714119178"
         ],
         "number": "634",
+        "epg": "中国经济",
         "name": "中国经济"
       },
       {
@@ -6461,6 +6830,7 @@
           "http://117.148.179.157/PLTV/88888888/224/3221233413/index.m3u8"
         ],
         "number": "637",
+        "epg": "CCTV8K",
         "name": "CCTV8K"
       },
       {
@@ -6472,6 +6842,7 @@
           "http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225786/index.m3u8"
         ],
         "number": "638",
+        "epg": "纯享4K",
         "name": "纯享4K"
       },
       {
@@ -6483,6 +6854,7 @@
           "http://live.aikan.miguvideo.com/PLTV/88888888/224/3221230739/index.m3u8 "
         ],
         "number": "639",
+        "epg": "欢笑剧场4K",
         "name": "欢笑剧场4K"
       },
       {
@@ -6490,6 +6862,7 @@
           "http://[2409:8087:7000:20:1000::22]:6060/yinhe/2/ch00000090990000001709/index.m3u8?virtualDomain=yinhe.live_hls.zte.com "
         ],
         "number": "640",
+        "epg": "爱上4K",
         "name": "爱上4K"
       },
       {
@@ -6497,6 +6870,7 @@
           "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/emdy4k_8000.m3u8 "
         ],
         "number": "641",
+        "epg": "4K超高清电影",
         "name": "4K超高清电影"
       },
       {
@@ -6508,6 +6882,7 @@
           "http://liveshowbak2.kan0512.com/ksz-norecord/csztv4k_4k.m3u8 "
         ],
         "number": "642",
+        "epg": "苏州4K",
         "name": "苏州4K"
       }
     ],
@@ -6532,6 +6907,7 @@
           "http://hpull.kktv8.com/livekktv/128600025/playlist.m3u8"
         ],
         "number": "644",
+        "epg": "HBO2",
         "name": "HBO2"
       },
       {
@@ -6542,6 +6918,7 @@
           "http://39.135.138.58:18890/PLTV/88888888/224/3221225769/index.m3u8"
         ],
         "number": "645",
+        "epg": "黑莓电影",
         "name": "黑莓电影"
       },
       {
@@ -6549,6 +6926,7 @@
           "http://112.19.214.90:8883/tsfile/live/1004_1.m3u8"
         ],
         "number": "646",
+        "epg": "峨眉电影",
         "name": "峨眉电影"
       },
       {
@@ -6556,6 +6934,7 @@
           "http://124.232.231.246:6610/000000001001/201600020005/index.m3u8?A=&IASHttpSessionId=OTT"
         ],
         "number": "647",
+        "epg": "湖南电影",
         "name": "湖南电影"
       },
       {
@@ -6571,6 +6950,7 @@
           "http://171.108.239.13:8181/tsfile/live/1014_1.m3u8"
         ],
         "number": "649",
+        "epg": "私人影院",
         "name": "私人影院"
       },
       {
@@ -6578,6 +6958,7 @@
           "http://www.372583307.top:4022/udp/233.50.201.228:5140"
         ],
         "number": "650",
+        "epg": "好莱坞HD",
         "name": "好莱坞HD"
       },
       {
@@ -6607,6 +6988,7 @@
           "http://111.20.33.93/TVOD/88888893/224/3221226462/index.m3u8"
         ],
         "number": "653",
+        "epg": "CHC家庭影院",
         "name": "CHC家庭影院"
       },
       {
@@ -6618,6 +7000,7 @@
           "http://183.11.239.32:808/hls/8/index.m3u8"
         ],
         "number": "654",
+        "epg": "广东影视",
         "name": "广东影视"
       },
       {
@@ -6627,6 +7010,7 @@
           "https://litchiapp-hls.jstv.com/lizhiapp/jsys.m3u8"
         ],
         "number": "655",
+        "epg": "江苏影视",
         "name": "江苏影视"
       },
       {
@@ -6635,6 +7019,7 @@
           "http://39.134.115.163:8080/PLTV/88888910/224/3221225766/index.m3u8"
         ],
         "number": "656",
+        "epg": "超级电影",
         "name": "超级电影"
       },
       {
@@ -6642,6 +7027,7 @@
           "http://112.19.214.90:8883/tsfile/live/1011_1.m3u8"
         ],
         "number": "657",
+        "epg": "高清影院",
         "name": "高清影院"
       },
       {
@@ -6649,6 +7035,7 @@
           "http://106.115.24.46:9901/tsfile/live/1029_1.m3u8"
         ],
         "number": "658",
+        "epg": "龙鑫电影",
         "name": "龙鑫电影"
       },
       {
@@ -6665,6 +7052,7 @@
           "http://wanzhoulive.cbg.cn:8017/d4ceB1a/1000/live.m3u8"
         ],
         "number": "660",
+        "epg": "万州影视",
         "name": "万州影视"
       },
       {
@@ -6675,6 +7063,7 @@
           "http://live6.plus.hebtv.com/hbysx/playlist.m3u8?_upt=a91475711648034289"
         ],
         "number": "661",
+        "epg": "河北影视",
         "name": "河北影视"
       },
       {
@@ -6682,6 +7071,7 @@
           "https://event.pull.hebtv.com/jishi/yingshijupindao.m3u8"
         ],
         "number": "662",
+        "epg": "河北影视剧",
         "name": "河北影视剧"
       },
       {
@@ -6689,6 +7079,7 @@
           "https://jwcdnqx.hebyun.com.cn/live/xlys/1500k/tzwj_video.m3u8"
         ],
         "number": "663",
+        "epg": "兴隆影视",
         "name": "兴隆影视"
       },
       {
@@ -6697,6 +7088,7 @@
           "http://live.zohi.tv/video/s10001-yspd-2/index.m3u8"
         ],
         "number": "664",
+        "epg": "福州影视",
         "name": "福州影视"
       },
       {
@@ -6704,6 +7096,7 @@
           "https://jwliveqxzb.hebyun.com.cn/pqys/pqys.m3u8"
         ],
         "number": "665",
+        "epg": "平泉影视",
         "name": "平泉影视"
       },
       {
@@ -6724,6 +7117,7 @@
           "http://111.20.33.70/PLTV/88888893/224/3221226369/index.m3u8"
         ],
         "number": "667",
+        "epg": "西安影视",
         "name": "西安影视"
       },
       {
@@ -6731,6 +7125,7 @@
           "http://hls.nntv.cn/nnlive/NNTV_VOD_A.m3u8"
         ],
         "number": "668",
+        "epg": "南宁影视",
         "name": "南宁影视"
       },
       {
@@ -6738,6 +7133,7 @@
           "http://live.shaoxing.com.cn/video/s10001-sxtv3/index.m3u8"
         ],
         "number": "669",
+        "epg": "绍兴影视",
         "name": "绍兴影视"
       },
       {
@@ -6745,6 +7141,7 @@
           "http://stream.haixitv.cn/1/sd/live.m3u8"
         ],
         "number": "670",
+        "epg": "海西影视",
         "name": "海西影视"
       },
       {
@@ -6753,6 +7150,7 @@
           "http://58.34.204.67:9901/tsfile/live/1016_1.m3u8"
         ],
         "number": "671",
+        "epg": "上海影视",
         "name": "上海影视"
       },
       {
@@ -6760,6 +7158,7 @@
           "https://hw-m-l.cztv.com/channels/lantian/channel004/1080p.m3u8"
         ],
         "number": "672",
+        "epg": "浙江影视",
         "name": "浙江影视"
       },
       {
@@ -6768,6 +7167,7 @@
           "https://live.lsrmw.cn/ysyl/sd/live.m3u8"
         ],
         "number": "673",
+        "epg": "溧水影视",
         "name": "溧水影视"
       },
       {
@@ -6775,6 +7175,7 @@
           "http://hls.hsrtv.cn/hls/hstv2.m3u8?checkedby:iptvcat.com"
         ],
         "number": "674",
+        "epg": "衡水影视娱乐",
         "name": "衡水影视娱乐"
       },
       {
@@ -6782,6 +7183,7 @@
           "http://111.40.196.30/PLTV/88888888/224/3221225660/index.m3u8"
         ],
         "number": "675",
+        "epg": "湖南影视",
         "name": "湖南影视"
       },
       {
@@ -6791,6 +7193,7 @@
           "http://stream1.jlntv.cn/yspd/sd/live.m3u8"
         ],
         "number": "676",
+        "epg": "吉林影视",
         "name": "吉林影视"
       },
       {
@@ -6803,6 +7206,7 @@
           "http://183.207.248.15/PLTV/3/224/3221225949/index.m3u8"
         ],
         "number": "677",
+        "epg": "徐州影视",
         "name": "徐州影视"
       },
       {
@@ -6811,6 +7215,7 @@
           "http://pluslive.zhxww.net/channel2/sd/live.m3u8"
         ],
         "number": "678",
+        "epg": "镇海先锋影视",
         "name": "镇海先锋影视"
       },
       {
@@ -6818,6 +7223,7 @@
           "http://pili-live-hls.212.i2863.com/i2863-212/live_212_316579.m3u8"
         ],
         "number": "679",
+        "epg": "柳林影视",
         "name": "柳林影视"
       },
       {
@@ -6826,6 +7232,7 @@
           "http://traffic.jbh.tjbh.com/live/bhtv3/playlist.m3u8"
         ],
         "number": "680",
+        "epg": "滨海影视",
         "name": "滨海影视"
       },
       {
@@ -6834,6 +7241,7 @@
           "http://live.yantaitv.cn/live/e9f1d9045d474c31884d13fa4ffbbd16/a4a9b3704d854756907845107cc56129-1.m3u8"
         ],
         "number": "681",
+        "epg": "烟台影视",
         "name": "烟台影视"
       },
       {
@@ -6844,6 +7252,7 @@
           "http://liveflash.sxrtv.com:80/live/sxfilm.m3u8"
         ],
         "number": "682",
+        "epg": "山西影视",
         "name": "山西影视"
       },
       {
@@ -6852,6 +7261,7 @@
           "http://live.hznet.tv:1935/live/live3/500K/tzwj_video.m3u8"
         ],
         "number": "683",
+        "epg": "菏泽影视",
         "name": "菏泽影视"
       },
       {
@@ -6860,6 +7270,7 @@
           "https://jwcdnqx.hebyun.com.cn/live/yspd/1500k/tzwj_video.m3u8"
         ],
         "number": "684",
+        "epg": "定州国学影视",
         "name": "定州国学影视"
       },
       {
@@ -6867,6 +7278,7 @@
           "http://183.207.248.15/PLTV/4/224/3221225937/index.m3u8"
         ],
         "number": "685",
+        "epg": "江苏影视频",
         "name": "江苏影视频"
       },
       {
@@ -6874,6 +7286,7 @@
           "http://pili-live-rtmp.wdit.com.cn/wditlive/fs_yspd.m3u8"
         ],
         "number": "686",
+        "epg": "佛山影视",
         "name": "佛山影视"
       },
       {
@@ -6881,6 +7294,7 @@
           "https://hls.quklive.com/live/1551749282880742/index.m3u8"
         ],
         "number": "687",
+        "epg": "长沙影视频道",
         "name": "长沙影视频道"
       },
       {
@@ -6888,6 +7302,7 @@
           "http://223.247.33.124:1935/live/yingshi/playlist.m3u8"
         ],
         "number": "688",
+        "epg": "东至影视频道",
         "name": "东至影视频道"
       },
       {
@@ -6897,6 +7312,7 @@
           "http://111.6.126.218:80/hsplay-360.v.btime.com/live_btime/btv_sn_20170706_s4/index.m3u8"
         ],
         "number": "689",
+        "epg": "北京影视",
         "name": "北京影视"
       },
       {
@@ -6907,6 +7323,7 @@
           "http://wanzhoulive.cbg.cn:8017/d4ceB1a/1000/live.m3u8"
         ],
         "number": "690",
+        "epg": "万州影视文艺",
         "name": "万州影视文艺"
       },
       {
@@ -6915,6 +7332,7 @@
           "http://111.17.214.4:1935/live/xtys/playlist.m3u8"
         ],
         "number": "691",
+        "epg": "新泰影视频道",
         "name": "新泰影视频道"
       },
       {
@@ -6923,6 +7341,7 @@
           "http://l.cztvcloud.com/channels/lantian/SXxinchang2/720p.m3u8"
         ],
         "number": "692",
+        "epg": "新昌休闲影视",
         "name": "新昌休闲影视"
       },
       {
@@ -6930,6 +7349,7 @@
           "http://hw-m-l.cztv.com/channels/lantian/channel05/1080p.m3u8"
         ],
         "number": "693",
+        "epg": "浙江影视台",
         "name": "浙江影视台"
       },
       {
@@ -6937,6 +7357,7 @@
           "http://hw-m-l.cztv.com/channels/lantian/channel004/1080p.m3u8"
         ],
         "number": "694",
+        "epg": "浙江教科影视",
         "name": "浙江教科影视"
       },
       {
@@ -6944,6 +7365,7 @@
           "http://39.135.138.58:18890/TVOD/88888888/224/3221225716/index.m3u8"
         ],
         "number": "695",
+        "epg": "未知影视",
         "name": "未知影视"
       },
       {
@@ -6951,6 +7373,7 @@
           "https://jsylivealone302.iqilu.com/gaoqing/gaoqing_tv02.m3u8"
         ],
         "number": "696",
+        "epg": "高青影视",
         "name": "高青影视"
       },
       {
@@ -6958,6 +7381,7 @@
           "https://jsylivealone302.iqilu.com/live/jiyang_tv02.m3u8"
         ],
         "number": "697",
+        "epg": "济阳影视",
         "name": "济阳影视"
       },
       {
@@ -6965,6 +7389,7 @@
           "https://jsylivealone302.iqilu.com/rencheng/rencheng_tv02.m3u8"
         ],
         "number": "698",
+        "epg": "任城影视娱乐",
         "name": "任城影视娱乐"
       },
       {
@@ -6972,6 +7397,7 @@
           "http://223.247.33.124:1935/live/yingshi/HasBahCa.m3u8"
         ],
         "number": "699",
+        "epg": "东至影视",
         "name": "东至影视"
       },
       {
@@ -6980,6 +7406,7 @@
           "http://202.107.188.141:5002/shiheziyinshiwenti_hdgq.m3u8?token=guoziyun"
         ],
         "number": "700",
+        "epg": "石河子影视文体",
         "name": "石河子影视文体"
       },
       {
@@ -6987,6 +7414,7 @@
           "http://wshls.live.migucloud.com/live/KYLNJWFD_C0_2/playlist.m3u8?token=006f3811c18fb70b91442573728aa10e"
         ],
         "number": "701",
+        "epg": "昆明影视综艺",
         "name": "昆明影视综艺"
       },
       {
@@ -6994,6 +7422,7 @@
           "http://wshls.live.migucloud.com/live/KYLNJWFD_C0/playlist.m3u8"
         ],
         "number": "702",
+        "epg": "昆明影视",
         "name": "昆明影视"
       },
       {
@@ -7001,6 +7430,7 @@
           "http://39.134.115.163:8080/PLTV/88888888/224/3221225579/index.m3u8?fmt=ts2hls"
         ],
         "number": "703",
+        "epg": "江西四套影视",
         "name": "江西四套影视"
       },
       {
@@ -7008,6 +7438,7 @@
           "https://hwapi.yunshicloud.com/62hdvf/utrat7.m3u8?tk=3ea2490de3fb10f9937aad28daaed3d5&t=NaN"
         ],
         "number": "704",
+        "epg": "云南影视",
         "name": "云南影视"
       },
       {
@@ -7015,6 +7446,7 @@
           "http://hms563nc1880172786.live.aikan.miguvideo.com/wh7f454c46tw3279865347_1298155843/PLTV/88888888/224/3221231733/1.m3u8"
         ],
         "number": "705",
+        "epg": "TVB影视",
         "name": "TVB影视"
       },
       {
@@ -7022,6 +7454,7 @@
           "http://39.164.218.68:9901/tsfile/live/1015_1.m3u8"
         ],
         "number": "706",
+        "epg": "调解剧场",
         "name": "调解剧场"
       },
       {
@@ -7029,6 +7462,7 @@
           "http://218.17.216.102:9901/tsfile/live/1057_1.m3u8"
         ],
         "number": "707",
+        "epg": "深圳电视剧",
         "name": "深圳电视剧"
       },
       {
@@ -7046,6 +7480,7 @@
           "http://epg.112114.xyz/douyu/7298973"
         ],
         "number": "709",
+        "epg": "24H欢乐不断",
         "name": "24H欢乐不断"
       },
       {
@@ -7053,6 +7488,7 @@
           "http://epg.112114.xyz/douyu/4332"
         ],
         "number": "710",
+        "epg": "科幻动作经典喜剧",
         "name": "科幻动作经典喜剧"
       },
       {
@@ -7060,6 +7496,7 @@
           "http://epg.112114.xyz/douyu/252802"
         ],
         "number": "711",
+        "epg": "经典科幻动作灾难",
         "name": "经典科幻动作灾难"
       },
       {
@@ -7067,6 +7504,7 @@
           "http://epg.112114.xyz/douyu/10395973"
         ],
         "number": "712",
+        "epg": "童年回忆",
         "name": "童年回忆"
       },
       {
@@ -7074,6 +7512,7 @@
           "http://epg.112114.xyz/douyu/3508304"
         ],
         "number": "713",
+        "epg": "科幻影视",
         "name": "科幻影视"
       },
       {
@@ -7081,6 +7520,7 @@
           "http://epg.112114.xyz/douyu/747764"
         ],
         "number": "714",
+        "epg": "60帧极致蓝光",
         "name": "60帧极致蓝光"
       },
       {
@@ -7088,6 +7528,7 @@
           "http://epg.112114.xyz/douyu/3700024"
         ],
         "number": "715",
+        "epg": "经典神剧",
         "name": "经典神剧"
       },
       {
@@ -7095,6 +7536,7 @@
           "http://epg.112114.xyz/douyu/6449849"
         ],
         "number": "716",
+        "epg": "国语超清动画电影",
         "name": "国语超清动画电影"
       },
       {
@@ -7102,6 +7544,7 @@
           "http://epg.112114.xyz/douyu/434971"
         ],
         "number": "717",
+        "epg": "华语经典",
         "name": "华语经典"
       },
       {
@@ -7109,6 +7552,7 @@
           "http://txtest-xp2p.p2p.huya.com/huyalive/1199513205060-1199513205060-5228390287876816896-2399026533576-10057-A-0-1.xs"
         ],
         "number": "718",
+        "epg": "1905电影",
         "name": "1905电影"
       },
       {
@@ -7116,6 +7560,7 @@
           "http://112.74.200.9:88/tv000000/m3u8.php?/migu/627198822/index.m3u8"
         ],
         "number": "719",
+        "epg": "KiD影院9",
         "name": "KiD影院9"
       },
       {
@@ -7123,6 +7568,7 @@
           "http://112.74.200.9:88/tv000000/m3u8.php?/migu/617432318/index.m3u8"
         ],
         "number": "720",
+        "epg": "KiD影院10",
         "name": "KiD影院10"
       },
       {
@@ -7130,6 +7576,7 @@
           "http://live.nbs.cn/channels/njtv/xxpd/m3u8:500k/live.m3u8"
         ],
         "number": "721",
+        "epg": "南京影视",
         "name": "南京影视"
       },
       {
@@ -7137,6 +7584,7 @@
           "http://111.20.33.93/PLTV/88888893/224/3221226360/index.m3u8"
         ],
         "number": "722",
+        "epg": "陕西影视",
         "name": "陕西影视"
       },
       {
@@ -7145,6 +7593,7 @@
           "http://hblh.chinashadt.com:2036/live/stream:lh2.stream/HasBahCa.m3u8"
         ],
         "number": "723",
+        "epg": "隆化影视",
         "name": "隆化影视"
       },
       {
@@ -7161,6 +7610,7 @@
           "http://stream2.xiancity.cn/xatv4/sd/live.m3u8"
         ],
         "number": "725",
+        "epg": "西安文化影视",
         "name": "西安文化影视"
       },
       {
@@ -7177,6 +7627,7 @@
           "https://jsylivealone302.iqilu.com/laishan/laishan_tv02.m3u8"
         ],
         "number": "727",
+        "epg": "莱山影视",
         "name": "莱山影视"
       },
       {
@@ -7184,6 +7635,7 @@
           "http://hbwq.chinashadt.com:2035/live/stream:wqys.stream/HasBahCa.m3u8"
         ],
         "number": "728",
+        "epg": "武强影视",
         "name": "武强影视"
       },
       {
@@ -7191,6 +7643,7 @@
           "http://39.134.65.181/PLTV/88888888/224/3221225700/1.m3u8"
         ],
         "number": "729",
+        "epg": "哈尔滨影视",
         "name": "哈尔滨影视"
       }
     ],
@@ -7208,6 +7661,7 @@
           "http://39.135.32.24:6610/000000001000/7589856436881630561/1.m3u8?xtkg"
         ],
         "number": "730",
+        "epg": "北京卡酷少儿",
         "name": "北京卡酷少儿"
       },
       {
@@ -7215,6 +7669,7 @@
           "https://newcntv.qcloudcdn.com/asp/hls/1200/0303000a/3/default/87f87ba569c147e3805f80e4844d2de9/1200.m3u8"
         ],
         "number": "731",
+        "epg": "倒霉特熊",
         "name": "倒霉特熊"
       },
       {
@@ -7222,6 +7677,7 @@
           "https://newcntv.qcloudcdn.com/asp/hls/1200/0303000a/3/default/3ccdecc7d6e341c1920ad4eac5d82f38/1200.m3u8"
         ],
         "number": "732",
+        "epg": "反转星球",
         "name": "反转星球"
       },
       {
@@ -7230,6 +7686,7 @@
           "http://live.zohi.tv/video/s10001-sepd-4/index.m3u8?zfud"
         ],
         "number": "733",
+        "epg": "福州少儿",
         "name": "福州少儿"
       },
       {
@@ -7247,6 +7704,7 @@
           "http://39.134.65.145/PLTV/88888888/224/3221226002/1.m3u8?zheild"
         ],
         "number": "735",
+        "epg": "黑龙江少儿",
         "name": "黑龙江少儿"
       },
       {
@@ -7266,6 +7724,7 @@
           "http://live.nbs.cn/channels/njtv/sepd/m3u8:500k/live.m3u8"
         ],
         "number": "737",
+        "epg": "南京少儿",
         "name": "南京少儿"
       },
       {
@@ -7274,6 +7733,7 @@
           "http://39.135.32.24:6610/000000001000/1000000001000008170/1.m3u8?i?zzhongd"
         ],
         "number": "738",
+        "epg": "少儿14台",
         "name": "少儿14台"
       },
       {
@@ -7281,6 +7741,7 @@
           "https://newcntv.qcloudcdn.com/asp/hls/850/0303000a/3/default/c2e7e767f3144bed959ef20b8b961fe5/850.m3u8"
         ],
         "number": "739",
+        "epg": "狮子王国",
         "name": "狮子王国"
       },
       {
@@ -7288,6 +7749,7 @@
           "https://newcntv.qcloudcdn.com/asp/hls/1200/0303000a/3/default/7ae265653fe149069c3b53e31caaf060/1200.m3u8"
         ],
         "number": "740",
+        "epg": "熊大过年",
         "name": "熊大过年"
       },
       {
@@ -7295,6 +7757,7 @@
           "https://newcntv.qcloudcdn.com/asp/hls/1200/0303000a/3/default/1733da751de64e6e910abda889d87a26/1200.m3u8"
         ],
         "number": "741",
+        "epg": "熊大熊二",
         "name": "熊大熊二"
       },
       {
@@ -7312,6 +7775,7 @@
           "https://newcntv.qcloudcdn.com/asp/hls/1200/0303000a/3/default/d8ad434c6b08421a927557a4d98da65c/1200.m3u8"
         ],
         "number": "743",
+        "epg": "云朵妈妈",
         "name": "云朵妈妈"
       },
       {
@@ -7322,6 +7786,7 @@
           "http://hw-m-l.cztv.com/channels/lantian/channel08/1080p.m3u8?k=1a7559a51eeb880b021619a07f463ac4&t=1577153787"
         ],
         "number": "744",
+        "epg": "浙江少儿",
         "name": "浙江少儿"
       }
     ],
@@ -7336,6 +7801,7 @@
           "http://shbu.live.bestvcdn.com.cn:8080/live/program/live/mlyyhd/2300000/mnf.m3u8"
         ],
         "number": "745",
+        "epg": "魅力足球",
         "name": "魅力足球"
       },
       {
@@ -7345,6 +7811,7 @@
           "http://39.135.138.60:18890/PLTV/88888910/224/3221225709/index.m3u8"
         ],
         "number": "746",
+        "epg": "精品体育",
         "name": "精品体育"
       },
       {
@@ -7353,6 +7820,7 @@
           "http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225767/index.m3u8"
         ],
         "number": "747",
+        "epg": "超级体育",
         "name": "超级体育"
       },
       {
@@ -7407,6 +7875,7 @@
           "http://113.62.253.10/live.aishang.ctlcdn.com/00000110240389_1/playlist.m3u8?CONTENTID=00000110240389_1&AUTHINFO=FABqh274XDn8fkurD5614t%2B1RvYajgx%2Ba3PxUJe1SMO4OjrtFitM6ZQbSJEFffaD35hOAhZdTXOrK0W8QvBRom%2BXaXZYzB%2FQfYjeYzGgKhP%2Fdo%2BXpr4quVxlkA%2BubKvbU1XwJFRgrbX%2BnTs60JauQUrav8kLj%2FPH8LxkDFpzvkq75UfeY%2FVNDZygRZLw4j%2BXtwhj%2FIuXf1hJAU0X%2BheT7g%3D%3D&USERTOKEN=eHKuwve%2F35NVIR5qsO5XsuB0O2BhR0KR"
         ],
         "number": "752",
+        "epg": "爱尚央视",
         "name": "爱尚央视"
       },
       {
@@ -7416,6 +7885,7 @@
           "http://39.135.41.243/PLTV/88888888/224/3221226716/index.m3u8?hls"
         ],
         "number": "753",
+        "epg": "咪咕体育",
         "name": "咪咕体育"
       },
       {
@@ -7424,6 +7894,7 @@
           "http://e59abdd420c65d43cc1550d493a88c71.v.smtcdns.net/4403-tx.otvstream.otvcloud.com/otv/skcc/live/channel34/2300.m3u8"
         ],
         "number": "754",
+        "epg": "广东体育",
         "name": "广东体育"
       },
       {
@@ -7431,6 +7902,7 @@
           "https://justsometime.gztv.com/sec/shenghuos.m3u8"
         ],
         "number": "755",
+        "epg": "南国都市",
         "name": "南国都市"
       },
       {
@@ -7438,6 +7910,7 @@
           "http://shbu.live.bestvcdn.com.cn:8080/live/program/live/hdnba1/4000000/mnf.m3u8"
         ],
         "number": "756",
+        "epg": "百事通体育1",
         "name": "百事通体育1"
       },
       {
@@ -7445,6 +7918,7 @@
           "http://shbu.live.bestvcdn.com.cn:8080/live/program/live/hdnba2/4000000/mnf.m3u8"
         ],
         "number": "757",
+        "epg": "百事通体育2",
         "name": "百事通体育2"
       },
       {
@@ -7452,6 +7926,7 @@
           "http://shbu.live.bestvcdn.com.cn:8080/live/program/live/hdnba3/4000000/mnf.m3u8"
         ],
         "number": "758",
+        "epg": "百事通体育3",
         "name": "百事通体育3"
       },
       {
@@ -7459,6 +7934,7 @@
           "http://shbu.live.bestvcdn.com.cn:8080/live/program/live/hdnba4/4000000/mnf.m3u8"
         ],
         "number": "759",
+        "epg": "百事通体育4",
         "name": "百事通体育4"
       },
       {
@@ -7466,6 +7942,7 @@
           "http://shbu.live.bestvcdn.com.cn:8080/live/program/live/hdnba5/4000000/mnf.m3u8"
         ],
         "number": "760",
+        "epg": "百事通体育5",
         "name": "百事通体育5"
       },
       {
@@ -7473,6 +7950,7 @@
           "http://shbu.live.bestvcdn.com.cn:8080/live/program/live/hdnba6/4000000/mnf.m3u8"
         ],
         "number": "761",
+        "epg": "百事通体育6",
         "name": "百事通体育6"
       },
       {
@@ -7480,6 +7958,7 @@
           "http://shbu.live.bestvcdn.com.cn:8080/live/program/live/hdnba7/4000000/mnf.m3u8"
         ],
         "number": "762",
+        "epg": "百事通体育7",
         "name": "百事通体育7"
       },
       {
@@ -7487,6 +7966,7 @@
           "http://anyun-ship.com:8888/udp/225.1.1.122:5002"
         ],
         "number": "763",
+        "epg": "天津体育",
         "name": "天津体育"
       },
       {
@@ -7505,6 +7985,7 @@
           "http://hms363nc1880172761.live.aikan.miguvideo.com/wh7f454c46tw2880854862_-704780469/PLTV/88888888/224/3221229316/index.m3u8"
         ],
         "number": "765",
+        "epg": "杭州体育",
         "name": "杭州体育"
       },
       {
@@ -7512,6 +7993,7 @@
           "http://91.213.59.156/play/6/index.m3u8"
         ],
         "number": "766",
+        "epg": "Setanta Sports Ukraine",
         "name": "Setanta Sports Ukraine"
       },
       {
@@ -7519,6 +8001,7 @@
           "https://bcovlive-a.akamaihd.net/r2d2c4ca5bf57456fb1d16255c1a535c8/eu-west-1/6058004203001/playlist.m3u8"
         ],
         "number": "767",
+        "epg": "曼联MUTV",
         "name": "曼联MUTV"
       },
       {
@@ -7526,6 +8009,7 @@
           "https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8"
         ],
         "number": "768",
+        "epg": "皇马RMTV",
         "name": "皇马RMTV"
       },
       {
@@ -7533,6 +8017,7 @@
           "http://dmithrvll.cdn.mangomolo.com/dubairacing/smil:dubairacing.smil/chunklist_b1600000.m3u8"
         ],
         "number": "769",
+        "epg": "Dubai Racing 2",
         "name": "Dubai Racing 2"
       },
       {
@@ -7540,6 +8025,7 @@
           "http://dmithrvll.cdn.mangomolo.com/dubaimubasher/smil:dubaimubasher.smil/playlist.m3u8"
         ],
         "number": "770",
+        "epg": "Dubai Racing 3",
         "name": "Dubai Racing 3"
       },
       {
@@ -7548,6 +8034,7 @@
           "https://edgesports-plex.amagi.tv/playlist.m3u8"
         ],
         "number": "771",
+        "epg": "EDGEsport",
         "name": "EDGEsport"
       },
       {
@@ -7555,6 +8042,7 @@
           "https://edgesports-sportstribal.amagi.tv/playlist.m3u8"
         ],
         "number": "772",
+        "epg": "EDGESport",
         "name": "EDGESport"
       },
       {
@@ -7562,6 +8050,7 @@
           "https://d3w4n3hhseniak.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/WPT-DistroTV/150.m3u8"
         ],
         "number": "773",
+        "epg": "World Poker",
         "name": "World Poker"
       },
       {
@@ -7569,6 +8058,7 @@
           "http://89.187.175.143:80/3013/mpegts"
         ],
         "number": "774",
+        "epg": "NBC Golf",
         "name": "NBC Golf"
       },
       {
@@ -7576,6 +8066,7 @@
           "http://dmitnthvll.cdn.mangomolo.com/dubaisports/smil:dubaisports.smil/chunklist_b1600000.m3u8"
         ],
         "number": "775",
+        "epg": "Dubai Sports",
         "name": "Dubai Sports"
       },
       {
@@ -7583,6 +8074,7 @@
           "http://dmitnthvll.cdn.mangomolo.com/dubaisports/smil:dubaisports.smil/chunklist_b1600000.m3u8?"
         ],
         "number": "776",
+        "epg": "Dubai Sports 1",
         "name": "Dubai Sports 1"
       },
       {
@@ -7590,6 +8082,7 @@
           "https://edgesports-row-rakuten.amagi.tv/playlist.m3u8"
         ],
         "number": "777",
+        "epg": "EDGE sport",
         "name": "EDGE sport"
       },
       {
@@ -7602,6 +8095,7 @@
           "http://cdnua06.hls.tv/476/hls/wei6saq934pz50bkxdugc2hfnj71lmot/217/stream.m3u8"
         ],
         "number": "778",
+        "epg": "Eurosport1",
         "name": "Eurosport1"
       },
       {
@@ -7612,6 +8106,7 @@
           "http://cdnua06.hls.tv/476/hls/wei6saq934pz50bkxdugc2hfnj71lmot/219/stream.m3u8"
         ],
         "number": "779",
+        "epg": "Eurosport2",
         "name": "Eurosport2"
       },
       {
@@ -7619,6 +8114,7 @@
           "https://glxlmn026c.singularcdn.net.br/playout_01/playlist-720p.m3u8"
         ],
         "number": "780",
+        "epg": "TNTSPORTS 1",
         "name": "TNTSPORTS 1"
       },
       {
@@ -7626,6 +8122,7 @@
           "https://glxlmn026c.singularcdn.net.br/playout_02/playlist-720p.m3u8"
         ],
         "number": "781",
+        "epg": "TNTSPORTS 2",
         "name": "TNTSPORTS 2"
       },
       {
@@ -7633,6 +8130,7 @@
           "https://glxlmn026c.singularcdn.net.br/playout_03/playlist-720p.m3u8"
         ],
         "number": "782",
+        "epg": "TNTSPORTS 3",
         "name": "TNTSPORTS 3"
       },
       {
@@ -7640,6 +8138,7 @@
           "https://glxlmn026c.singularcdn.net.br/playout_04/playlist-720p.m3u8"
         ],
         "number": "783",
+        "epg": "TNTSPORTS 4",
         "name": "TNTSPORTS 4"
       },
       {
@@ -7647,6 +8146,7 @@
           "https://glxlmn026c.singularcdn.net.br/playout_05/playlist-720p.m3u8"
         ],
         "number": "784",
+        "epg": "TNTSPORTS 5",
         "name": "TNTSPORTS 5"
       },
       {
@@ -7654,6 +8154,7 @@
           "http://89.187.175.143:80/3003/mpegts"
         ],
         "number": "785",
+        "epg": "MLB Network",
         "name": "MLB Network"
       },
       {
@@ -7661,6 +8162,7 @@
           "http://89.187.175.143:80/3038/mpegts"
         ],
         "number": "786",
+        "epg": "TSN1",
         "name": "TSN1"
       },
       {
@@ -7668,6 +8170,7 @@
           "http://89.187.175.143:80/3045/mpegts"
         ],
         "number": "787",
+        "epg": "TSN2",
         "name": "TSN2"
       },
       {
@@ -7675,6 +8178,7 @@
           "http://89.187.175.143:80/3046/mpegts"
         ],
         "number": "788",
+        "epg": "TSN3",
         "name": "TSN3"
       },
       {
@@ -7682,6 +8186,7 @@
           "http://89.187.175.143:80/3047/mpegts"
         ],
         "number": "789",
+        "epg": "TSN4",
         "name": "TSN4"
       },
       {
@@ -7689,6 +8194,7 @@
           "http://89.187.175.143:80/3048/mpegts"
         ],
         "number": "790",
+        "epg": "TSN5",
         "name": "TSN5"
       },
       {
@@ -7696,6 +8202,7 @@
           "http://162.250.201.58:6211/pk/ONEGOLF/tracks-v1a1/mono.m3u8"
         ],
         "number": "791",
+        "epg": "高尔夫台",
         "name": "高尔夫台"
       }
     ],
@@ -7708,6 +8215,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561277675-1199561277675-5434860597135015936-2399122678806-10057-A-0-1.xs"
         ],
         "number": "792",
+        "epg": "埋堆堆1",
         "name": "埋堆堆1"
       },
       {
@@ -7715,6 +8223,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563477578-1199563477578-5444309108574388224-2399127078612-10057-A-0-1.xs"
         ],
         "number": "793",
+        "epg": "埋堆堆2",
         "name": "埋堆堆2"
       },
       {
@@ -7722,6 +8231,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561226091-1199561226091-5434639045542019072-2399122575638-10057-A-0-1.xs"
         ],
         "number": "794",
+        "epg": "埋堆堆3",
         "name": "埋堆堆3"
       },
       {
@@ -7729,6 +8239,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563478941-1199563478941-5444314962614812672-2399127081338-10057-A-0-1.xs"
         ],
         "number": "795",
+        "epg": "埋堆堆4",
         "name": "埋堆堆4"
       },
       {
@@ -7736,6 +8247,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561181108-1199561181108-5434445845028143104-2399122485672-10057-A-0-1.xs"
         ],
         "number": "796",
+        "epg": "埋堆堆5",
         "name": "埋堆堆5"
       },
       {
@@ -7743,6 +8255,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563479466-1199563479466-5444317217472643072-2399127082388-10057-A-0-1.xs"
         ],
         "number": "797",
+        "epg": "埋堆堆6",
         "name": "埋堆堆6"
       },
       {
@@ -7750,6 +8263,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561179151-1199561179151-5434437439777144832-2399122481758-10057-A-0-1.xs"
         ],
         "number": "798",
+        "epg": "埋堆堆7",
         "name": "埋堆堆7"
       },
       {
@@ -7757,6 +8271,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561223711-1199561223711-5434628823519854592-2399122570878-10057-A-0-1.xs"
         ],
         "number": "799",
+        "epg": "埋堆堆8",
         "name": "埋堆堆8"
       },
       {
@@ -7764,6 +8279,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199564003640-1199564003640-5446568527660056576-2399128130736-10057-A-0-1.xs"
         ],
         "number": "800",
+        "epg": "埋堆堆9",
         "name": "埋堆堆9"
       },
       {
@@ -7771,6 +8287,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199564062365-1199564062365-5446820749614514176-2399128248186-10057-A-0-1.xs"
         ],
         "number": "801",
+        "epg": "埋堆堆10",
         "name": "埋堆堆10"
       },
       {
@@ -7778,6 +8295,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563493375-1199563493375-5444376956172763136-2399127110206-10057-A-0-1.xs"
         ],
         "number": "802",
+        "epg": "埋堆堆11",
         "name": "埋堆堆11"
       },
       {
@@ -7785,6 +8303,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561181026-1199561181026-5434445492840824832-2399122485508-10057-A-0-1.xs"
         ],
         "number": "803",
+        "epg": "埋堆堆12",
         "name": "埋堆堆12"
       },
       {
@@ -7792,6 +8311,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561158071-1199561158071-5434346901866545152-2399122439598-10057-A-0-1.xs"
         ],
         "number": "804",
+        "epg": "埋堆堆13",
         "name": "埋堆堆13"
       },
       {
@@ -7799,6 +8319,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561182641-1199561182641-5434452429213007872-2399122488738-10057-A-0-1.xs"
         ],
         "number": "805",
+        "epg": "埋堆堆14",
         "name": "埋堆堆14"
       },
       {
@@ -7806,6 +8327,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561177177-1199561177177-5434428961511702528-2399122477810-10057-A-0-1.xs"
         ],
         "number": "806",
+        "epg": "埋堆堆15",
         "name": "埋堆堆15"
       },
       {
@@ -7813,6 +8335,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561462555-1199561462555-5435654650688700416-2399123048566-10057-A-0-1.xs"
         ],
         "number": "807",
+        "epg": "埋堆堆16",
         "name": "埋堆堆16"
       },
       {
@@ -7820,6 +8343,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563479615-1199563479615-5444317857422770176-2399127082686-10057-A-0-1.xs"
         ],
         "number": "808",
+        "epg": "埋堆堆17",
         "name": "埋堆堆17"
       },
       {
@@ -7827,6 +8351,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561277686-1199561277686-5434860644379656192-2399122678828-10057-A-0-1.xs"
         ],
         "number": "809",
+        "epg": "埋堆堆18",
         "name": "埋堆堆18"
       },
       {
@@ -7834,6 +8359,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561391895-1199561391895-5435351168299565056-2399122907246-10057-A-0-1.xs"
         ],
         "number": "810",
+        "epg": "埋堆堆19",
         "name": "埋堆堆19"
       },
       {
@@ -7841,6 +8367,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563491137-1199563491137-5444367344035954688-2399127105730-10057-A-0-1.xs"
         ],
         "number": "811",
+        "epg": "埋堆堆20",
         "name": "埋堆堆20"
       },
       {
@@ -7848,6 +8375,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561240999-1199561240999-5434703074914467840-2399122605454-10057-A-0-1.xs"
         ],
         "number": "812",
+        "epg": "埋堆堆21",
         "name": "埋堆堆21"
       },
       {
@@ -7855,6 +8383,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561276760-1199561276760-5434856667239940096-2399122676976-10057-A-0-1.xs"
         ],
         "number": "813",
+        "epg": "埋堆堆22",
         "name": "埋堆堆22"
       },
       {
@@ -7862,6 +8391,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561241049-1199561241049-5434703289662832640-2399122605554-10057-A-0-1.xs"
         ],
         "number": "814",
+        "epg": "埋堆堆23",
         "name": "埋堆堆23"
       },
       {
@@ -7869,6 +8399,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561244004-1199561244004-5434715981291192320-2399122611464-10057-A-0-1.xs"
         ],
         "number": "815",
+        "epg": "埋堆堆24",
         "name": "埋堆堆24"
       },
       {
@@ -7876,6 +8407,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563481280-1199563481280-5444325008543318016-2399127086016-10057-A-0-1.xs"
         ],
         "number": "816",
+        "epg": "埋堆堆25",
         "name": "埋堆堆25"
       },
       {
@@ -7883,6 +8415,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561463578-1199561463578-5435659044440244224-2399123050612-10057-A-0-1.xs"
         ],
         "number": "817",
+        "epg": "埋堆堆26",
         "name": "埋堆堆26"
       },
       {
@@ -7890,6 +8423,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563478867-1199563478867-5444314644787232768-2399127081190-10057-A-0-1.xs"
         ],
         "number": "818",
+        "epg": "埋堆堆27",
         "name": "埋堆堆27"
       },
       {
@@ -7897,6 +8431,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563486009-1199563486009-5444345319443660800-2399127095474-10057-A-0-1.xs"
         ],
         "number": "819",
+        "epg": "埋堆堆28",
         "name": "埋堆堆28"
       },
       {
@@ -7904,6 +8439,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561276763-1199561276763-5434856680124841984-2399122676982-10057-A-0-1.xs"
         ],
         "number": "820",
+        "epg": "埋堆堆29",
         "name": "埋堆堆29"
       },
       {
@@ -7911,6 +8447,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561176260-1199561176260-5434425023026692096-2399122475976-10057-A-0-1.xs "
         ],
         "number": "821",
+        "epg": "埋堆堆30",
         "name": "埋堆堆30"
       },
       {
@@ -7918,6 +8455,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561462555-1199561462555-5435654650688700416-2399123048566-10057-A-0-1.xs "
         ],
         "number": "822",
+        "epg": "埋堆堆31",
         "name": "埋堆堆31"
       },
       {
@@ -7925,6 +8463,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563479466-1199563479466-5444317217472643072-2399127082388-10057-A-0-1.xs"
         ],
         "number": "823",
+        "epg": "埋堆堆32",
         "name": "埋堆堆32"
       },
       {
@@ -7932,6 +8471,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561153167-1199561153167-5434325839346925568-2399122429790-10057-A-0-1.xs"
         ],
         "number": "824",
+        "epg": "埋堆堆33",
         "name": "埋堆堆33"
       },
       {
@@ -7939,6 +8479,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561182641-1199561182641-5434452429213007872-2399122488738-10057-A-0-1.xs "
         ],
         "number": "825",
+        "epg": "埋堆堆34",
         "name": "埋堆堆34"
       },
       {
@@ -7946,6 +8487,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561177177-1199561177177-5434428961511702528-2399122477810-10057-A-0-1.xs "
         ],
         "number": "826",
+        "epg": "埋堆堆35",
         "name": "埋堆堆35"
       },
       {
@@ -7953,6 +8495,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563564801-1199563564801-5444683728506847232-2399127253058-10057-A-0-1.xs"
         ],
         "number": "827",
+        "epg": "埋堆堆36",
         "name": "埋堆堆36"
       },
       {
@@ -7960,6 +8503,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563488528-1199563488528-5444356138466279424-2399127100512-10057-A-0-1.xs"
         ],
         "number": "828",
+        "epg": "埋堆堆37",
         "name": "埋堆堆37"
       },
       {
@@ -7967,6 +8511,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561181026-1199561181026-5434445492840824832-2399122485508-10057-A-0-1.xs"
         ],
         "number": "829",
+        "epg": "埋堆堆38",
         "name": "埋堆堆38"
       },
       {
@@ -7974,6 +8519,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199561158071-1199561158071-5434346901866545152-2399122439598-10057-A-0-1.xs"
         ],
         "number": "830",
+        "epg": "埋堆堆39",
         "name": "埋堆堆39"
       }
     ],
@@ -7986,6 +8532,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1250011-1250011-5368756364640256-2777036638-10057-A-0-1.xs"
         ],
         "number": "831",
+        "epg": "周星驰-粤语",
         "name": "周星驰-粤语"
       },
       {
@@ -7993,6 +8540,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575534-1394575534-5989656310331736064-2789274524-10057-A-0-1-imgplus.xs"
         ],
         "number": "832",
+        "epg": "周星驰",
         "name": "周星驰"
       },
       {
@@ -8000,6 +8548,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1388457235-1388457235-5963378416219586560-2777037926-10057-A-0-1.xs"
         ],
         "number": "833",
+        "epg": "吴孟达",
         "name": "吴孟达"
       },
       {
@@ -8007,6 +8556,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575543-1394575543-5989656348986441728-2789274542-10057-A-0-1.xs"
         ],
         "number": "834",
+        "epg": "林正英",
         "name": "林正英"
       },
       {
@@ -8014,6 +8564,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524418085-1524418085-6547325820505948160-3048959626-10057-A-0-1.xs"
         ],
         "number": "835",
+        "epg": "沈腾",
         "name": "沈腾"
       },
       {
@@ -8021,6 +8572,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423787820-1423787820-6115122123343134720-2847699096-10057-A-0-1.xs"
         ],
         "number": "836",
+        "epg": "甄子丹",
         "name": "甄子丹"
       },
       {
@@ -8028,6 +8580,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394565191-1394565191-5989611887484993536-2789253838-10057-A-0-1.xs"
         ],
         "number": "837",
+        "epg": "成龙",
         "name": "成龙"
       },
       {
@@ -8035,6 +8588,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394565196-1394565196-5989611908959830016-2789253848-10057-A-0-1.xs"
         ],
         "number": "838",
+        "epg": "李连杰",
         "name": "李连杰"
       },
       {
@@ -8042,6 +8596,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394565192-1394565192-5989611891779960832-2789253840-10057-A-0-1.xs"
         ],
         "number": "839",
+        "epg": "周润发",
         "name": "周润发"
       },
       {
@@ -8049,6 +8604,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575547-1394575547-5989656366166310912-2789274550-10057-A-0-1.xs"
         ],
         "number": "840",
+        "epg": "刘德华",
         "name": "刘德华"
       },
       {
@@ -8056,6 +8612,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/73821423-73821423-317060597529182208-2710090468-10057-A-0-1.xs"
         ],
         "number": "841",
+        "epg": "洪金宝",
         "name": "洪金宝"
       },
       {
@@ -8063,6 +8620,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434090-1524434090-6547394561457520640-3048991636-10057-A-0-1.xs"
         ],
         "number": "842",
+        "epg": "吴京",
         "name": "吴京"
       },
       {
@@ -8070,6 +8628,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449698962-1449698962-6226409630835146752-2789274564-10057-A-0-1.xs"
         ],
         "number": "843",
+        "epg": "黄渤",
         "name": "黄渤"
       },
       {
@@ -8077,6 +8636,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449584124-1449584124-6225916405380808704-2847687586-10057-A-0-1.xs"
         ],
         "number": "844",
+        "epg": "刘家辉",
         "name": "刘家辉"
       },
       {
@@ -8084,6 +8644,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1448737814-1448737814-6222281531608530944-2777037662-10057-A-0-1.xs"
         ],
         "number": "845",
+        "epg": "咏春系列",
         "name": "咏春系列"
       },
       {
@@ -8091,6 +8652,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1388472589-1388472589-5963444361147449344-2777068634-10057-A-0-1.xs"
         ],
         "number": "846",
+        "epg": "黑帮系列",
         "name": "黑帮系列"
       },
       {
@@ -8098,6 +8660,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782085-1423782085-6115097491705692160-2847687626-10057-A-0-1.xs"
         ],
         "number": "847",
+        "epg": "古墓系列",
         "name": "古墓系列"
       },
       {
@@ -8105,6 +8668,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1354978385-1354978385-5819587850361896960-2710080226-10057-A-0-1.xs"
         ],
         "number": "848",
+        "epg": "赛车系列",
         "name": "赛车系列"
       },
       {
@@ -8112,6 +8676,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449581589-1449581589-6225905517638713344-3048959636-10057-A-0-1.xs"
         ],
         "number": "849",
+        "epg": "警匪系列",
         "name": "警匪系列"
       },
       {
@@ -8119,6 +8684,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1448738174-1448738174-6222283077796757504-2847699112-10057-A-0-1.xs"
         ],
         "number": "850",
+        "epg": "中国功夫",
         "name": "中国功夫"
       },
       {
@@ -8126,6 +8692,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434089-1524434089-6547394557162553344-3048991634-10057-A-0-1.xs"
         ],
         "number": "851",
+        "epg": "喜剧系列",
         "name": "喜剧系列"
       },
       {
@@ -8134,6 +8701,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449698649-1449698649-6226408286510383104-2847699168-10057-A-0-1_2000.xs"
         ],
         "number": "852",
+        "epg": "动作大片",
         "name": "动作大片"
       },
       {
@@ -8141,6 +8709,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423787882-1423787882-6115122389631107072-2847699220-10057-A-0-1.xs"
         ],
         "number": "853",
+        "epg": "玄幻系列",
         "name": "玄幻系列"
       },
       {
@@ -8148,6 +8717,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575562-1394575562-5989656430590820352-2789274580-10057-A-0-1.xs"
         ],
         "number": "854",
+        "epg": "古装武侠",
         "name": "古装武侠"
       },
       {
@@ -8155,6 +8725,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1388451591-1388451591-5963354175424167936-2777026638-10057-A-0-1.xs"
         ],
         "number": "855",
+        "epg": "香港女神系列",
         "name": "香港女神系列"
       },
       {
@@ -8162,6 +8733,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434111-1524434111-6547394651651833856-3048991678-10057-A-0-1.xs"
         ],
         "number": "856",
+        "epg": "王晶导演",
         "name": "王晶导演"
       },
       {
@@ -8169,6 +8741,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524418118-1524418118-6547325962239868928-3048959692-10057-A-0-1.xs"
         ],
         "number": "857",
+        "epg": "历年贺岁大片",
         "name": "历年贺岁大片"
       },
       {
@@ -8176,6 +8749,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575551-1394575551-5989656383346180096-2789274558-10057-A-0-1.xs"
         ],
         "number": "858",
+        "epg": "金庸武侠系列",
         "name": "金庸武侠系列"
       },
       {
@@ -8183,6 +8757,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449588790-1449588790-6225936445698211840-2847699106-10057-A-0-1.xs"
         ],
         "number": "859",
+        "epg": "逗乐小品",
         "name": "逗乐小品"
       },
       {
@@ -8190,6 +8765,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449380946-1449380946-6225043762515542016-2847687614-10057-A-0-1.xs"
         ],
         "number": "860",
+        "epg": "笑傲帮",
         "name": "笑傲帮"
       },
       {
@@ -8197,6 +8773,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782074-1423782074-6115097444461051904-2847687604-10057-A-0-1.xs"
         ],
         "number": "861",
+        "epg": "死神来了系列",
         "name": "死神来了系列"
       },
       {
@@ -8204,6 +8781,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782038-1423782038-6115097289842229248-2847687532-10057-A-0-1.xs"
         ],
         "number": "862",
+        "epg": "猫和老鼠",
         "name": "猫和老鼠"
       },
       {
@@ -8211,6 +8789,7 @@
           "http://txtest-xp2p.p2p.huya.com/1423787836-1423787836-6115122192062611456-2847699128-10057-A-0-1.xs"
         ],
         "number": "863",
+        "epg": "成龍歷險記 ",
         "name": "成龍歷險記 "
       },
       {
@@ -8218,6 +8797,7 @@
           "http://txtest-xp2p.p2p.huya.com/1199512045291-1199512045291-5223409117950902272-2399024214038-10057-A-0-1.xs"
         ],
         "number": "864",
+        "epg": "路飛海盜 ",
         "name": "路飛海盜 "
       },
       {
@@ -8225,6 +8805,7 @@
           "http://txtest-xp2p.p2p.huya.com/98282154-98282154-422118637210435584-3465852224-10057-A-0-1.xs"
         ],
         "number": "865",
+        "epg": "爆笑蟲子 ",
         "name": "爆笑蟲子 "
       },
       {
@@ -8241,6 +8822,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524418118-1524418118-6547325962239868928-3048959692-10057-A-0-1-imgplus.xs"
         ],
         "number": "867",
+        "epg": "历年贺岁档",
         "name": "历年贺岁档"
       },
       {
@@ -8248,6 +8830,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1099531752755-1099531752755-86436126637686784-2199063628966-10057-A-0-1.xs"
         ],
         "number": "868",
+        "epg": "香港贺岁片爆笑",
         "name": "香港贺岁片爆笑"
       },
       {
@@ -8255,6 +8838,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1099531752751-1099531752751-86436109457817600-2199063628958-10057-A-0-1.xs"
         ],
         "number": "869",
+        "epg": "飞车电影",
         "name": "飞车电影"
       },
       {
@@ -8262,6 +8846,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782054-1423782054-6115097358561705984-2847687564-10057-A-0-1.xs"
         ],
         "number": "870",
+        "epg": "西片电影",
         "name": "西片电影"
       },
       {
@@ -8269,6 +8854,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1448738325-1448738325-6222283726336819200-3048991600-10057-A-0-1.xs"
         ],
         "number": "871",
+        "epg": "西片影院",
         "name": "西片影院"
       },
       {
@@ -8276,6 +8862,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1099531752779-1099531752779-86436229716901888-2199063629014-10057-A-0-1.xs"
         ],
         "number": "872",
+        "epg": "杰森斯坦森",
         "name": "杰森斯坦森"
       },
       {
@@ -8283,6 +8870,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423787865-1423787865-6115122316616663040-2847699186-10057-A-0-1-imgplus.xs"
         ],
         "number": "873",
+        "epg": "高智商犯罪",
         "name": "高智商犯罪"
       },
       {
@@ -8290,6 +8878,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1099531752782-1099531752782-86436242601803776-2199063629020-10057-A-0-1.xs"
         ],
         "number": "874",
+        "epg": "高智商影院",
         "name": "高智商影院"
       },
       {
@@ -8297,6 +8886,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423787819-1423787819-6115122119048167424-2847699094-10057-A-0-1.xs"
         ],
         "number": "875",
+        "epg": "欧美经典",
         "name": "欧美经典"
       },
       {
@@ -8304,6 +8894,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/73821423-73821423-317060597529182208-2710090468-10057-A-0-1.xs"
         ],
         "number": "876",
+        "epg": "卧底警察",
         "name": "卧底警察"
       },
       {
@@ -8311,6 +8902,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782052-1423782052-6115097349971771392-2847687560-10057-A-0-1.xs"
         ],
         "number": "877",
+        "epg": "灾难大片",
         "name": "灾难大片"
       },
       {
@@ -8318,6 +8910,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449698705-1449698705-6226408527028551680-3049003156-10057-A-0-1.xs"
         ],
         "number": "878",
+        "epg": "反串经典",
         "name": "反串经典"
       },
       {
@@ -8325,6 +8918,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1099531752770-1099531752770-86436191062196224-2199063628996-10057-A-0-1.xs"
         ],
         "number": "879",
+        "epg": "异型怪兽",
         "name": "异型怪兽"
       },
       {
@@ -8332,6 +8926,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782061-1423782061-6115097388626477056-2847687578-10057-A-0-1.xs"
         ],
         "number": "880",
+        "epg": "科幻硬核",
         "name": "科幻硬核"
       },
       {
@@ -8339,6 +8934,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1099531752748-1099531752748-86436096572915712-2199063628952-10057-A-0-1.xs"
         ],
         "number": "881",
+        "epg": "生化危机",
         "name": "生化危机"
       },
       {
@@ -8346,6 +8942,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782054-1423782054-6115097358561705984-2847687564-10057-A-0-1.xs"
         ],
         "number": "882",
+        "epg": "国外赛车",
         "name": "国外赛车"
       },
       {
@@ -8353,6 +8950,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449581589-1449581589-6225905517638713344-3048959636-10057-A-0-1.xs"
         ],
         "number": "883",
+        "epg": "警匪犯罪",
         "name": "警匪犯罪"
       },
       {
@@ -8360,6 +8958,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575541-1394575541-5989656340396507136-2789274538-10057-A-0-1.xs"
         ],
         "number": "884",
+        "epg": "黑帮争斗",
         "name": "黑帮争斗"
       },
       {
@@ -8367,6 +8966,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1099531740262-1099531740262-86382469611257856-2199063603980-10057-A-0-1.xs"
         ],
         "number": "885",
+        "epg": "虎牙音乐",
         "name": "虎牙音乐"
       },
       {
@@ -8374,6 +8974,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782086-1423782086-6115097496000659456-2847687628-10057-A-0-1-imgplus.xs"
         ],
         "number": "886",
+        "epg": "虎牙娱乐",
         "name": "虎牙娱乐"
       },
       {
@@ -8381,6 +8982,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524418065-1524418065-6547325734606602240-3048959586-10057-A-0-1.xs"
         ],
         "number": "887",
+        "epg": "虎牙-陈佩斯",
         "name": "虎牙-陈佩斯"
       },
       {
@@ -8388,6 +8990,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575534-1394575534-5989656310331736064-2789274524-10057-A-0-1-imgplus.xs"
         ],
         "number": "888",
+        "epg": "虎牙-周星驰1",
         "name": "虎牙-周星驰1"
       },
       {
@@ -8395,6 +8998,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449698986-1449698986-6226409733914361856-2847687634-10057-A-0-1.xs"
         ],
         "number": "889",
+        "epg": "虎牙-周星驰2",
         "name": "虎牙-周星驰2"
       },
       {
@@ -8402,6 +9006,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1388457235-1388457235-5963378416219586560-2777037926-10057-A-0-1.xs"
         ],
         "number": "890",
+        "epg": "虎牙-达叔",
         "name": "虎牙-达叔"
       },
       {
@@ -8409,6 +9014,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1388451591-1388451591-5963354175424167936-2777026638-10057-A-0-1-imgplus.xs"
         ],
         "number": "891",
+        "epg": "邱淑贞王祖贤张曼玉",
         "name": "邱淑贞王祖贤张曼玉"
       },
       {
@@ -8417,6 +9023,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394565196-1394565196-5989611908959830016-2789253848-10057-A-0-1.xs"
         ],
         "number": "892",
+        "epg": "虎牙-李连杰",
         "name": "虎牙-李连杰"
       },
       {
@@ -8424,6 +9031,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575547-1394575547-5989656366166310912-2789274550-10057-A-0-1.xs"
         ],
         "number": "893",
+        "epg": "虎牙-刘德华",
         "name": "虎牙-刘德华"
       },
       {
@@ -8431,6 +9039,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394565191-1394565191-5989611887484993536-2789253838-10057-A-0-1-imgplus.xs"
         ],
         "number": "894",
+        "epg": "虎牙-成龙经典",
         "name": "虎牙-成龙经典"
       },
       {
@@ -8438,6 +9047,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423787820-1423787820-6115122123343134720-2847699096-10057-A-0-1.xs"
         ],
         "number": "895",
+        "epg": "虎牙-甄子丹",
         "name": "虎牙-甄子丹"
       },
       {
@@ -8445,6 +9055,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434083-1524434083-6547394531392749568-3048991622-10057-A-0-1.xs"
         ],
         "number": "896",
+        "epg": "虎牙-古天乐",
         "name": "虎牙-古天乐"
       },
       {
@@ -8452,6 +9063,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434090-1524434090-6547394561457520640-3048991636-10057-A-0-1.xs"
         ],
         "number": "897",
+        "epg": "虎牙-吴京",
         "name": "虎牙-吴京"
       },
       {
@@ -8459,6 +9071,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394565192-1394565192-5989611891779960832-2789253840-10057-A-0-1-imgplus.xs"
         ],
         "number": "898",
+        "epg": "虎牙-周润发",
         "name": "虎牙-周润发"
       },
       {
@@ -8466,6 +9079,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524418094-1524418094-6547325859160653824-3048959644-10057-A-0-1-imgplus.xs"
         ],
         "number": "899",
+        "epg": "虎牙-许冠英",
         "name": "虎牙-许冠英"
       },
       {
@@ -8473,6 +9087,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423787870-1423787870-6115122338091499520-2847699196-10057-A-0-1.xs"
         ],
         "number": "900",
+        "epg": "虎牙-成奎安",
         "name": "虎牙-成奎安"
       },
       {
@@ -8480,6 +9095,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449580415-1449580415-6225900475347107840-2847699190-10057-A-0-1.xs"
         ],
         "number": "901",
+        "epg": "虎牙-李小龙",
         "name": "虎牙-李小龙"
       },
       {
@@ -8487,6 +9103,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782037-1423782037-6115097285547261952-2847687530-10057-A-0-1.xs"
         ],
         "number": "902",
+        "epg": "虎牙-张国荣",
         "name": "虎牙-张国荣"
       },
       {
@@ -8494,6 +9111,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434085-1524434085-6547394539982684160-3048991626-10057-A-0-1.xs"
         ],
         "number": "903",
+        "epg": "虎牙-徐峥合集",
         "name": "虎牙-徐峥合集"
       },
       {
@@ -8501,6 +9119,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434070-1524434070-6547394475558174720-3048991596-10057-A-0-1.xs"
         ],
         "number": "904",
+        "epg": "虎牙-许氏三杰",
         "name": "虎牙-许氏三杰"
       },
       {
@@ -8508,6 +9127,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524439846-1524439846-6547419283289276416-3049003148-10057-A-0-1.xs"
         ],
         "number": "905",
+        "epg": "虎牙-金庸经典剧",
         "name": "虎牙-金庸经典剧"
       },
       {
@@ -8515,6 +9135,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575562-1394575562-5989656430590820352-2789274580-10057-A-0-1.xs"
         ],
         "number": "906",
+        "epg": "虎牙-金庸的武侠世界",
         "name": "虎牙-金庸的武侠世界"
       },
       {
@@ -8522,6 +9143,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1099531752757-1099531752757-86436135227621376-2199063628970-10057-A-0-1.xs"
         ],
         "number": "907",
+        "epg": "虎牙-大片连连看",
         "name": "虎牙-大片连连看"
       },
       {
@@ -8529,6 +9151,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434107-1524434107-6547394634471964672-3048991670-10057-A-0-1.xs"
         ],
         "number": "908",
+        "epg": "虎牙-武僧电影",
         "name": "虎牙-武僧电影"
       },
       {
@@ -8536,6 +9159,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782085-1423782085-6115097491705692160-2847687626-10057-A-0-1.xs"
         ],
         "number": "909",
+        "epg": "虎牙-古墓系列",
         "name": "虎牙-古墓系列"
       },
       {
@@ -8543,6 +9167,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449698763-1449698763-6226408776136654848-2847699120-10057-A-0-1.xs"
         ],
         "number": "910",
+        "epg": "虎牙-恐怖片",
         "name": "虎牙-恐怖片"
       },
       {
@@ -8550,6 +9175,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423787882-1423787882-6115122389631107072-2847699220-10057-A-0-1.xs"
         ],
         "number": "911",
+        "epg": "虎牙-玄幻专场",
         "name": "虎牙-玄幻专场"
       },
       {
@@ -8557,6 +9183,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449584124-1449584124-6225916405380808704-2847687586-10057-A-0-1.xs"
         ],
         "number": "912",
+        "epg": "虎牙-武侠动作",
         "name": "虎牙-武侠动作"
       },
       {
@@ -8564,6 +9191,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/28302995-28302995-121560437903851520-3048959616-10057-A-0-1.xs"
         ],
         "number": "913",
+        "epg": "虎牙-刺激枪战",
         "name": "虎牙-刺激枪战"
       },
       {
@@ -8571,6 +9199,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1250011-1250011-5368756364640256-2789253862-10057-A-0-1.xs"
         ],
         "number": "914",
+        "epg": "虎牙-国产悬疑",
         "name": "虎牙-国产悬疑"
       },
       {
@@ -8578,6 +9207,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782077-1423782077-6115097457345953792-2847687610-10057-A-0-1.xs"
         ],
         "number": "915",
+        "epg": "虎牙-爱情恋爱片",
         "name": "虎牙-爱情恋爱片"
       },
       {
@@ -8585,6 +9215,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1448738174-1448738174-6222283077796757504-2847699112-10057-A-0-1.xs"
         ],
         "number": "916",
+        "epg": "虎牙1轮播",
         "name": "虎牙1轮播"
       },
       {
@@ -8592,6 +9223,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/73821423-73821423-317060597529182208-2710090468-10057-A-0-1.xs"
         ],
         "number": "917",
+        "epg": "虎牙2轮播",
         "name": "虎牙2轮播"
       },
       {
@@ -8599,6 +9231,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782050-1423782050-6115097341381836800-2847687556-10057-A-0-1.xs"
         ],
         "number": "918",
+        "epg": "虎牙3轮播",
         "name": "虎牙3轮播"
       },
       {
@@ -8606,6 +9239,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1448686695-1448686695-6222061977175326720-2847687574-10057-A-0-1.xs"
         ],
         "number": "919",
+        "epg": "虎牙4轮播",
         "name": "虎牙4轮播"
       },
       {
@@ -8613,6 +9247,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1448737849-1448737849-6222281681932386304-2847687520-10057-A-0-1.xs"
         ],
         "number": "920",
+        "epg": "虎牙5轮播",
         "name": "虎牙5轮播"
       },
       {
@@ -8620,6 +9255,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449698962-1449698962-6226409630835146752-2789274564-10057-A-0-1.xs"
         ],
         "number": "921",
+        "epg": "虎牙6轮播",
         "name": "虎牙6轮播"
       },
       {
@@ -8627,6 +9263,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449567112-1449567112-6225843339397169152-2847687536-10057-A-0-1.xs"
         ],
         "number": "922",
+        "epg": "虎牙7轮播",
         "name": "虎牙7轮播"
       },
       {
@@ -8634,6 +9271,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575551-1394575551-5989656383346180096-2789274558-10057-A-0-1.xs"
         ],
         "number": "923",
+        "epg": "虎牙-金庸群侠篇电影",
         "name": "虎牙-金庸群侠篇电影"
       },
       {
@@ -8641,6 +9279,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1448686695-1448686695-6222061977175326720-2847687574-10057-A-0-1.xs"
         ],
         "number": "924",
+        "epg": "虎牙-喜剧专场",
         "name": "虎牙-喜剧专场"
       },
       {
@@ -8648,6 +9287,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199528334171-1199528334171-5293369324839370752-2399056791798-10057-A-0-1.xs"
         ],
         "number": "925",
+        "epg": "虎牙-荒野求生贝爷",
         "name": "虎牙-荒野求生贝爷"
       },
       {
@@ -8655,6 +9295,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449581164-1449581164-6225903692277612544-2847699154-10057-A-0-1.xs"
         ],
         "number": "926",
+        "epg": "虎牙-爆笑大片",
         "name": "虎牙-爆笑大片"
       },
       {
@@ -8662,6 +9303,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782021-1423782021-6115097216827785216-2847687498-10057-A-0-1.xs"
         ],
         "number": "927",
+        "epg": "虎牙-国产动作大片",
         "name": "虎牙-国产动作大片"
       },
       {
@@ -8669,6 +9311,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423787865-1423787865-6115122316616663040-2847699186-10057-A-0-1.xs"
         ],
         "number": "928",
+        "epg": "虎牙-罪犯大片1",
         "name": "虎牙-罪犯大片1"
       },
       {
@@ -8676,6 +9319,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575541-1394575541-5989656340396507136-2789274538-10057-A-0-1.xs"
         ],
         "number": "929",
+        "epg": "虎牙-罪犯大片2",
         "name": "虎牙-罪犯大片2"
       },
       {
@@ -8683,6 +9327,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524418118-1524418118-6547325962239868928-3048959692-10057-A-0-1.xs"
         ],
         "number": "930",
+        "epg": "虎牙-历年贺岁档",
         "name": "虎牙-历年贺岁档"
       },
       {
@@ -8690,6 +9335,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434089-1524434089-6547394557162553344-3048991634-10057-A-0-1.xs"
         ],
         "number": "931",
+        "epg": "虎牙-喜剧专场1",
         "name": "虎牙-喜剧专场1"
       },
       {
@@ -8697,6 +9343,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1448737814-1448737814-6222281531608530944-2777037662-10057-A-0-1.xs"
         ],
         "number": "932",
+        "epg": "虎牙-喜剧专场2",
         "name": "虎牙-喜剧专场2"
       },
       {
@@ -8704,6 +9351,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575543-1394575543-5989656348986441728-2789274542-10057-A-0-1.xs"
         ],
         "number": "933",
+        "epg": "虎牙-林正英1",
         "name": "虎牙-林正英1"
       },
       {
@@ -8711,6 +9359,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524418085-1524418085-6547325820505948160-3048959626-10057-A-0-1.xs"
         ],
         "number": "934",
+        "epg": "虎牙-沈腾合集",
         "name": "虎牙-沈腾合集"
       },
       {
@@ -8718,6 +9367,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1099531752759-1099531752759-86436143817555968-2199063628974-10057-A-0-1.xs"
         ],
         "number": "935",
+        "epg": "虎牙-吴京1",
         "name": "虎牙-吴京1"
       },
       {
@@ -8725,6 +9375,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563479466-1199563479466-5444317217472643072-2399127082388-10057-A-0-1.xs"
         ],
         "number": "936",
+        "epg": "虎牙-王祖蓝",
         "name": "虎牙-王祖蓝"
       },
       {
@@ -8732,6 +9383,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199563564801-1199563564801-5444683728506847232-2399127253058-10057-A-0-1.xs"
         ],
         "number": "937",
+        "epg": "虎牙-冷门港片大全",
         "name": "虎牙-冷门港片大全"
       },
       {
@@ -8739,6 +9391,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434091-1524434091-6547394565752487936-3048991638-10057-A-0-1.xs"
         ],
         "number": "938",
+        "epg": "虎牙-精彩古装轮播",
         "name": "虎牙-精彩古装轮播"
       },
       {
@@ -8746,6 +9399,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449581589-1449581589-6225905517638713344-3048959636-10057-A-0-1.xs"
         ],
         "number": "939",
+        "epg": "虎牙-警匪犯罪",
         "name": "虎牙-警匪犯罪"
       },
       {
@@ -8753,6 +9407,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1199572377389-1199572377389-5482533505759969280-2399144878234-10057-A-0-1.xs"
         ],
         "number": "940",
+        "epg": "虎牙-经典华语片场",
         "name": "虎牙-经典华语片场"
       },
       {
@@ -8760,6 +9415,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524418070-1524418070-6547325756081438720-3048959596-10057-A-0-1.xs"
         ],
         "number": "941",
+        "epg": "虎牙-搞笑恐怖类",
         "name": "虎牙-搞笑恐怖类"
       },
       {
@@ -8767,6 +9423,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394565204-1394565204-5989611943319568384-2789253864-10057-A-0-1.xs"
         ],
         "number": "942",
+        "epg": "虎牙-铁齿铜牙纪晓岚",
         "name": "虎牙-铁齿铜牙纪晓岚"
       },
       {
@@ -8774,6 +9431,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1099531752755-1099531752755-86436126637686784-2199063628966-10057-A-0-1.xs"
         ],
         "number": "943",
+        "epg": "虎牙-贺岁片",
         "name": "虎牙-贺岁片"
       },
       {
@@ -8781,6 +9439,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423782056-1423782056-6115097367151640576-2847687568-10057-A-0-1.xs"
         ],
         "number": "944",
+        "epg": "虎牙-爆笑喜剧",
         "name": "虎牙-爆笑喜剧"
       },
       {
@@ -8788,6 +9447,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1356780980-1356780980-5827329936934830080-2713685416-10057-A-0-1.xs"
         ],
         "number": "945",
+        "epg": "虎牙-五福星",
         "name": "虎牙-五福星"
       },
       {
@@ -8795,6 +9455,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1394575546-1394575546-5989656361871343616-2789274548-10057-A-0-1.xs"
         ],
         "number": "946",
+        "epg": "虎牙-搞笑喜剧1",
         "name": "虎牙-搞笑喜剧1"
       },
       {
@@ -8802,6 +9463,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524434089-1524434089-6547394557162553344-3048991634-10057-A-0-1.xs"
         ],
         "number": "947",
+        "epg": "虎牙-搞笑喜剧2",
         "name": "虎牙-搞笑喜剧2"
       },
       {
@@ -8809,6 +9471,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1420969427-1420969427-6103017217580859392-2847687524-10057-A-0-1.xs"
         ],
         "number": "948",
+        "epg": "虎牙-喜剧合家欢",
         "name": "虎牙-喜剧合家欢"
       },
       {
@@ -8816,6 +9479,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1423787824-1423787824-6115122140523003904-2847699104-10057-A-0-1-imgplus.xs"
         ],
         "number": "949",
+        "epg": "虎牙-笑傲江湖",
         "name": "虎牙-笑傲江湖"
       },
       {
@@ -8823,6 +9487,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449588790-1449588790-6225936445698211840-2847699106-10057-A-0-1.xs"
         ],
         "number": "950",
+        "epg": "虎牙-逗乐小品",
         "name": "虎牙-逗乐小品"
       },
       {
@@ -8830,6 +9495,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1250011-1250011-5368756364640256-2777038134-10057-A-0-1.xs"
         ],
         "number": "951",
+        "epg": "虎 牙|春晚小品",
         "name": "虎 牙|春晚小品"
       },
       {
@@ -8837,6 +9503,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1449380946-1449380946-6225043762515542016-2847687614-10057-A-0-1.xs"
         ],
         "number": "952",
+        "epg": "虎 牙|笑傲帮",
         "name": "虎 牙|笑傲帮"
       },
       {
@@ -8844,6 +9511,7 @@
           "http://txtest-xp2p.p2p.huya.com/src/1524439828-1524439828-6547419205979865088-3049003112-10057-A-0-1.xs"
         ],
         "number": "953",
+        "epg": "虎 牙|乡村爱情",
         "name": "虎 牙|乡村爱情"
       }
     ],
@@ -8859,6 +9527,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000280630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960820221015130756305943&channel-id=wasusyt&Contentid=6000000006000280630"
         ],
         "number": "954",
+        "epg": "爱动漫",
         "name": "爱动漫"
       },
       {
@@ -8867,6 +9536,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000270630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1959120221014133234310230&channel-id=wasusyt&Contentid=6000000006000270630"
         ],
         "number": "955",
+        "epg": "爱奇谈",
         "name": "爱奇谈"
       },
       {
@@ -8875,6 +9545,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000240630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1958720221014133355301960&channel-id=wasusyt&Contentid=6000000006000240630"
         ],
         "number": "956",
+        "epg": "爱赛车",
         "name": "爱赛车"
       },
       {
@@ -8883,6 +9554,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000230630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1958720221014133348301959&channel-id=wasusyt&Contentid=6000000006000230630"
         ],
         "number": "957",
+        "epg": "爱电竞",
         "name": "爱电竞"
       },
       {
@@ -8890,6 +9562,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000220630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1957920221014133340294427&channel-id=wasusyt&Contentid=6000000006000220630"
         ],
         "number": "958",
+        "epg": "爱玩具",
         "name": "爱玩具"
       },
       {
@@ -8900,6 +9573,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000050630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1958620221014135806302371&channel-id=wasusyt&Contentid=6000000006000050630"
         ],
         "number": "959",
+        "epg": "爱悬疑",
         "name": "爱悬疑"
       },
       {
@@ -8910,6 +9584,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000190630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1957420221014135754301515&channel-id=wasusyt&Contentid=6000000006000190630"
         ],
         "number": "960",
+        "epg": "爱猎奇",
         "name": "爱猎奇"
       },
       {
@@ -8919,6 +9594,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000180630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1957220221014135745294013&channel-id=wasusyt&Contentid=6000000006000180630"
         ],
         "number": "961",
+        "epg": "爱幼教",
         "name": "爱幼教"
       },
       {
@@ -8929,6 +9605,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000070630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960720221014141442306403&channel-id=wasusyt&Contentid=6000000006000070630"
         ],
         "number": "962",
+        "epg": "爱谍战",
         "name": "爱谍战"
       },
       {
@@ -8938,6 +9615,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000090630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1961220221015131340309385&channel-id=wasusyt&Contentid=6000000006000090630"
         ],
         "number": "963",
+        "epg": "爱家庭",
         "name": "爱家庭"
       },
       {
@@ -8947,6 +9625,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000200630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960620221014135721303915&channel-id=wasusyt&Contentid=6000000006000200630"
         ],
         "number": "964",
+        "epg": "爱解密",
         "name": "爱解密"
       },
       {
@@ -8954,6 +9633,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000250630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960020221014135646305380&channel-id=wasusyt&Contentid=6000000006000250630"
         ],
         "number": "965",
+        "epg": "爱旅行",
         "name": "爱旅行"
       },
       {
@@ -8961,6 +9641,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000260630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1959820221014135640297861&channel-id=wasusyt&Contentid=6000000006000260630"
         ],
         "number": "966",
+        "epg": "爱怀旧",
         "name": "爱怀旧"
       },
       {
@@ -8969,6 +9650,7 @@
           "http://111.11.123.31:6610/000000001000/6000000006000290630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1890420221014135601179073&channel-id=wasusyt&Contentid=6000000006000290630"
         ],
         "number": "967",
+        "epg": "爱体育",
         "name": "爱体育"
       },
       {
@@ -8977,6 +9659,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000150630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1959120221014141019310378&channel-id=wasusyt&Contentid=6000000006000150630"
         ],
         "number": "968",
+        "epg": "爱历史",
         "name": "爱历史"
       },
       {
@@ -8985,6 +9668,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000010630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1958820221014141111289135&channel-id=wasusyt&Contentid=6000000006000010630"
         ],
         "number": "969",
+        "epg": "爱喜剧",
         "name": "爱喜剧"
       },
       {
@@ -8992,6 +9676,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000120630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1957320221014141056297085&channel-id=wasusyt&Contentid=6000000006000120630"
         ],
         "number": "970",
+        "epg": "爱美食",
         "name": "爱美食"
       },
       {
@@ -8999,6 +9684,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000160630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1959620221014141038314650&channel-id=wasusyt&Contentid=6000000006000160630"
         ],
         "number": "971",
+        "epg": "爱科学",
         "name": "爱科学"
       },
       {
@@ -9006,6 +9692,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000080630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1957920221014141030294619&channel-id=wasusyt&Contentid=6000000006000080630"
         ],
         "number": "972",
+        "epg": "爱都市",
         "name": "爱都市"
       },
       {
@@ -9014,6 +9701,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000060630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960620221014141024303998&channel-id=wasusyt&Contentid=6000000006000060630"
         ],
         "number": "973",
+        "epg": "爱经典",
         "name": "爱经典"
       },
       {
@@ -9022,6 +9710,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000100630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960220221014141458302585&channel-id=wasusyt&Contentid=6000000006000100630"
         ],
         "number": "974",
+        "epg": "爱青春",
         "name": "爱青春"
       },
       {
@@ -9029,6 +9718,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000300630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960920221014141449279879&channel-id=wasusyt&Contentid=6000000006000300630"
         ],
         "number": "975",
+        "epg": "爱探索",
         "name": "爱探索"
       },
       {
@@ -9039,6 +9729,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000020630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1961120221015131038300777&channel-id=wasusyt&Contentid=6000000006000020630"
         ],
         "number": "976",
+        "epg": "爱科幻",
         "name": "爱科幻"
       },
       {
@@ -9047,6 +9738,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000030630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960320221014141424292715&channel-id=wasusyt&Contentid=6000000006000030630"
         ],
         "number": "977",
+        "epg": "爱院线",
         "name": "爱院线"
       },
       {
@@ -9055,6 +9747,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000210630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960920221015130011284542&channel-id=wasusyt&Contentid=6000000006000210630"
         ],
         "number": "978",
+        "epg": "爱世界",
         "name": "爱世界"
       },
       {
@@ -9062,6 +9755,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000110630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960120221015130207299754&channel-id=wasusyt&Contentid=6000000006000110630"
         ],
         "number": "979",
+        "epg": "爱江湖",
         "name": "爱江湖"
       },
       {
@@ -9069,6 +9763,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000130630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1960820221015130348305898&channel-id=wasusyt&Contentid=6000000006000130630"
         ],
         "number": "980",
+        "epg": "爱娱乐",
         "name": "爱娱乐"
       },
       {
@@ -9078,6 +9773,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000140630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1959320221015130548311714&channel-id=wasusyt&Contentid=6000000006000140630"
         ],
         "number": "981",
+        "epg": "爱时尚",
         "name": "爱时尚"
       },
       {
@@ -9087,6 +9783,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000040630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1957420221015130909306301&channel-id=wasusyt&Contentid=6000000006000040630"
         ],
         "number": "982",
+        "epg": "爱浪漫",
         "name": "爱浪漫"
       },
       {
@@ -9095,6 +9792,7 @@
           "http://111.11.123.28:6610/000000001000/6000000006000170630/1.m3u8?stbId=3&livemode=1&IASHttpSessionId=OTT1961120221014135734296323&channel-id=wasusyt&Contentid=6000000006000170630"
         ],
         "number": "983",
+        "epg": "爱极限",
         "name": "爱极限"
       }
     ],
@@ -9109,6 +9807,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225766/index.m3u8"
         ],
         "number": "984",
+        "epg": "超级电影",
         "name": "超级电影"
       },
       {
@@ -9119,6 +9818,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225765/index.m3u8"
         ],
         "number": "985",
+        "epg": "超级电视剧",
         "name": "超级电视剧"
       },
       {
@@ -9127,6 +9827,7 @@
           "http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225767/index.m3u8"
         ],
         "number": "986",
+        "epg": "超级体育",
         "name": "超级体育"
       },
       {
@@ -9137,6 +9838,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225768/index.m3u8"
         ],
         "number": "987",
+        "epg": "超级综艺",
         "name": "超级综艺"
       },
       {
@@ -9144,6 +9846,7 @@
           "http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225708/index.m3u8"
         ],
         "number": "988",
+        "epg": "潮妈辣婆",
         "name": "潮妈辣婆"
       },
       {
@@ -9153,6 +9856,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221226202/index.m3u8"
         ],
         "number": "989",
+        "epg": "东北热剧",
         "name": "东北热剧"
       },
       {
@@ -9161,6 +9865,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225678/index.m3u8"
         ],
         "number": "990",
+        "epg": "古装剧场",
         "name": "古装剧场"
       },
       {
@@ -9169,6 +9874,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225712/index.m3u8"
         ],
         "number": "991",
+        "epg": "海外剧场",
         "name": "海外剧场"
       },
       {
@@ -9178,6 +9884,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221226210/index.m3u8"
         ],
         "number": "992",
+        "epg": "欢乐剧场",
         "name": "欢乐剧场"
       },
       {
@@ -9186,6 +9893,7 @@
           "http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225713/index.m3u8"
         ],
         "number": "993",
+        "epg": "家庭剧场",
         "name": "家庭剧场"
       },
       {
@@ -9195,6 +9903,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225711/index.m3u8"
         ],
         "number": "994",
+        "epg": "金牌综艺",
         "name": "金牌综艺"
       },
       {
@@ -9203,6 +9912,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225714/index.m3u8"
         ],
         "number": "995",
+        "epg": "精品大剧",
         "name": "精品大剧"
       },
       {
@@ -9211,6 +9921,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225710/index.m3u8"
         ],
         "number": "996",
+        "epg": "精品纪录",
         "name": "精品纪录"
       },
       {
@@ -9219,6 +9930,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225669/index.m3u8"
         ],
         "number": "997",
+        "epg": "军旅剧场",
         "name": "军旅剧场"
       },
       {
@@ -9226,6 +9938,7 @@
           "http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225757/index.m3u8"
         ],
         "number": "998",
+        "epg": "军事评论",
         "name": "军事评论"
       },
       {
@@ -9234,6 +9947,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225716/index.m3u8"
         ],
         "number": "999",
+        "epg": "明星大片",
         "name": "明星大片"
       },
       {
@@ -9243,6 +9957,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225670/index.m3u8"
         ],
         "number": "1000",
+        "epg": "农业致富",
         "name": "农业致富"
       },
       {
@@ -9251,6 +9966,7 @@
           "http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225656/index.m3u8"
         ],
         "number": "1001",
+        "epg": "武搏世界",
         "name": "武搏世界"
       },
       {
@@ -9260,6 +9976,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225707/index.m3u8"
         ],
         "number": "1002",
+        "epg": "炫舞未来",
         "name": "炫舞未来"
       },
       {
@@ -9267,6 +9984,7 @@
           "http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225666/index.m3u8"
         ],
         "number": "1003",
+        "epg": "怡伴健康",
         "name": "怡伴健康"
       },
       {
@@ -9276,6 +9994,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225660/index.m3u8"
         ],
         "number": "1004",
+        "epg": "中国功夫",
         "name": "中国功夫"
       },
       {
@@ -9285,6 +10004,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225750/index.m3u8"
         ],
         "number": "1005",
+        "epg": "哒啵赛事",
         "name": "哒啵赛事"
       },
       {
@@ -9293,6 +10013,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225709/index.m3u8"
         ],
         "number": "1006",
+        "epg": "精品体育",
         "name": "精品体育"
       },
       {
@@ -9300,6 +10021,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225716/index.m3u8"
         ],
         "number": "1007",
+        "epg": "明星剧场",
         "name": "明星剧场"
       },
       {
@@ -9307,6 +10029,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225672/index.m3u8"
         ],
         "number": "1008",
+        "epg": "黑莓动画",
         "name": "黑莓动画"
       },
       {
@@ -9316,6 +10039,7 @@
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225769/index.m3u8"
         ],
         "number": "1009",
+        "epg": "黑莓电影",
         "name": "黑莓电影"
       }
     ],

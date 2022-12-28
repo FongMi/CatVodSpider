@@ -48,7 +48,7 @@ public class Run {
                 Group group = groups.get(groups.size() - 1);
                 String name = split[0];
                 String url = split[1];
-                group.find(Channel.create().name(name)).addUrls(url.split("#"));
+                group.find(Channel.create().name(name).epg(name)).addUrls(url.split("#"));
             }
         }
         int number = 0;
