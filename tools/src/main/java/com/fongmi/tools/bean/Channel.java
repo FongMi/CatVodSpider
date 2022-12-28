@@ -72,7 +72,7 @@ public class Channel {
         if (this == obj) return true;
         if (!(obj instanceof Channel)) return false;
         Channel it = (Channel) obj;
-        return getName().equals(it.getName()) || getNumber().equals(it.getNumber());
+        return getName().equals(it.getName()) || (!getNumber().isEmpty() && getNumber().equals(it.getNumber()));
     }
 
     public static class Sorter implements Comparator<Channel> {
