@@ -304,7 +304,7 @@ public class Ali {
             JsonObject params = new JsonObject();
             params.addProperty("t", data.getData().getT());
             params.addProperty("ck", data.getData().getCk());
-            Data result = Data.objectFrom(OkHttpUtil.postJson("https://easy-token.cooluc.com/ck", params.toString()));
+            Data result = Data.objectFrom(OkHttpUtil.postJson("https://easy-token.cooluc.com/ck", params.toString(), headers));
             if (result.hasToken()) setToken(result.getData().getRefreshToken());
         }, 1, 1, TimeUnit.SECONDS);
     }
