@@ -3,15 +3,15 @@
     "channel": [
       {
         "urls": [
-          "http://play-live.ifeng.com/live/06OLEGEGM4G.m3u8 ",
-          "http://playtv-live.ifeng.com/live/06OLEGEGM4G.m3u8 ",
-          "http://playtv-live.ifeng.com/live/06OLEGEGM4G_tv1.m3u8 ",
-          "http://playtv-live.ifeng.com/live/06OLEGEGM4G_tv2.m3u8 ",
-          "http://playtv-live.ifeng.com:80/live/06OLEGEGM4G.m3u8 ",
-          "http://playtv-live.ifeng.com:80/live/06OLEGEGM4G_tv1.m3u8 ",
-          "http://playtv-live.ifeng.com:80/live/06OLEGEGM4G_tv2.m3u8 ",
-          "https://playtv-live.ifeng.com/live/06OLEGEGM4G_tv1.m3u8 ",
-          "https://playtv-live.ifeng.com/live/06OLEGEGM4G_tv2.m3u8 "
+          "http://play-live.ifeng.com/live/06OLEGEGM4G.m3u8",
+          "http://playtv-live.ifeng.com/live/06OLEGEGM4G.m3u8",
+          "http://playtv-live.ifeng.com/live/06OLEGEGM4G_tv1.m3u8",
+          "http://playtv-live.ifeng.com/live/06OLEGEGM4G_tv2.m3u8",
+          "http://playtv-live.ifeng.com:80/live/06OLEGEGM4G.m3u8",
+          "http://playtv-live.ifeng.com:80/live/06OLEGEGM4G_tv1.m3u8",
+          "http://playtv-live.ifeng.com:80/live/06OLEGEGM4G_tv2.m3u8",
+          "https://playtv-live.ifeng.com/live/06OLEGEGM4G_tv1.m3u8",
+          "https://playtv-live.ifeng.com/live/06OLEGEGM4G_tv2.m3u8"
         ],
         "number": "001",
         "logo": "tb1/gt/fenghuangzhongwen.png",
@@ -20,17 +20,17 @@
       },
       {
         "urls": [
-          "http://play-live.ifeng.com/live/06OLEEWQKN4.m3u8 ",
-          "http://play-live.ifeng.com/live/06OLEEWQKN4.m3u8 ",
-          "http://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8 ",
-          "http://playtv-live.ifeng.com/live/06OLEEWQKN4_tv1.m3u8 ",
-          "http://playtv-live.ifeng.com/live/06OLEEWQKN4_tv2.m3u8 ",
-          "http://playtv-live.ifeng.com:80/live/06OLEEWQKN4.m3u8 ",
-          "http://playtv-live.ifeng.com:80/live/06OLEEWQKN4_tv1.m3u8 ",
-          "http://playtv-live.ifeng.com:80/live/06OLEEWQKN4_tv2.m3u8 ",
-          "https://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8 ",
-          "https://playtv-live.ifeng.com/live/06OLEEWQKN4_tv1.m3u8 ",
-          "https://playtv-live.ifeng.com/live/06OLEEWQKN4_tv2.m3u8 "
+          "http://play-live.ifeng.com/live/06OLEEWQKN4.m3u8",
+          "http://play-live.ifeng.com/live/06OLEEWQKN4.m3u8",
+          "http://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8",
+          "http://playtv-live.ifeng.com/live/06OLEEWQKN4_tv1.m3u8",
+          "http://playtv-live.ifeng.com/live/06OLEEWQKN4_tv2.m3u8",
+          "http://playtv-live.ifeng.com:80/live/06OLEEWQKN4.m3u8",
+          "http://playtv-live.ifeng.com:80/live/06OLEEWQKN4_tv1.m3u8",
+          "http://playtv-live.ifeng.com:80/live/06OLEEWQKN4_tv2.m3u8",
+          "https://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8",
+          "https://playtv-live.ifeng.com/live/06OLEEWQKN4_tv1.m3u8",
+          "https://playtv-live.ifeng.com/live/06OLEEWQKN4_tv2.m3u8"
         ],
         "number": "002",
         "logo": "tb1/gt/fenghuangzixun.png",
@@ -39,7 +39,7 @@
       },
       {
         "urls": [
-          "http://111.59.189.40:8445/tsfile/live/1022_1.m3u8 "
+          "http://111.59.189.40:8445/tsfile/live/1022_1.m3u8"
         ],
         "number": "003",
         "epg": "凤凰电影",
@@ -47,8 +47,8 @@
       },
       {
         "urls": [
-          "http://zhibo.hkstv.tv/livestream/mutfysrq/playlist.m3u8 ",
-          "http://zhibo.hkstv.tv/livestream/mutfysrq/playlist.m3u8?wsSession=3c732f93c14e1bc0c07641df-156388849014752&wsIPSercert=8de23d0849e78e3b16ec92a809235421&wsMonitor=0 "
+          "http://zhibo.hkstv.tv/livestream/mutfysrq/playlist.m3u8",
+          "http://zhibo.hkstv.tv/livestream/mutfysrq/playlist.m3u8?wsSession=3c732f93c14e1bc0c07641df-156388849014752&wsIPSercert=8de23d0849e78e3b16ec92a809235421&wsMonitor=0"
         ],
         "number": "004",
         "logo": "tb1/gt/hks.png",
@@ -57,8 +57,8 @@
       },
       {
         "urls": [
-          "http://113.64.147.149:808/hls/67/index.m3u8 ",
-          "http://113.64.147.170:808/hls/67/index.m3u8 "
+          "http://113.64.147.149:808/hls/67/index.m3u8",
+          "http://113.64.147.170:808/hls/67/index.m3u8"
         ],
         "number": "005",
         "logo": "tb1/gt/TVB翡翠台.png",
@@ -67,7 +67,7 @@
       },
       {
         "urls": [
-          "http://113.64.147.149:808/hls/135/index.m3u8 ",
+          "http://113.64.147.149:808/hls/135/index.m3u8",
           "http://113.64.147.170:808/hls/135/index.m3u8"
         ],
         "number": "006",
@@ -77,7 +77,7 @@
       },
       {
         "urls": [
-          "http://hms563nc1880172786.live.aikan.miguvideo.com/wh7f454c46tw3279865347_1298155843/PLTV/88888888/224/3221231733/1.m3u8 "
+          "http://hms563nc1880172786.live.aikan.miguvideo.com/wh7f454c46tw3279865347_1298155843/PLTV/88888888/224/3221231733/1.m3u8"
         ],
         "number": "007",
         "epg": "tvb影视",
@@ -85,7 +85,7 @@
       },
       {
         "urls": [
-          "https://cn-hbyc2-dx-live-01.bilivideo.com/live-bvc/545768/live_179302204_68184269.m3u8 "
+          "https://cn-hbyc2-dx-live-01.bilivideo.com/live-bvc/545768/live_179302204_68184269.m3u8"
         ],
         "number": "008",
         "epg": "功夫台",
@@ -102,8 +102,8 @@
       },
       {
         "urls": [
-          "https://bcovlive-a.akamaihd.net/38974baa695d47bbb231665ca52b8b3c/us-west-2/5324042807001/playlist.m3u8 ",
-          "https://bcovlive-a.akamaihd.net/38974baa695d47bbb231665ca52b8b3c/us-west-2/5324042807001/95ea73e414b14b7ea6406050a5293f17/playlist_ssaiM.m3u8 ",
+          "https://bcovlive-a.akamaihd.net/38974baa695d47bbb231665ca52b8b3c/us-west-2/5324042807001/playlist.m3u8",
+          "https://bcovlive-a.akamaihd.net/38974baa695d47bbb231665ca52b8b3c/us-west-2/5324042807001/95ea73e414b14b7ea6406050a5293f17/playlist_ssaiM.m3u8",
           "http://198.16.64.10:8278/inews_twn/playlist.m3u8?tid=MF7F8784108987841089&ct=19225&tsum=50d719a9ed62cc070153963585e6d9d3"
         ],
         "number": "010",
@@ -113,14 +113,14 @@
       },
       {
         "urls": [
-          "http://120.84.96.50:808/hls/26/index.m3u8 ",
-          "http://120.84.96.63:808/hls/26/index.m3u8 ",
-          "http://120.84.96.71:808/hls/26/index.m3u8 ",
-          "http://120.84.96.196:808/hls/26/index.m3u8 ",
-          "http://120.84.96.211:808/hls/26/index.m3u8 ",
-          "http://120.84.96.215:808/hls/26/index.m3u8 ",
-          "http://120.84.96.221:808/hls/26/index.m3u8 ",
-          "http://120.84.96.222:808/hls/26/index.m3u8 "
+          "http://120.84.96.50:808/hls/26/index.m3u8",
+          "http://120.84.96.63:808/hls/26/index.m3u8",
+          "http://120.84.96.71:808/hls/26/index.m3u8",
+          "http://120.84.96.196:808/hls/26/index.m3u8",
+          "http://120.84.96.211:808/hls/26/index.m3u8",
+          "http://120.84.96.215:808/hls/26/index.m3u8",
+          "http://120.84.96.221:808/hls/26/index.m3u8",
+          "http://120.84.96.222:808/hls/26/index.m3u8"
         ],
         "number": "011",
         "logo": "tb1/gt/TVB明珠台.png",
@@ -129,12 +129,12 @@
       },
       {
         "urls": [
-          "http://120.84.96.50:808/hls/86/index.m3u8 ",
-          "http://120.84.96.55:808/hls/86/index.m3u8 ",
-          "http://120.84.96.63:808/hls/86/index.m3u8 ",
-          "http://120.84.96.65:808/hls/86/index.m3u8 ",
-          "http://120.84.96.71:808/hls/86/index.m3u8 ",
-          "http://120.84.96.74:808/hls/86/index.m3u8 "
+          "http://120.84.96.50:808/hls/86/index.m3u8",
+          "http://120.84.96.55:808/hls/86/index.m3u8",
+          "http://120.84.96.63:808/hls/86/index.m3u8",
+          "http://120.84.96.65:808/hls/86/index.m3u8",
+          "http://120.84.96.71:808/hls/86/index.m3u8",
+          "http://120.84.96.74:808/hls/86/index.m3u8"
         ],
         "number": "012",
         "epg": "财经体育资讯台",
@@ -144,11 +144,11 @@
         "urls": [
           "http://198.16.64.10:8278/j2_twn/playlist.m3u8?tid=MA8A1176878411768784&ct=19225&tsum=fea41bb592165942b9971148376f8b70",
           "http://198.16.64.10:8278/j2_twn/playlist.m3u8?tid=m22905da1d346&ct=18336&tsum=3b4998c4f5367bb820165f66b0caab0e",
-          "http://120.84.96.196:808/hls/86/index.m3u8 ",
-          "http://120.84.96.211:808/hls/86/index.m3u8 ",
-          "http://120.84.96.215:808/hls/86/index.m3u8 ",
-          "http://120.84.96.221:808/hls/86/index.m3u8 ",
-          "http://120.84.96.222:808/hls/86/index.m3u8 "
+          "http://120.84.96.196:808/hls/86/index.m3u8",
+          "http://120.84.96.211:808/hls/86/index.m3u8",
+          "http://120.84.96.215:808/hls/86/index.m3u8",
+          "http://120.84.96.221:808/hls/86/index.m3u8",
+          "http://120.84.96.222:808/hls/86/index.m3u8"
         ],
         "number": "013",
         "logo": "tb1/gt/TVBJ2.png",
@@ -157,14 +157,14 @@
       },
       {
         "urls": [
-          "http://120.84.96.50:808/hls/79/index.m3u8 ",
-          "http://120.84.96.63:808/hls/79/index.m3u8 ",
-          "http://120.84.96.71:808/hls/79/index.m3u8 ",
-          "http://120.84.96.196:808/hls/79/index.m3u8 ",
-          "http://120.84.96.211:808/hls/79/index.m3u8 ",
-          "http://120.84.96.215:808/hls/79/index.m3u8 ",
-          "http://120.84.96.221:808/hls/79/index.m3u8 ",
-          "http://120.84.96.222:808/hls/79/index.m3u8 "
+          "http://120.84.96.50:808/hls/79/index.m3u8",
+          "http://120.84.96.63:808/hls/79/index.m3u8",
+          "http://120.84.96.71:808/hls/79/index.m3u8",
+          "http://120.84.96.196:808/hls/79/index.m3u8",
+          "http://120.84.96.211:808/hls/79/index.m3u8",
+          "http://120.84.96.215:808/hls/79/index.m3u8",
+          "http://120.84.96.221:808/hls/79/index.m3u8",
+          "http://120.84.96.222:808/hls/79/index.m3u8"
         ],
         "number": "014",
         "epg": "星空卫视",
@@ -172,7 +172,7 @@
       },
       {
         "urls": [
-          "https://video.bread-tv.com:8091/hls-live24/online/index.m3u8 "
+          "https://video.bread-tv.com:8091/hls-live24/online/index.m3u8"
         ],
         "number": "015",
         "epg": "面包台",
@@ -220,8 +220,8 @@
       },
       {
         "urls": [
-          "http://61.244.22.4/ch3/ch3.live/chunklist_w1228316132.m3u8 ",
-          "http://61.244.22.4/ch3/ch3.live/playelist.m3u8 ",
+          "http://61.244.22.4/ch3/ch3.live/chunklist_w1228316132.m3u8",
+          "http://61.244.22.4/ch3/ch3.live/playelist.m3u8",
           "http://61.244.22.4/ch3/ch3.live/index.m3u8",
           "http://103.233.191.133:1935/ch3/ch3.live/playlist.m3u8",
           "http://103.233.191.134:1935/ch3/ch3.live/playlist.m3u8",
@@ -241,8 +241,8 @@
       },
       {
         "urls": [
-          "http://103.233.191.133:1935/ch1/ch1.live/playlist.m3u8 ",
-          "http://103.233.191.134:1935/ch1/ch1.live/playlist.m3u8 ",
+          "http://103.233.191.133:1935/ch1/ch1.live/playlist.m3u8",
+          "http://103.233.191.134:1935/ch1/ch1.live/playlist.m3u8",
           "http://61.244.22.5/ch1/ch1.live/playelist.m3u8"
         ],
         "number": "023",
@@ -274,10 +274,10 @@
       {
         "urls": [
           "http://103.233.191.134:1935/ch6/hd_ch6.live/playlist.m3u8",
-          "http://103.233.191.134:1935/ch6/hd_ch6.live/playlist.m3u8 ",
-          "http://103.233.191.132:1935/ch6/hd_ch6.live/playlist.m3u8 ",
-          "http://103.233.191.133:1935/ch6/hd_ch6.live/playlist.m3u8 ",
-          "http://61.244.22.4/ch6/_definst_/hd_ch6.live/playlist.m3u8 "
+          "http://103.233.191.134:1935/ch6/hd_ch6.live/playlist.m3u8",
+          "http://103.233.191.132:1935/ch6/hd_ch6.live/playlist.m3u8",
+          "http://103.233.191.133:1935/ch6/hd_ch6.live/playlist.m3u8",
+          "http://61.244.22.4/ch6/_definst_/hd_ch6.live/playlist.m3u8"
         ],
         "number": "026",
         "epg": "澳门综艺",
@@ -343,7 +343,7 @@
           "http://38.64.72.148:80/hls/modn/list/4006/chunklist1.m3u8",
           "rtmp://59.124.75.138/sat/tv551",
           "rtmp://59.124.75.150/sat/tv551",
-          "http://38.64.72.148/hls/modn/list/4006/chunklist0.m3u8 "
+          "http://38.64.72.148/hls/modn/list/4006/chunklist0.m3u8"
         ],
         "number": "033",
         "logo": "tb1/gt/TVBS新闻.png",
@@ -383,7 +383,7 @@
       },
       {
         "urls": [
-          "http://152.69.224.242:9500/jmsytb.m3u8?c=21 "
+          "http://152.69.224.242:9500/jmsytb.m3u8?c=21"
         ],
         "number": "037",
         "epg": "华视新闻",
@@ -393,10 +393,10 @@
         "urls": [
           "http://60.251.39.247:8504/http/192.168.77.24:8081/hls/78/80/ch63max.m3u8",
           "http://198.16.64.10:8278/ctinews/playlist.m3u8?tid=MA4A6611409066114090&ct=19226&tsum=f0333c4e69a7c5880f766ec9f29ca203",
-          "http://60.251.39.247:8504/http/192.168.77.24:8081/hls/78/80/ch63max.m3u8  ",
-          "http://59.125.122.90:18513/http/192.168.1.9:8081/hls/78/80/ch63max.m3u8 ",
-          "http://104.192.80.27:9500/live.m3u8?c=2  ",
-          "http://152.69.224.242:9500/jmsytb.m3u8?c=1 "
+          "http://60.251.39.247:8504/http/192.168.77.24:8081/hls/78/80/ch63max.m3u8",
+          "http://59.125.122.90:18513/http/192.168.1.9:8081/hls/78/80/ch63max.m3u8",
+          "http://104.192.80.27:9500/live.m3u8?c=2",
+          "http://152.69.224.242:9500/jmsytb.m3u8?c=1"
         ],
         "number": "038",
         "epg": "中天新闻台",
@@ -414,7 +414,7 @@
       {
         "urls": [
           "http://198.16.64.10:8278/feifannews_twn/playlist.m3u8?tid=ME3E6962233269622332&ct=19225&tsum=eea4d84db71e12ba91bfcf328f4dec9d",
-          "http://50.7.220.74:8278/feifannews_twn/playlist.m3u8?tid=m050e7aad65f614336734&ct=17874&tsum=4ea1b829d195ac69a6c2ca51b21ae378 "
+          "http://50.7.220.74:8278/feifannews_twn/playlist.m3u8?tid=m050e7aad65f614336734&ct=17874&tsum=4ea1b829d195ac69a6c2ca51b21ae378"
         ],
         "number": "040",
         "logo": "tb1/gt/UniqueNews.png",
@@ -433,7 +433,7 @@
       {
         "urls": [
           "http://198.16.64.10:8278/niandainews_twn/playlist.m3u8?tid=MA6A4647720946477209&ct=19226&tsum=48a66838dbcf633b2fb41307b29ef50a",
-          "http://50.7.220.74:8278/niandainews_twn/playlist.m3u8?tid=m062d2322888417909285&ct=17874&tsum=da6e0908f8df0e85b37f9d93167b9fcd "
+          "http://50.7.220.74:8278/niandainews_twn/playlist.m3u8?tid=m062d2322888417909285&ct=17874&tsum=da6e0908f8df0e85b37f9d93167b9fcd"
         ],
         "number": "042",
         "logo": "tb1/gt/年代ERANewsHD.png",
@@ -444,7 +444,7 @@
         "urls": [
           "http://198.16.64.10:8278/zhongshinews_twn/playlist.m3u8?tid=MD8D4836803548368035&ct=19226&tsum=a2f06c15a5e9c4dc67565c2b8598c8da",
           "http://50.7.220.74:8278/zhongshinews_twn/playlist.m3u8?tid=MAAA4459856044598560&ct=19193&tsum=1b7bdea69c00cd48e31f13442c75c376",
-          "http://50.7.220.74:8278/ca73a13c37/playlist.m3u8?tid=mee3f06f682eb&ct=18335&tsum=7491cceca17c1e2af05824583855f8bd "
+          "http://50.7.220.74:8278/ca73a13c37/playlist.m3u8?tid=mee3f06f682eb&ct=18335&tsum=7491cceca17c1e2af05824583855f8bd"
         ],
         "number": "043",
         "logo": "tb1/gt/中视新闻.png",
@@ -496,7 +496,7 @@
       {
         "urls": [
           "http://198.16.64.10:8278/xingwei_movie/playlist.m3u8?tid=MBDB4578128345781283&ct=19225&tsum=f2041ec954c95b4a5fe29d7ccbfe5b60",
-          "http://50.7.220.74:8278/xingwei_movie/playlist.m3u8?tid=MBAB2096754620967546&ct=18392&tsum=2c800c1f0b6cc98d2404608c294dcbc2 "
+          "http://50.7.220.74:8278/xingwei_movie/playlist.m3u8?tid=MBAB2096754620967546&ct=18392&tsum=2c800c1f0b6cc98d2404608c294dcbc2"
         ],
         "number": "049",
         "epg": "星卫电影台",
@@ -504,7 +504,7 @@
       },
       {
         "urls": [
-          "http://120.84.96.53:808/hls/35/index.m3u8 ",
+          "http://120.84.96.53:808/hls/35/index.m3u8",
           "http://198.16.64.10:8278/lungxiangtime_twn/playlist.m3u8?tid=MFFF9299444992994449&ct=19226&tsum=98d6988c4c94e299cb1c151856c909a8"
         ],
         "number": "050",
@@ -576,7 +576,7 @@
       {
         "urls": [
           "http://198.16.64.10:8278/jingtiancartoon_twn/playlist.m3u8?tid=MD1D2636832926368329&ct=19226&tsum=22c17cfa6920f0b4a9d45746ac25c547",
-          "http://50.7.220.74:8278/jingtiancartoon_twn/playlist.m3u8?tid=m1465dab025b5&ct=18335&tsum=ba935e583d90bfbe1d1d9662e9ac600c "
+          "http://50.7.220.74:8278/jingtiancartoon_twn/playlist.m3u8?tid=m1465dab025b5&ct=18335&tsum=ba935e583d90bfbe1d1d9662e9ac600c"
         ],
         "number": "058",
         "logo": "tb1/gt/靖天卡通.png",
@@ -615,7 +615,7 @@
         "urls": [
           "http://198.16.64.10:8278/ctizhonghe/playlist.m3u8?tid=ME3E9861589598615895&ct=19226&tsum=7e6a4896cab50c2c48d7a889c1076ffc",
           "http://218.32.47.179:18526/http/192.168.1.9:8081/hls/67/809/ch25.m3u8",
-          "http://50.7.220.74:8278/ctizhonghe/playlist.m3u8?tid=MBBB1520797915207979&ct=19193&tsum=3a6f7f0c591c2ec6678d51b741f290b2 "
+          "http://50.7.220.74:8278/ctizhonghe/playlist.m3u8?tid=MBBB1520797915207979&ct=19193&tsum=3a6f7f0c591c2ec6678d51b741f290b2"
         ],
         "number": "062",
         "logo": "tb1/gt/CtiVariety.png",
@@ -650,8 +650,8 @@
       },
       {
         "urls": [
-          "http://50.7.220.74:8278/ctv_taiwan/playlist.m3u8?tid=13765524&ct=17990&tsum=03eb77c1c186944b97737f14e95076c0 ",
-          "http://50.7.220.74:8278/ctv_taiwan/playlist.m3u8?tid=MD4D6839548568395485&ct=19193&tsum=56b3e3b150f4fcbc1877e081b313bcd4 ",
+          "http://50.7.220.74:8278/ctv_taiwan/playlist.m3u8?tid=13765524&ct=17990&tsum=03eb77c1c186944b97737f14e95076c0",
+          "http://50.7.220.74:8278/ctv_taiwan/playlist.m3u8?tid=MD4D6839548568395485&ct=19193&tsum=56b3e3b150f4fcbc1877e081b313bcd4",
           "http://198.16.64.10:8278/ctv_taiwan/playlist.m3u8?tid=MCCC8750228587502285&ct=19225&tsum=aca6268c0dd9f618ed5e944942132557"
         ],
         "number": "066",
@@ -795,7 +795,7 @@
         "urls": [
           "http://50.7.220.74:8278/sanlixiju_twn/playlist.m3u8?tid=MCFC5174201151742011&ct=19193&tsum=27477ddeec029345da276c2c903f09c2",
           "http://198.16.64.10:8278/sanlixiju_twn/playlist.m3u8?tid=MBDB8405357084053570&ct=19226&tsum=78944c0951d21a699e46fff4318a3799",
-          "http://50.7.220.74:8278/sanlixiju_twn/playlist.m3u8?tid=MA8A4626080046260800&ct=19053&tsum=205a453781925ebfb8996c1db8d4ed59 "
+          "http://50.7.220.74:8278/sanlixiju_twn/playlist.m3u8?tid=MA8A4626080046260800&ct=19053&tsum=205a453781925ebfb8996c1db8d4ed59"
         ],
         "number": "080",
         "logo": "tb1/gt/setxiju.png",
@@ -1104,7 +1104,7 @@
       {
         "urls": [
           "http://streamipcf.akamaized.net/live/_definst_/live_720/key_b1500.m3u8",
-          "https://streamipcf.akamaized.net/live/_definst_/smil:live.smil/chunklist_b3000.m3u8?cuac=guest&cref=https%3A%2F%2Fwww.ipcf.org.tw%2F "
+          "https://streamipcf.akamaized.net/live/_definst_/smil:live.smil/chunklist_b3000.m3u8?cuac=guest&cref=https%3A%2F%2Fwww.ipcf.org.tw%2F"
         ],
         "number": "114",
         "epg": "原住民电视台",
@@ -1112,8 +1112,8 @@
       },
       {
         "urls": [
-          "http://61.216.67.119:1935/TWHG/E1/chunklist_w7058102.m3u8 ",
-          "http://61.216.67.119:1935/TWHG/E1/chunklist_w705811302.m3u8 "
+          "http://61.216.67.119:1935/TWHG/E1/chunklist_w7058102.m3u8",
+          "http://61.216.67.119:1935/TWHG/E1/chunklist_w705811302.m3u8"
         ],
         "number": "115",
         "epg": "番薯",
@@ -1461,7 +1461,7 @@
         "urls": [
           "http://117.169.121.162:6610/PLTV/88888910/224/3221225908/index.m3u8",
           "http://hwrr.jx.chinamobile.com:8080/PLTV/88888888/224/3221225909/index.m3u8",
-          "http://39.135.138.60:18890/PLTV/88888910/224/3221225908/index.m3u8 ",
+          "http://39.135.138.60:18890/PLTV/88888910/224/3221225908/index.m3u8",
           "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226198/index.m3u8"
         ],
         "number": "145",
@@ -6811,8 +6811,8 @@
     "channel": [
       {
         "urls": [
-          "http://liveop.cctv.cn/hls/4KHD/playlist.m3u8  ",
-          "http://live.aikan.miguvideo.com/PLTV/88888888/224/3221233400/1.m3u8 ",
+          "http://liveop.cctv.cn/hls/4KHD/playlist.m3u8",
+          "http://live.aikan.miguvideo.com/PLTV/88888888/224/3221233400/1.m3u8",
           "http://liveop.cctv.cn/hls/4KHD/playlist.m3u8?zzhongd",
           "http://39.135.55.72:6610/PLTV/88888888/224/3221226998/index.m3u8?servicetype=1&IASHttpSessionId=OTT",
           "http://live.aikan.miguvideo.com/PLTV/88888888/224/3221233400/index.m3u8"
@@ -6824,8 +6824,8 @@
       },
       {
         "urls": [
-          "http://117.148.129.93:80/PLTV/88888888/224/3221233350/1.m3u8 ",
-          "http://live.aikan.miguvideo.com/PLTV/88888888/224/3221233454/index.m3u8  ",
+          "http://117.148.129.93:80/PLTV/88888888/224/3221233350/1.m3u8",
+          "http://live.aikan.miguvideo.com/PLTV/88888888/224/3221233454/index.m3u8",
           "http://117.148.179.148:80/PLTV/88888888/224/3221233350/1.m3u8",
           "http://117.148.179.157/PLTV/88888888/224/3221233413/index.m3u8"
         ],
@@ -6835,7 +6835,7 @@
       },
       {
         "urls": [
-          "http://39.134.115.163:8080/PLTV/88888910/224/3221225786/index.m3u8 ",
+          "http://39.134.115.163:8080/PLTV/88888910/224/3221225786/index.m3u8",
           "http://39.135.138.58:18890/PLTV/88888888/224/3221225786/index.m3u8",
           "http://39.135.138.59:18890/PLTV/88888910/224/3221225786/index.m3u8",
           "http://39.135.138.60:18890/PLTV/88888910/224/3221225786/index.m3u8",
@@ -6847,11 +6847,11 @@
       },
       {
         "urls": [
-          "http://183.207.255.188/live/program/live/hxjchd/4000000/mnf.m3u8 ",
-          "http://111.20.33.70/PLTV/88888893/224/3221226582/index.m3u8 ",
-          "http://111.20.33.82:80/PLTV/88888893/224/3221226582/index.m3u8?icpid=88888893&from=1&hms_devid=844 ",
-          "http://112.17.40.218:80/PLTV/88888888/224/3221230739/1.m3u8 ",
-          "http://live.aikan.miguvideo.com/PLTV/88888888/224/3221230739/index.m3u8 "
+          "http://183.207.255.188/live/program/live/hxjchd/4000000/mnf.m3u8",
+          "http://111.20.33.70/PLTV/88888893/224/3221226582/index.m3u8",
+          "http://111.20.33.82:80/PLTV/88888893/224/3221226582/index.m3u8?icpid=88888893&from=1&hms_devid=844",
+          "http://112.17.40.218:80/PLTV/88888888/224/3221230739/1.m3u8",
+          "http://live.aikan.miguvideo.com/PLTV/88888888/224/3221230739/index.m3u8"
         ],
         "number": "639",
         "epg": "欢笑剧场4K",
@@ -6859,7 +6859,7 @@
       },
       {
         "urls": [
-          "http://[2409:8087:7000:20:1000::22]:6060/yinhe/2/ch00000090990000001709/index.m3u8?virtualDomain=yinhe.live_hls.zte.com "
+          "http://[2409:8087:7000:20:1000::22]:6060/yinhe/2/ch00000090990000001709/index.m3u8?virtualDomain=yinhe.live_hls.zte.com"
         ],
         "number": "640",
         "epg": "爱上4K",
@@ -6867,7 +6867,7 @@
       },
       {
         "urls": [
-          "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/emdy4k_8000.m3u8 "
+          "http://[2409:8c02:21c:60::2b]/live.rxip.sc96655.com/live/emdy4k_8000.m3u8"
         ],
         "number": "641",
         "epg": "4K超高清电影",
@@ -6875,11 +6875,11 @@
       },
       {
         "urls": [
-          "http://1972762443.cloudvdn.com/a.m3u8?domain=liveshowbak2.kan0512.com&player=TsoAAKTAB9juCfgW&secondToken=secondToken%3Aquo0xZnAeUUm47BcklXb7ffCum8&streamid=ksz-norecord%3Aksz-norecord%2Fcsztv4k_4k&v3=1 ",
-          "http://3740480834.cloudvdn.com/a.m3u8?domain=liveshowbak2.kan0512.com&player=wIgAANH1UieYTeIW&secondToken=secondToken%3AlDV9er1_pa4JZ7B_HTFDHqOPHaI&streamid=ksz-norecord%3Aksz-norecord%2Fcsztv4k_4k&v3=1 ",
-          "http://3740480837.cloudvdn.com/a.m3u8?domain=liveshowbak2.kan0512.com&player=VooAANf18QP9F-QW&secondToken=secondToken%3AMc0mRObNpYc8gL7T_KxOb7N02NI&streamid=ksz-norecord%3Aksz-norecord%2Fcsztv4k_4k&v3=1 ",
-          "http://3740480837.cloudvdn.com/a.m3u8?domain=liveshowbak2.kan0512.com&player=X7wAAPMizr_MF-gW&secondToken=secondToken%3A08GykFLGXy4k9xKOwtRpMVC8WOU&streamid=ksz-norecord%3Aksz-norecord%2Fcsztv4k_4k&v3=1 ",
-          "http://liveshowbak2.kan0512.com/ksz-norecord/csztv4k_4k.m3u8 "
+          "http://1972762443.cloudvdn.com/a.m3u8?domain=liveshowbak2.kan0512.com&player=TsoAAKTAB9juCfgW&secondToken=secondToken%3Aquo0xZnAeUUm47BcklXb7ffCum8&streamid=ksz-norecord%3Aksz-norecord%2Fcsztv4k_4k&v3=1",
+          "http://3740480834.cloudvdn.com/a.m3u8?domain=liveshowbak2.kan0512.com&player=wIgAANH1UieYTeIW&secondToken=secondToken%3AlDV9er1_pa4JZ7B_HTFDHqOPHaI&streamid=ksz-norecord%3Aksz-norecord%2Fcsztv4k_4k&v3=1",
+          "http://3740480837.cloudvdn.com/a.m3u8?domain=liveshowbak2.kan0512.com&player=VooAANf18QP9F-QW&secondToken=secondToken%3AMc0mRObNpYc8gL7T_KxOb7N02NI&streamid=ksz-norecord%3Aksz-norecord%2Fcsztv4k_4k&v3=1",
+          "http://3740480837.cloudvdn.com/a.m3u8?domain=liveshowbak2.kan0512.com&player=X7wAAPMizr_MF-gW&secondToken=secondToken%3A08GykFLGXy4k9xKOwtRpMVC8WOU&streamid=ksz-norecord%3Aksz-norecord%2Fcsztv4k_4k&v3=1",
+          "http://liveshowbak2.kan0512.com/ksz-norecord/csztv4k_4k.m3u8"
         ],
         "number": "642",
         "epg": "苏州4K",
@@ -8444,7 +8444,7 @@
       },
       {
         "urls": [
-          "http://txtest-xp2p.p2p.huya.com/src/1199561176260-1199561176260-5434425023026692096-2399122475976-10057-A-0-1.xs "
+          "http://txtest-xp2p.p2p.huya.com/src/1199561176260-1199561176260-5434425023026692096-2399122475976-10057-A-0-1.xs"
         ],
         "number": "821",
         "epg": "埋堆堆30",
@@ -8452,7 +8452,7 @@
       },
       {
         "urls": [
-          "http://txtest-xp2p.p2p.huya.com/src/1199561462555-1199561462555-5435654650688700416-2399123048566-10057-A-0-1.xs "
+          "http://txtest-xp2p.p2p.huya.com/src/1199561462555-1199561462555-5435654650688700416-2399123048566-10057-A-0-1.xs"
         ],
         "number": "822",
         "epg": "埋堆堆31",
@@ -8476,7 +8476,7 @@
       },
       {
         "urls": [
-          "http://txtest-xp2p.p2p.huya.com/src/1199561182641-1199561182641-5434452429213007872-2399122488738-10057-A-0-1.xs "
+          "http://txtest-xp2p.p2p.huya.com/src/1199561182641-1199561182641-5434452429213007872-2399122488738-10057-A-0-1.xs"
         ],
         "number": "825",
         "epg": "埋堆堆34",
@@ -8484,7 +8484,7 @@
       },
       {
         "urls": [
-          "http://txtest-xp2p.p2p.huya.com/src/1199561177177-1199561177177-5434428961511702528-2399122477810-10057-A-0-1.xs "
+          "http://txtest-xp2p.p2p.huya.com/src/1199561177177-1199561177177-5434428961511702528-2399122477810-10057-A-0-1.xs"
         ],
         "number": "826",
         "epg": "埋堆堆35",
