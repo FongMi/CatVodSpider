@@ -1,0 +1,65 @@
+[
+  {
+    "channel": [
+      {
+        "urls": [
+          "http://play-live.ifeng.com/live/06OLEGEGM4G.m3u8"
+        ],
+        "number": "001",
+        "logo": "tb1/gt/fenghuangzhongwen.png",
+        "epg": "凤凰中文",
+        "name": "鳳凰中文",
+        "ua": "okhttp/3.15"
+      },
+      {
+        "urls": [
+          "http://play-live.ifeng.com/live/06OLEEWQKN4.m3u8"
+        ],
+        "number": "002",
+        "logo": "tb1/gt/fenghuangzixun.png",
+        "epg": "凤凰资讯",
+        "name": "鳳凰資訊",
+        "ua": "okhttp/3.15"
+      }
+    ],
+    "name": "香港"
+  },
+  {
+    "channel": [
+      {
+        "urls": [
+          "http://198.16.64.10:8278/xingwei_movie/playlist.m3u8?tid=MBDB4578128345781283&ct=19225&tsum=f2041ec954c95b4a5fe29d7ccbfe5b60"
+        ],
+        "number": "003",
+        "logo": "tb1/gt/starmov.png",
+        "epg": "星卫HD电影",
+        "name": "星衛電影"
+      }
+    ],
+    "name": "台灣"
+  },
+  {
+    "channel": [
+      {
+        "urls": [
+          "http://live.redtraffic.xyz/threesome.m3u8"
+        ],
+        "number": "1001",
+        "logo": "",
+        "epg": "",
+        "name": "Three"
+      },
+      {
+        "urls": [
+          "http://live.redtraffic.xyz/blowjob.m3u8"
+        ],
+        "number": "1002",
+        "logo": "",
+        "epg": "",
+        "name": "BlowJob"
+      }
+    ],
+    "name": "歐美",
+    "pass": "1234"
+  }
+]
