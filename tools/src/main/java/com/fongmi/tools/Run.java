@@ -47,7 +47,7 @@ public class Run {
             if (split[1].contains("://")) {
                 Group group = groups.get(groups.size() - 1);
                 String name = split[0];
-                String url = split[1];
+                String url = split[1].trim();
                 group.find(Channel.create().name(name).epg(name)).addUrls(url.split("#"));
             }
         }
