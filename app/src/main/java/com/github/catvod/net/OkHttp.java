@@ -1,6 +1,10 @@
 package com.github.catvod.net;
 
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.spider.Init;
+import com.google.net.cronet.okhttptransport.CronetInterceptor;
+
+import org.chromium.net.CronetEngine;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +36,7 @@ public class OkHttp {
     }
 
     private OkHttpClient.Builder getBuilder() {
-        return new OkHttpClient.Builder().dns(safeDns()).callTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).connectTimeout(30, TimeUnit.SECONDS).retryOnConnectionFailure(true).hostnameVerifier(SSLSocketFactoryCompat.hostnameVerifier).sslSocketFactory(new SSLSocketFactoryCompat(), SSLSocketFactoryCompat.trustAllCert);
+        return new OkHttpClient.Builder().dns(safeDns()).addInterceptor(CronetInterceptor.newBuilder(new CronetEngine.Builder(Init.context()).build()).build()).callTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).connectTimeout(30, TimeUnit.SECONDS).retryOnConnectionFailure(true).hostnameVerifier(SSLSocketFactoryCompat.hostnameVerifier).sslSocketFactory(new SSLSocketFactoryCompat(), SSLSocketFactoryCompat.trustAllCert);
     }
 
     private static OkHttpClient client() {
