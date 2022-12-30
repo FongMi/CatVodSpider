@@ -8,7 +8,7 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.upyun.Data;
 import com.github.catvod.bean.upyun.Item;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 
 import java.net.URLEncoder;
@@ -44,7 +44,7 @@ public class UpYun extends Spider {
     @Override
     public String searchContent(String key, boolean quick) {
         String url = apiUrl + "search?keyword=" + URLEncoder.encode(key) + "&page=1&s_type=2";
-        String res = new String(Base64.decode(OkHttpUtil.string(url, getHeaders()), Base64.DEFAULT));
+        String res = new String(Base64.decode(OkHttp.string(url, getHeaders()), Base64.DEFAULT));
         List<Vod> list = new ArrayList<>();
         for (Item item : Data.objectFrom(res).getResult().getItems()) if (item.isAli()) list.add(item.getVod());
         return Result.string(list);

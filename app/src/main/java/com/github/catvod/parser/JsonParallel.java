@@ -1,7 +1,7 @@
 package com.github.catvod.parser;
 
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 
 import org.json.JSONObject;
@@ -35,7 +35,7 @@ public class JsonParallel {
                     String realUrl = reqHeaders.get("url");
                     reqHeaders.remove("url");
                     SpiderDebug.log(realUrl + url);
-                    String json = OkHttpUtil.string(realUrl + url, ParseOKTag, reqHeaders);
+                    String json = OkHttp.string(realUrl + url, ParseOKTag, reqHeaders);
                     JSONObject taskResult = Misc.jsonParse(url, json);
                     taskResult.put("jxFrom", jxName);
                     SpiderDebug.log(taskResult.toString());
@@ -51,7 +51,7 @@ public class JsonParallel {
                 Future<JSONObject> completed = completionService.take();
                 pTaskResult = completed.get();
                 if (pTaskResult != null) {
-                    OkHttpUtil.cancel(ParseOKTag);
+                    OkHttp.cancel(ParseOKTag);
                     for (int j = 0; j < futures.size(); j++) {
                         try {
                             futures.get(j).cancel(true);

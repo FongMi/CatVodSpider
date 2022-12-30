@@ -29,3 +29,5 @@
 # OkHttp
 -keep class okio.**{*;}
 -keep class okhttp3.**{*;}
+-keep class com.google.net.**{*;}
+-keep class org.chromium.net.**{*;}

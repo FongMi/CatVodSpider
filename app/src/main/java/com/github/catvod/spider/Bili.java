@@ -7,7 +7,7 @@ import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
 
@@ -32,7 +32,7 @@ public class Bili extends Spider {
 
     private String getCookie(String cookie) {
         if (TextUtils.isEmpty(cookie)) return "buvid3=84B0395D-C9F2-C490-E92E-A09AB48FE26E71636infoc";
-        if (cookie.startsWith("http")) return OkHttpUtil.string(cookie).replace("\n", "");
+        if (cookie.startsWith("http")) return OkHttp.string(cookie).replace("\n", "");
         return cookie;
     }
 
@@ -43,7 +43,7 @@ public class Bili extends Spider {
     }
 
     private void fetchExt() {
-        String result = OkHttpUtil.string(extend);
+        String result = OkHttp.string(extend);
         if (!TextUtils.isEmpty(result)) extend = result;
     }
 
@@ -82,7 +82,7 @@ public class Bili extends Spider {
         String duration = extend.containsKey("duration") ? extend.get("duration") : "0";
         if (extend.containsKey("tid")) tid = tid + " " + extend.get("tid");
         String url = "https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=" + URLEncoder.encode(tid) + "&duration=" + duration + "&page=" + pg;
-        JSONObject resp = new JSONObject(OkHttpUtil.string(url, header));
+        JSONObject resp = new JSONObject(OkHttp.string(url, header));
         JSONArray result = resp.getJSONObject("data").getJSONArray("result");
         List<Vod> list = new ArrayList<>();
         for (int i = 0; i < result.length(); ++i) {
@@ -102,10 +102,10 @@ public class Bili extends Spider {
     public String detailContent(List<String> ids) throws Exception {
         String bvid = ids.get(0);
         String bvid2aidUrl = "https://api.bilibili.com/x/web-interface/archive/stat?bvid=" + bvid;
-        JSONObject bvid2aidResp = new JSONObject(OkHttpUtil.string(bvid2aidUrl, header));
+        JSONObject bvid2aidResp = new JSONObject(OkHttp.string(bvid2aidUrl, header));
         String aid = bvid2aidResp.getJSONObject("data").getLong("aid") + "";
         String detailUrl = "https://api.bilibili.com/x/web-interface/view?aid=" + aid;
-        JSONObject detailResp = new JSONObject(OkHttpUtil.string(detailUrl, header));
+        JSONObject detailResp = new JSONObject(OkHttp.string(detailUrl, header));
         JSONObject detailData = detailResp.getJSONObject("data");
         List<String> playlist = new ArrayList<>();
         JSONArray pages = detailData.getJSONArray("pages");
@@ -137,7 +137,7 @@ public class Bili extends Spider {
         String aid = ids[0];
         String cid = ids[1];
         String url = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + cid + "&qn=120&fourk=1";
-        JSONObject resp = new JSONObject(OkHttpUtil.string(url, header));
+        JSONObject resp = new JSONObject(OkHttp.string(url, header));
         url = resp.getJSONObject("data").getJSONArray("durl").getJSONObject(0).getString("url");
         return Result.get().url(url).header(header).string();
     }

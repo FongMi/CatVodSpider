@@ -8,7 +8,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
 import com.github.catvod.xpath.XPathRule;
@@ -37,7 +37,7 @@ public class XPath extends Spider {
 
     private void fetchRule(String ext) {
         if (ext.startsWith("http")) {
-            String json = OkHttpUtil.string(ext);
+            String json = OkHttp.string(ext);
             rule = XPathRule.fromJson(json);
             loadRuleExt(json);
         } else {
@@ -325,6 +325,6 @@ public class XPath extends Spider {
 
     protected String fetch(String webUrl) {
         SpiderDebug.log(webUrl);
-        return OkHttpUtil.string(webUrl, getHeaders());
+        return OkHttp.string(webUrl, getHeaders());
     }
 }

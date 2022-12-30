@@ -5,7 +5,7 @@ import android.content.Context;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 
 import org.jsoup.Jsoup;
@@ -44,8 +44,8 @@ public class PanSou extends Spider {
     public String detailContent(List<String> ids) throws Exception {
         String url = siteUrl + ids.get(0).replace("/s/", "/cv/");
         Map<String, List<String>> respHeaders = new HashMap<>();
-        OkHttpUtil.stringNoRedirect(url, getHeaders(ids.get(0)), respHeaders);
-        url = OkHttpUtil.getRedirectLocation(respHeaders);
+        OkHttp.stringNoRedirect(url, getHeaders(ids.get(0)), respHeaders);
+        url = OkHttp.getRedirectLocation(respHeaders);
         return ali.detailContent(Arrays.asList(url));
     }
 
@@ -59,7 +59,7 @@ public class PanSou extends Spider {
             String typeId = entry.getKey();
             String typeName = entry.getValue();
             String url = siteUrl + "/search?k=" + URLEncoder.encode(key) + "&t=" + typeId;
-            Elements items = Jsoup.parse(OkHttpUtil.string(url)).select("van-row > a");
+            Elements items = Jsoup.parse(OkHttp.string(url)).select("van-row > a");
             for (Element item : items) {
                 String title = item.selectFirst("template").text().trim();
                 if (!title.contains(key)) continue;

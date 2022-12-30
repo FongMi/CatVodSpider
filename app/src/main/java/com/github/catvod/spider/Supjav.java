@@ -7,7 +7,7 @@ import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 
 import org.jsoup.Jsoup;
@@ -42,7 +42,7 @@ public class Supjav extends Spider {
     public String homeContent(boolean filter) {
         List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
-        Document doc = Jsoup.parse(OkHttpUtil.string(siteUrl, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(siteUrl, getHeaders()));
         for (Element element : doc.select("ul.nav > li > a")) {
             String href = element.attr("href");
             if (href.split("/").length < 5) continue;
@@ -65,7 +65,7 @@ public class Supjav extends Spider {
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
         List<Vod> list = new ArrayList<>();
-        Document doc = Jsoup.parse(OkHttpUtil.string(siteUrl + tid + "/page/" + pg, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(siteUrl + tid + "/page/" + pg, getHeaders()));
         for (Element element : doc.select("div.post")) {
             String pic = element.select("img").attr("data-original");
             String url = element.select("a").attr("href");
@@ -78,7 +78,7 @@ public class Supjav extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        Document doc = Jsoup.parse(OkHttpUtil.string(siteUrl.concat(ids.get(0)), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(siteUrl.concat(ids.get(0)), getHeaders()));
         String name = doc.select("div.post-meta > img").attr("alt");
         String img = doc.select("div.post-meta > img").attr("src");
         String type = doc.select("p.cat > a").text();
@@ -119,7 +119,7 @@ public class Supjav extends Spider {
     @Override
     public String searchContent(String key, boolean quick) {
         List<Vod> list = new ArrayList<>();
-        Document doc = Jsoup.parse(OkHttpUtil.string(siteUrl.concat("?s=").concat(URLEncoder.encode(key)), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(siteUrl.concat("?s=").concat(URLEncoder.encode(key)), getHeaders()));
         for (Element element : doc.select("div.post")) {
             String pic = element.select("img").attr("data-original");
             String url = element.select("a").attr("href");
@@ -133,8 +133,8 @@ public class Supjav extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         Map<String, List<String>> respHeaders = new HashMap<>();
-        OkHttpUtil.stringNoRedirect(playUrl + "supjav.php?c=" + new StringBuilder(id).reverse(), getHeaders(playUrl), respHeaders);
-        String redirect = OkHttpUtil.getRedirectLocation(respHeaders);
+        OkHttp.stringNoRedirect(playUrl + "supjav.php?c=" + new StringBuilder(id).reverse(), getHeaders(playUrl), respHeaders);
+        String redirect = OkHttp.getRedirectLocation(respHeaders);
         switch (flag) {
             case "TV":
                 return parseTV(redirect);
@@ -148,20 +148,20 @@ public class Supjav extends Spider {
     }
 
     private String parseTV(String redirect) {
-        String data = OkHttpUtil.string(redirect, getHeaders(playUrl));
+        String data = OkHttp.string(redirect, getHeaders(playUrl));
         return Result.get().url(Misc.getVar(data, "urlPlay")).header(getHeaders(redirect)).string();
     }
 
     private String parseST(String redirect) {
         Map<String, List<String>> respHeaders = new HashMap<>();
-        String data = OkHttpUtil.string(redirect, getHeaders(playUrl));
+        String data = OkHttp.string(redirect, getHeaders(playUrl));
         String robot = Jsoup.parse(data).getElementById("robotlink").text();
         robot = robot.substring(0, robot.indexOf("&token=") + 7);
         for (String text : data.split("&token=")) {
             if (!text.contains("').substring(")) continue;
             robot = "https:/" + robot + text.split("'")[0] + "&stream=1";
-            OkHttpUtil.stringNoRedirect(robot, getHeaders(redirect), respHeaders);
-            String url = OkHttpUtil.getRedirectLocation(respHeaders);
+            OkHttp.stringNoRedirect(robot, getHeaders(redirect), respHeaders);
+            String url = OkHttp.getRedirectLocation(respHeaders);
             return Result.get().url(url).header(getHeaders(redirect)).string();
         }
         return "";
@@ -170,13 +170,13 @@ public class Supjav extends Spider {
     private String parseDS(String redirect) {
         String host = "https://" + Uri.parse(redirect).getHost();
         Map<String, List<String>> respHeaders = new HashMap<>();
-        OkHttpUtil.stringNoRedirect(redirect, getHeaders(playUrl), respHeaders);
-        redirect = host + OkHttpUtil.getRedirectLocation(respHeaders);
-        String data = OkHttpUtil.string(redirect, getHeaders());
+        OkHttp.stringNoRedirect(redirect, getHeaders(playUrl), respHeaders);
+        redirect = host + OkHttp.getRedirectLocation(respHeaders);
+        String data = OkHttp.string(redirect, getHeaders());
         for (String text : data.split("'")) {
             if (!text.startsWith("/pass_md5/")) continue;
             String token = text.split("/")[3];
-            String url = OkHttpUtil.string(host + text, getHeaders(redirect));
+            String url = OkHttp.string(host + text, getHeaders(redirect));
             url = url + getDSRnd() + "?token=" + token + "&expiry=" + System.currentTimeMillis();
             return Result.get().url(url).header(getHeaders(redirect)).string();
         }
