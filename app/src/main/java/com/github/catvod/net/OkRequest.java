@@ -9,30 +9,31 @@ import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-class OKRequest {
+class OkRequest {
 
     private final String mMethodType;
     private final Map<String, String> mParamsMap;
     private final String mJsonStr;
     private final Map<String, String> mHeaderMap;
-    private final OKCallBack mCallBack;
+    private final CallBack mCallBack;
     private String mUrl;
     private Object mTag = null;
-    private okhttp3.Request mOkHttpRequest;
-    private okhttp3.Request.Builder mRequestBuilder;
+    private Request mOkHttpRequest;
+    private Request.Builder mRequestBuilder;
 
-    OKRequest(String methodType, String url, Map<String, String> paramsMap, Map<String, String> headerMap, OKCallBack callBack) {
+    OkRequest(String methodType, String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBack callBack) {
         this(methodType, url, null, paramsMap, headerMap, callBack);
     }
 
-    OKRequest(String methodType, String url, String jsonStr, Map<String, String> headerMap, OKCallBack callBack) {
+    OkRequest(String methodType, String url, String jsonStr, Map<String, String> headerMap, CallBack callBack) {
         this(methodType, url, jsonStr, null, headerMap, callBack);
     }
 
-    private OKRequest(String methodType, String url, String jsonStr, Map<String, String> paramsMap, Map<String, String> headerMap, OKCallBack callBack) {
+    private OkRequest(String methodType, String url, String jsonStr, Map<String, String> paramsMap, Map<String, String> headerMap, CallBack callBack) {
         mMethodType = methodType;
         mUrl = url;
         mJsonStr = jsonStr;
@@ -47,12 +48,12 @@ class OKRequest {
     }
 
     private void getInstance() {
-        mRequestBuilder = new okhttp3.Request.Builder();
+        mRequestBuilder = new Request.Builder();
         switch (mMethodType) {
-            case OkHttpUtil.METHOD_GET:
+            case OkHttp.METHOD_GET:
                 setGetParams();
                 break;
-            case OkHttpUtil.METHOD_POST:
+            case OkHttp.METHOD_POST:
                 mRequestBuilder.post(getRequestBody());
                 break;
         }
@@ -106,7 +107,7 @@ class OKRequest {
             }
         } catch (IOException e) {
             if (mCallBack != null) {
-                mCallBack.onError(call, e);
+                mCallBack.onError();
             }
         }
     }

@@ -8,7 +8,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.paper.Data;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 
 import org.json.JSONObject;
@@ -48,7 +48,7 @@ public class Paper extends Spider {
 
     @Override
     public String homeContent(boolean filter) {
-        Document doc = Jsoup.parse(OkHttpUtil.string(url, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(url, getHeaders()));
         Elements trs = doc.select("table.tableizer-table > tbody > tr");
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         List<Class> classes = new ArrayList<>();
@@ -72,7 +72,7 @@ public class Paper extends Spider {
     @Override
     public String homeVideoContent() throws Exception {
         List<Vod> list = new ArrayList<>();
-        JSONObject homeData = new JSONObject(OkHttpUtil.string(url + "home.json", getHeaders()));
+        JSONObject homeData = new JSONObject(OkHttp.string(url + "home.json", getHeaders()));
         List<Data> items = Data.arrayFrom(homeData.getJSONObject("info").getJSONArray("new").toString());
         for (Data item : items) if (types.contains(item.getCat())) list.add(item.getVod());
         return Result.string(list);
@@ -86,7 +86,7 @@ public class Paper extends Spider {
         params.put("action", "viewcat");
         params.put("cat", type);
         params.put("num", pg);
-        String result = OkHttpUtil.post(api, params, getHeaders());
+        String result = OkHttp.post(api, params, getHeaders());
         for (Data item : Data.arrayFrom(result)) list.add(item.getVod());
         return Result.string(list);
     }
@@ -102,7 +102,7 @@ public class Paper extends Spider {
         Map<String, String> params = new HashMap<>();
         params.put("action", "search");
         params.put("keyword", key);
-        String result = OkHttpUtil.post(api, params, getHeaders());
+        String result = OkHttp.post(api, params, getHeaders());
         for (Data item : Data.arrayFrom(result)) if (types.contains(item.getCat()) && item.getTitle().contains(key)) list.add(item.getVod());
         return Result.string(list);
     }

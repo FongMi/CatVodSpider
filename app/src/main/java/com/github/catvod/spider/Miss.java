@@ -7,7 +7,7 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,7 +29,7 @@ public class Miss extends Spider {
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         List<String> typeIds = Arrays.asList("chinese-subtitle", "new", "release", "uncensored-leak", "siro", "luxu", "gana", "maan", "scute", "ara", "uncensored-leak", "fc2", "heyzo", "tokyohot", "1pondo", "caribbeancom", "caribbeancompr", "10musume", "pacopacomama", "gachinco", "xxxav", "marriedslash", "naughty4610", "naughty0930", "madou", "twav");
-        Document doc = Jsoup.parse(OkHttpUtil.string(url));
+        Document doc = Jsoup.parse(OkHttp.string(url));
         for (Element a : doc.select("nav").select("a")) {
             String typeName = a.text();
             String typeId = a.attr("href").replace(url, "");
@@ -55,7 +55,7 @@ public class Miss extends Spider {
         String filters = extend.get("filters");
         if (TextUtils.isEmpty(filters)) target += "?page=" + pg;
         else target += "?filters=" + extend.get("filters") + "&page=" + pg;
-        Document doc = Jsoup.parse(OkHttpUtil.string(target));
+        Document doc = Jsoup.parse(OkHttp.string(target));
         for (Element div : doc.select("div.thumbnail")) {
             String id = div.select("a.text-secondary").attr("href").replace(url, "");
             String name = div.select("a.text-secondary").text();
@@ -69,7 +69,7 @@ public class Miss extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Document doc = Jsoup.parse(OkHttpUtil.string(url + ids.get(0)));
+        Document doc = Jsoup.parse(OkHttp.string(url + ids.get(0)));
         String name = doc.select("meta[property=og:title]").attr("content");
         String pic = doc.select("meta[property=og:image]").attr("content");
         Vod vod = new Vod();
@@ -84,7 +84,7 @@ public class Miss extends Spider {
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
         List<Vod> list = new ArrayList<>();
-        Document doc = Jsoup.parse(OkHttpUtil.string(url + "search/" + key));
+        Document doc = Jsoup.parse(OkHttp.string(url + "search/" + key));
         for (Element div : doc.select("div.thumbnail")) {
             String id = div.select("a.text-secondary").attr("href").replace(url, "");
             String name = div.select("a.text-secondary").text();

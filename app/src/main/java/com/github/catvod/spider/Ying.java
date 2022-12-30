@@ -7,7 +7,7 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
 
@@ -61,7 +61,7 @@ public class Ying extends Spider {
         List<Class> classes = new ArrayList<>();
         List<Filter> array = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        Document doc1 = Jsoup.parse(OkHttpUtil.string(filterUrl, getHeaders()));
+        Document doc1 = Jsoup.parse(OkHttp.string(filterUrl, getHeaders()));
         String[] split = doc1.text().split("_labels = ");
         for (int i = 0; i < split.length; i++) {
             if (split[i].startsWith("[")) {
@@ -71,7 +71,7 @@ public class Ying extends Spider {
             }
         }
         for (Class type : classes) filters.put(type.getTypeId(), array);
-        Document doc2 = Jsoup.parse(OkHttpUtil.string(listUrl, getHeaders()));
+        Document doc2 = Jsoup.parse(OkHttp.string(listUrl, getHeaders()));
         for (Element element : doc2.select("div.lpic > ul > li")) {
             String id = element.select("a").attr("href").split("/")[2];
             String name = element.select("h2").text();
@@ -97,7 +97,7 @@ public class Ying extends Spider {
         checkExtend(sb, extend, "label");
         checkExtend(sb, extend, "resource");
         checkExtend(sb, extend, "order");
-        Document doc = Jsoup.parse(OkHttpUtil.string(listUrl.concat(sb.toString()), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(listUrl.concat(sb.toString()), getHeaders()));
         for (Element element : doc.select("div.lpic > ul > li")) {
             String id = element.select("a").attr("href").split("/")[2];
             String name = element.select("h2").text();
@@ -111,7 +111,7 @@ public class Ying extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        Document doc = Jsoup.parse(OkHttpUtil.string(showUrl.concat(ids.get(0)), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(showUrl.concat(ids.get(0)), getHeaders()));
         String name = doc.select("div.rate > h1").text();
         String pic = "https:".concat(doc.select("div.thumb > img").attr("src"));
         String content = doc.select("div.info").text();
@@ -153,7 +153,7 @@ public class Ying extends Spider {
     public String searchContent(String key, boolean quick) {
         List<Vod> list = new ArrayList<>();
         String target = siteUrl + "/s_all?ex=1&kw=" + URLEncoder.encode(key);
-        Document doc = Jsoup.parse(OkHttpUtil.string(target, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(target, getHeaders()));
         for (Element element : doc.select("div.lpic > ul > li")) {
             String id = element.select("a").attr("href").split("/")[2];
             String name = element.select("h2").text();

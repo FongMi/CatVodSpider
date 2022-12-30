@@ -1,8 +1,11 @@
 package com.github.catvod.net;
 
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.spider.Init;
+import com.google.net.cronet.okhttptransport.CronetInterceptor;
 
-import java.io.IOException;
+import org.chromium.net.CronetEngine;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -12,23 +15,38 @@ import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
-public class OkHttpUtil {
+public class OkHttp {
 
-    public static final String METHOD_GET = "GET";
     public static final String METHOD_POST = "POST";
+    public static final String METHOD_GET = "GET";
 
-    private static final Object lockO = new Object();
-    private static OkHttpClient defaultClient = null;
-    private static final int DEFAULT_TIMEOUT = 15;
+    private final OkHttpClient noRedirect;
+    private final OkHttpClient client;
 
-    public static OkHttpClient defaultClient() {
-        synchronized (lockO) {
-            if (defaultClient == null) {
-                OkHttpClient.Builder builder = new OkHttpClient.Builder().dns(safeDns()).readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).retryOnConnectionFailure(true).hostnameVerifier(SSLSocketFactoryCompat.hostnameVerifier).sslSocketFactory(new SSLSocketFactoryCompat(), SSLSocketFactoryCompat.trustAllCert);
-                defaultClient = builder.build();
-            }
-            return defaultClient;
-        }
+    private static class Loader {
+        static volatile OkHttp INSTANCE = new OkHttp();
+    }
+
+    public static OkHttp get() {
+        return Loader.INSTANCE;
+    }
+
+    public OkHttp() {
+        client = getBuilder().build();
+        noRedirect = client.newBuilder().followRedirects(false).followSslRedirects(false).build();
+    }
+
+    private OkHttpClient.Builder getBuilder() {
+        CronetEngine engine = new CronetEngine.Builder(Init.context()).build();
+        return new OkHttpClient.Builder().dns(safeDns()).addInterceptor(CronetInterceptor.newBuilder(engine).build()).callTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).connectTimeout(30, TimeUnit.SECONDS).retryOnConnectionFailure(true).hostnameVerifier(SSLSocketFactoryCompat.hostnameVerifier).sslSocketFactory(new SSLSocketFactoryCompat(), SSLSocketFactoryCompat.trustAllCert);
+    }
+
+    private static OkHttpClient client() {
+        return get().client;
+    }
+
+    private static OkHttpClient noRedirect() {
+        return get().noRedirect;
     }
 
     public static Dns safeDns() {
@@ -39,26 +57,22 @@ public class OkHttpUtil {
         }
     }
 
-    public static String stringNoRedirect(String url, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
-        return string(new OkHttpClient.Builder().dns(safeDns()).readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).followRedirects(false).followSslRedirects(false).retryOnConnectionFailure(true).sslSocketFactory(new SSLSocketFactoryCompat(), SSLSocketFactoryCompat.trustAllCert).build(), url, null, null, headerMap, respHeaderMap, OkHttpUtil.METHOD_GET);
+    public static void stringNoRedirect(String url, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
+        string(noRedirect(), url, null, null, headerMap, respHeaderMap, OkHttp.METHOD_GET);
     }
 
     public static String string(OkHttpClient client, String url, String tag, Map<String, String> paramsMap, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap, String httpMethod) {
-        OKCallBack.OKCallBackString callback = new OKCallBack.OKCallBackString() {
+        CallBack callback = new CallBack() {
             @Override
             public String onParseResponse(Call call, Response response) {
-                try {
-                    if (respHeaderMap != null) {
-                        respHeaderMap.clear();
-                        respHeaderMap.putAll(response.headers().toMultimap());
-                    }
-                    return response.body().string();
-                } catch (IOException e) {
-                    return "";
+                if (respHeaderMap != null) {
+                    respHeaderMap.clear();
+                    respHeaderMap.putAll(response.headers().toMultimap());
                 }
+                return super.onParseResponse(call, response);
             }
         };
-        OKRequest req = new OKRequest(httpMethod, url, paramsMap, headerMap, callback);
+        OkRequest req = new OkRequest(httpMethod, url, paramsMap, headerMap, callback);
         req.setTag(tag);
         req.execute(client);
         return callback.getResult();
@@ -85,19 +99,19 @@ public class OkHttpUtil {
     }
 
     public static String string(String url, String tag, Map<String, String> paramsMap, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
-        return string(defaultClient(), url, tag, paramsMap, headerMap, respHeaderMap, OkHttpUtil.METHOD_GET);
+        return string(client(), url, tag, paramsMap, headerMap, respHeaderMap, OkHttp.METHOD_GET);
     }
 
-    public static void get(String url, OKCallBack callBack) {
+    public static void get(String url, CallBack callBack) {
         get(url, null, callBack);
     }
 
-    public static void get(String url, Map<String, String> paramsMap, OKCallBack callBack) {
+    public static void get(String url, Map<String, String> paramsMap, CallBack callBack) {
         get(url, paramsMap, null, callBack);
     }
 
-    public static void get(String url, Map<String, String> paramsMap, Map<String, String> headerMap, OKCallBack callBack) {
-        new OKRequest(METHOD_GET, url, paramsMap, headerMap, callBack).execute(defaultClient());
+    public static void get(String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBack callBack) {
+        new OkRequest(METHOD_GET, url, paramsMap, headerMap, callBack).execute(client());
     }
 
     public static String post(String url) {
@@ -113,7 +127,7 @@ public class OkHttpUtil {
     }
 
     public static String post(String url, Map<String, String> paramsMap, Map<String, String> headerMap, Map<String, List<String>> respHeaderMap) {
-        return string(defaultClient(), url, null, paramsMap, headerMap, respHeaderMap, METHOD_POST);
+        return string(client(), url, null, paramsMap, headerMap, respHeaderMap, METHOD_POST);
     }
 
     public static String postJson(String url, String json) {
@@ -121,8 +135,8 @@ public class OkHttpUtil {
     }
 
     public static String postJson(String url, String json, Map<String, String> headerMap) {
-        OKCallBack.OKCallBackString callback = new OKCallBack.OKCallBackString();
-        new OKRequest(METHOD_POST, url, json, headerMap, callback).execute(defaultClient());
+        CallBack callback = new CallBack();
+        new OkRequest(METHOD_POST, url, json, headerMap, callback).execute(client());
         return callback.getResult();
     }
 
@@ -141,7 +155,7 @@ public class OkHttpUtil {
     }
 
     public static void cancel(Object tag) {
-        cancel(defaultClient(), tag);
+        cancel(client(), tag);
     }
 
     public static String getRedirectLocation(Map<String, List<String>> headers) {

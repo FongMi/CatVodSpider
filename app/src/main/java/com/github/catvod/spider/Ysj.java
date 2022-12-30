@@ -7,7 +7,7 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
 
@@ -52,7 +52,7 @@ public class Ysj extends Spider {
         List<Class> classes = new ArrayList<>();
         List<Filter> array = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        Document doc = Jsoup.parse(OkHttpUtil.string(homeUrl, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(homeUrl, getHeaders()));
         array.add(getFilter("地區", "area", doc.select("div#hl03").select("a").eachText()));
         array.add(getFilter("年份", "year", doc.select("div#hl04").select("a").eachText()));
         array.add(getFilter("語言", "lang", doc.select("div#hl05").select("a").eachText()));
@@ -85,7 +85,7 @@ public class Ysj extends Spider {
         if (extend.containsKey("year")) sb.append("/year/").append(extend.get("year"));
         if (!pg.equals("1")) sb.append("/page/").append(pg);
         sb.append(".html");
-        Document doc = Jsoup.parse(OkHttpUtil.string(sb.toString(), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(sb.toString(), getHeaders()));
         List<Vod> list = new ArrayList<>();
         for (Element element : doc.select("li.vodlist_item")) {
             String id = element.select("a").attr("href").split("/")[5];
@@ -99,7 +99,7 @@ public class Ysj extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        Document doc = Jsoup.parse(OkHttpUtil.string(detailUrl.concat(ids.get(0)), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(detailUrl.concat(ids.get(0)), getHeaders()));
         String name = doc.select("h2.title").text();
         String pic = siteUrl + doc.select("a.vodlist_thumb").attr("data-original");
         String year = doc.select("li.data").get(0).select("a").get(0).text();
@@ -148,7 +148,7 @@ public class Ysj extends Spider {
     public String searchContent(String key, boolean quick) {
         List<Vod> list = new ArrayList<>();
         String target = searchUrl.concat("?wd=").concat(key).concat("&submit=");
-        Document doc = Jsoup.parse(OkHttpUtil.string(target, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(target, getHeaders()));
         if (doc.html().contains("很抱歉，暂无相关视频")) return Result.string(list);
         for (Element element : doc.select("li.searchlist_item")) {
             String id = element.select("a").attr("href").split("/")[5];

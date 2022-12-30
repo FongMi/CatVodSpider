@@ -5,7 +5,7 @@ import android.content.Context;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 
 import org.jsoup.Jsoup;
@@ -44,7 +44,7 @@ public class Zhaozy extends Spider {
         headers.put("Referer", siteUrl + "login.html");
         headers.put("Origin", siteUrl);
         Map<String, List<String>> resp = new HashMap<>();
-        OkHttpUtil.post(siteUrl + "logiu.html", params, headers, resp);
+        OkHttp.post(siteUrl + "logiu.html", params, headers, resp);
         StringBuilder sb = new StringBuilder();
         for (String item : resp.get("set-cookie")) sb.append(item.split(";")[0]).append(";");
         return sb.toString();
@@ -57,7 +57,7 @@ public class Zhaozy extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Matcher matcher = regexAli.matcher(OkHttpUtil.string(siteUrl + ids.get(0), getHeader()));
+        Matcher matcher = regexAli.matcher(OkHttp.string(siteUrl + ids.get(0), getHeader()));
         if (!matcher.find()) return "";
         ids.set(0, matcher.group(1));
         return ali.detailContent(ids);
@@ -71,7 +71,7 @@ public class Zhaozy extends Spider {
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
         String url = siteUrl + "so?filename=" + URLEncoder.encode(key);
-        Document doc = Jsoup.parse(OkHttpUtil.string(url, getHeader()));
+        Document doc = Jsoup.parse(OkHttp.string(url, getHeader()));
         List<Vod> list = new ArrayList<>();
         for (Element element : doc.select("div.li_con div.news_text")) {
             String href = element.select("div.news_text a").attr("href");

@@ -8,7 +8,7 @@ import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 
 import org.jsoup.Jsoup;
@@ -27,7 +27,7 @@ public class Eighteen extends Spider {
     public String homeContent(boolean filter) throws Exception {
         List<Class> classes = new ArrayList<>();
         List<Vod> list = new ArrayList<>();
-        Document doc = Jsoup.parse(OkHttpUtil.string(url));
+        Document doc = Jsoup.parse(OkHttp.string(url));
         for (Element a : doc.select("ul.animenu__nav > li > a")) {
             String typeName = a.text();
             String typeId = a.attr("href").replace(url, "");
@@ -50,7 +50,7 @@ public class Eighteen extends Spider {
         List<Vod> list = new ArrayList<>();
         tid = tid.replace("random", "list");
         tid = tid.replace("index", pg);
-        Document doc = Jsoup.parse(OkHttpUtil.string(url + tid));
+        Document doc = Jsoup.parse(OkHttp.string(url + tid));
         for (Element div : doc.select("div.post")) {
             String id = div.select("a").attr("href").replace(url, "");
             String name = div.select("h3").text();
@@ -63,7 +63,7 @@ public class Eighteen extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Document doc = Jsoup.parse(OkHttpUtil.string(url + ids.get(0)));
+        Document doc = Jsoup.parse(OkHttp.string(url + ids.get(0)));
         Element wrap = doc.select("div.video-wrap").get(0);
         String name = wrap.select("div.archive-title > h1").text();
         String pic = wrap.select("div.player-wrap > img").attr("src");
@@ -82,7 +82,7 @@ public class Eighteen extends Spider {
         params.put("search_keyword", key);
         params.put("search_type", "fc");
         params.put("op", "search");
-        String res = OkHttpUtil.post(url + "searchform_search/all/index.html", params);
+        String res = OkHttp.post(url + "searchform_search/all/index.html", params);
         List<Vod> list = new ArrayList<>();
         for (Element div : Jsoup.parse(res).select("div.post")) {
             String id = div.select("a").attr("href").replace(url, "");

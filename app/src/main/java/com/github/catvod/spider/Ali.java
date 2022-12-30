@@ -11,7 +11,7 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.QRCode;
@@ -49,7 +49,7 @@ public class Ali {
 
     public Ali(String token) {
         if (TextUtils.isEmpty(token)) Init.show("尚未設定 Token");
-        if (token.startsWith("http")) token = OkHttpUtil.string(token);
+        if (token.startsWith("http")) token = OkHttp.string(token);
         refreshToken = Prefers.getString("token", token);
     }
 
@@ -69,12 +69,12 @@ public class Ali {
 
     private String post(String url, JSONObject body) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        return OkHttpUtil.postJson(url, body.toString(), getHeaders());
+        return OkHttp.postJson(url, body.toString(), getHeaders());
     }
 
     private static String post(String url, JSONObject body, String shareToken) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        return OkHttpUtil.postJson(url, body.toString(), getHeaders(shareToken));
+        return OkHttp.postJson(url, body.toString(), getHeaders(shareToken));
     }
 
     public String detailContent(List<String> ids) throws Exception {
@@ -252,8 +252,8 @@ public class Ali {
             String json = post("v2/file/get_share_link_video_preview_play_info", body, shareToken);
             JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
             Map<String, List<String>> respHeaders = new HashMap<>();
-            OkHttpUtil.stringNoRedirect(getPreviewQuality(taskList), getHeaders(), respHeaders);
-            return OkHttpUtil.getRedirectLocation(respHeaders);
+            OkHttp.stringNoRedirect(getPreviewQuality(taskList), getHeaders(), respHeaders);
+            return OkHttp.getRedirectLocation(respHeaders);
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -269,8 +269,8 @@ public class Ali {
             String json = post("v2/file/get_share_link_download_url", body, shareToken);
             String url = new JSONObject(json).optString("download_url");
             Map<String, List<String>> respHeaders = new HashMap<>();
-            OkHttpUtil.stringNoRedirect(url, getHeaders(), respHeaders);
-            return OkHttpUtil.getRedirectLocation(respHeaders);
+            OkHttp.stringNoRedirect(url, getHeaders(), respHeaders);
+            return OkHttp.getRedirectLocation(respHeaders);
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -281,7 +281,7 @@ public class Ali {
         String shareId = params.get("share_id");
         String shareToken = params.get("share_token");
         String fileId = params.get("file_id");
-        String text = OkHttpUtil.string(getDownloadUrl(shareId, shareToken, fileId), getHeaders(shareToken));
+        String text = OkHttp.string(getDownloadUrl(shareId, shareToken, fileId), getHeaders(shareToken));
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
@@ -297,14 +297,14 @@ public class Ali {
     private void getQRCode() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Misc.CHROME);
-        Data data = Data.objectFrom(OkHttpUtil.string("https://easy-token.cooluc.com/qr", headers));
+        Data data = Data.objectFrom(OkHttp.string("https://easy-token.cooluc.com/qr", headers));
         if (data != null) Init.run(() -> showCode(data));
         service = Executors.newScheduledThreadPool(1);
         if (data != null) service.scheduleAtFixedRate(() -> {
             JsonObject params = new JsonObject();
             params.addProperty("t", data.getData().getT());
             params.addProperty("ck", data.getData().getCk());
-            Data result = Data.objectFrom(OkHttpUtil.postJson("https://easy-token.cooluc.com/ck", params.toString(), headers));
+            Data result = Data.objectFrom(OkHttp.postJson("https://easy-token.cooluc.com/ck", params.toString(), headers));
             if (result.hasToken()) setToken(result.getData().getRefreshToken());
         }, 1, 1, TimeUnit.SECONDS);
     }

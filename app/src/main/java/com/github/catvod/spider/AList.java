@@ -11,7 +11,7 @@ import com.github.catvod.bean.alist.Drive;
 import com.github.catvod.bean.alist.Item;
 import com.github.catvod.bean.alist.Sorter;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttpUtil;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Trans;
 
@@ -40,7 +40,7 @@ public class AList extends Spider {
 
     private void fetchRule() {
         if (drives != null && !drives.isEmpty()) return;
-        if (ext.startsWith("http")) ext = OkHttpUtil.string(ext);
+        if (ext.startsWith("http")) ext = OkHttp.string(ext);
         drives = Drive.objectFrom(ext).getDrives();
     }
 
@@ -135,7 +135,7 @@ public class AList extends Spider {
             JSONObject params = new JSONObject();
             params.put("path", path);
             params.put("password", drive.getPassword());
-            String response = OkHttpUtil.postJson(drive.getApi(), params.toString());
+            String response = OkHttp.postJson(drive.getApi(), params.toString());
             return Item.objectFrom(getDetailJson(drive.isNew(), response));
         } catch (Exception e) {
             return new Item();
@@ -150,7 +150,7 @@ public class AList extends Spider {
             JSONObject params = new JSONObject();
             params.put("path", path);
             params.put("password", drive.getPassword());
-            String response = OkHttpUtil.postJson(drive.listApi(), params.toString());
+            String response = OkHttp.postJson(drive.listApi(), params.toString());
             List<Item> items = Item.arrayFrom(getListJson(drive.isNew(), response));
             Iterator<Item> iterator = items.iterator();
             if (filter) while (iterator.hasNext()) if (iterator.next().ignore(drive.isNew())) iterator.remove();
@@ -162,7 +162,7 @@ public class AList extends Spider {
 
     private void search(CountDownLatch cd, List<Vod> list, Drive drive, String keyword) {
         try {
-            String response = OkHttpUtil.postJson(drive.searchApi(), drive.params(keyword));
+            String response = OkHttp.postJson(drive.searchApi(), drive.params(keyword));
             List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
             for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive));
         } catch (Exception e) {
