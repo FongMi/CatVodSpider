@@ -2,10 +2,12 @@ package com.github.catvod.net;
 
 import android.text.TextUtils;
 
+import com.github.catvod.utils.Misc;
+
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -15,100 +17,68 @@ import okhttp3.Response;
 
 class OkRequest {
 
-    private final String mMethodType;
-    private final Map<String, String> mParamsMap;
-    private final String mJsonStr;
-    private final Map<String, String> mHeaderMap;
-    private final CallBack mCallBack;
-    private String mUrl;
-    private Object mTag = null;
-    private Request mOkHttpRequest;
-    private Request.Builder mRequestBuilder;
+    private final Map<String, List<String>> respHeader;
+    private final Map<String, String> header;
+    private final Map<String, String> params;
+    private final String method;
+    private final String json;
+    private Request request;
+    private String url;
+    private Object tag;
 
-    OkRequest(String methodType, String url, Map<String, String> paramsMap, Map<String, String> headerMap, CallBack callBack) {
-        this(methodType, url, null, paramsMap, headerMap, callBack);
+    OkRequest(String method, String url, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
+        this(method, url, null, params, header, respHeader);
     }
 
-    OkRequest(String methodType, String url, String jsonStr, Map<String, String> headerMap, CallBack callBack) {
-        this(methodType, url, jsonStr, null, headerMap, callBack);
+    OkRequest(String method, String url, String json, Map<String, String> header) {
+        this(method, url, json, null, header, null);
     }
 
-    private OkRequest(String methodType, String url, String jsonStr, Map<String, String> paramsMap, Map<String, String> headerMap, CallBack callBack) {
-        mMethodType = methodType;
-        mUrl = url;
-        mJsonStr = jsonStr;
-        mParamsMap = paramsMap;
-        mHeaderMap = headerMap;
-        mCallBack = callBack;
+    private OkRequest(String method, String url, String json, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
+        this.url = url;
+        this.json = json;
+        this.method = method;
+        this.params = params;
+        this.header = header;
+        this.respHeader = respHeader;
         getInstance();
     }
 
-    public void setTag(Object tag) {
-        mTag = tag;
+    public OkRequest tag(Object tag) {
+        this.tag = tag;
+        return this;
     }
 
     private void getInstance() {
-        mRequestBuilder = new Request.Builder();
-        switch (mMethodType) {
-            case OkHttp.METHOD_GET:
-                setGetParams();
-                break;
-            case OkHttp.METHOD_POST:
-                mRequestBuilder.post(getRequestBody());
-                break;
-        }
-        mRequestBuilder.url(mUrl);
-        if (mTag != null)
-            mRequestBuilder.tag(mTag);
-        if (mHeaderMap != null) {
-            setHeader();
-        }
-        mOkHttpRequest = mRequestBuilder.build();
+        Request.Builder builder = new Request.Builder().url(url);
+        if (method.equals(OkHttp.GET) && params != null) setParams();
+        if (method.equals(OkHttp.POST)) builder.post(getRequestBody());
+        if (header != null) for (String key : header.keySet()) builder.addHeader(key, header.get(key));
+        if (tag != null) builder.tag(tag);
+        request = builder.build();
     }
 
     private RequestBody getRequestBody() {
-        if (!TextUtils.isEmpty(mJsonStr)) {
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-            return RequestBody.create(JSON, mJsonStr);
-        }
+        if (!TextUtils.isEmpty(json)) return RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
         FormBody.Builder formBody = new FormBody.Builder();
-        if (mParamsMap != null) {
-            for (String key : mParamsMap.keySet()) {
-                formBody.add(key, mParamsMap.get(key));
-            }
-        }
+        if (params != null) for (String key : params.keySet()) formBody.add(key, params.get(key));
         return formBody.build();
     }
 
-    private void setGetParams() {
-        if (mParamsMap != null) {
-            mUrl = mUrl + "?";
-            for (String key : mParamsMap.keySet()) {
-                mUrl = mUrl + key + "=" + mParamsMap.get(key) + "&";
-            }
-            mUrl = mUrl.substring(0, mUrl.length() - 1);
-        }
+    private void setParams() {
+        url = url + "?";
+        for (String key : params.keySet()) url = url.concat(key + "=" + params.get(key) + "&");
+        url = Misc.substring(url);
     }
 
-    private void setHeader() {
-        if (mHeaderMap != null) {
-            for (String key : mHeaderMap.keySet()) {
-                mRequestBuilder.addHeader(key, mHeaderMap.get(key));
-            }
-        }
-    }
-
-    void execute(OkHttpClient client) {
-        Call call = client.newCall(mOkHttpRequest);
+    public String execute(OkHttpClient client) {
         try {
-            Response response = call.execute();
-            if (mCallBack != null) {
-                mCallBack.onSuccess(call, response);
-            }
+            Response response = client.newCall(request).execute();
+            if (respHeader != null) respHeader.clear();
+            if (respHeader != null) respHeader.putAll(response.headers().toMultimap());
+            return response.body().string();
         } catch (IOException e) {
-            if (mCallBack != null) {
-                mCallBack.onError();
-            }
+            return "";
         }
     }
 }
