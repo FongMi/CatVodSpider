@@ -7,7 +7,8 @@ public class Auth {
 
     private String refreshToken;
     private String accessToken;
-    private long expiresTime;
+    private String shareToken;
+    private String shareId;
     private ImageView view;
 
     public Auth(String refreshToken) {
@@ -30,12 +31,20 @@ public class Auth {
         this.accessToken = accessToken;
     }
 
-    public long getExpiresTime() {
-        return expiresTime;
+    public String getShareToken() {
+        return TextUtils.isEmpty(shareToken) ? "" : shareToken;
     }
 
-    public void setExpiresTime(long expiresTime) {
-        this.expiresTime = expiresTime;
+    public void setShareToken(String shareToken) {
+        this.shareToken = shareToken;
+    }
+
+    public String getShareId() {
+        return TextUtils.isEmpty(shareId) ? "" : shareId;
+    }
+
+    public void setShareId(String shareId) {
+        this.shareId = shareId;
     }
 
     public ImageView getView() {
@@ -46,10 +55,6 @@ public class Auth {
         this.view = view;
     }
 
-    public boolean needRefresh() {
-        return System.currentTimeMillis() > getExpiresTime();
-    }
-
     public boolean isEmpty() {
         return getRefreshToken().isEmpty() || getAccessToken().isEmpty();
     }
@@ -57,6 +62,6 @@ public class Auth {
     public void clean() {
         setRefreshToken("");
         setAccessToken("");
-        setExpiresTime(0);
+        setShareId("");
     }
 }
