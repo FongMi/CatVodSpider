@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,13 +34,17 @@ public class Run {
     }
 
     private void start() throws IOException {
-        parseOnline(new OkHttpClient().newCall(new Request.Builder().url("http://home.jundie.top:81/Cat/tv/live.txt").build()).execute().body().string());
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("請輸入網址或檔名：");
+        String text = scanner.nextLine();
+        if (text.startsWith("http")) parse(new OkHttpClient().newCall(new Request.Builder().url(text).build()).execute().body().string());
+        else parse(Util.getFile(getClass(), text));
         //parseTxt(Util.getFile(getClass(), "live.txt"));
         System.out.println(gson.toJson(groups));
         writeFile();
     }
 
-    private void parseOnline(String text) {
+    private void parse(String text) {
         for (String line : text.split("\n")) {
             String[] split = line.split(",");
             if (split.length < 2) continue;
