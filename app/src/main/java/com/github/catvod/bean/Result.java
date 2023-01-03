@@ -1,5 +1,7 @@
 package com.github.catvod.bean;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -26,8 +28,8 @@ public class Result {
     private String header;
     @SerializedName("url")
     private String url;
-    @SerializedName("sub")
-    private List<Sub> sub;
+    @SerializedName("subs")
+    private List<Sub> subs;
     @SerializedName("parse")
     private int parse;
     @SerializedName("jx")
@@ -129,8 +131,8 @@ public class Result {
         return this;
     }
 
-    public Result sub(List<Sub> sub) {
-        this.sub = sub;
+    public Result subs(List<Sub> subs) {
+        this.subs = subs;
         return this;
     }
 
@@ -154,6 +156,7 @@ public class Result {
         return toString();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return new Gson().toJson(this);

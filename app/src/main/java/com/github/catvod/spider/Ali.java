@@ -99,9 +99,9 @@ public class Ali {
         String[] ids = id.split("\\+");
         if (auth.isEmpty()) refreshAccessToken();
         if (flag.equals("原畫")) {
-            return Result.get().url(getDownloadUrl(ids[0])).sub(getSub(ids)).header(getHeaders()).string();
+            return Result.get().url(getDownloadUrl(ids[0])).subs(getSub(ids)).header(getHeaders()).string();
         } else {
-            return Result.get().url(getPreviewUrl(ids[0])).sub(getSub(ids)).header(getHeaders()).string();
+            return Result.get().url(getPreviewUrl(ids[0])).subs(getSub(ids)).header(getHeaders()).string();
         }
     }
 

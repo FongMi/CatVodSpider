@@ -125,7 +125,7 @@ public class AList extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         String[] ids = id.split("~~~");
-        return Result.get().url(getDetail(ids[0]).getUrl()).sub(getSub(ids)).string();
+        return Result.get().url(getDetail(ids[0]).getUrl()).subs(getSub(ids)).string();
     }
 
     private Item getDetail(String id) {
