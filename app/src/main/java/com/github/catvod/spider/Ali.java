@@ -21,7 +21,6 @@ import com.github.catvod.utils.Trans;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
@@ -61,10 +60,10 @@ public class Ali {
         return headers;
     }
 
-    private HashMap<String, String> getHeaders(String shareToken) {
+    private HashMap<String, String> getAuthHeader() {
         HashMap<String, String> headers = getHeaders();
         headers.put("authorization", auth.getAccessToken());
-        headers.put("x-share-token", shareToken);
+        headers.put("x-share-token", auth.getShareToken());
         return headers;
     }
 
@@ -73,56 +72,49 @@ public class Ali {
         return OkHttp.postJson(url, body.toString(), getHeaders());
     }
 
-    private String post(String url, JSONObject body, String shareToken) {
+    private String postAuth(String url, JSONObject body) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        String result = OkHttp.postJson(url, body.toString(), getHeaders(shareToken));
-        if (check401(result)) return post(url, body, shareToken);
+        String result = OkHttp.postJson(url, body.toString(), getAuthHeader());
+        if (check401(result)) return postAuth(url, body);
         return result;
     }
 
     private boolean check401(String result) {
-        if (!result.contains("AccessTokenInvalid")) return false;
-        refreshAccessToken();
-        return true;
+        if (result.contains("AccessTokenInvalid")) return refreshAccessToken();
+        if (result.contains("ShareLinkTokenInvalid")) return refreshShareToken();
+        return false;
     }
 
     public String detailContent(List<String> ids) throws Exception {
         String url = ids.get(0).trim();
         Matcher matcher = pattern.matcher(url);
-        if (matcher.find()) return Result.string(getVod(matcher, url));
-        return "";
+        if (!matcher.find()) return "";
+        String shareId = matcher.group(1);
+        String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
+        auth.setShareId(shareId);
+        refreshShareToken();
+        return Result.string(getVod(url, fileId));
     }
 
     public String playerContent(String flag, String id) {
-        if (id.equals("Empty")) return "";
         String[] ids = id.split("\\+");
-        String shareId = ids[0];
-        String shareToken = ids[1];
-        String fileId = ids[2];
-        List<Sub> sub = getSub(shareId, shareToken, ids);
-        if (auth.needRefresh()) refreshAccessToken();
         if (flag.equals("原畫")) {
-            return Result.get().url(getDownloadUrl(shareId, shareToken, fileId)).sub(sub).header(getHeaders()).string();
+            return Result.get().url(getDownloadUrl(ids[0])).sub(getSub(ids)).header(getHeaders()).string();
         } else {
-            return Result.get().url(getPreviewUrl(shareId, shareToken, fileId)).sub(sub).header(getHeaders()).string();
+            return Result.get().url(getPreviewUrl(ids[0])).sub(getSub(ids)).header(getHeaders()).string();
         }
     }
 
-    private Vod getVod(Matcher matcher, String url) throws Exception {
-        String shareId = matcher.group(1);
-        String shareToken = getShareToken(shareId);
-        String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
+    private Vod getVod(String url, String fileId) throws Exception {
         JSONObject body = new JSONObject();
-        body.put("share_id", shareId);
+        body.put("share_id", auth.getShareId());
         String json = post("adrive/v3/share_link/get_share_by_anonymous", body);
         JSONObject object = new JSONObject(json);
-        LinkedHashMap<Item, String> fileMap = new LinkedHashMap<>();
+        List<Item> files = new ArrayList<>();
         LinkedHashMap<String, List<String>> subMap = new LinkedHashMap<>();
-        listFiles(new Item(getParentFileId(fileId, object)), fileMap, subMap, shareId, shareToken);
+        listFiles(new Item(getParentFileId(fileId, object)), files, subMap);
         List<String> playUrls = new ArrayList<>();
-        List<Item> files = new ArrayList<>(fileMap.keySet());
-        for (Item file : files) playUrls.add(Trans.get(file.getDisplayName()) + "$" + fileMap.get(file) + findSubs(file.getName(), subMap));
-        if (playUrls.isEmpty()) playUrls.add("Empty$Empty");
+        for (Item file : files) playUrls.add(Trans.get(file.getDisplayName()) + "$" + file.getFileId() + findSubs(file.getName(), subMap));
         List<String> sourceUrls = new ArrayList<>();
         sourceUrls.add(TextUtils.join("#", playUrls));
         sourceUrls.add(TextUtils.join("#", playUrls));
@@ -137,25 +129,25 @@ public class Ali {
         return vod;
     }
 
-    private void listFiles(Item folder, LinkedHashMap<Item, String> name2id, LinkedHashMap<String, List<String>> subMap, String shareId, String shareToken) throws Exception {
-        listFiles(folder, name2id, subMap, shareId, shareToken, "");
+    private void listFiles(Item folder, List<Item> files, LinkedHashMap<String, List<String>> subMap) throws Exception {
+        listFiles(folder, files, subMap, "");
     }
 
-    private void listFiles(Item parent, LinkedHashMap<Item, String> name2id, LinkedHashMap<String, List<String>> subMap, String shareId, String shareToken, String marker) throws Exception {
+    private void listFiles(Item parent, List<Item> files, LinkedHashMap<String, List<String>> subMap, String marker) throws Exception {
         JSONObject body = new JSONObject();
         List<Item> folders = new ArrayList<>();
         body.put("limit", 200);
-        body.put("share_id", shareId);
+        body.put("share_id", auth.getShareId());
         body.put("parent_file_id", parent.getFileId());
         body.put("order_by", "name");
         body.put("order_direction", "ASC");
         if (marker.length() > 0) body.put("marker", marker);
-        Item item = Item.objectFrom(post("adrive/v3/file/list", body, shareToken));
+        Item item = Item.objectFrom(postAuth("adrive/v3/file/list", body));
         for (Item file : item.getItems()) {
             if (file.getType().equals("folder")) {
                 folders.add(file);
             } else if (file.getCategory().equals("video") || file.getCategory().equals("audio")) {
-                name2id.put(file, shareId + "+" + shareToken + "+" + file.getFileId());
+                files.add(file);
             } else if (Misc.isSub(file.getExt())) {
                 String key = file.removeExt();
                 if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());
@@ -163,10 +155,10 @@ public class Ali {
             }
         }
         if (item.getNextMarker().length() > 0) {
-            listFiles(parent, name2id, subMap, shareId, shareToken, item.getNextMarker());
+            listFiles(parent, files, subMap, item.getNextMarker());
         }
         for (Item folder : folders) {
-            listFiles(folder, name2id, subMap, shareId, shareToken);
+            listFiles(folder, files, subMap);
         }
     }
 
@@ -180,22 +172,39 @@ public class Ali {
         return "";
     }
 
-    private void refreshAccessToken() {
+    private boolean refreshAccessToken() {
         try {
             JSONObject body = new JSONObject();
             body.put("refresh_token", auth.getRefreshToken());
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
             auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
-            auth.setExpiresTime(System.currentTimeMillis() + object.getInt("expires_in") * 1000L);
             auth.setRefreshToken(object.getString("refresh_token"));
             SpiderDebug.log("refresh token: " + auth.getRefreshToken());
-        } catch (JSONException e) {
+            return true;
+        } catch (Exception e) {
             checkService();
             auth.clean();
             getQRCode();
+            return true;
         } finally {
             while (auth.isEmpty()) SystemClock.sleep(250);
+        }
+    }
+
+    private boolean refreshShareToken() {
+        try {
+            JSONObject body = new JSONObject();
+            body.put("share_id", auth.getShareId());
+            body.put("share_pwd", "");
+            JSONObject object = new JSONObject(post("v2/share_link/get_share_token", body));
+            auth.setShareToken(object.getString("share_token"));
+            SpiderDebug.log("share token: " + auth.getShareToken());
+            return true;
+        } catch (Exception e) {
+            Init.show("來晚啦，該分享已失效。");
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -214,31 +223,17 @@ public class Ali {
         return sb.toString();
     }
 
-    private List<Sub> getSub(String shareId, String shareToken, String[] ids) {
+    private List<Sub> getSub(String[] ids) {
         List<Sub> sub = new ArrayList<>();
         for (String text : ids) {
             if (!text.contains("@@@")) continue;
             String[] split = text.split("@@@");
             String name = split[0];
             String ext = split[1];
-            String url = Proxy.getUrl() + "?do=ali&type=sub&share_id=" + shareId + "&share_token=" + shareToken + "&file_id=" + split[2];
+            String url = Proxy.getUrl() + "?do=ali&type=sub" + "&file_id=" + split[2];
             sub.add(Sub.create().name(name).ext(ext).url(url));
         }
         return sub;
-    }
-
-    private String getShareToken(String shareId) {
-        try {
-            JSONObject body = new JSONObject();
-            body.put("share_id", shareId);
-            body.put("share_pwd", "");
-            String json = post("v2/share_link/get_share_token", body);
-            return new JSONObject(json).getString("share_token");
-        } catch (JSONException e) {
-            Init.show("來晚啦，該分享已失效。");
-            e.printStackTrace();
-            return "";
-        }
     }
 
     private String getPreviewQuality(JSONArray taskList) throws Exception {
@@ -253,14 +248,14 @@ public class Ali {
         return taskList.getJSONObject(0).getString("url");
     }
 
-    private String getPreviewUrl(String shareId, String shareToken, String fileId) {
+    private String getPreviewUrl(String fileId) {
         try {
             JSONObject body = new JSONObject();
             body.put("file_id", fileId);
-            body.put("share_id", shareId);
+            body.put("share_id", auth.getShareId());
             body.put("template_id", "");
             body.put("category", "live_transcoding");
-            String json = post("v2/file/get_share_link_video_preview_play_info", body, shareToken);
+            String json = postAuth("v2/file/get_share_link_video_preview_play_info", body);
             JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
             Map<String, List<String>> respHeaders = new HashMap<>();
             OkHttp.stringNoRedirect(getPreviewQuality(taskList), getHeaders(), respHeaders);
@@ -271,13 +266,13 @@ public class Ali {
         }
     }
 
-    private String getDownloadUrl(String shareId, String shareToken, String fileId) {
+    private String getDownloadUrl(String fileId) {
         try {
             JSONObject body = new JSONObject();
             body.put("file_id", fileId);
-            body.put("share_id", shareId);
+            body.put("share_id", auth.getShareId());
             body.put("expire_sec", 600);
-            String json = post("v2/file/get_share_link_download_url", body, shareToken);
+            String json = postAuth("v2/file/get_share_link_download_url", body);
             String url = new JSONObject(json).optString("download_url");
             Map<String, List<String>> respHeaders = new HashMap<>();
             OkHttp.stringNoRedirect(url, getHeaders(), respHeaders);
@@ -289,10 +284,8 @@ public class Ali {
     }
 
     public Object[] vod(Map<String, String> params) {
-        String shareId = params.get("share_id");
-        String shareToken = params.get("share_token");
         String fileId = params.get("file_id");
-        String text = OkHttp.string(getDownloadUrl(shareId, shareToken, fileId), getHeaders(shareToken));
+        String text = OkHttp.string(getDownloadUrl(fileId), getAuthHeader());
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
