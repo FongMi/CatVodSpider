@@ -15,4 +15,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CatVodSpider"
 include ':app'
-include ':tools'

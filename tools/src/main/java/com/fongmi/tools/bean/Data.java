@@ -10,74 +10,28 @@ import java.util.List;
 
 public class Data {
 
-    @SerializedName("tvid")
-    private String tvid;
-    @SerializedName("epgid")
-    private String epgid;
-    @SerializedName("name")
-    private String name;
-    @SerializedName("status")
-    private String status;
-    @SerializedName("note")
-    private String note;
-    @SerializedName("logo")
-    private String logo;
+	@SerializedName("name")
+	private String name;
+	@SerializedName("epg")
+	private String epg;
 
-    public static Data objectFrom(String str) {
-        return new Gson().fromJson(str, Data.class);
-    }
+	@SerializedName("logo")
+	private String logo;
 
-    public static List<Data> arrayFrom(String str) {
-        Type listType = new TypeToken<ArrayList<Data>>() {
-        }.getType();
-        return new Gson().fromJson(str, listType);
-    }
+	public static List<Data> arrayFrom(String str) {
+		Type listType = new TypeToken<ArrayList<Data>>() {}.getType();
+		return new Gson().fromJson(str, listType);
+	}
 
-    public String getTvid() {
-        return tvid;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setTvid(String tvid) {
-        this.tvid = tvid;
-    }
+	public String getEpg() {
+		return epg;
+	}
 
-    public String getEpgid() {
-        return epgid;
-    }
-
-    public void setEpgid(String epgid) {
-        this.epgid = epgid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
+	public String getLogo() {
+		return logo;
+	}
 }
