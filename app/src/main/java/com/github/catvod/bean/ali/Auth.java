@@ -56,7 +56,7 @@ public class Auth {
     }
 
     public boolean isEmpty() {
-        return getRefreshToken().isEmpty() || getAccessToken().isEmpty();
+        return getRefreshToken().isEmpty();
     }
 
     public void clean() {

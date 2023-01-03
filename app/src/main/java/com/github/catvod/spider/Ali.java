@@ -91,13 +91,13 @@ public class Ali {
         if (!matcher.find()) return "";
         String shareId = matcher.group(1);
         String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
-        auth.setShareId(shareId);
-        refreshShareToken();
+        auth.setShareId(shareId); refreshShareToken();
         return Result.string(getVod(url, fileId));
     }
 
     public String playerContent(String flag, String id) {
         String[] ids = id.split("\\+");
+        if (auth.isEmpty()) refreshAccessToken();
         if (flag.equals("原畫")) {
             return Result.get().url(getDownloadUrl(ids[0])).sub(getSub(ids)).header(getHeaders()).string();
         } else {
