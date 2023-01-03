@@ -25,7 +25,6 @@ public class Zhaozy extends Spider {
     private final Pattern regexAli = Pattern.compile("(https://www.aliyundrive.com/s/[^\"]+)");
     private final Pattern regexVid = Pattern.compile("(\\S+)");
     private final String siteUrl = "https://zhaoziyuan.la/";
-    private Ali ali;
 
     private Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
@@ -52,7 +51,7 @@ public class Zhaozy extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        ali = Init.getAli().token(extend);
+        Ali.get().init(extend);
     }
 
     @Override
@@ -60,12 +59,12 @@ public class Zhaozy extends Spider {
         Matcher matcher = regexAli.matcher(OkHttp.string(siteUrl + ids.get(0), getHeader()));
         if (!matcher.find()) return "";
         ids.set(0, matcher.group(1));
-        return ali.detailContent(ids);
+        return Ali.get().detailContent(ids);
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return ali.playerContent(flag, id);
+        return Ali.get().playerContent(flag, id);
     }
 
     @Override

@@ -32,7 +32,6 @@ public class Paper extends Spider {
     private final String url = "https://gitcafe.net/alipaper/";
     private final String api = "https://gitcafe.net/tool/alipaper/";
     private List<String> types;
-    private Ali ali;
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
@@ -43,7 +42,7 @@ public class Paper extends Spider {
     @Override
     public void init(Context context, String extend) {
         types = Arrays.asList("hyds", "rhds", "omds", "qtds", "hydy", "rhdy", "omdy", "qtdy", "hydm", "rhdm", "omdm", "jlp", "zyp", "jypx", "qtsp");
-        ali = Init.getAli().token(extend);
+        Ali.get().init(extend);
     }
 
     @Override
@@ -93,7 +92,7 @@ public class Paper extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        return ali.detailContent(ids);
+        return Ali.get().detailContent(ids);
     }
 
     @Override
@@ -109,6 +108,6 @@ public class Paper extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return ali.playerContent(flag, id);
+        return Ali.get().playerContent(flag, id);
     }
 }

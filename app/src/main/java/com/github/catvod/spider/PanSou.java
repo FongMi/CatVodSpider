@@ -25,7 +25,6 @@ import java.util.Map;
 public class PanSou extends Spider {
 
     private final String siteUrl = "https://www.alipansou.com";
-    private Ali ali;
 
     private Map<String, String> getHeaders(String id) {
         HashMap<String, String> headers = new HashMap<>();
@@ -37,7 +36,7 @@ public class PanSou extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        ali = Init.getAli().token(extend);
+        Ali.get().init(extend);
     }
 
     @Override
@@ -46,7 +45,7 @@ public class PanSou extends Spider {
         Map<String, List<String>> respHeaders = new HashMap<>();
         OkHttp.stringNoRedirect(url, getHeaders(ids.get(0)), respHeaders);
         url = OkHttp.getRedirectLocation(respHeaders);
-        return ali.detailContent(Arrays.asList(url));
+        return Ali.get().detailContent(Arrays.asList(url));
     }
 
     @Override
@@ -75,6 +74,6 @@ public class PanSou extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        return ali.playerContent(flag, id);
+        return Ali.get().playerContent(flag, id);
     }
 }

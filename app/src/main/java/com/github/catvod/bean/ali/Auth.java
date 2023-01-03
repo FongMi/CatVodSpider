@@ -11,10 +11,6 @@ public class Auth {
     private String shareId;
     private ImageView view;
 
-    public Auth(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
     public String getRefreshToken() {
         return TextUtils.isEmpty(refreshToken) ? "" : refreshToken;
     }
@@ -56,7 +52,7 @@ public class Auth {
     }
 
     public boolean isEmpty() {
-        return getRefreshToken().isEmpty();
+        return getAccessToken().isEmpty();
     }
 
     public void clean() {
