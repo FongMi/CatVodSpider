@@ -46,7 +46,7 @@ public class UpYun extends Spider {
         String url = apiUrl + "search?keyword=" + URLEncoder.encode(key) + "&page=1&s_type=2";
         String res = new String(Base64.decode(OkHttp.string(url, getHeaders()), Base64.DEFAULT));
         List<Vod> list = new ArrayList<>();
-        for (Item item : Data.objectFrom(res).getResult().getItems()) if (item.isAli()) list.add(item.getVod());
+        for (Item item : Data.objectFrom(res).getResult().getItems()) if (item.isAli() && item.getTitle().contains(key)) list.add(item.getVod());
         return Result.string(list);
     }
 

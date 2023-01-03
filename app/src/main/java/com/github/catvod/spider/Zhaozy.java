@@ -78,6 +78,7 @@ public class Zhaozy extends Spider {
             Matcher matcher = regexVid.matcher(href);
             if (!matcher.find()) continue;
             String name = element.select("div.news_text a h3").text();
+            if (!name.contains(key)) continue;
             String remark = element.select("div.news_text a p").text().split("\\|")[1].split("：")[1];
             Vod vod = new Vod();
             vod.setVodPic("https://inews.gtimg.com/newsapp_bt/0/13263837859/1000");
