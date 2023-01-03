@@ -45,7 +45,7 @@ public class YiSo extends Spider {
         Misc.loadWebView(url, getWebViewClient(result));
         while (!result.containsKey("json")) SystemClock.sleep(50);
         String json = JsonParser.parseString(Objects.requireNonNull(result.get("json"))).getAsJsonPrimitive().getAsString();
-        return Result.string(Item.objectFrom(json).getData().getList());
+        return Result.string(Item.objectFrom(json).getData().getList(key));
     }
 
     private WebViewClient getWebViewClient(Map<String, String> result) {
