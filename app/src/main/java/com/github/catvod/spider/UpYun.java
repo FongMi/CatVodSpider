@@ -33,7 +33,7 @@ public class UpYun extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        ali = new Ali(extend);
+        ali = Init.getAli().token(extend);
     }
 
     @Override
