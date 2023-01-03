@@ -31,10 +31,10 @@ public class Item {
         @SerializedName("list")
         private List<ListDTO> list;
 
-        public List<Vod> getList() {
+        public List<Vod> getList(String key) {
             List<Vod> items = new ArrayList<>();
             list = list == null ? Collections.emptyList() : list;
-            for (ListDTO item : list) items.add(item.getVod());
+            for (ListDTO item : list) if (item.getName().contains(key)) items.add(item.getVod());
             return items;
         }
 
@@ -59,9 +59,13 @@ public class Item {
                 return fileInfos;
             }
 
+            public String getName() {
+                return getFileInfos().get(0).getFileName();
+            }
+
             public Vod getVod() {
                 String id = getUrl();
-                String name = getFileInfos().get(0).getFileName();
+                String name = getName();
                 String remark = getGmtCreate();
                 String pic = "https://inews.gtimg.com/newsapp_bt/0/13263837859/1000";
                 return new Vod(id, name, pic, remark);

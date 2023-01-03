@@ -3,7 +3,6 @@ package com.github.catvod.utils;
 import android.net.Uri;
 import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,12 +38,6 @@ public class Misc {
 
     public static boolean isSub(String ext) {
         return ext.equals("srt") || ext.equals("ass") || ext.equals("ssa");
-    }
-
-    public static String getSubMimeType(String type) {
-        if (type.equals("srt")) return "application/x-subrip";
-        if (type.equals("ass") || type.equals("ssa")) return "text/x-ssa";
-        return "application/x-subrip";
     }
 
     public static String getSize(double size) {

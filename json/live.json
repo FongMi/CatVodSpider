@@ -57,6 +57,8 @@
       },
       {
         "urls": [
+          "http://baidu.douyincdn.freetvtv.com/tvbjade/m2.m3u8",
+          "https://pull-l3-cny.douyincdn.com/live/e07fb43ab773bd88a01b9a96f354bfa9.m3u8",
           "http://113.64.147.149:808/hls/67/index.m3u8",
           "http://113.64.147.170:808/hls/67/index.m3u8"
         ],
@@ -142,6 +144,7 @@
       },
       {
         "urls": [
+          "https://pull-l3-cny.douyincdn.com/live/281ad35ffd611b16b5d4b4e55d86de69.m3u8",
           "http://198.16.64.10:8278/j2_twn/playlist.m3u8?tid=MA8A1176878411768784&ct=19225&tsum=fea41bb592165942b9971148376f8b70",
           "http://198.16.64.10:8278/j2_twn/playlist.m3u8?tid=m22905da1d346&ct=18336&tsum=3b4998c4f5367bb820165f66b0caab0e",
           "http://120.84.96.196:808/hls/86/index.m3u8",
@@ -204,6 +207,7 @@
       },
       {
         "urls": [
+          "http://baidu.douyincdn.freetvtv.com/vius/m2.m3u8",
           "http://198.16.64.10:8278/viu_twn/playlist.m3u8?tid=MF2F6219999362199993&ct=19225&tsum=0315b071e42f6b8b6f49b6ca58b7393b"
         ],
         "number": "019",
@@ -295,6 +299,7 @@
       },
       {
         "urls": [
+          "https://pull-l3-cny.douyincdn.com/live/8f0f5b53f8ad921929fc9ac8771cbd82.m3u8",
           "http://198.16.64.10:8278/Wlt/playlist.m3u8?tid=MC9C7523788875237888&ct=19225&tsum=fc74aa160d3ca61369c2e5f3ae79ee8e"
         ],
         "number": "028",

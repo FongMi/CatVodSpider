@@ -43,7 +43,7 @@ public class Paper extends Spider {
     @Override
     public void init(Context context, String extend) {
         types = Arrays.asList("hyds", "rhds", "omds", "qtds", "hydy", "rhdy", "omdy", "qtdy", "hydm", "rhdm", "omdm", "jlp", "zyp", "jypx", "qtsp");
-        ali = new Ali(extend);
+        ali = Init.getAli().token(extend);
     }
 
     @Override

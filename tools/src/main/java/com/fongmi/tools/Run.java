@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-
 public class Run {
 
     private final List<Group> groups;
@@ -23,7 +20,7 @@ public class Run {
     private final Gson gson;
 
     public static void main(String[] args) throws IOException {
-        new Run().start();
+        new Run().start("http://home.jundie.top:81/Cat/tv/live.txt");
     }
 
     public Run() {
@@ -32,14 +29,13 @@ public class Run {
         gson = new Gson().newBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     }
 
-    private void start() throws IOException {
-        parseOnline(new OkHttpClient().newCall(new Request.Builder().url("http://home.jundie.top:81/Cat/tv/live.txt").build()).execute().body().string());
+    private void start(String text) throws IOException {
         //parseTxt(Util.getFile(getClass(), "live.txt"));
-        System.out.println(gson.toJson(groups));
+		parse(Util.call(text));
         writeFile();
     }
 
-    private void parseOnline(String text) {
+    private void parse(String text) {
         for (String line : text.split("\n")) {
             String[] split = line.split(",");
             if (split.length < 2) continue;
@@ -79,8 +75,8 @@ public class Run {
     private void combine(Channel channel) {
         for (Data item : data) {
             if (item.getName().contains(channel.getName())) {
-                channel.epg(item.getEpgid());
                 channel.logo(item.getLogo());
+                channel.epg(item.getEpg());
                 break;
             }
         }
