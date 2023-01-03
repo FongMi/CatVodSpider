@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
+import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.alist.Drive;
 import com.github.catvod.bean.alist.Item;
@@ -198,17 +199,20 @@ public class AList extends Spider {
 
     private String findSubs(String path, List<Item> items) {
         StringBuilder sb = new StringBuilder();
-        for (Item item : items) if (Misc.isSub(item.getExt())) sb.append("~~~").append(Trans.get(item.getName())).append("@@@").append(Misc.getSubMimeType(item.getExt())).append("@@@").append(item.getVodId(path));
+        for (Item item : items) if (Misc.isSub(item.getExt())) sb.append("~~~").append(Trans.get(item.getName())).append("@@@").append(item.getExt()).append("@@@").append(item.getVodId(path));
         return sb.toString();
     }
 
-    private String getSub(String[] ids) {
-        StringBuilder sb = new StringBuilder();
+    private List<Sub> getSub(String[] ids) {
+        List<Sub> sub = new ArrayList<>();
         for (String text : ids) {
             if (!text.contains("@@@")) continue;
-            String[] arr = text.split("@@@");
-            sb.append(arr[0]).append("#").append(arr[1]).append("#").append(getDetail(arr[2]).getUrl()).append("$$$");
+            String[] split = text.split("@@@");
+            String name = split[0];
+            String ext = split[1];
+            String url = getDetail(split[2]).getUrl();
+            sub.add(Sub.create().name(name).ext(ext).url(url));
         }
-        return Misc.substring(sb.toString(), 3);
+        return sub;
     }
 }

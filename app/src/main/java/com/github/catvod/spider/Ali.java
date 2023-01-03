@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.github.catvod.bean.Result;
+import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
@@ -90,7 +91,7 @@ public class Ali {
         String shareId = ids[0];
         String shareToken = ids[1];
         String fileId = ids[2];
-        String sub = getSub(shareId, shareToken, ids);
+        List<Sub> sub = getSub(shareId, shareToken, ids);
         if (System.currentTimeMillis() > expiresTime) refreshAccessToken();
         while (TextUtils.isEmpty(authorization)) SystemClock.sleep(250);
         if (flag.equals("原畫")) {
@@ -151,7 +152,7 @@ public class Ali {
             } else if (Misc.isSub(file.getExt())) {
                 String key = file.removeExt();
                 if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());
-                subMap.get(key).add(key + "@@@" + file.getFileId() + "@@@" + file.getExt());
+                subMap.get(key).add(key + "@@@" + file.getExt() + "@@@" + file.getFileId());
             }
         }
         if (item.getNextMarker().length() > 0) {
@@ -205,15 +206,17 @@ public class Ali {
         return sb.toString();
     }
 
-    private String getSub(String shareId, String shareToken, String[] ids) {
-        StringBuilder sb = new StringBuilder();
+    private List<Sub> getSub(String shareId, String shareToken, String[] ids) {
+        List<Sub> sub = new ArrayList<>();
         for (String text : ids) {
             if (!text.contains("@@@")) continue;
-            String[] arr = text.split("@@@");
-            String url = Proxy.getUrl() + "?do=ali&type=sub&share_id=" + shareId + "&share_token=" + shareToken + "&file_id=" + arr[1];
-            sb.append(Trans.get(arr[0])).append("#").append(Misc.getSubMimeType(arr[2])).append("#").append(url).append("$$$");
+            String[] split = text.split("@@@");
+            String name = split[0];
+            String ext = split[1];
+            String url = Proxy.getUrl() + "?do=ali&type=sub&share_id=" + shareId + "&share_token=" + shareToken + "&file_id=" + split[2];
+            sub.add(Sub.create().name(name).ext(ext).url(url));
         }
-        return Misc.substring(sb.toString(), 3);
+        return sub;
     }
 
     private String getShareToken(String shareId) {

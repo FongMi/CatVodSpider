@@ -27,7 +27,7 @@ public class Result {
     @SerializedName("url")
     private String url;
     @SerializedName("sub")
-    private String sub;
+    private List<Sub> sub;
     @SerializedName("parse")
     private int parse;
     @SerializedName("jx")
@@ -129,7 +129,7 @@ public class Result {
         return this;
     }
 
-    public Result sub(String sub) {
+    public Result sub(List<Sub> sub) {
         this.sub = sub;
         return this;
     }
