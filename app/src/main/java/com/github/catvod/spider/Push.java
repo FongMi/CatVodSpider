@@ -11,17 +11,15 @@ import java.util.List;
 
 public class Push extends Spider {
 
-    private Ali ali;
-
     @Override
     public void init(Context context, String extend) {
-        ali = Init.getAli().token(extend);
+        Ali.get().init(extend);
     }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
         String url = ids.get(0).trim();
-        if (url.contains("aliyundrive")) return ali.detailContent(ids);
+        if (url.contains("aliyundrive")) return Ali.get().detailContent(ids);
         if (Misc.isVip(url)) return Result.string(vod(url, "官源"));
         if (Misc.isVideoFormat(url)) return Result.string(vod(url, "直連"));
         return Result.string(vod(url, "網頁"));
@@ -29,7 +27,7 @@ public class Push extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        if (flag.contains("畫")) return ali.playerContent(flag, id);
+        if (flag.contains("畫")) return Ali.get().playerContent(flag, id);
         if (flag.equals("官源")) return Result.get().parse().jx().url(id).string();
         if (flag.equals("網頁")) return Result.get().parse().url(id).string();
         return Result.get().url(id).string();

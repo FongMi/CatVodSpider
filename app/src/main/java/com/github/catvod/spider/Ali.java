@@ -43,13 +43,24 @@ public class Ali {
 
     private final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
     private ScheduledExecutorService service;
-    private Auth auth;
+    private final Auth auth;
 
-    public Ali token(String token) {
-        if (auth != null && auth.getRefreshToken().length() > 0) return this;
+    private static class Loader {
+        static volatile Ali INSTANCE = new Ali();
+    }
+
+    public static Ali get() {
+        return Loader.INSTANCE;
+    }
+
+    public Ali() {
+        this.auth = new Auth();
+    }
+
+    public Ali init(String token) {
         if (TextUtils.isEmpty(token)) Init.show("尚未設定 Token");
         if (token.startsWith("http")) token = OkHttp.string(token);
-        auth = new Auth(Prefers.getString("token", token));
+        auth.setRefreshToken(Prefers.getString("token", token));
         return this;
     }
 
