@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.bean.ali.Auth;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
 import com.github.catvod.crawler.SpiderDebug;
@@ -43,27 +44,26 @@ public class Ali {
 
     private final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
     private ScheduledExecutorService service;
-    private static String authorization;
-    private String refreshToken;
-    private long expiresTime;
-    private ImageView view;
+    private Auth auth;
 
-    public Ali(String token) {
+    public Ali token(String token) {
+        if (auth != null && auth.getRefreshToken().length() > 0) return this;
         if (TextUtils.isEmpty(token)) Init.show("尚未設定 Token");
         if (token.startsWith("http")) token = OkHttp.string(token);
-        refreshToken = Prefers.getString("token", token);
+        auth = new Auth(Prefers.getString("token", token));
+        return this;
     }
 
-    private static HashMap<String, String> getHeaders() {
+    private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Misc.CHROME);
         headers.put("Referer", "https://www.aliyundrive.com/");
         return headers;
     }
 
-    private static HashMap<String, String> getHeaders(String shareToken) {
+    private HashMap<String, String> getHeaders(String shareToken) {
         HashMap<String, String> headers = getHeaders();
-        if (authorization != null) headers.put("authorization", authorization);
+        headers.put("authorization", auth.getAccessToken());
         headers.put("x-share-token", shareToken);
         return headers;
     }
@@ -73,9 +73,17 @@ public class Ali {
         return OkHttp.postJson(url, body.toString(), getHeaders());
     }
 
-    private static String post(String url, JSONObject body, String shareToken) {
+    private String post(String url, JSONObject body, String shareToken) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        return OkHttp.postJson(url, body.toString(), getHeaders(shareToken));
+        String result = OkHttp.postJson(url, body.toString(), getHeaders(shareToken));
+        if (check401(result)) return post(url, body, shareToken);
+        return result;
+    }
+
+    private boolean check401(String result) {
+        if (!result.contains("AccessTokenInvalid")) return false;
+        refreshAccessToken();
+        return true;
     }
 
     public String detailContent(List<String> ids) throws Exception {
@@ -86,14 +94,13 @@ public class Ali {
     }
 
     public String playerContent(String flag, String id) {
-        if (id.equals("无数据")) return "";
+        if (id.equals("Empty")) return "";
         String[] ids = id.split("\\+");
         String shareId = ids[0];
         String shareToken = ids[1];
         String fileId = ids[2];
         List<Sub> sub = getSub(shareId, shareToken, ids);
-        if (System.currentTimeMillis() > expiresTime) refreshAccessToken();
-        while (TextUtils.isEmpty(authorization)) SystemClock.sleep(250);
+        if (auth.needRefresh()) refreshAccessToken();
         if (flag.equals("原畫")) {
             return Result.get().url(getDownloadUrl(shareId, shareToken, fileId)).sub(sub).header(getHeaders()).string();
         } else {
@@ -115,7 +122,7 @@ public class Ali {
         List<String> playUrls = new ArrayList<>();
         List<Item> files = new ArrayList<>(fileMap.keySet());
         for (Item file : files) playUrls.add(Trans.get(file.getDisplayName()) + "$" + fileMap.get(file) + findSubs(file.getName(), subMap));
-        if (playUrls.isEmpty()) playUrls.add("无数据$无数据");
+        if (playUrls.isEmpty()) playUrls.add("Empty$Empty");
         List<String> sourceUrls = new ArrayList<>();
         sourceUrls.add(TextUtils.join("#", playUrls));
         sourceUrls.add(TextUtils.join("#", playUrls));
@@ -176,18 +183,19 @@ public class Ali {
     private void refreshAccessToken() {
         try {
             JSONObject body = new JSONObject();
-            body.put("refresh_token", refreshToken);
+            body.put("refresh_token", auth.getRefreshToken());
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
-            authorization = object.getString("token_type") + " " + object.getString("access_token");
-            expiresTime = System.currentTimeMillis() + object.getInt("expires_in") * 1000L;
-            refreshToken = object.getString("refresh_token");
-            SpiderDebug.log("refresh token: " + refreshToken);
+            auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
+            auth.setExpiresTime(System.currentTimeMillis() + object.getInt("expires_in") * 1000L);
+            auth.setRefreshToken(object.getString("refresh_token"));
+            SpiderDebug.log("refresh token: " + auth.getRefreshToken());
         } catch (JSONException e) {
-            authorization = null;
-            e.printStackTrace();
             checkService();
+            auth.clean();
             getQRCode();
+        } finally {
+            while (auth.isEmpty()) SystemClock.sleep(250);
         }
     }
 
@@ -263,7 +271,7 @@ public class Ali {
         }
     }
 
-    private static String getDownloadUrl(String shareId, String shareToken, String fileId) {
+    private String getDownloadUrl(String shareId, String shareToken, String fileId) {
         try {
             JSONObject body = new JSONObject();
             body.put("file_id", fileId);
@@ -280,7 +288,7 @@ public class Ali {
         }
     }
 
-    public static Object[] vod(Map<String, String> params) {
+    public Object[] vod(Map<String, String> params) {
         String shareId = params.get("share_id");
         String shareToken = params.get("share_token");
         String fileId = params.get("file_id");
@@ -294,7 +302,7 @@ public class Ali {
 
     private void checkService() {
         if (service != null) service.shutdownNow();
-        if (view != null) Init.run(() -> Misc.removeView(view));
+        if (auth.getView() != null) Init.run(() -> Misc.removeView(auth.getView()));
     }
 
     private void getQRCode() {
@@ -313,15 +321,16 @@ public class Ali {
     }
 
     private void setToken(String value) {
-        Prefers.put("token", refreshToken = value);
+        Prefers.put("token", value);
         Init.show("請重新進入播放頁");
+        auth.setRefreshToken(value);
         checkService();
     }
 
     private void showCode(Data data) {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
-        Misc.addView(view = create(data.getData().getCodeContent()), params);
+        Misc.addView(create(data.getData().getCodeContent()), params);
         Init.show("請使用阿里雲盤 App 掃描二維碼");
     }
 
@@ -329,6 +338,7 @@ public class Ali {
         ImageView view = new ImageView(Init.context());
         view.setScaleType(ImageView.ScaleType.CENTER_CROP);
         view.setImageBitmap(QRCode.getBitmap(value, 250, 2));
+        auth.setView(view);
         return view;
     }
 }
