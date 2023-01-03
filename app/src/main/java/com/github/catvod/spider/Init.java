@@ -28,6 +28,7 @@ public class Init {
     }
 
     public Init() {
+        this.ali = new Ali();
         this.handler = new Handler(Looper.getMainLooper());
     }
 
@@ -36,7 +37,7 @@ public class Init {
     }
 
     public static Ali getAli() {
-        return get().ali = get().ali == null ? new Ali() : get().ali;
+        return get().ali;
     }
 
     public static void setAli(Ali ali) {
