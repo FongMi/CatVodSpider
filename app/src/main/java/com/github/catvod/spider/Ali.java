@@ -12,7 +12,6 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.ali.Auth;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
-import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Prefers;
@@ -58,8 +57,6 @@ public class Ali {
     }
 
     public Ali init(String token) {
-        if (TextUtils.isEmpty(token)) Init.show("尚未設定 Token");
-        if (token.startsWith("http")) token = OkHttp.string(token);
         auth.setRefreshToken(Prefers.getString("token", token));
         return this;
     }
@@ -186,12 +183,13 @@ public class Ali {
     private boolean refreshAccessToken() {
         try {
             JSONObject body = new JSONObject();
-            body.put("refresh_token", auth.getRefreshToken());
+            String token = auth.getRefreshToken();
+            if (token.startsWith("http")) token = OkHttp.string(token);
+            body.put("refresh_token", token);
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
             auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
             auth.setRefreshToken(object.getString("refresh_token"));
-            SpiderDebug.log("refresh token: " + auth.getRefreshToken());
             return true;
         } catch (Exception e) {
             checkService();
@@ -210,7 +208,6 @@ public class Ali {
             body.put("share_pwd", "");
             JSONObject object = new JSONObject(post("v2/share_link/get_share_token", body));
             auth.setShareToken(object.getString("share_token"));
-            SpiderDebug.log("share token: " + auth.getShareToken());
             return true;
         } catch (Exception e) {
             Init.show("來晚啦，該分享已失效。");
