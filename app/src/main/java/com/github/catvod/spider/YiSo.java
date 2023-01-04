@@ -20,21 +20,19 @@ import java.util.Objects;
 
 public class YiSo extends Spider {
 
-    private Ali ali;
-
     @Override
     public void init(Context context, String extend) {
-        ali = Init.getAli().token(extend);
+        Ali.get().init(extend);
     }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        return ali.detailContent(ids);
+        return Ali.get().detailContent(ids);
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return ali.playerContent(flag, id);
+        return Ali.get().playerContent(flag, id);
     }
 
     @Override

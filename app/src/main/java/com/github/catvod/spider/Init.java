@@ -17,7 +17,6 @@ public class Init {
 
     private final Handler handler;
     private Application app;
-    private Ali ali;
 
     private static class Loader {
         static volatile Init INSTANCE = new Init();
@@ -28,20 +27,11 @@ public class Init {
     }
 
     public Init() {
-        this.ali = new Ali();
         this.handler = new Handler(Looper.getMainLooper());
     }
 
     public static Application context() {
         return get().app;
-    }
-
-    public static Ali getAli() {
-        return get().ali;
-    }
-
-    public static void setAli(Ali ali) {
-        get().ali = ali;
     }
 
     public static void init(Context context) {

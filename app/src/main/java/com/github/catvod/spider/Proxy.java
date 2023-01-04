@@ -18,7 +18,7 @@ public class Proxy extends Spider {
             case "ck":
                 return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
             case "ali":
-                return Init.getAli().vod(params);
+                return Ali.get().vod(params);
             default:
                 return null;
         }

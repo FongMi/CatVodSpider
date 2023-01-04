@@ -22,7 +22,6 @@ public class UpYun extends Spider {
 
     private final String siteUrl = "https://www.upyunso.com/";
     private final String apiUrl = "https://api.upyunso2.com/";
-    private Ali ali;
 
     private Map<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
@@ -33,12 +32,12 @@ public class UpYun extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        ali = Init.getAli().token(extend);
+        Ali.get().init(extend);
     }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        return ali.detailContent(Arrays.asList(ids.get(0)));
+        return Ali.get().detailContent(Arrays.asList(ids.get(0)));
     }
 
     @Override
@@ -52,6 +51,6 @@ public class UpYun extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        return ali.playerContent(flag, id);
+        return Ali.get().playerContent(flag, id);
     }
 }
