@@ -6,6 +6,7 @@ import com.github.catvod.utils.Misc;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class Item {
     private String category;
     @SerializedName("size")
     private double size;
+    @SerializedName("parent")
+    private String parent;
 
     public static Item objectFrom(String str) {
         return new Gson().fromJson(str, Item.class);
@@ -50,10 +53,6 @@ public class Item {
         return TextUtils.isEmpty(fileId) ? "" : fileId;
     }
 
-    public String getShareId() {
-        return TextUtils.isEmpty(shareId) ? "" : shareId;
-    }
-
     public String getName() {
         return TextUtils.isEmpty(name) ? "" : name;
     }
@@ -70,12 +69,21 @@ public class Item {
         return TextUtils.isEmpty(category) ? "" : category;
     }
 
-    public double getSize() {
-        return size;
+    public String getSize() {
+        return size == 0 ? "" : "[" + Misc.getSize(size) + "]";
+    }
+
+    public String getParent() {
+        return TextUtils.isEmpty(parent) ? "" : "[" + parent + "]";
+    }
+
+    public Item parent(String parent) {
+        this.parent = parent;
+        return this;
     }
 
     public String getDisplayName() {
-        return getSize() == 0 ? getName() : "[" + Misc.getSize(getSize()) + "] " + getName();
+        return TextUtils.join(" ", Arrays.asList(getParent(), getName(), getSize())).trim();
     }
 
     public String removeExt() {
