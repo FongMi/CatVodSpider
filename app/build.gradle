@@ -10,6 +10,7 @@ android {
         applicationId "com.github.catvod.demo"
         minSdk 17
         targetSdk 29
+        ndk { abiFilters "armeabi-v7a" }
     }
 
     buildTypes {
@@ -33,7 +34,7 @@ android {
 
 dependencies {
     //Debug For HTTP/3
-    //implementation 'com.google.android.gms:play-services-cronet:18.0.1'
+    //implementation 'org.chromium.net:cronet-embedded:101.4951.41'
     implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
     implementation 'androidx.annotation:annotation:1.5.0'
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
