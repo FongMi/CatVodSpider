@@ -31,5 +31,4 @@
 -keep class okhttp3.**{*;}
 
 # Cronet
--keep class org.chromium.net.**{*;}
 -keep class com.google.net.cronet.**{*;}
