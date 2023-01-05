@@ -155,7 +155,7 @@ public class Ali {
             if (file.getType().equals("folder")) {
                 folders.add(file);
             } else if (file.getCategory().equals("video") || file.getCategory().equals("audio")) {
-                files.add(file);
+                files.add(file.parent(parent.getName()));
             } else if (Misc.isSub(file.getExt())) {
                 String key = file.removeExt();
                 if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());

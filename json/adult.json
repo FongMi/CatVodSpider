@@ -1,5 +1,5 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;b6cec380ddab899d275cf2fec2ed676a",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;bad875495a9d88aeb0dc1744e9c85feb",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "lives": [
     {
@@ -618,7 +618,7 @@
       "api": "csp_Push",
       "searchable": 1,
       "filterable": 1,
-      "ext": "http://ali.饭太硬.ml/tok"
+      "ext": "http://我不是.肥猫.love:63/token.php"
     }
   ]
 }
