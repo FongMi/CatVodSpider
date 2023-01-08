@@ -19,17 +19,8 @@
       "ext": {
         "drives": [
           {
-            "name": "9T",
-            "server": "https://drive.9t.ee"
-          },
-          {
             "name": "木偶",
             "server": "https://www.kugutsu.ml"
-          },
-          {
-            "name": "秋雨",
-            "server": "https://share.laowang.me",
-            "password": "s8;K^h[j<b"
           }
         ]
       }
