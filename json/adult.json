@@ -1,5 +1,5 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;bad875495a9d88aeb0dc1744e9c85feb",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;279424aa7be0e38dbd884daf8913c1d4",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "lives": [
     {
@@ -19,17 +19,8 @@
       "ext": {
         "drives": [
           {
-            "name": "9T",
-            "server": "https://drive.9t.ee"
-          },
-          {
             "name": "木偶",
             "server": "https://www.kugutsu.ml"
-          },
-          {
-            "name": "秋雨",
-            "server": "https://share.laowang.me",
-            "password": "s8;K^h[j<b"
           }
         ]
       }
