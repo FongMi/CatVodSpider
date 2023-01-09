@@ -1,5 +1,5 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;a1c200856bade9fe50617a55807e1747",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;09cb3b87750788e648fa34955e8381e8",
   "wallpaper": "http://www.kf666888.cn/api/tvbox/img",
   "lives": [
     {
@@ -160,7 +160,8 @@
       "type": 3,
       "api": "csp_Live",
       "searchable": 0,
-      "filterable": 0
+      "filterable": 0,
+      "ext": "3000"
     },
     {
       "key": "push_agent",

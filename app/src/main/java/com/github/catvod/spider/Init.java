@@ -44,6 +44,10 @@ public class Init {
         get().handler.post(runnable);
     }
 
+    public static void run(Runnable runnable, int delay) {
+        get().handler.postDelayed(runnable, delay);
+    }
+
     public static void show(String msg) {
         get().handler.post(() -> Toast.makeText(context(), msg, Toast.LENGTH_LONG).show());
     }
