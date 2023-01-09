@@ -161,7 +161,7 @@
       "api": "csp_Live",
       "searchable": 0,
       "filterable": 0,
-      "ext": "3000"
+      "ext": "1000"
     },
     {
       "key": "push_agent",
