@@ -10,10 +10,18 @@ import com.github.catvod.crawler.Spider;
 
 public class Live extends Spider {
 
+    private int delay;
+
     @Override
     public void init(Context context, String extend) {
         super.init(context, extend);
-        Init.run(this::openLive, delay(extend));
+        this.delay = delay(extend);
+    }
+
+    @Override
+    public String homeVideoContent() {
+        Init.run(this::openLive, delay);
+        return "";
     }
 
     private int delay(String extend) {
