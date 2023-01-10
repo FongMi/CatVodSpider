@@ -6,7 +6,8 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".demo.MainActivity"
             android:exported="true">
