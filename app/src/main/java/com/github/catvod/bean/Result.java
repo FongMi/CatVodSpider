@@ -144,7 +144,7 @@ public class Result {
         this.page = page > 0 ? page : Integer.MAX_VALUE;
         this.limit = limit > 0 ? limit : Integer.MAX_VALUE;
         this.total = total > 0 ? total : Integer.MAX_VALUE;
-        this.pagecount = count > 0 ? page : Integer.MAX_VALUE;
+        this.pagecount = count > 0 ? count : Integer.MAX_VALUE;
         return this;
     }
 
