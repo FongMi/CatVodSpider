@@ -1,5 +1,5 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;e4f7f2bc171ddcf963e249003caa9b40",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;a84fef826cb82da525469e8acf1e7d9a",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "lives": [
     {
@@ -16,6 +16,7 @@
       "api": "csp_AList",
       "searchable": 1,
       "filterable": 1,
+      "switchable": 0,
       "ext": {
         "drives": [
           {
@@ -609,6 +610,7 @@
       "api": "csp_Push",
       "searchable": 1,
       "filterable": 1,
+      "switchable": 0,
       "ext": "http://我不是.肥猫.love:63/token.php"
     }
   ]
