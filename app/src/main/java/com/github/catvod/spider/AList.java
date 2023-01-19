@@ -1,7 +1,15 @@
 package com.github.catvod.spider;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
@@ -31,6 +39,7 @@ public class AList extends Spider {
 
     private List<Drive> drives;
     private String ext;
+    private Activity mActivity;
 
     private List<Filter> getFilter() {
         List<Filter> items = new ArrayList<>();
@@ -54,6 +63,45 @@ public class AList extends Spider {
         try {
             ext = extend;
             fetchRule();
+            if (context instanceof Application){
+                ((Application)context).registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+                    @Override
+                    public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+
+                    }
+
+                    @Override
+                    public void onActivityStarted(@NonNull Activity activity) {
+
+                    }
+
+                    @Override
+                    public void onActivityResumed(@NonNull Activity activity) {
+                        mActivity = activity;
+
+                    }
+
+                    @Override
+                    public void onActivityPaused(@NonNull Activity activity) {
+
+                    }
+
+                    @Override
+                    public void onActivityStopped(@NonNull Activity activity) {
+
+                    }
+
+                    @Override
+                    public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+                    }
+
+                    @Override
+                    public void onActivityDestroyed(@NonNull Activity activity) {
+
+                    }
+                });
+            }
         } catch (Exception ignored) {
         }
     }
@@ -65,6 +113,26 @@ public class AList extends Spider {
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (Drive drive : drives) classes.add(drive.toType());
         for (Class item : classes) filters.put(item.getTypeId(), getFilter());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle("牛逼的弹框");
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.create().show();
+
+
+
+
         return Result.string(classes, filters);
     }
 
