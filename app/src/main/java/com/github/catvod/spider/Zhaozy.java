@@ -8,14 +8,13 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,30 +54,20 @@ public class Zhaozy extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        String strs[] = extend.split("\\$\\$\\$");
-        String url = strs[0];
-        if (strs.length > 2) {
-            username = strs[1];
-            password = strs[2];
+        String[] split = extend.split("\\$\\$\\$");
+        Ali.get().init(split[0]);
+        if (split.length > 2) {
+            username = split[1];
+            password = split[2];
         }
-        Ali.get().init(url);
     }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
+        if (Ali.pattern.matcher(ids.get(0)).find()) return Ali.get().detailContent(ids);
         Matcher matcher = regexAli.matcher(OkHttp.string(siteUrl + ids.get(0), getHeader()));
-        if (!matcher.find()) return "";
-        String videoId = ids.get(0);
-        ids.set(0, matcher.group(1));
-        String json =  Ali.get().detailContent(ids);
-        if ("".equals(json)){
-            return  "";
-        }
-        JSONObject result = new JSONObject(json);
-        JSONArray jsonList = result.getJSONArray("list");
-        JSONObject jsonObject = jsonList.getJSONObject(0);
-        jsonObject.put("vod_id",videoId);
-        return result.toString();
+        if (matcher.find()) return Ali.get().detailContent(Arrays.asList(matcher.group(1)));
+        return "";
     }
 
     @Override

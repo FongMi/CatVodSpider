@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  */
 public class Ali {
 
-    private final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
+    public static final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
     private ScheduledExecutorService service;
     private final Auth auth;
 
