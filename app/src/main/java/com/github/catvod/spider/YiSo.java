@@ -37,6 +37,7 @@ public class YiSo extends Spider {
 
     @Override
     public String searchContent(String key, boolean quick) {
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return "";
         String url = "https://yiso.fun/api/search?name=" + URLEncoder.encode(key) + "&from=ali";
         Map<String, String> result = new HashMap<>();
