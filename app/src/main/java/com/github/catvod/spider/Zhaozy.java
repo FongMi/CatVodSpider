@@ -14,6 +14,7 @@ import org.jsoup.nodes.Element;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ public class Zhaozy extends Spider {
     private final Pattern regexAli = Pattern.compile("(https://www.aliyundrive.com/s/[^\"]+)");
     private final Pattern regexVid = Pattern.compile("(\\S+)");
     private final String siteUrl = "https://zhaoziyuan.la/";
+    private String username = "nikalo8893@bitvoo.com";
+    private String password = "P@ssw0rd";
 
     private Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
@@ -36,8 +39,8 @@ public class Zhaozy extends Spider {
 
     private String getCookie() {
         Map<String, String> params = new HashMap<>();
-        params.put("username", "nikalo8893@bitvoo.com");
-        params.put("password", "P@ssw0rd");
+        params.put("username", username);
+        params.put("password", password);
         Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Misc.CHROME);
         headers.put("Referer", siteUrl + "login.html");
@@ -51,15 +54,20 @@ public class Zhaozy extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        Ali.get().init(extend);
+        String[] split = extend.split("\\$\\$\\$");
+        Ali.get().init(split[0]);
+        if (split.length > 2) {
+            username = split[1];
+            password = split[2];
+        }
     }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
+        if (Ali.pattern.matcher(ids.get(0)).find()) return Ali.get().detailContent(ids);
         Matcher matcher = regexAli.matcher(OkHttp.string(siteUrl + ids.get(0), getHeader()));
-        if (!matcher.find()) return "";
-        ids.set(0, matcher.group(1));
-        return Ali.get().detailContent(ids);
+        if (matcher.find()) return Ali.get().detailContent(Arrays.asList(matcher.group(1)));
+        return "";
     }
 
     @Override

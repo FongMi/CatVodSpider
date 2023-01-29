@@ -41,6 +41,7 @@ public class PanSou extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
+        if (Ali.pattern.matcher(ids.get(0)).find()) return Ali.get().detailContent(ids);
         String url = siteUrl + ids.get(0).replace("/s/", "/cv/");
         Map<String, List<String>> respHeaders = new HashMap<>();
         OkHttp.stringNoRedirect(url, getHeaders(ids.get(0)), respHeaders);
