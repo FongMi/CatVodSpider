@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.catvod.demo"
-        minSdk 17
+        minSdk 18
         targetSdk 29
         ndk { abiFilters "armeabi-v7a" }
     }
@@ -41,5 +41,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'cn.wanghaomiao:JsoupXpath:2.5.1'
     implementation 'com.google.zxing:core:3.3.0'
+    implementation 'com.alibaba:fastjson:1.2.31'
     implementation 'org.jsoup:jsoup:1.15.3'
 }

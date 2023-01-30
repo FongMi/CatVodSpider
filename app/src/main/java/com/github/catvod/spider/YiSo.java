@@ -39,7 +39,7 @@ public class YiSo extends Spider {
     public String searchContent(String key, boolean quick) {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return "";
-        String url = "https://yiso.fun/api/search?name=" + URLEncoder.encode(key) + "&from=ali";
+        String url = "https://yiso.fun/api/search?name=4k " + URLEncoder.encode(key) + "&from=ali";
         Map<String, String> result = new HashMap<>();
         Misc.loadWebView(url, getWebViewClient(result));
         while (!result.containsKey("json")) SystemClock.sleep(50);
