@@ -26,8 +26,8 @@ public class Zhaozy extends Spider {
     private final Pattern regexAli = Pattern.compile("(https://www.aliyundrive.com/s/[^\"]+)");
     private final Pattern regexVid = Pattern.compile("(\\S+)");
     private final String siteUrl = "https://zhaoziyuan.la/";
-    private String username = "nikalo8893@bitvoo.com";
-    private String password = "P@ssw0rd";
+    private String username;
+    private String password;
 
     private Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
@@ -56,10 +56,8 @@ public class Zhaozy extends Spider {
     public void init(Context context, String extend) {
         String[] split = extend.split("\\$\\$\\$");
         Ali.get().init(split[0]);
-        if (split.length > 2) {
-            username = split[1];
-            password = split[2];
-        }
+        username = split[1];
+        password = split[2];
     }
 
     @Override
