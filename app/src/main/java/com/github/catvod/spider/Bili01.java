@@ -25,6 +25,7 @@ import java.util.List;
 public class Bili01 extends Spider {
     private String extend;
     private static final String url = "https://www.bilibili.com";
+    private static final String recmUrl = "https://api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd?y_num=3&fresh_type=4&feed_version=V8&fresh_idx_1h=9&fetch_row=28&fresh_idx=9&brush=9&homepage_ver=1&ps=12&outside_trigger=&w_rid=a7d90770ead893ccfef77d9ae4438cae&wts=1675154158";
     protected JSONObject ext = null;
     private HashMap<String, String> header;
 
@@ -146,6 +147,10 @@ public class Bili01 extends Spider {
                 }
             }
             url += "&page=" + pg;
+            //获取个人推荐
+            if (tid.equals("recm")) {
+                url = recmUrl;
+            }
             SpiderDebug.log("bili>>categoryContent:" + url);
             SpiderDebug.log("bili>>categoryContent>>header:" + header);
             String content = OkHttpUtil.string(url, header);
@@ -158,7 +163,7 @@ public class Bili01 extends Spider {
 //            JSONArray RSArray = resp.getJSONObject("data").getJSONArray("result");
 
             JSONArray list = new JSONArray();
-            JSONArray RSArray = data.getJSONArray("result");
+            JSONArray RSArray = data.getJSONArray(tid.equals("recm") ? "item" : "result");
             for (int i = 0; i < RSArray.length(); i++) {
                 JSONObject info = RSArray.getJSONObject(i);
                 JSONObject result = new JSONObject();

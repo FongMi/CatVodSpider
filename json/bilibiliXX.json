@@ -6,6 +6,10 @@
       "type_id": "自驾游"
     },
     {
+      "type_name": "推荐",
+      "type_id": "recm"
+    },
+    {
       "type_name": "美食",
       "type_id": "美食"
     },
