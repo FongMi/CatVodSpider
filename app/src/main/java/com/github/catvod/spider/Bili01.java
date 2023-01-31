@@ -261,39 +261,39 @@ public class Bili01 extends Spider {
     @Override
     public String playerContent(String str, String str2, List<String> list) {
 
-        String[] ids = str2.split("\\+");
-        String aid = ids[0];
-        String cid = ids[1];
-        String url = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + cid + "&qn=120&fourk=1";
-        JSONObject resp = null;
-        try {
-            resp = new JSONObject(OkHttp.string(url, header));
-
-        url = resp.getJSONObject("data").getJSONArray("durl").getJSONObject(0).getString("url");
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        return Result.get().url(url).header(header).string();
+//        String[] ids = str2.split("\\+");
+//        String aid = ids[0];
+//        String cid = ids[1];
+//        String url = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + cid + "&qn=120&fourk=1";
+//        JSONObject resp = null;
 //        try {
-//            String[] split = str2.split("\\+");
-//            String str3 = split[0];
-//            String str4 = split[1];
-//            String sb2 = "https://api.bilibili.com/x/player/playurl?avid=" + str3 + "&cid= " + str4 + "&qn=120&fourk=1";
-//            JSONObject jSONObject = new JSONObject(OkHttpUtil.string(sb2, null));
-//            JSONObject jSONObject2 = new JSONObject();
-//            jSONObject2.put("parse", "0");
-//            jSONObject2.put("playUrl", "");
-//            JSONObject jSONObject3 = jSONObject.getJSONObject("data");
-//            JSONObject jSONObject4 = jSONObject3.getJSONArray("durl").getJSONObject(0);
-//            String string = jSONObject4.getString("url");
-//            jSONObject2.put("url", string);
-//            jSONObject2.put("header", "{\"Referer\":\"https://www.bilibili.com\",\"User-Agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36\"}");
-//            jSONObject2.put("contentType", "video/x-flv");
-//            return jSONObject2.toString();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
+//            resp = new JSONObject(OkHttp.string(url, header));
+//
+//        url = resp.getJSONObject("data").getJSONArray("durl").getJSONObject(0).getString("url");
+//        } catch (JSONException e) {
+//            throw new RuntimeException(e);
 //        }
+//        return Result.get().url(url).header(header).string();
+        try {
+            String[] split = str2.split("\\+");
+            String str3 = split[0];
+            String str4 = split[1];
+            String sb2 = "https://api.bilibili.com/x/player/playurl?avid=" + str3 + "&cid= " + str4 + "&qn=120&fourk=1";
+            JSONObject jSONObject = new JSONObject(OkHttpUtil.string(sb2, header));
+            JSONObject jSONObject2 = new JSONObject();
+            jSONObject2.put("parse", "0");
+            jSONObject2.put("playUrl", "");
+            JSONObject jSONObject3 = jSONObject.getJSONObject("data");
+            JSONObject jSONObject4 = jSONObject3.getJSONArray("durl").getJSONObject(0);
+            String string = jSONObject4.getString("url");
+            jSONObject2.put("url", string);
+            jSONObject2.put("header", "{\"Referer\":\"https://www.bilibili.com\",\"User-Agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36\"}");
+            jSONObject2.put("contentType", "video/x-flv");
+            return jSONObject2.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
