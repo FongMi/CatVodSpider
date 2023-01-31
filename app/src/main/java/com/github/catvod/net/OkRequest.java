@@ -50,12 +50,12 @@ class OkRequest {
     }
 
     private void getInstance() {
-        Request.Builder builder = new Request.Builder().url(url);
+        Request.Builder builder = new Request.Builder();
         if (method.equals(OkHttp.GET) && params != null) setParams();
         if (method.equals(OkHttp.POST)) builder.post(getRequestBody());
         if (header != null) for (String key : header.keySet()) builder.addHeader(key, header.get(key));
         if (tag != null) builder.tag(tag);
-        request = builder.build();
+        request = builder.url(url).build();
     }
 
     private RequestBody getRequestBody() {
