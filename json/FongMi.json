@@ -41,7 +41,7 @@
       "key": "哔哩",
       "name": "坤伦cp出品",
       "type": 3,
-      "api": "csp_Bili",
+      "api": "csp_Bili01",
       "searchable": 1,
       "filterable": 1,
       "switchable": 0,
