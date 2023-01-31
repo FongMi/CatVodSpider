@@ -13,7 +13,7 @@ public class Live extends Spider {
     private int delay;
 
     @Override
-    public void init(Context context, String extend) {
+    public void init(Context context, String extend)  {
         super.init(context, extend);
         this.delay = delay(extend);
     }

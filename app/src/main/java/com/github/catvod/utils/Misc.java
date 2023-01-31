@@ -17,7 +17,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -25,7 +27,8 @@ import java.util.Locale;
 public class Misc {
 
     public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
-
+    public static Charset CharsetUTF8 = Charset.forName("UTF-8");
+    public static Charset CharsetIOS8859 = Charset.forName("iso-8859-1");
     public static boolean isVip(String url) {
         List<String> hosts = Arrays.asList("iqiyi.com", "v.qq.com", "youku.com", "le.com", "tudou.com", "mgtv.com", "sohu.com", "acfun.cn", "bilibili.com", "baofeng.com", "pptv.com");
         for (String host : hosts) if (url.contains(host)) return true;
@@ -138,6 +141,26 @@ public class Misc {
             return "";
         }
     }
+    public static String NewMD5(String src, Charset charset) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] bytes = md.digest(src.getBytes(charset));
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                int v = bytes[i] & 0xFF;
+                String hv = Integer.toHexString(v);
+                if (hv.length() < 2) {
+                    sb.append(0);
+                }
+                sb.append(hv);
+            }
+            return sb.toString().toLowerCase();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 
     public static DisplayMetrics getDisplayMetrics() {
         return Init.context().getResources().getDisplayMetrics();
