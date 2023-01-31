@@ -184,10 +184,10 @@ public class Bili01 extends Spider {
                 list.put(result);
             }
             JSONObject result = new JSONObject();
-            int limit = 20;
+            int limit = 12;
             int page = Integer.parseInt(pg);
             result.put("page", page);
-            int pageCount = list.length() == limit ? page + 1 : page;
+            int pageCount = list.length() >= limit ? page + 1 : page;
             result.put("pagecount", pageCount);
             result.put("limit", limit);
             result.put("total", Integer.MAX_VALUE);
