@@ -16,7 +16,7 @@
     {"key":"csp_Bd","name":"☀️哔嘀影视","type":3,"api":"csp_Bdys01","searchable":1,"quickSearch":1,"filterable":1},
     {"key":"csp_Yj1211","name":"📽️在线直播","type":3,"api":"csp_Yj1211","searchable":1,"quickSearch":1,"filterable":1},
     {"key":"csp_77","name":"👒酷云七七","type":3,"api":"csp_Kunyu77","searchable":1,"quickSearch":1,"filterable":1},
-    {"key":"dr_豆瓣","name":"🔍豆瓣荐片(js)","type":3,"api":"./Yoursmile7-douban-mini.js","searchable":2,"quickSearch":0,"filterable":0,"ext":"./Yoursmile7-douban.js"},
+    {"key":"dr_豆瓣","name":"🔍豆瓣荐片(js)","type":3,"api":"./Yoursmile7-douban-mini.js","searchable":1,"quickSearch":0,"filterable":0,"ext":"./Yoursmile7-douban.js"},
     {"key":"T4_douban1","name":"🔍影视推荐(T4)","type":4,"api":"http://t4.ganggang.live:3812/vod","searchable":1,"quickSearch":1,"filterable":1},
     {
       "key":"douban2",
