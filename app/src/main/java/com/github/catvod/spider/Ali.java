@@ -183,14 +183,15 @@ public class Ali {
 
     private boolean refreshAccessToken() {
         try {
-            JSONObject body = new JSONObject();
-            String token = auth.getRefreshToken();
-            if (token.startsWith("http")) token = OkHttp.string(token).replaceAll("[^A-Za-z0-9]", "");
-            body.put("refresh_token", token);
-            body.put("grant_type", "refresh_token");
-            JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
-            auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
-            auth.setRefreshToken(object.getString("refresh_token"));
+            getQRCode();
+//            JSONObject body = new JSONObject();
+//            String token = auth.getRefreshToken();
+//            if (token.startsWith("http")) token = OkHttp.string(token).replaceAll("[^A-Za-z0-9]", "");
+//            body.put("refresh_token", token);
+//            body.put("grant_type", "refresh_token");
+//            JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
+//            auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
+//            auth.setRefreshToken(object.getString("refresh_token"));
             return true;
         } catch (Exception e) {
             checkService();
