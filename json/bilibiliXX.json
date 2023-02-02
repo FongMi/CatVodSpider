@@ -1,5 +1,5 @@
 {
-  "cookie": "https://raw.iqiq.io/dukunjueji/CatVodSpider/main/json/cookie.txt",
+  "cookie": "./cookie.txt",
   "classes": [
     {
       "type_name": "自驾游",
