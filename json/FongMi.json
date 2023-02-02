@@ -18,7 +18,6 @@
     {"key":"csp_77","name":"👒酷云七七","type":3,"api":"csp_Kunyu77","searchable":1,"quickSearch":1,"filterable":1},
     {"key":"csp_XYQBiu_聚合短视频","name":"📽️短视频聚合","type":3,"api":"csp_XYQBiu","searchable":0,"quickSearch":0,"filterable":0,"ext":"https://神器每日推送.tk/XYQxb/分享短视频.json"},
     {"key":"dr_豆瓣","name":"🔍豆瓣荐片(js)","type":3,"api":"./Yoursmile7-douban-mini.js","searchable":2,"quickSearch":0,"filterable":0,"ext":"./Yoursmile7-douban.js"},
-    {"key":"T4_douban1","name":"🔍影视推荐(T4)","type":4,"api":"http://t4.ganggang.live:3812/vod","searchable":1,"quickSearch":1,"filterable":1},
     {
       "key":"douban2",
       "name":"🅱豆瓣荐片(T4)",
@@ -204,13 +203,6 @@
       "switchable": 0,
       "ext": "http://我不是.肥猫.love:63/token.php"
     },
-    {"key":"csp_QQ","name":"🍅腾讯视频(官)","type":3,"api":"csp_QQ","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://raw.liucn.cc/box/sub/ext/qq_qiyi_mgtv.jpg"},
-    {"key":"csp_IQIYI","name":"🥝爱奇艺(官)","type":3,"api":"csp_IQIYI","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://raw.liucn.cc/box/sub/ext/qq_qiyi_mgtv.jpg"},
-    {"key":"csp_MGTV","name":"🍋芒果TV(官)","type":3,"api":"csp_MGTV","searchable":1,"quickSearch":1,"filterable":1,"jar":"https://raw.liucn.cc/box/sub/ext/qq_qiyi_mgtv.jpg"},
-    {"key":"t4_公共","name":"📡公共(T4)","type":4,"api":"https://t4.secan.icu/vod?sites=all&ali_token=阿里token&timeout=10","searchable":1,"quickSearch":1,"filterable":0},
-    {"key":"t4_搜片","name":"📡搜片(T4)","type": 4,"api": "https://t4.secan.icu/vod?sites=all&timeout=7","searchable": 1,"quickSearch": 1,"filterable": 1},
-    {"key":"t4_合集","name":"📡合集(T4)","type":4,"api":"https://t4.secan.icu/vod?sites=all&ali_token=4acb3ad2f2254ba1b566279f7cd98ba3&timeout=10",  "searchable": 1,"quickSearch":1,"filterable":0},
-    {"key":"t4_聚合","name":"📡聚合(T4)","type":4,"api":"https://t4.secan.icu/vod?sites=all&ali_token=4acb3ad2f2254ba1b566279f7cd98ba3&timeout=5","searchable":1,"quickSearch":1,"filterable":1},
     {"key":"csp_xbb_乐猪影视","name":"🍀乐猪影视📵","type":3,"api":"csp_XBiubiu","searchable":1,"quickSearch":1,"filterable":0,"ext":"https://raw.liucn.cc/box/sub/MeowXB/乐猪影视.json"},
     {"key":"csp_xbb_黑狐影视ns","name":"🍀黑狐影视(NS)📵","type":3,"api":"csp_XBiubiu","searchable":1,"quickSearch":1,"filterable":0,"ext":"https://raw.liucn.cc/box/sub/MeowXB/黑狐影视ns.json"},
     {"key":"csp_xbb_真不卡cerrd","name":"🍀真不卡cerrd(NS)📵","type":3,"api":"csp_XBiubiu","searchable":1,"quickSearch":1,"filterable":0,"ext":"https://raw.liucn.cc/box/sub/MeowXB/真不卡ns.json"},
