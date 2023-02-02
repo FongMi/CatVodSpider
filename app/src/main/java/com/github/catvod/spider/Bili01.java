@@ -16,6 +16,8 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -170,6 +172,8 @@ public class Bili01 extends Spider {
                 String pic = info.getString("pic");
                 if (pic.startsWith("//")) {
                     pic = "https:" + pic;
+                }else {
+                    continue;
                 }
                 result.put("vod_id", info.getString("bvid"));
                 String title = info.getString("title");
@@ -179,6 +183,7 @@ public class Bili01 extends Spider {
                 result.put("vod_pic", pic);
                 String duration = info.getString("duration");
                 String Split = duration.split(":")[0];
+                Split = tid.equals("recm") ? new BigDecimal(Split).divide(new BigDecimal("60"), 1, RoundingMode.HALF_UP).toString() : Split;
                 String remark = Split + "分钟";
                 result.put("vod_remarks", remark);
                 list.put(result);
