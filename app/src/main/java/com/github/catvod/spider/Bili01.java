@@ -183,7 +183,7 @@ public class Bili01 extends Spider {
                 result.put("vod_pic", pic);
                 String duration = info.getString("duration");
                 String Split = duration.split(":")[0];
-                Split = tid.equals("recm") ? new BigDecimal(Split).divide(new BigDecimal("60"), 1, RoundingMode.HALF_UP).toString() : Split;
+                Split = tid.equals("recm") ? new BigDecimal(Split).divide(new BigDecimal("60"), RoundingMode.HALF_UP).toString() : Split;
                 String remark = Split + "分钟";
                 result.put("vod_remarks", remark);
                 list.put(result);
