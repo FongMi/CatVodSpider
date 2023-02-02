@@ -10,6 +10,7 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -172,9 +173,8 @@ public class Bili01 extends Spider {
                 String pic = info.getString("pic");
                 if (pic.startsWith("//")) {
                     pic = "https:" + pic;
-                }else {
-                    continue;
                 }
+                if (StringUtils.isBlank(pic)) continue;
                 result.put("vod_id", info.getString("bvid"));
                 String title = info.getString("title");
                 Document doc = Jsoup.parse(title);
