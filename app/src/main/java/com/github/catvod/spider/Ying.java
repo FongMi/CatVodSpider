@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class Ying extends Spider {
 
-    private static final String siteUrl = "https://www.yhdmp.cc";
+    private static final String siteUrl = "https://www.yhpdm.com";
     private static final String listUrl = siteUrl + "/list/";
     private static final String showUrl = siteUrl + "/showp/";
     private static final String filterUrl = "https://www.xmfans.me/yxsf/js/yx_catalog.js";
