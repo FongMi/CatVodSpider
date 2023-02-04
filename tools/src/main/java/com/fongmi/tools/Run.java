@@ -31,7 +31,7 @@ public class Run {
 
     private void start(String text) throws IOException {
         //parseTxt(Util.getFile(getClass(), "live.txt"));
-		parse(Util.call(text));
+        parse(Util.call(text));
         writeFile();
     }
 
@@ -44,6 +44,7 @@ public class Run {
                 Group group = groups.get(groups.size() - 1);
                 String name = split[0];
                 String url = split[1].trim();
+                if (url.startsWith("http://txtest")) url = url.replace("http://txtest", "http://121.51.249.6/txtest");
                 group.find(Channel.create().name(name).epg(name)).addUrls(url.split("#"));
             }
         }
