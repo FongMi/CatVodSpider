@@ -161,6 +161,10 @@ public class LiteApple extends Spider {
                 kv.put("n", "全部");
                 kv.put("v", "");
                 newTypeExtendKV.put(kv);
+                kv = new JSONObject();
+                kv.put("n", "2023");
+                kv.put("v", "2023");
+                newTypeExtendKV.put(kv);
                 for (int j = 0; j < years.length(); j++) {
                     String year = years.getString(j);
                     kv = new JSONObject();
@@ -309,6 +313,10 @@ public class LiteApple extends Spider {
             JSONArray urls = vObj.getJSONArray("urls");
             for (int i = 0; i < urls.length(); i++) {
                 JSONObject u = urls.getJSONObject(i);
+                if (u.getString("key").startsWith("拒做") ||
+                        u.getString("key").startsWith("来吧")) {
+                    continue;
+                }
                 playUrls.add(u.getString("key") + "$" + u.getString("url"));
             }
 
