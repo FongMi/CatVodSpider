@@ -224,8 +224,10 @@ public class Kunyu77 extends Spider {
     @Override
     public String detailContent(List<String> ids) {
         try {
+            SpiderDebug.log("kuyun77>>ids"+ids);
             String url = siteUrl + "/api.php/provide/videoDetail?ids=" + ids.get(0);
             String content = OkHttpUtil.string(url, getHeaders(url));
+            SpiderDebug.log("kuyun77>>detailContent"+content);
             JSONObject dataObject = new JSONObject(decryptResponse(content));
             JSONObject vObj = dataObject.getJSONObject("data");
             JSONObject result = new JSONObject();
