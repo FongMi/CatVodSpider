@@ -30,7 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class AppTT extends Spider {
     private static final String KEY = "SRK#e%4UYtU#KiEo*vsPqpr0cC4bxAQW";
     private static final String IV = "o6sYmm*x5hn#rcCt";
-    private static final String siteUrl = "http://110.42.1.95:7788";
+    private static final String siteUrl = "http://124.248.66.89:7788";
 
     private String uAgent = "Dalvik/2.1.0 (Linux; U; Android " + Build.VERSION.RELEASE + "; " + Build.MODEL + " Build/" + Build.ID + ")";
 

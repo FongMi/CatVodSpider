@@ -11,9 +11,10 @@
     }
   ],
   "sites": [
+    {"key":"小苹果","name":"🍎小苹果","type":3,"api":"csp_LiteApple","playerType":1,"searchable":1,"quickSearch":1,"filterable":1},
+    {"key": "csp_555","name": "555","type": 3,"api": "csp_Dy555","searchable": 1,"quickSearch": 1,"filterable": 1},
     {"key":"csp_AppTT","name":"🐰图图影视","type":3,"api":"csp_AppTT","searchable":1,"quickSearch":1,"filterable":1,"ext":"http://154.39.64.151:5566$$$Qks3NWg0dnRPbmlsV3JMdCNkMFZ0OHBJbjRJQXByY3I=$$$Y2hpV2g0dnRiU3pYUGdWWg=="},
     {"key":"SP360","name":"💘360影视","type":3,"api":"csp_SP360","searchable":1,"quickSearch":1,"filterable":1},
-    {"key":"小苹果","name":"🍎小苹果","type":3,"api":"csp_LiteApple","playerType":1,"searchable":1,"quickSearch":1,"filterable":1},
     {"key":"csp_XYQBiu_虎牙","name":"🐯虎牙","type":3,"api":"csp_XYQBiu","searchable":0,"quickSearch":0,"filterable":0,"ext":"https://agit.ai/Yoursmile7/TVBox/raw/branch/master/sub/虎牙.json"},
     {"key":"csp_XYQBiu_斗鱼","name":"🐬斗鱼","type":3,"api":"csp_XYQBiu","searchable":0,"quickSearch":0,"filterable":0,"ext":"https://agit.ai/Yoursmile7/TVBox/raw/branch/master/sub/斗鱼.json"},
     {"key":"csp_Bd","name":"☀️哔嘀影视","type":3,"api":"csp_Bdys01","searchable":1,"quickSearch":1,"filterable":1},
