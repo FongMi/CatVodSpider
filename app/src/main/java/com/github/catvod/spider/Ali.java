@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 public class Ali {
 
     public static final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
+    private static final String QRCODE = "https://token.cooluc.com/";
     private ScheduledExecutorService service;
     private final Auth auth;
 
@@ -100,7 +101,8 @@ public class Ali {
         if (!matcher.find()) return "";
         String shareId = matcher.group(1);
         String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
-        auth.setShareId(shareId); refreshShareToken();
+        auth.setShareId(shareId);
+        refreshShareToken();
         return Result.string(getVod(url, fileId));
     }
 
@@ -310,14 +312,14 @@ public class Ali {
     private void getQRCode() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Misc.CHROME);
-        Data data = Data.objectFrom(OkHttp.string("https://token.cooluc.com/qr", headers));
+        Data data = Data.objectFrom(OkHttp.string(QRCODE + "qr", headers));
         if (data != null) Init.run(() -> showCode(data));
         service = Executors.newScheduledThreadPool(1);
         if (data != null) service.scheduleAtFixedRate(() -> {
             JsonObject params = new JsonObject();
             params.addProperty("t", data.getData().getT());
             params.addProperty("ck", data.getData().getCk());
-            Data result = Data.objectFrom(OkHttp.postJson("https://easy-token.cooluc.com/ck", params.toString(), headers));
+            Data result = Data.objectFrom(OkHttp.postJson(QRCODE + "ck", params.toString(), headers));
             if (result.hasToken()) setToken(result.getData().getRefreshToken());
         }, 1, 1, TimeUnit.SECONDS);
     }
