@@ -13,7 +13,7 @@ import com.github.catvod.bean.ali.Auth;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Trans;
@@ -64,7 +64,7 @@ public class Ali {
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Misc.CHROME);
+        headers.put("User-Agent", Utils.CHROME);
         headers.put("Referer", "https://www.aliyundrive.com/");
         return headers;
     }
@@ -159,7 +159,7 @@ public class Ali {
                 folders.add(file);
             } else if (file.getCategory().equals("video") || file.getCategory().equals("audio")) {
                 files.add(file.parent(parent.getName()));
-            } else if (Misc.isSub(file.getExt())) {
+            } else if (Utils.isSub(file.getExt())) {
                 String key = file.removeExt();
                 if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());
                 subMap.get(key).add(key + "@@@" + file.getExt() + "@@@" + file.getFileId());
@@ -306,12 +306,12 @@ public class Ali {
 
     private void checkService() {
         if (service != null) service.shutdownNow();
-        if (auth.getView() != null) Init.run(() -> Misc.removeView(auth.getView()));
+        if (auth.getView() != null) Init.run(() -> Utils.removeView(auth.getView()));
     }
 
     private void getQRCode() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Misc.CHROME);
+        headers.put("User-Agent", Utils.CHROME);
         Data data = Data.objectFrom(OkHttp.string(QRCODE + "qr", headers));
         if (data != null) Init.run(() -> showCode(data));
         service = Executors.newScheduledThreadPool(1);
@@ -334,7 +334,7 @@ public class Ali {
     private void showCode(Data data) {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
-        Misc.addView(create(data.getData().getCodeContent()), params);
+        Utils.addView(create(data.getData().getCodeContent()), params);
         Init.show("請使用阿里雲盤 App 掃描二維碼");
     }
 

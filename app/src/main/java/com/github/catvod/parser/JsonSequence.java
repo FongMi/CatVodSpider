@@ -2,7 +2,7 @@ package com.github.catvod.parser;
 
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONObject;
 
@@ -23,7 +23,7 @@ public class JsonSequence {
                 reqHeaders.remove("url");
                 SpiderDebug.log(realUrl + url);
                 String json = OkHttp.string(realUrl + url, reqHeaders);
-                JSONObject taskResult = Misc.jsonParse(url, json);
+                JSONObject taskResult = Utils.jsonParse(url, json);
                 if (taskResult == null) continue;
                 taskResult.put("jxFrom", jxName);
                 return taskResult;

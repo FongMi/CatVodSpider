@@ -8,7 +8,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,7 +33,7 @@ public class Supjav extends Spider {
 
     private HashMap<String, String> getHeaders(String referer) {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Misc.CHROME);
+        headers.put("User-Agent", Utils.CHROME);
         headers.put("Referer", referer);
         return headers;
     }
@@ -149,7 +149,7 @@ public class Supjav extends Spider {
 
     private String parseTV(String redirect) {
         String data = OkHttp.string(redirect, getHeaders(playUrl));
-        return Result.get().url(Misc.getVar(data, "urlPlay")).header(getHeaders(redirect)).string();
+        return Result.get().url(Utils.getVar(data, "urlPlay")).header(getHeaders(redirect)).string();
     }
 
     private String parseST(String redirect) {
