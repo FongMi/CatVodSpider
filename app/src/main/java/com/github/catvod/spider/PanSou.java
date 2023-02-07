@@ -6,7 +6,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -28,7 +28,7 @@ public class PanSou extends Spider {
 
     private Map<String, String> getHeaders(String id) {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Misc.CHROME);
+        headers.put("User-Agent", Utils.CHROME);
         headers.put("Referer", siteUrl + id);
         headers.put("_bid", "6d14a5dd6c07980d9dc089a693805ad8");
         return headers;

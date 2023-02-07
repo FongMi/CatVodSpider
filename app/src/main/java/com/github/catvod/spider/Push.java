@@ -5,7 +5,7 @@ import android.content.Context;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 
 import java.util.List;
 
@@ -20,8 +20,8 @@ public class Push extends Spider {
     public String detailContent(List<String> ids) throws Exception {
         String url = ids.get(0).trim();
         if (url.contains("aliyundrive")) return Ali.get().detailContent(ids);
-        if (Misc.isVip(url)) return Result.string(vod(url, "官源"));
-        if (Misc.isVideoFormat(url)) return Result.string(vod(url, "直連"));
+        if (Utils.isVip(url)) return Result.string(vod(url, "官源"));
+        if (Utils.isVideoFormat(url)) return Result.string(vod(url, "直連"));
         return Result.string(vod(url, "網頁"));
     }
 

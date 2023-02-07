@@ -8,7 +8,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.Trans;
 
 import org.jsoup.Jsoup;
@@ -32,7 +32,7 @@ public class Ying extends Spider {
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Misc.CHROME);
+        headers.put("User-Agent", Utils.CHROME);
         return headers;
     }
 
