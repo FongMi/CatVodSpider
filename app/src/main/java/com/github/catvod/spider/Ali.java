@@ -335,7 +335,7 @@ public class Ali {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
         Utils.addView(create(data.getData().getCodeContent()), params);
-        Init.show("請使用阿里雲盤 App 掃描二維碼");
+        //Init.show("請使用阿里雲盤 App 掃描二維碼");
     }
 
     private ImageView create(String value) {
