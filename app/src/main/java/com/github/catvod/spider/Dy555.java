@@ -53,6 +53,7 @@ public class Dy555 extends Spider {
     protected JSONObject filterConfig;
 
     protected Pattern regexCategory = Pattern.compile("/vodtype/(\\d+).html");
+    protected Pattern regexCategoryDouban = Pattern.compile("豆瓣:(\\S+)");
     protected Pattern regexVoddetail = Pattern.compile("/voddetail/(\\d+).html");
     protected Pattern regexPlay = Pattern.compile("/vodplay/(\\S+).html");
     protected Pattern regexPage = Pattern.compile("\\d+/(\\d+)");
@@ -132,7 +133,10 @@ public class Dy555 extends Spider {
                     String title = vod.attr("title");
                     String cover = vod.selectFirst("img").attr("data-original");
                     String remark = vod.selectFirst("div.module-item-note").text();
-                    remark = vod.selectFirst("div.module-item-douban").text() + " " + remark;
+                    Matcher matcherDouBan = regexCategoryDouban.matcher(vod.selectFirst("div.module-item-douban").text());
+                    if (matcherDouBan.find()) {
+                        remark = matcherDouBan.group(1) + " " + remark;
+                    }
                     Matcher matcher = regexVoddetail.matcher(vod.attr("href"));
                     if (!matcher.find())
                         continue;
@@ -213,7 +217,10 @@ public class Dy555 extends Spider {
                 String title = vod.attr("title");
                 String cover = vod.selectFirst("img").attr("data-original");
                 String remark = vod.selectFirst("div.module-item-note").text();
-                remark = vod.selectFirst("div.module-item-douban").text() + " " + remark;
+                Matcher matcherDouBan = regexCategoryDouban.matcher(vod.selectFirst("div.module-item-douban").text());
+                if (matcherDouBan.find()) {
+                    remark = matcherDouBan.group(1) + " " + remark;
+                }
                 Matcher matcher = regexVoddetail.matcher(vod.attr("href"));
                 if (matcher.find()) {
                     String vodId = matcher.group(1);
