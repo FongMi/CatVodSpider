@@ -9,7 +9,7 @@ import com.github.catvod.bean.upyun.Data;
 import com.github.catvod.bean.upyun.Item;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class UpYun extends Spider {
 
     private Map<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Misc.CHROME);
+        headers.put("User-Agent", Utils.CHROME);
         headers.put("Referer", siteUrl);
         return headers;
     }

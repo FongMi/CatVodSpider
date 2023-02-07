@@ -3,7 +3,7 @@ package com.github.catvod.bean.alist;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Vod;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -116,7 +116,7 @@ public class Item {
     }
 
     public String getRemark() {
-        return Misc.getSize(getSize()) + (isFolder() ? " 文件夹" : "");
+        return Utils.getSize(getSize()) + (isFolder() ? " 文件夹" : "");
     }
 
     public String getVodTag() {

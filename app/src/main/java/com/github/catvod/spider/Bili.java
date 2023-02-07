@@ -8,7 +8,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.Trans;
 
 import org.json.JSONArray;
@@ -38,7 +38,7 @@ public class Bili extends Spider {
 
     private void setHeader() throws Exception {
         header.put("cookie", getCookie(ext.getString("cookie")));
-        header.put("User-Agent", Misc.CHROME);
+        header.put("User-Agent", Utils.CHROME);
         header.put("Referer", url);
     }
 
