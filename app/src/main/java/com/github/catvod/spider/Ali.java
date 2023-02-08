@@ -13,11 +13,10 @@ import com.github.catvod.bean.ali.Auth;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Trans;
-import com.google.gson.JsonObject;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,6 +31,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +41,6 @@ import java.util.regex.Pattern;
 public class Ali {
 
     public static final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
-    private static final String QRCODE = "https://token.cooluc.com/";
     private ScheduledExecutorService service;
     private final Auth auth;
 
@@ -195,7 +194,7 @@ public class Ali {
             auth.setRefreshToken(object.getString("refresh_token"));
             return true;
         } catch (Exception e) {
-            checkService();
+            stopService();
             auth.clean();
             getQRCode();
             return true;
@@ -304,23 +303,32 @@ public class Ali {
         return result;
     }
 
-    private void checkService() {
+    private void stopService() {
         if (service != null) service.shutdownNow();
         if (auth.getView() != null) Init.run(() -> Utils.removeView(auth.getView()));
     }
 
     private void getQRCode() {
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Utils.CHROME);
-        Data data = Data.objectFrom(OkHttp.string(QRCODE + "qr", headers));
-        if (data != null) Init.run(() -> showCode(data));
+        AtomicInteger time = new AtomicInteger();
+        Data data = Data.objectFrom(OkHttp.string("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.0.3")).getContent().getData();
+        Init.run(() -> showCode(data));
         service = Executors.newScheduledThreadPool(1);
-        if (data != null) service.scheduleAtFixedRate(() -> {
-            JsonObject params = new JsonObject();
-            params.addProperty("t", data.getData().getT());
-            params.addProperty("ck", data.getData().getCk());
-            Data result = Data.objectFrom(OkHttp.postJson(QRCODE + "ck", params.toString(), headers));
-            if (result.hasToken()) setToken(result.getData().getRefreshToken());
+        service.scheduleAtFixedRate(() -> {
+            Map<String, String> params = new HashMap<>();
+            params.put("t", data.getT());
+            params.put("ck", data.getCk());
+            params.put("appName", "aliyun_drive");
+            params.put("appEntrance", "web");
+            params.put("isMobile", "false");
+            params.put("lang", "zh_CN");
+            params.put("returnUrl", "");
+            params.put("fromSite", "52");
+            params.put("bizParams", "");
+            params.put("navlanguage", "zh-CN");
+            params.put("navPlatform", "MacIntel");
+            Data result = Data.objectFrom(OkHttp.post("https://passport.aliyundrive.com/newlogin/qrcode/query.do?appName=aliyun_drive&fromSite=52&_bx-v=2.0.31", params)).getContent().getData();
+            if (result.hasToken()) setToken(result.getToken());
+            if (time.incrementAndGet() > 29) stopService();
         }, 1, 1, TimeUnit.SECONDS);
     }
 
@@ -328,13 +336,13 @@ public class Ali {
         Prefers.put("token", value);
         Init.show("請重新進入播放頁");
         auth.setRefreshToken(value);
-        checkService();
+        stopService();
     }
 
     private void showCode(Data data) {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
-        Utils.addView(create(data.getData().getCodeContent()), params);
+        Utils.addView(create(data.getCodeContent()), params);
         Init.show("請使用阿里雲盤 App 掃描二維碼");
     }
 
