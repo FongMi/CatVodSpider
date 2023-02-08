@@ -34,11 +34,11 @@ android {
 
 dependencies {
     //Debug For HTTP/3
-    //implementation 'org.chromium.net:cronet-embedded:101.4951.41'
+    debugImplementation 'org.chromium.net:cronet-embedded:101.4951.41'
     implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
     implementation 'androidx.annotation:annotation:1.5.0'
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'cn.wanghaomiao:JsoupXpath:2.5.1'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'org.jsoup:jsoup:1.15.3'
