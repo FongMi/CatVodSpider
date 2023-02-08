@@ -4,7 +4,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,7 +122,7 @@ public class XPathMac extends XPath {
         }
         if (videoUrl != null) {
             // 適配2.0.6的調用應用內解析列表的支持, 需要配合直連分析和匹配官源解析一起使用，參考cjt影視和極品直連
-            if (decodeVipFlag && Misc.isVip(videoUrl)) { // 使用jx:1
+            if (decodeVipFlag && Utils.isVip(videoUrl)) { // 使用jx:1
                 try {
                     JSONObject result = new JSONObject();
                     result.put("parse", 1);
@@ -145,7 +145,7 @@ public class XPathMac extends XPath {
                 }
             }
             // 如果是視頻直連 直接返回免解
-            else if (Misc.isVideoFormat(videoUrl)) {
+            else if (Utils.isVideoFormat(videoUrl)) {
                 try {
                     JSONObject result = new JSONObject();
                     result.put("parse", 0);

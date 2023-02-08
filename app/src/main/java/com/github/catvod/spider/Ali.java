@@ -1,5 +1,9 @@
 package com.github.catvod.spider;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -13,11 +17,10 @@ import com.github.catvod.bean.ali.Auth;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
 import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Trans;
-import com.google.gson.JsonObject;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,6 +46,7 @@ public class Ali {
     public static final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
     private ScheduledExecutorService service;
     private final Auth auth;
+    private AlertDialog dialog;
 
     private static class Loader {
         static volatile Ali INSTANCE = new Ali();
@@ -63,7 +67,7 @@ public class Ali {
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Misc.CHROME);
+        headers.put("User-Agent", Utils.CHROME);
         headers.put("Referer", "https://www.aliyundrive.com/");
         return headers;
     }
@@ -100,7 +104,8 @@ public class Ali {
         if (!matcher.find()) return "";
         String shareId = matcher.group(1);
         String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
-        auth.setShareId(shareId); refreshShareToken();
+        auth.setShareId(shareId);
+        refreshShareToken();
         return Result.string(getVod(url, fileId));
     }
 
@@ -157,7 +162,7 @@ public class Ali {
                 folders.add(file);
             } else if (file.getCategory().equals("video") || file.getCategory().equals("audio")) {
                 files.add(file.parent(parent.getName()));
-            } else if (Misc.isSub(file.getExt())) {
+            } else if (Utils.isSub(file.getExt())) {
                 String key = file.removeExt();
                 if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());
                 subMap.get(key).add(key + "@@@" + file.getExt() + "@@@" + file.getFileId());
@@ -193,7 +198,7 @@ public class Ali {
             auth.setRefreshToken(object.getString("refresh_token"));
             return true;
         } catch (Exception e) {
-            checkService();
+            stopService();
             auth.clean();
             getQRCode();
             return true;
@@ -302,23 +307,33 @@ public class Ali {
         return result;
     }
 
-    private void checkService() {
-        if (service != null) service.shutdownNow();
-        if (auth.getView() != null) Init.run(() -> Misc.removeView(auth.getView()));
+    private void getQRCode() {
+        Data data = Data.objectFrom(OkHttp.string("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3")).getContent().getData();
+        Init.run(() -> showQRCode(data));
     }
 
-    private void getQRCode() {
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Misc.CHROME);
-        Data data = Data.objectFrom(OkHttp.string("https://token.cooluc.com/qr", headers));
-        if (data != null) Init.run(() -> showCode(data));
+    private void showQRCode(Data data) {
+        try {
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Utils.dp2px(240), Utils.dp2px(240));
+            ImageView image = new ImageView(Init.context());
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            image.setImageBitmap(QRCode.getBitmap(data.getCodeContent(), 240, 2));
+            FrameLayout frame = new FrameLayout(Init.context());
+            params.gravity = Gravity.CENTER;
+            frame.addView(image, params);
+            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnDismissListener(this::dismiss).show();
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Init.execute(() -> startService(data.getParams()));
+            Init.show("請使用阿里雲盤 App 掃描二維碼");
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void startService(Map<String, String> params) {
         service = Executors.newScheduledThreadPool(1);
-        if (data != null) service.scheduleAtFixedRate(() -> {
-            JsonObject params = new JsonObject();
-            params.addProperty("t", data.getData().getT());
-            params.addProperty("ck", data.getData().getCk());
-            Data result = Data.objectFrom(OkHttp.postJson("https://easy-token.cooluc.com/ck", params.toString(), headers));
-            if (result.hasToken()) setToken(result.getData().getRefreshToken());
+        service.scheduleAtFixedRate(() -> {
+            Data result = Data.objectFrom(OkHttp.post("https://passport.aliyundrive.com/newlogin/qrcode/query.do?appName=aliyun_drive&fromSite=52&_bx-v=2.2.3", params)).getContent().getData();
+            if (result.hasToken()) setToken(result.getToken());
         }, 1, 1, TimeUnit.SECONDS);
     }
 
@@ -326,21 +341,22 @@ public class Ali {
         Prefers.put("token", value);
         Init.show("請重新進入播放頁");
         auth.setRefreshToken(value);
-        checkService();
+        stopService();
     }
 
-    private void showCode(Data data) {
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER;
-        Misc.addView(create(data.getData().getCodeContent()), params);
-        Init.show("請使用阿里雲盤 App 掃描二維碼");
+    private void stopService() {
+        if (service != null) service.shutdownNow();
+        Init.run(this::dismiss);
     }
 
-    private ImageView create(String value) {
-        ImageView view = new ImageView(Init.context());
-        view.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        view.setImageBitmap(QRCode.getBitmap(value, 250, 2));
-        auth.setView(view);
-        return view;
+    private void dismiss(DialogInterface dialog) {
+        stopService();
+    }
+
+    private void dismiss() {
+        try {
+            if (dialog != null) dialog.dismiss();
+        } catch (Exception ignored) {
+        }
     }
 }

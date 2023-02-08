@@ -24,7 +24,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class Misc {
+public class Utils {
+
+    public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
 
     public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
     public static Charset CharsetUTF8 = Charset.forName("UTF-8");
@@ -85,7 +87,7 @@ public class Misc {
             headers.put("User-Agent", "Mozilla/5.0");
         } else if (input.contains("bilibili")) {
             headers.put("Referer", "https://www.bilibili.com/");
-            headers.put("User-Agent", Misc.CHROME);
+            headers.put("User-Agent", CHROME);
         }
         return headers;
     }
@@ -101,7 +103,7 @@ public class Misc {
         if (ua.trim().length() > 0) headers.put("User-Agent", ua);
         String referer = jsonPlayData.optString("referer", "");
         if (referer.trim().length() > 0) headers.put("Referer", referer);
-        headers = Misc.fixJsonVodHeader(headers, input, url);
+        headers = Utils.fixJsonVodHeader(headers, input, url);
         JSONObject taskResult = new JSONObject();
         taskResult.put("header", headers);
         taskResult.put("url", url);
