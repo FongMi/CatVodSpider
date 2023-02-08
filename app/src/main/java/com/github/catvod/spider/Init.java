@@ -12,9 +12,12 @@ import com.github.catvod.utils.Trans;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Init {
 
+    private final ExecutorService executor;
     private final Handler handler;
     private Application app;
 
@@ -28,6 +31,7 @@ public class Init {
 
     public Init() {
         this.handler = new Handler(Looper.getMainLooper());
+        this.executor = Executors.newFixedThreadPool(5);
     }
 
     public static Application context() {
@@ -38,6 +42,10 @@ public class Init {
         SpiderDebug.log("自定義爬蟲代碼載入成功！");
         get().app = ((Application) context);
         Trans.init();
+    }
+
+    public static void execute(Runnable runnable) {
+        get().executor.execute(runnable);
     }
 
     public static void run(Runnable runnable) {

@@ -1,5 +1,9 @@
 package com.github.catvod.spider;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -31,7 +35,6 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +46,7 @@ public class Ali {
     public static final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
     private ScheduledExecutorService service;
     private final Auth auth;
+    private AlertDialog dialog;
 
     private static class Loader {
         static volatile Ali INSTANCE = new Ali();
@@ -303,32 +307,33 @@ public class Ali {
         return result;
     }
 
-    private void stopService() {
-        if (service != null) service.shutdownNow();
-        if (auth.getView() != null) Init.run(() -> Utils.removeView(auth.getView()));
+    private void getQRCode() {
+        Data data = Data.objectFrom(OkHttp.string("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3")).getContent().getData();
+        Init.run(() -> showQRCode(data));
     }
 
-    private void getQRCode() {
-        AtomicInteger time = new AtomicInteger();
-        Data data = Data.objectFrom(OkHttp.string("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.0.3")).getContent().getData();
-        Init.run(() -> showCode(data));
+    private void showQRCode(Data data) {
+        try {
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Utils.dp2px(240), Utils.dp2px(240));
+            ImageView image = new ImageView(Init.context());
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            image.setImageBitmap(QRCode.getBitmap(data.getCodeContent(), 240, 2));
+            FrameLayout frame = new FrameLayout(Init.context());
+            params.gravity = Gravity.CENTER;
+            frame.addView(image, params);
+            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnDismissListener(this::dismiss).show();
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Init.execute(() -> startService(data.getParams()));
+            Init.show("請使用阿里雲盤 App 掃描二維碼");
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void startService(Map<String, String> params) {
         service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(() -> {
-            Map<String, String> params = new HashMap<>();
-            params.put("t", data.getT());
-            params.put("ck", data.getCk());
-            params.put("appName", "aliyun_drive");
-            params.put("appEntrance", "web");
-            params.put("isMobile", "false");
-            params.put("lang", "zh_CN");
-            params.put("returnUrl", "");
-            params.put("fromSite", "52");
-            params.put("bizParams", "");
-            params.put("navlanguage", "zh-CN");
-            params.put("navPlatform", "MacIntel");
-            Data result = Data.objectFrom(OkHttp.post("https://passport.aliyundrive.com/newlogin/qrcode/query.do?appName=aliyun_drive&fromSite=52&_bx-v=2.0.31", params)).getContent().getData();
+            Data result = Data.objectFrom(OkHttp.post("https://passport.aliyundrive.com/newlogin/qrcode/query.do?appName=aliyun_drive&fromSite=52&_bx-v=2.2.3", params)).getContent().getData();
             if (result.hasToken()) setToken(result.getToken());
-            if (time.incrementAndGet() > 29) stopService();
         }, 1, 1, TimeUnit.SECONDS);
     }
 
@@ -339,18 +344,19 @@ public class Ali {
         stopService();
     }
 
-    private void showCode(Data data) {
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER;
-        Utils.addView(create(data.getCodeContent()), params);
-        Init.show("請使用阿里雲盤 App 掃描二維碼");
+    private void stopService() {
+        if (service != null) service.shutdownNow();
+        Init.run(this::dismiss);
     }
 
-    private ImageView create(String value) {
-        ImageView view = new ImageView(Init.context());
-        view.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        view.setImageBitmap(QRCode.getBitmap(value, 250, 2));
-        auth.setView(view);
-        return view;
+    private void dismiss(DialogInterface dialog) {
+        stopService();
+    }
+
+    private void dismiss() {
+        try {
+            if (dialog != null) dialog.dismiss();
+        } catch (Exception ignored) {
+        }
     }
 }
