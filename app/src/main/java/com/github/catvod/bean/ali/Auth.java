@@ -1,7 +1,6 @@
 package com.github.catvod.bean.ali;
 
 import android.text.TextUtils;
-import android.widget.ImageView;
 
 public class Auth {
 
@@ -9,7 +8,6 @@ public class Auth {
     private String accessToken;
     private String shareToken;
     private String shareId;
-    private ImageView view;
 
     public String getRefreshToken() {
         return TextUtils.isEmpty(refreshToken) ? "" : refreshToken;
@@ -41,14 +39,6 @@ public class Auth {
 
     public void setShareId(String shareId) {
         this.shareId = shareId;
-    }
-
-    public ImageView getView() {
-        return view;
-    }
-
-    public void setView(ImageView view) {
-        this.view = view;
     }
 
     public boolean isEmpty() {
