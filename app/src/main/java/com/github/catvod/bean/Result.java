@@ -97,8 +97,7 @@ public class Result {
 
     public Result filters(JSONObject object) {
         if (object == null) return this;
-        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {
-        }.getType();
+        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {}.getType();
         LinkedHashMap<String, List<Filter>> filters = new Gson().fromJson(object.toString(), listType);
         for (Map.Entry<String, List<Filter>> entry : filters.entrySet()) for (Filter filter : entry.getValue()) filter.trans();
         this.filters = filters;

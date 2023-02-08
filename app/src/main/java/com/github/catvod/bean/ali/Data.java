@@ -5,6 +5,9 @@ import android.util.Base64;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Data {
 
     @SerializedName("data")
@@ -67,7 +70,19 @@ public class Data {
         return getQrCodeStatus().equals("CONFIRMED") && getBizExt().length() > 0;
     }
 
-    public boolean isExpired() {
-        return getQrCodeStatus().equals("EXPIRED");
+    public Map<String, String> getParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put("t", getT());
+        params.put("ck", getCk());
+        params.put("appName", "aliyun_drive");
+        params.put("appEntrance", "web");
+        params.put("isMobile", "false");
+        params.put("lang", "zh_CN");
+        params.put("returnUrl", "");
+        params.put("fromSite", "52");
+        params.put("bizParams", "");
+        params.put("navlanguage", "zh-CN");
+        params.put("navPlatform", "MacIntel");
+        return params;
     }
 }
