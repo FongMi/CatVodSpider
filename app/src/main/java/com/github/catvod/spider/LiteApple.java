@@ -8,7 +8,7 @@ import android.util.Base64;
 
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.okhttp.OKCallBack;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
@@ -334,7 +334,7 @@ public class LiteApple extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         try {
-            if (Misc.isVideoFormat(id)) {
+            if (Utils.isVideoFormat(id)) {
                 JSONObject result = new JSONObject();
                 result.put("parse", 0);
                 result.put("header", "");

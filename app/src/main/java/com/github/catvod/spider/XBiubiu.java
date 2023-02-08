@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.okhttp.OKCallBack;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
@@ -59,9 +59,9 @@ public class XBiubiu extends Spider {
 
     protected HashMap<String, String> getHeaders(String url) {
         HashMap<String, String> headers = new HashMap<>();
-        String ua = getRuleVal("ua", Misc.CHROME).trim();
+        String ua = getRuleVal("ua", Utils.CHROME).trim();
         if (ua.isEmpty())
-            ua = Misc.CHROME;
+            ua = Utils.CHROME;
         headers.put("User-Agent", ua);
         return headers;
     }
@@ -133,7 +133,7 @@ public class XBiubiu extends Spider {
                     } else {
                         pic = subContent(jiequContent, getRuleVal("tupianqian"), getRuleVal("tupianhou")).get(0);
                     }
-                    pic = Misc.fixUrl(webUrl, pic);
+                    pic = Utils.fixUrl(webUrl, pic);
                     String link = subContent(jiequContent, getRuleVal("lianjieqian"), getRuleVal("lianjiehou")).get(0);
                     link = getRuleVal("ljqianzhui").isEmpty() ? (link + getRuleVal("ljhouzhui")) : ("x:" + getRuleVal("ljqianzhui")) + link + getRuleVal("ljhouzhui");
                     String remark = !getRuleVal("fubiaotiqian").isEmpty() && !getRuleVal("fubiaotihou").isEmpty() ?
@@ -365,7 +365,7 @@ public class XBiubiu extends Spider {
                     String name = vod.optString(getRuleVal("jsname")).trim();
                     String id = vod.optString(getRuleVal("jsid")).trim();
                     String pic = vod.optString(getRuleVal("jspic")).trim();
-                    pic = Misc.fixUrl(webUrl, pic);
+                    pic = Utils.fixUrl(webUrl, pic);
                     String link = getRuleVal("sousuohouzhui") + id;
                     link = getRuleVal("ssljqianzhui").isEmpty() ? (link + getRuleVal("ssljhouzhui")) : ("x:" + getRuleVal("ssljqianzhui")) + link + getRuleVal("ssljhouzhui");
                     JSONObject v = new JSONObject();
@@ -391,7 +391,7 @@ public class XBiubiu extends Spider {
                         String jiequContent = jiequContents.get(i);
                         String title = subContent(jiequContent, getRuleVal("ssbiaotiqian"), getRuleVal("ssbiaotihou")).get(0);
                         String pic = subContent(jiequContent, getRuleVal("sstupianqian"), getRuleVal("sstupianhou")).get(0);
-                        pic = Misc.fixUrl(webUrl, pic);
+                        pic = Utils.fixUrl(webUrl, pic);
                         String link = subContent(jiequContent, getRuleVal("sslianjieqian"), getRuleVal("sslianjiehou")).get(0);
                         link = getRuleVal("ssljqianzhui").isEmpty() ? (link + getRuleVal("ssljhouzhui")) : ("x:" + getRuleVal("ssljqianzhui")) + link + getRuleVal("ssljhouzhui");
                         String remark = "";

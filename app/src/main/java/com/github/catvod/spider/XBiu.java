@@ -7,7 +7,7 @@ import android.util.Pair;
 
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.okhttp.OKCallBack;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
@@ -311,7 +311,7 @@ public class XBiu extends Spider {
             e.printStackTrace();
         }
         if (!headers.containsKey("User-Agent")) {
-            headers.put("User-Agent", Misc.CHROME);
+            headers.put("User-Agent", com.github.catvod.utils.Utils.CHROME);
         }
         return headers;
     }
@@ -1165,7 +1165,7 @@ public class XBiu extends Spider {
                         String vod_name = v.getString("vod_name");
                         v.put("vod_remarks", guess_value_vod_remarks(nd, 0, vod_name));
                     }
-                    v.put("vod_id", Base64.encodeToString(v.toString().getBytes(Misc.CharsetUTF8), base64Flag));
+                    v.put("vod_id", Base64.encodeToString(v.toString().getBytes(com.github.catvod.utils.Utils.CharsetUTF8), base64Flag));
                     videos.put(v);
                 }
 //                pos += vod_id.length();
@@ -1724,7 +1724,7 @@ public class XBiu extends Spider {
                 } else {
                     v.put("vod_remarks", "");
                 }
-                v.put("vod_id", Base64.encodeToString(v.toString().getBytes(Misc.CharsetUTF8), base64Flag));
+                v.put("vod_id", Base64.encodeToString(v.toString().getBytes(com.github.catvod.utils.Utils.CharsetUTF8), base64Flag));
                 videos.put(v);
             }
             JSONObject result = new JSONObject();
@@ -1873,7 +1873,7 @@ public class XBiu extends Spider {
                         String vod_name = v.getString("vod_name");
                         v.put("vod_remarks", guess_value_vod_remarks(nd, 0, vod_name));
                     }
-                    v.put("vod_id", Base64.encodeToString(v.toString().getBytes(Misc.CharsetUTF8), base64Flag));
+                    v.put("vod_id", Base64.encodeToString(v.toString().getBytes(com.github.catvod.utils.Utils.CharsetUTF8), base64Flag));
                     videos.put(v);
                 }
             }

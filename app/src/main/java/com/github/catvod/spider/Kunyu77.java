@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
 import org.json.JSONArray;
@@ -37,7 +37,7 @@ public class Kunyu77 extends Spider {
         // HashMap<String, String> headers = new HashMap<>();
         HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("user-agent", uAgent);
-        hashMap.put("TK",Misc.MD5(url));
+        hashMap.put("TK",Utils.MD5(url));
         hashMap.put("t", time);
         //headers.put("user-agent", uAgent);
         return hashMap;
@@ -347,7 +347,7 @@ public class Kunyu77 extends Spider {
                 JSONObject playHeader = dataObj.optJSONObject("playHeader");
                 String jxUrl = dataObj.getString("url");
                 content = OkHttpUtil.string(jxUrl, getHeaders(jxUrl));
-                JSONObject result = Misc.jsonParse(jxUrl, content);
+                JSONObject result = Utils.jsonParse(jxUrl, content);
                 if (result != null) {
                     result.put("parse", 0);
                     result.put("playUrl", "");
@@ -365,7 +365,7 @@ public class Kunyu77 extends Spider {
             } catch (Throwable th) {
 
             }
-            if (Misc.isVip(videoUrl)) {
+            if (Utils.isVip(videoUrl)) {
                 JSONObject result = new JSONObject();
                 result.put("parse", 1);
                 result.put("jx", "1");

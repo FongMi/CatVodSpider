@@ -27,8 +27,6 @@ import java.util.Locale;
 public class Utils {
 
     public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
-
-    public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
     public static Charset CharsetUTF8 = Charset.forName("UTF-8");
     public static Charset CharsetIOS8859 = Charset.forName("iso-8859-1");
     public static boolean isVip(String url) {

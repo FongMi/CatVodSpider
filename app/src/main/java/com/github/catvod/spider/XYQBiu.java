@@ -6,7 +6,7 @@ import android.util.Base64;
 
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.okhttp.OKCallBack;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
@@ -254,7 +254,7 @@ public class XYQBiu extends Spider {
                         if (!getRuleVal("catjsonpic").isEmpty()) {
                             try {
                                 pic = vod.optString(getRuleVal("catjsonpic")).trim();
-                                pic = Misc.fixUrl(webUrl, pic);
+                                pic = Utils.fixUrl(webUrl, pic);
                                 if (picneetproxy) {
                                     pic = fixCover(pic, webUrl);
                                 }
@@ -295,7 +295,7 @@ public class XYQBiu extends Spider {
                         if (!getRuleVal("cat_pic").isEmpty()) {
                             try {
                                 pic = subContent(jiequContent, getRuleVal("cat_pic").split("&&")[0], getRuleVal("cat_pic").split("&&")[1]).get(0);
-                                pic = Misc.fixUrl(webUrl, pic);
+                                pic = Utils.fixUrl(webUrl, pic);
                                 if (picneetproxy) {
                                     pic = fixCover(pic, webUrl);
                                 }
@@ -544,13 +544,13 @@ public class XYQBiu extends Spider {
                     result.put("header", webheaders.toString());
                 }
                 //视频格式识别
-                if (webUrl.contains("#isVideo=true#") || Misc.isVideoFormat(webUrl)) {
+                if (webUrl.contains("#isVideo=true#") || Utils.isVideoFormat(webUrl)) {
                     if (webUrl.contains("#isVideo=true#")) {
                         webUrl = webUrl.replaceAll("#isVideo=true#", "");
                     }
                     result.put("parse", 0);
                     result.put("playUrl", "");
-                } else if (Misc.isVip(webUrl)) {
+                } else if (Utils.isVip(webUrl)) {
                     result.put("parse", 1);
                     result.put("jx", "1");
                     result.put("url", webUrl);
@@ -606,7 +606,7 @@ public class XYQBiu extends Spider {
 
             //视频不为null时进行处理解析
             if (videoUrl != null) {
-                if (Misc.isVip(videoUrl)) { // 使用jx:1
+                if (Utils.isVip(videoUrl)) { // 使用jx:1
                     try {
                         result.put("parse", 1);
                         result.put("jx", "1");
@@ -622,7 +622,7 @@ public class XYQBiu extends Spider {
                     result.put("playUrl", "");
                     result.put("url", webUrl);
                     return result.toString();
-                } else if (Misc.isVideoFormat(videoUrl)) {
+                } else if (Utils.isVideoFormat(videoUrl)) {
                     try {
                         result.put("parse", 0);
                         result.put("playUrl", "");
@@ -754,7 +754,7 @@ public class XYQBiu extends Spider {
                         if (!getRuleVal("jsonpic").isEmpty()) {
                             try {
                                 pic = vod.optString(getRuleVal("jsonpic")).trim();
-                                pic = Misc.fixUrl(webUrl, pic);
+                                pic = Utils.fixUrl(webUrl, pic);
                                 if (picneetproxy) {
                                     pic = fixCover(pic, webUrl);
                                 }
@@ -795,7 +795,7 @@ public class XYQBiu extends Spider {
                         if (!getRuleVal("sea_pic").isEmpty()) {
                             try {
                                 pic = subContent(jiequContent, getRuleVal("sea_pic").split("&&")[0], getRuleVal("sea_pic").split("&&")[1]).get(0);
-                                pic = Misc.fixUrl(webUrl, pic);
+                                pic = Utils.fixUrl(webUrl, pic);
                                 if (picneetproxy) {
                                     pic = fixCover(pic, webUrl);
                                 }

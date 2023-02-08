@@ -8,7 +8,7 @@ import android.util.Base64;
 
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.gZip;
 import com.github.catvod.utils.okhttp.OKCallBack;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
@@ -421,7 +421,7 @@ public class Bdys01 extends Spider {
                 }
             }
             long t = System.currentTimeMillis();
-            String key = Misc.NewMD5(pid + "-" + t, StandardCharsets.UTF_8).substring(0, 16);
+            String key = Utils.NewMD5(pid + "-" + t, StandardCharsets.UTF_8).substring(0, 16);
             String sg = encrypt(pid + "-" + t, key);
             String geturl = siteUrl + "/lines?t=" + t + "&sg=" + sg + "&pid=" + pid;
             String urlsrc = OkHttpUtil.string(geturl, getHeaders(geturl, ""));

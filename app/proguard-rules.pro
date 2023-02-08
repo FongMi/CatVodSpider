@@ -10,7 +10,7 @@
 # Gson
 -keepattributes Signature
 -keepattributes *Annotation*
--dontwarn sun.misc.**
+-dontwarn sun.Utils.**
 -keep class com.google.gson.**{*;}
 -keep class * extends com.google.gson.TypeAdapter
 -keep class * implements com.google.gson.TypeAdapterFactory
