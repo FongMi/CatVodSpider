@@ -1,6 +1,10 @@
 {
   "drives": [
     {
+      "name": "肥羊",
+      "server": "https://pan.d1.mk"
+    },
+    {
       "name": "觸光",
       "server": "https://pan.ichuguang.com"
     },
