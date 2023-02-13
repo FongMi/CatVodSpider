@@ -1,6 +1,10 @@
 {
   "drives": [
     {
+      "name": "小雅",
+      "server": "http://alist.xiaoya.pro"
+    },
+    {
       "name": "肥羊",
       "server": "https://pan.d1.mk"
     },
