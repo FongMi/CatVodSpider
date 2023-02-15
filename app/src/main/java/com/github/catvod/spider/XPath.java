@@ -28,7 +28,7 @@ public class XPath extends Spider {
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", rule.getUa().isEmpty() ? "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36" : rule.getUa());
+        headers.put("User-Agent", rule.getUa().isEmpty() ? Utils.CHROME : rule.getUa());
         return headers;
     }
 
