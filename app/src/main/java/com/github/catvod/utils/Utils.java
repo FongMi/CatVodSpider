@@ -30,6 +30,7 @@ public class Utils {
     }
 
     public static boolean isVideoFormat(String url) {
+        if (url.contains("url=http") || url.contains(".js") || url.contains(".css") || url.contains(".html")) return false;
         return Sniffer.RULE.matcher(url).find();
     }
 
