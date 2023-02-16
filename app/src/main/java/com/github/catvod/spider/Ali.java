@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,16 +22,19 @@ import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Trans;
 import com.github.catvod.utils.Utils;
+import com.google.common.hash.Hashing;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -74,8 +78,11 @@ public class Ali {
 
     private HashMap<String, String> getAuthHeader() {
         HashMap<String, String> headers = getHeaders();
-        headers.put("authorization", auth.getAccessToken());
+        headers.put("content-type", "application/json");
+        headers.put("Authorization", auth.getAccessToken());
         headers.put("x-share-token", auth.getShareToken());
+        headers.put("x-device-id", auth.getDeviceId());
+        headers.put("x-signature", auth.getSignature());
         return headers;
     }
 
@@ -194,8 +201,10 @@ public class Ali {
             body.put("refresh_token", token);
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
+            auth.setUserId(object.getString("user_id"));
             auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
             auth.setRefreshToken(object.getString("refresh_token"));
+            generateSign();
             return true;
         } catch (Exception e) {
             stopService();
@@ -205,6 +214,23 @@ public class Ali {
         } finally {
             while (auth.isEmpty()) SystemClock.sleep(250);
         }
+    }
+
+    /*
+     * secpAppID := "5dde4e1bdf9e4966b387ba58f4b3fdc3"
+     * singdata := fmt.Sprintf("%s:%s:%s:%d", secpAppID, state.deviceID, d.UserID, state.nonce)
+     * hash := sha256.Sum256([]byte(singdata))
+     * data, _ := ecc.SignBytes(state.privateKey, hash[:], ecc.RecID|ecc.LowerS)
+     * state.signature = hex.EncodeToString(data)
+     * */
+    private void generateSign() throws Exception {
+        String deviceId = Hashing.sha256().hashString(auth.getUserId(), Charset.forName("UTF-8")).toString();
+        //privateKey, _ := NewPrivateKeyFromHex(deviceID)
+        String appID = "5dde4e1bdf9e4966b387ba58f4b3fdc3";
+        String signData = String.format(Locale.getDefault(), "%s:%s:%s:%d", appID, deviceId, auth.getUserId(), 0);
+        String signature = "";
+        auth.setDeviceId(deviceId);
+        auth.setSignature(signature);
     }
 
     private boolean refreshShareToken() {
@@ -287,6 +313,7 @@ public class Ali {
             body.put("share_id", auth.getShareId());
             body.put("expire_sec", 600);
             String json = postAuth("v2/file/get_share_link_download_url", body);
+            Log.e("DDD", json);
             String url = new JSONObject(json).optString("download_url");
             Map<String, List<String>> respHeaders = new HashMap<>();
             OkHttp.stringNoRedirect(url, getHeaders(), respHeaders);
