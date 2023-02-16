@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -74,7 +75,8 @@ public class Ali {
 
     private HashMap<String, String> getAuthHeader() {
         HashMap<String, String> headers = getHeaders();
-        headers.put("authorization", auth.getAccessToken());
+        headers.put("content-type", "application/json");
+        headers.put("Authorization", auth.getAccessToken());
         headers.put("x-share-token", auth.getShareToken());
         return headers;
     }
@@ -112,11 +114,7 @@ public class Ali {
     public String playerContent(String flag, String id) {
         String[] ids = id.split("\\+");
         if (auth.isEmpty()) refreshAccessToken();
-        if (flag.equals("原畫")) {
-            return Result.get().url(getDownloadUrl(ids[0])).subs(getSub(ids)).header(getHeaders()).string();
-        } else {
-            return Result.get().url(getPreviewUrl(ids[0])).subs(getSub(ids)).header(getHeaders()).string();
-        }
+        return Result.get().url(getDownloadUrl(ids[0])).subs(getSub(ids)).header(getHeaders()).string();
     }
 
     private Vod getVod(String url, String fileId) throws Exception {
@@ -138,7 +136,7 @@ public class Ali {
         vod.setVodPic(object.getString("avatar"));
         vod.setVodName(object.getString("share_name"));
         vod.setVodPlayUrl(TextUtils.join("$$$", sourceUrls));
-        vod.setVodPlayFrom("原畫$$$普畫");
+        vod.setVodPlayFrom("原畫");
         vod.setTypeName("阿里雲盤");
         return vod;
     }
@@ -194,6 +192,8 @@ public class Ali {
             body.put("refresh_token", token);
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
+            auth.setUserId(object.getString("user_id"));
+            auth.setDeviceId(object.getString("device_id"));
             auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
             auth.setRefreshToken(object.getString("refresh_token"));
             return true;
@@ -287,6 +287,7 @@ public class Ali {
             body.put("share_id", auth.getShareId());
             body.put("expire_sec", 600);
             String json = postAuth("v2/file/get_share_link_download_url", body);
+            Log.e("DDD", json);
             String url = new JSONObject(json).optString("download_url");
             Map<String, List<String>> respHeaders = new HashMap<>();
             OkHttp.stringNoRedirect(url, getHeaders(), respHeaders);
