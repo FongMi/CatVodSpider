@@ -22,13 +22,11 @@ import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Trans;
 import com.github.catvod.utils.Utils;
-import com.google.common.hash.Hashing;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -202,6 +200,7 @@ public class Ali {
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
             auth.setUserId(object.getString("user_id"));
+            auth.setDeviceId(object.getString("device_id"));
             auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
             auth.setRefreshToken(object.getString("refresh_token"));
             generateSign();
@@ -224,12 +223,9 @@ public class Ali {
      * state.signature = hex.EncodeToString(data)
      * */
     private void generateSign() throws Exception {
-        String deviceId = Hashing.sha256().hashString(auth.getUserId(), Charset.forName("UTF-8")).toString();
-        //privateKey, _ := NewPrivateKeyFromHex(deviceID)
         String appID = "5dde4e1bdf9e4966b387ba58f4b3fdc3";
-        String signData = String.format(Locale.getDefault(), "%s:%s:%s:%d", appID, deviceId, auth.getUserId(), 0);
+        String signData = String.format(Locale.getDefault(), "%s:%s:%s:%d", appID, auth.getDeviceId(), auth.getUserId(), 0);
         String signature = "";
-        auth.setDeviceId(deviceId);
         auth.setSignature(signature);
     }
 
