@@ -148,14 +148,14 @@
       "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt"
     },
     {
-      "key": "盤搜",
-      "name": "盤搜",
+      "key": "csp_Alist2",
+      "name": "🅿️网盘┃搜索",
       "type": 3,
-      "api": "csp_PanSou",
+      "api": "https://ftyyy.tk/JS/lib/alist.min.js",
       "searchable": 1,
       "filterable": 0,
       "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt"
+      "ext": "http://192.168.10.1:5705/txt/json/alist.json"
     },
     {
       "key": "UP雲搜",
