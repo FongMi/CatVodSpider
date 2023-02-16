@@ -6,15 +6,14 @@ import android.text.TextUtils;
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.bean.xpath.Rule;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.Trans;
-import com.github.catvod.bean.xpath.Rule;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.seimicrawler.xpath.JXDocument;
 import org.seimicrawler.xpath.JXNode;
@@ -27,38 +26,32 @@ import java.util.Set;
 
 public class XPath extends Spider {
 
-    protected Rule rule = null;
-
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("User-Agent", rule.getUa().isEmpty() ? Utils.CHROME : rule.getUa());
         return headers;
     }
 
-    private void fetchRule(String ext) {
-        if (ext.startsWith("http")) {
-            String json = OkHttp.string(ext);
-            rule = Rule.fromJson(json);
-            loadRuleExt(json);
-        } else {
-            rule = Rule.fromJson(ext);
-            loadRuleExt(ext);
-        }
+    @Override
+    public void init(Context context) {
+        super.init(context);
     }
 
-    @Override
     public void init(Context context, String extend) {
         super.init(context, extend);
-        fetchRule(extend);
+        this.ext = extend;
     }
 
     @Override
-    public String homeContent(boolean filter) throws JSONException {
+    public String homeContent(boolean filter) {
+        fetchRule();
         List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
         if (rule.getCateManual().size() > 0) {
             Set<String> keys = rule.getCateManual().keySet();
-            for (String k : keys) classes.add(new Class(rule.getCateManual().get(k), k));
+            for (String k : keys) {
+                classes.add(new Class(rule.getCateManual().get(k), k));
+            }
         }
         String webUrl = rule.getHomeUrl();
         JXDocument doc = JXDocument.create(fetch(webUrl));
@@ -103,8 +96,9 @@ public class XPath extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
-        String webUrl = categoryUrl(tid, pg, filter, extend);
+        fetchRule();
         List<Vod> list = new ArrayList<>();
+        String webUrl = categoryUrl(tid, pg, filter, extend);
         JXDocument doc = JXDocument.create(fetch(webUrl));
         List<JXNode> vodNodes = doc.selN(rule.getCateVodNode());
         for (int i = 0; i < vodNodes.size(); i++) {
@@ -130,7 +124,8 @@ public class XPath extends Spider {
     }
 
     @Override
-    public String detailContent(List<String> ids) throws JSONException {
+    public String detailContent(List<String> ids) {
+        fetchRule();
         String webUrl = rule.getDetailUrl().replace("{vid}", ids.get(0));
         String webContent = fetch(webUrl);
         JXDocument doc = JXDocument.create(webContent);
@@ -138,15 +133,9 @@ public class XPath extends Spider {
         String cover = "", title = "", desc = "", category = "", area = "", year = "", remark = "", director = "", actor = "";
         title = vodNode.selOne(rule.getDetailName()).asString().trim();
         title = rule.getDetailNameR(title);
-        if (!rule.getDetailImg().isEmpty()) {
-            try {
-                cover = vodNode.selOne(rule.getDetailImg()).asString().trim();
-                cover = rule.getDetailImgR(cover);
-                cover = Utils.fixUrl(webUrl, cover);
-            } catch (Exception e) {
-                SpiderDebug.log(e);
-            }
-        }
+        cover = vodNode.selOne(rule.getDetailImg()).asString().trim();
+        cover = rule.getDetailImgR(cover);
+        cover = Utils.fixUrl(webUrl, cover);
         if (!rule.getDetailCate().isEmpty()) {
             try {
                 category = vodNode.selOne(rule.getDetailCate()).asString().trim();
@@ -236,11 +225,13 @@ public class XPath extends Spider {
                 id = rule.getDetailUrlIdR(id);
                 vodItems.add(Trans.get(name) + "$" + id);
             }
+            // 排除播放列表為空的播放源
             if (vodItems.size() == 0 && playFrom.size() > i) {
                 playFrom.set(i, "");
             }
             playList.add(TextUtils.join("#", vodItems));
         }
+        // 排除播放列表為空的播放源
         for (int i = playFrom.size() - 1; i >= 0; i--) {
             if (playFrom.get(i).isEmpty()) playFrom.remove(i);
         }
@@ -257,6 +248,7 @@ public class XPath extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
+        fetchRule();
         String webUrl = rule.getPlayUrl().isEmpty() ? id : rule.getPlayUrl().replace("{playUrl}", id);
         SpiderDebug.log(webUrl);
         HashMap<String, String> headers = new HashMap<>();
@@ -266,7 +258,8 @@ public class XPath extends Spider {
     }
 
     @Override
-    public String searchContent(String key, boolean quick) throws JSONException {
+    public String searchContent(String key, boolean quick) throws Exception {
+        fetchRule();
         if (rule.getSearchUrl().isEmpty()) return "";
         String webUrl = rule.getSearchUrl().replace("{wd}", URLEncoder.encode(key));
         String webContent = fetch(webUrl);
@@ -318,6 +311,34 @@ public class XPath extends Spider {
             }
         }
         return Result.string(list);
+    }
+
+    @Override
+    public boolean manualVideoCheck() {
+        return false;
+    }
+
+    @Override
+    public boolean isVideoFormat(String url) {
+        return Utils.isVideoFormat(url);
+    }
+
+    protected String ext = null;
+    protected Rule rule = null;
+
+    protected void fetchRule() {
+        if (rule == null) {
+            if (ext != null) {
+                if (ext.startsWith("http")) {
+                    String json = OkHttp.string(ext, null);
+                    rule = Rule.fromJson(json);
+                    loadRuleExt(json);
+                } else {
+                    rule = Rule.fromJson(ext);
+                    loadRuleExt(ext);
+                }
+            }
+        }
     }
 
     protected void loadRuleExt(String json) {
