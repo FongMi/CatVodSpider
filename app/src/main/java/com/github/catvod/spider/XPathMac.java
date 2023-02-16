@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.github.catvod.crawler.SpiderDebug;
+import com.github.catvod.utils.Trans;
 import com.github.catvod.utils.Utils;
 import com.google.gson.Gson;
 
@@ -32,7 +33,7 @@ public class XPathMac extends XPath {
     // 播放器配置js取值正則
     private String playerConfigJsRegex = "[\\W|\\S|.]*?MacPlayerConfig.player_list[\\W|\\S|.]*?=([\\W|\\S|.]*?),MacPlayerConfig.downer_list";
     // 站點里播放源對應的真實官源
-    private HashMap<String, String> show2VipFlag = new HashMap<>();
+    private final HashMap<String, String> show2VipFlag = new HashMap<>();
 
     /**
      * mac cms 直連和官源調用應用內播放列表支持
@@ -55,7 +56,7 @@ public class XPathMac extends XPath {
                 Iterator<String> keys = dcShow2Vip.keys();
                 while (keys.hasNext()) {
                     String name = keys.next();
-                    show2VipFlag.put(name.trim(), dcShow2Vip.getString(name).trim());
+                    show2VipFlag.put(Trans.get(name.trim()), dcShow2Vip.getString(name).trim());
                 }
             }
             playerConfigJs = jsonObj.optString("pCfgJs").trim();
@@ -78,18 +79,15 @@ public class XPathMac extends XPath {
                     while (keys.hasNext()) {
                         String key = keys.next();
                         JSONObject keyObj = jsonObject.optJSONObject(key);
-                        if (keyObj == null)
-                            continue;
+                        if (keyObj == null) continue;
                         String show = keyObj.optString("show").trim();
-                        if (show.isEmpty())
-                            continue;
-                        show2VipFlag.put(show, key);
+                        if (show.isEmpty()) continue;
+                        show2VipFlag.put(Trans.get(show), key);
                     }
                 } catch (Exception e) {
                     SpiderDebug.log(e);
                 }
             }
-            // SpiderDebug.log(webContent);
         }
         return result;
     }
@@ -100,7 +98,7 @@ public class XPathMac extends XPath {
         if (decodeVipFlag && result.length() > 0) {
             try {
                 JSONObject jsonObject = new JSONObject(result);
-                String playFrom[] = jsonObject.optJSONArray("list").getJSONObject(0).optString("vod_play_from").split("\\$\\$\\$");
+                String[] playFrom = jsonObject.optJSONArray("list").getJSONObject(0).optString("vod_play_from").split("\\$\\$\\$");
                 if (playFrom.length > 0) {
                     for (int i = 0; i < playFrom.length; i++) {
                         if (show2VipFlag.containsKey(playFrom[i])) {
