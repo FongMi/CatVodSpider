@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -79,8 +78,6 @@ public class Ali {
         headers.put("content-type", "application/json");
         headers.put("Authorization", auth.getAccessToken());
         headers.put("x-share-token", auth.getShareToken());
-        headers.put("x-device-id", auth.getDeviceId());
-        headers.put("x-signature", auth.getSignature());
         return headers;
     }
 
@@ -117,11 +114,7 @@ public class Ali {
     public String playerContent(String flag, String id) {
         String[] ids = id.split("\\+");
         if (auth.isEmpty()) refreshAccessToken();
-        if (flag.equals("原畫")) {
-            return Result.get().url(getDownloadUrl(ids[0])).subs(getSub(ids)).header(getHeaders()).string();
-        } else {
-            return Result.get().url(getPreviewUrl(ids[0])).subs(getSub(ids)).header(getHeaders()).string();
-        }
+        return Result.get().url(getDownloadUrl(ids[0])).subs(getSub(ids)).header(getHeaders()).string();
     }
 
     private Vod getVod(String url, String fileId) throws Exception {
@@ -143,7 +136,7 @@ public class Ali {
         vod.setVodPic(object.getString("avatar"));
         vod.setVodName(object.getString("share_name"));
         vod.setVodPlayUrl(TextUtils.join("$$$", sourceUrls));
-        vod.setVodPlayFrom("原畫$$$普畫");
+        vod.setVodPlayFrom("原畫");
         vod.setTypeName("阿里雲盤");
         return vod;
     }
@@ -203,7 +196,6 @@ public class Ali {
             auth.setDeviceId(object.getString("device_id"));
             auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
             auth.setRefreshToken(object.getString("refresh_token"));
-            generateSign();
             return true;
         } catch (Exception e) {
             stopService();
@@ -213,20 +205,6 @@ public class Ali {
         } finally {
             while (auth.isEmpty()) SystemClock.sleep(250);
         }
-    }
-
-    /*
-     * secpAppID := "5dde4e1bdf9e4966b387ba58f4b3fdc3"
-     * singdata := fmt.Sprintf("%s:%s:%s:%d", secpAppID, state.deviceID, d.UserID, state.nonce)
-     * hash := sha256.Sum256([]byte(singdata))
-     * data, _ := ecc.SignBytes(state.privateKey, hash[:], ecc.RecID|ecc.LowerS)
-     * state.signature = hex.EncodeToString(data)
-     * */
-    private void generateSign() throws Exception {
-        String appID = "5dde4e1bdf9e4966b387ba58f4b3fdc3";
-        String signData = String.format(Locale.getDefault(), "%s:%s:%s:%d", appID, auth.getDeviceId(), auth.getUserId(), 0);
-        String signature = "";
-        auth.setSignature(signature);
     }
 
     private boolean refreshShareToken() {
