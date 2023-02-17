@@ -7,7 +7,6 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.paper.Data;
-import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
 
@@ -27,7 +26,7 @@ import java.util.Map;
 /**
  * @author ColaMint & FongMi
  */
-public class Paper extends Spider {
+public class Paper extends Ali {
 
     private final String url = "https://gitcafe.net/alipaper/";
     private final String api = "https://gitcafe.net/tool/alipaper/";
@@ -41,8 +40,8 @@ public class Paper extends Spider {
 
     @Override
     public void init(Context context, String extend) {
+        super.init(context, extend);
         types = Arrays.asList("hyds", "rhds", "omds", "qtds", "hydy", "rhdy", "omdy", "qtdy", "hydm", "rhdm", "omdm", "jlp", "zyp", "jypx", "qtsp");
-        Ali.get().init(extend);
     }
 
     @Override
@@ -91,11 +90,6 @@ public class Paper extends Spider {
     }
 
     @Override
-    public String detailContent(List<String> ids) throws Exception {
-        return Ali.get().detailContent(ids);
-    }
-
-    @Override
     public String searchContent(String key, boolean quick) {
         List<Vod> list = new ArrayList<>();
         Map<String, String> params = new HashMap<>();
@@ -104,10 +98,5 @@ public class Paper extends Spider {
         String result = OkHttp.post(api, params, getHeaders());
         for (Data item : Data.arrayFrom(result)) if (types.contains(item.getCat()) && item.getTitle().contains(key)) list.add(item.getVod());
         return Result.string(list);
-    }
-
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return Ali.get().playerContent(flag, id);
     }
 }

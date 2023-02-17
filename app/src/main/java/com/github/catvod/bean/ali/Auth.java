@@ -37,7 +37,7 @@ public class Auth {
     }
 
     public String getSignature() {
-        return signature;
+        return TextUtils.isEmpty(signature) ? "" : signature;
     }
 
     public void setSignature(String signature) {
