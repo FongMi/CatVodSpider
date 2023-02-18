@@ -61,7 +61,7 @@ public class API {
 
     private API() {
         this.auth = new Auth();
-        this.lock = new ReentrantLock();
+        this.lock = new ReentrantLock(true);
     }
 
     public void setRefreshToken(String token) {
