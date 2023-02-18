@@ -293,7 +293,7 @@ public class API {
             JSONObject body = new JSONObject();
             body.put("file_id", fileId);
             body.put("share_id", auth.getShareId());
-            body.put("expire_sec", 600);
+            body.put("expire_sec", 7200);
             String json = API.get().auth("v2/file/get_share_link_download_url", body, true);
             String url = new JSONObject(json).optString("download_url");
             Map<String, List<String>> respHeaders = new HashMap<>();
