@@ -15,7 +15,7 @@ public class Item {
     private String insertTime;
 
     public String getTitle() {
-        return TextUtils.isEmpty(title) ? "" : title;
+        return TextUtils.isEmpty(title) ? "" : title.replaceAll("<em>", "").replaceAll("</em>", "");
     }
 
     public String getPageUrl() {
