@@ -14,12 +14,7 @@ public class Push extends Ali {
     public String detailContent(List<String> ids) throws Exception {
         String url = ids.get(0).trim();
         if (url.contains("aliyundrive")) return super.detailContent(ids);
-        List<String> playFrom = Arrays.asList("直連", "嗅探", "解析");
-        List<String> playUrl = Arrays.asList("播放$" + url, "播放$" + url, "播放$" + url);
-        Vod vod = create(url);
-        vod.setVodPlayFrom(TextUtils.join("$$$", playFrom));
-        vod.setVodPlayUrl(TextUtils.join("$$$", playUrl));
-        return Result.string(vod);
+        return Result.string(vod(url));
     }
 
     @Override
@@ -30,12 +25,14 @@ public class Push extends Ali {
         return Result.get().url(id).string();
     }
 
-    private Vod create(String url) {
+    private Vod vod(String url) {
         Vod vod = new Vod();
-        vod.setTypeName("FongMi");
         vod.setVodId(url);
         vod.setVodName(url);
+        vod.setTypeName("FongMi");
         vod.setVodPic("https://pic.rmb.bdstatic.com/bjh/1d0b02d0f57f0a42201f92caba5107ed.jpeg");
+        vod.setVodPlayFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
+        vod.setVodPlayUrl(TextUtils.join("$$$", Arrays.asList("播放$" + url, "播放$" + url, "播放$" + url)));
         return vod;
     }
 }
