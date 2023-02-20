@@ -1,5 +1,6 @@
 package com.github.catvod.spider;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Result;
@@ -9,6 +10,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Push extends Ali {
+
+    @Override
+    public void init(Context context, String extend) {
+        super.init(context, extend);
+    }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
