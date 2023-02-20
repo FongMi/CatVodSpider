@@ -1,5 +1,6 @@
 package com.github.catvod.spider;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.SystemClock;
 import android.webkit.WebView;
@@ -16,6 +17,11 @@ import java.util.Map;
 import java.util.Objects;
 
 public class YiSo extends Ali {
+
+    @Override
+    public void init(Context context, String extend) {
+        super.init(context, extend);
+    }
 
     @Override
     public String searchContent(String key, boolean quick) {
