@@ -2,13 +2,17 @@ package com.github.catvod.net;
 
 import com.github.catvod.crawler.Spider;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Dns;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class OkHttp {
 
@@ -35,7 +39,7 @@ public class OkHttp {
         return new OkHttpClient.Builder().dns(safeDns()).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).connectTimeout(30, TimeUnit.SECONDS).hostnameVerifier(SSLSocketFactoryCompat.hostnameVerifier).sslSocketFactory(new SSLSocketFactoryCompat(), SSLSocketFactoryCompat.trustAllCert);
     }
 
-    private static OkHttpClient client() {
+    public static OkHttpClient client() {
         return get().client;
     }
 
@@ -49,6 +53,10 @@ public class OkHttp {
         } catch (Exception e) {
             return Dns.SYSTEM;
         }
+    }
+
+    public static Response newCall(String url, Map<String, String> header) throws IOException {
+        return client().newCall(new Request.Builder().url(url).headers(Headers.of(header)).build()).execute();
     }
 
     public static void stringNoRedirect(String url, Map<String, String> header, Map<String, List<String>> respHeader) {

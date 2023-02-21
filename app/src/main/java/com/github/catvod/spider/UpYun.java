@@ -1,56 +1,48 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
-import android.util.Base64;
 
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.upyun.Data;
 import com.github.catvod.bean.upyun.Item;
-import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.google.common.io.BaseEncoding;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class UpYun extends Spider {
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
-    private final String siteUrl = "https://www.upyunso.com/";
-    private final String apiUrl = "https://api.upyunso2.com/";
-
-    private Map<String, String> getHeaders() {
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Utils.CHROME);
-        headers.put("Referer", siteUrl);
-        return headers;
-    }
+public class UpYun extends Ali {
 
     @Override
     public void init(Context context, String extend) {
-        Ali.get().init(extend);
+        super.init(context, extend);
     }
 
     @Override
-    public String detailContent(List<String> ids) throws Exception {
-        return Ali.get().detailContent(Arrays.asList(ids.get(0)));
-    }
-
-    @Override
-    public String searchContent(String key, boolean quick) {
-        String url = apiUrl + "search?keyword=" + URLEncoder.encode(key) + "&page=1&s_type=2";
-        String res = new String(Base64.decode(OkHttp.string(url, getHeaders()), Base64.DEFAULT));
+    public String searchContent(String key, boolean quick) throws Exception {
+        String res = decode(OkHttp.string("https://zyb.upyunso.com/v15/search?keyword=" + URLEncoder.encode(key) + "&page=1&s_type=2"));
         List<Vod> list = new ArrayList<>();
-        for (Item item : Data.objectFrom(res).getResult().getItems()) if (item.isAli() && item.getTitle().contains(key)) list.add(item.getVod());
+        for (Item item : Data.objectFrom(res).getResult().getItems()) {
+            String url = decode(item.getPageUrl());
+            if (!url.contains("www.aliyundrive.com")) continue;
+            if (item.getTitle().contains(key)) list.add(item.url(url).getVod());
+        }
         return Result.string(list);
     }
 
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) {
-        return Ali.get().playerContent(flag, id);
+    private String decode(String data) throws Exception {
+        SecretKeySpec keySpec = new SecretKeySpec("qq1920520460qqzz".getBytes(), "AES");
+        IvParameterSpec ivSpec = new IvParameterSpec("qq1920520460qqzz".getBytes());
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+        byte[] encryptDataBytes = BaseEncoding.base16().decode(data.toUpperCase());
+        byte[] decryptData = cipher.doFinal(encryptDataBytes);
+        return new String(decryptData, "UTF-8");
     }
 }

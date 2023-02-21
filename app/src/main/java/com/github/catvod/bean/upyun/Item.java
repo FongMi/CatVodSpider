@@ -15,7 +15,7 @@ public class Item {
     private String insertTime;
 
     public String getTitle() {
-        return TextUtils.isEmpty(title) ? "" : title;
+        return TextUtils.isEmpty(title) ? "" : title.replaceAll("<em>", "").replaceAll("</em>", "");
     }
 
     public String getPageUrl() {
@@ -26,8 +26,9 @@ public class Item {
         return TextUtils.isEmpty(insertTime) ? "" : insertTime;
     }
 
-    public boolean isAli() {
-        return getPageUrl().contains("www.aliyundrive.com");
+    public Item url(String pageUrl) {
+        this.pageUrl = pageUrl;
+        return this;
     }
 
     public Vod getVod() {

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
-import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
 
@@ -22,7 +21,7 @@ import java.util.Map;
 /**
  * @author ColaMint & FongMi
  */
-public class PanSou extends Spider {
+public class PanSou extends Ali {
 
     private final String siteUrl = "https://www.alipansou.com";
 
@@ -36,17 +35,17 @@ public class PanSou extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        Ali.get().init(extend);
+        super.init(context, extend);
     }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        if (Ali.pattern.matcher(ids.get(0)).find()) return Ali.get().detailContent(ids);
+        if (pattern.matcher(ids.get(0)).find()) return super.detailContent(ids);
         String url = siteUrl + ids.get(0).replace("/s/", "/cv/");
         Map<String, List<String>> respHeaders = new HashMap<>();
         OkHttp.stringNoRedirect(url, getHeaders(ids.get(0)), respHeaders);
         url = OkHttp.getRedirectLocation(respHeaders);
-        return Ali.get().detailContent(Arrays.asList(url));
+        return super.detailContent(Arrays.asList(url));
     }
 
     @Override
@@ -71,10 +70,5 @@ public class PanSou extends Spider {
             }
         }
         return Result.string(list);
-    }
-
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) {
-        return Ali.get().playerContent(flag, id);
     }
 }

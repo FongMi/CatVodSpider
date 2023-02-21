@@ -8,31 +8,19 @@ import android.webkit.WebViewClient;
 
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.yiso.Item;
-import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Utils;
 import com.google.gson.JsonParser;
 
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class YiSo extends Spider {
+public class YiSo extends Ali {
 
     @Override
     public void init(Context context, String extend) {
-        Ali.get().init(extend);
-    }
-
-    @Override
-    public String detailContent(List<String> ids) throws Exception {
-        return Ali.get().detailContent(ids);
-    }
-
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return Ali.get().playerContent(flag, id);
+        super.init(context, extend);
     }
 
     @Override
