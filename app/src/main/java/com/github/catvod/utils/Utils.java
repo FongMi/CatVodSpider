@@ -141,7 +141,7 @@ public class Utils {
 
     public static void loadWebView(String url, WebViewClient client) {
         Init.run(() -> {
-            WebView webView = new WebView(Init.context());
+            WebView webView = new WebView(Init.fakeCtx());
             webView.getSettings().setDatabaseEnabled(true);
             webView.getSettings().setDomStorageEnabled(true);
             webView.getSettings().setJavaScriptEnabled(true);

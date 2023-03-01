@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.github.catvod.crawler.SpiderDebug;
+import com.github.catvod.hook.Ctx;
 import com.github.catvod.utils.Trans;
 
 import java.lang.reflect.Field;
@@ -36,6 +37,10 @@ public class Init {
 
     public static Application context() {
         return get().app;
+    }
+
+    public static Context fakeCtx() {
+        return new Ctx(get().app);
     }
 
     public static void init(Context context) {
