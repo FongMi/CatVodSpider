@@ -17,6 +17,7 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.ali.Auth;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
+import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
@@ -65,7 +66,11 @@ public class API {
     }
 
     public void setRefreshToken(String token) {
-        auth.setRefreshToken(Prefers.getString("token", token));
+        auth.setRefreshToken(token);
+    }
+
+    public void setRefreshOpenApiToken(String token) {
+        auth.setRefreshOpenApiToken(token);
     }
 
     public void setShareId(String shareId) {
@@ -131,9 +136,12 @@ public class API {
     private boolean refreshAccessToken() {
         try {
             JSONObject body = new JSONObject();
+            SpiderDebug.log("refreshAccessToken" + auth.getRefreshToken());
             String token = auth.getRefreshToken();
-            if (token.startsWith("http")) token = OkHttp.string(token).replaceAll("[^A-Za-z0-9]", "");
-            body.put("refresh_token", token);
+            if (token.startsWith("http"))
+                token = OkHttp.string(token);
+            SpiderDebug.log("refreshAccessToken" + token);
+            body.put("refresh_token", token.split(";")[0]);
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
             auth.setUserId(object.getString("user_id"));
@@ -290,15 +298,36 @@ public class API {
 
     public String getDownloadUrl(String fileId) {
         try {
-            JSONObject body = new JSONObject();
-            body.put("file_id", fileId);
-            body.put("share_id", auth.getShareId());
-            body.put("expire_sec", 600);
-            String json = API.get().auth("v2/file/get_share_link_download_url", body, true);
-            String url = new JSONObject(json).optString("download_url");
-            Map<String, List<String>> respHeaders = new HashMap<>();
-            OkHttp.stringNoRedirect(url, API.get().getHeader(), respHeaders);
-            return OkHttp.getRedirectLocation(respHeaders);
+//            JSONObject body = new JSONObject();
+//            body.put("file_id", fileId);
+//            body.put("share_id", auth.getShareId());
+//            body.put("expire_sec", 600);
+//            String json = API.get().auth("v2/file/get_share_link_download_url", body, true);
+//            String url = new JSONObject(json).optString("download_url");
+//            Map<String, List<String>> respHeaders = new HashMap<>();
+//            OkHttp.stringNoRedirect(url, API.get().getHeader(), respHeaders);
+//            return OkHttp.getRedirectLocation(respHeaders);
+
+            String saveBodyStr = "{\"requests\":[{\"body\":{\"file_id\":\"640218332e0d8caeb1424b7e810fddb8368515e3\",\"share_id\":\"x52gz85SF1m\",\"auto_rename\":true,\"to_parent_file_id\":\"root\",\"to_drive_id\":\"3460970\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"0\",\"method\":\"POST\",\"url\":\"/file/copy\"}],\"resource\":\"file\"}";
+            //获取drivId
+            if (TextUtils.isEmpty(auth.getDriveId())) {
+                JSONObject body = new JSONObject();
+                body.put("file_id", fileId);
+                body.put("share_id", auth.getShareId());
+                auth.setDriveId(new JSONObject(API.get().authOpenApi("https://open.aliyundrive.com/adrive/v1.0/user/getDriveInfo", body, true)).optString("default_drive_id"));
+            }
+            String finalSaveBodyStr = saveBodyStr.replace("3460970", auth.getDriveId()).replace("640218332e0d8caeb1424b7e810fddb8368515e3", fileId).replace("x52gz85SF1m", auth.getShareId());
+            String newFileId = new JSONObject(API.get().auth("adrive/v2/batch", new JSONObject(finalSaveBodyStr), true)).getJSONArray("responses").getJSONObject(0).getJSONObject("body").optString("file_id");
+            //获取新的下载地址
+            JSONObject newDownloadBody = new JSONObject();
+            newDownloadBody.put("file_id", newFileId);
+            newDownloadBody.put("drive_id", auth.getDriveId());
+            String newDownloadJson = API.get().authOpenApi("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", newDownloadBody, true);
+            //获取后删除保存的文件
+            String deleteBodyStr = "{\"requests\":[{\"body\":{\"drive_id\":\"3460970\",\"file_id\":\"6403d5111bb264eb4dd249bfb98cda43fbc7d347\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"6403d5111bb264eb4dd249bfb98cda43fbc7d347\",\"method\":\"POST\",\"url\":\"/file/delete\"}],\"resource\":\"file\"}";
+            deleteBodyStr = deleteBodyStr.replace("3460970", auth.getDriveId()).replace("6403d5111bb264eb4dd249bfb98cda43fbc7d347", newFileId);
+            API.get().auth("adrive/v2/batch", new JSONObject(deleteBodyStr), true);
+            return new JSONObject(newDownloadJson).optString("url");
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -442,5 +471,43 @@ public class API {
             if (dialog != null) dialog.dismiss();
         } catch (Exception ignored) {
         }
+    }
+    private String authOpenApi(String url, JSONObject body, boolean retry) {
+        String result = OkHttp.postJson(url, body.toString(), getHeaderAuthOpenApi());
+        if (retry && check401OpenApi(result)) return authOpenApi(url, body, false);
+        return result;
+    }
+    private HashMap<String, String> getHeaderAuthOpenApi() {
+        HashMap<String, String> headers = getHeader();
+        headers.put("authorization", auth.getAccessOpenApiToken());
+        return headers;
+    }
+    private boolean check401OpenApi(String result) {
+        if (result.contains("AccessTokenInvalid")) return refreshAccessTokenOpenApi();
+        return false;
+    }
+    private boolean refreshAccessTokenOpenApi() {
+        try {
+            JSONObject body = new JSONObject();
+            String token = auth.getRefreshOpenApiToken();
+            if (token.startsWith("http"))
+                token = OkHttp.string(token);
+            body.put("refresh_token", token.split(";")[1]);
+            body.put("grant_type", "refresh_token");
+            JSONObject object = new JSONObject(postOpenApi("https://api.nn.ci/alist/ali_open/token", body));
+            auth.setAccessOpenApiToken(object.getString("token_type") + " " + object.getString("access_token"));
+            auth.setRefreshOpenApiToken(object.getString("refresh_token"));
+            return true;
+        } catch (Exception e) {
+            stopService();
+            auth.clean();
+            //getQRCode();
+            return true;
+        } finally {
+            while (auth.isEmpty()) SystemClock.sleep(250);
+        }
+    }
+    private String postOpenApi(String url, JSONObject body) {
+        return OkHttp.postJson(url, body.toString(), getHeader());
     }
 }
