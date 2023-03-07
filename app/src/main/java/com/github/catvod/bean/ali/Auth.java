@@ -11,7 +11,31 @@ public class Auth {
     private String deviceId;
     private String shareId;
     private String userId;
+    private String driveId;
+    private String refreshOpenApiToken;
+    private String accessOpenApiToken;
+    public String getAccessOpenApiToken() {
+        return TextUtils.isEmpty(accessOpenApiToken) ? "" : accessOpenApiToken;
+    }
 
+    public void setAccessOpenApiToken(String accessOpenApiToken) {
+        this.accessOpenApiToken = accessOpenApiToken;
+    }
+    public String getDriveId() {
+        return driveId;
+    }
+
+    public void setDriveId(String driveId) {
+        this.driveId = driveId;
+    }
+
+    public String getRefreshOpenApiToken() {
+        return TextUtils.isEmpty(refreshOpenApiToken) ? "" : refreshOpenApiToken;
+    }
+
+    public void setRefreshOpenApiToken(String refreshOpenApiToken) {
+        this.refreshOpenApiToken = refreshOpenApiToken;
+    }
     public String getRefreshToken() {
         return TextUtils.isEmpty(refreshToken) ? "" : refreshToken;
     }

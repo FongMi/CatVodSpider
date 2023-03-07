@@ -21,6 +21,7 @@ public class Ali extends Spider {
     @Override
     public void init(Context context, String extend) {
         API.get().setRefreshToken(extend);
+        API.get().setRefreshOpenApiToken(extend);
     }
 
     @Override
