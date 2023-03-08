@@ -5,37 +5,16 @@ import android.text.TextUtils;
 public class Auth {
 
     private String refreshToken;
+    private String refreshTokenOpen;
     private String accessToken;
+    private String accessTokenOpen;
     private String shareToken;
     private String signature;
     private String deviceId;
     private String shareId;
     private String userId;
     private String driveId;
-    private String refreshOpenApiToken;
-    private String accessOpenApiToken;
-    public String getAccessOpenApiToken() {
-        return TextUtils.isEmpty(accessOpenApiToken) ? "" : accessOpenApiToken;
-    }
 
-    public void setAccessOpenApiToken(String accessOpenApiToken) {
-        this.accessOpenApiToken = accessOpenApiToken;
-    }
-    public String getDriveId() {
-        return driveId;
-    }
-
-    public void setDriveId(String driveId) {
-        this.driveId = driveId;
-    }
-
-    public String getRefreshOpenApiToken() {
-        return TextUtils.isEmpty(refreshOpenApiToken) ? "" : refreshOpenApiToken;
-    }
-
-    public void setRefreshOpenApiToken(String refreshOpenApiToken) {
-        this.refreshOpenApiToken = refreshOpenApiToken;
-    }
     public String getRefreshToken() {
         return TextUtils.isEmpty(refreshToken) ? "" : refreshToken;
     }
@@ -44,12 +23,28 @@ public class Auth {
         this.refreshToken = refreshToken;
     }
 
+    public String getRefreshTokenOpen() {
+        return TextUtils.isEmpty(refreshTokenOpen) ? "" : refreshTokenOpen;
+    }
+
+    public void setRefreshTokenOpen(String refreshTokenOpen) {
+        this.refreshTokenOpen = refreshTokenOpen;
+    }
+
     public String getAccessToken() {
         return TextUtils.isEmpty(accessToken) ? "" : accessToken;
     }
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getAccessTokenOpen() {
+        return TextUtils.isEmpty(accessTokenOpen) ? "" : accessTokenOpen;
+    }
+
+    public void setAccessTokenOpen(String accessTokenOpen) {
+        this.accessTokenOpen = accessTokenOpen;
     }
 
     public String getShareToken() {
@@ -84,6 +79,14 @@ public class Auth {
         this.shareId = shareId;
     }
 
+    public String getDriveId() {
+        return TextUtils.isEmpty(driveId) ? "" : driveId;
+    }
+
+    public void setDriveId(String driveId) {
+        this.driveId = driveId;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -97,8 +100,9 @@ public class Auth {
     }
 
     public void clean() {
+        setRefreshTokenOpen("");
+        setAccessTokenOpen("");
         setRefreshToken("");
         setAccessToken("");
-        setShareId("");
     }
 }
