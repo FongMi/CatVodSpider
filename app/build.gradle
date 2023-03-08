@@ -12,6 +12,7 @@ android {
         targetSdk 29
         ndk { abiFilters "armeabi-v7a" }
         buildConfigField("String", "APP_ID", "\"${appId}\"")
+        buildConfigField("String", "CLIENT_ID", "\"${clientId}\"")
     }
 
     buildTypes {
