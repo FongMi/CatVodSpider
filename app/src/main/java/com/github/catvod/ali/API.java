@@ -116,16 +116,16 @@ public class API {
         return result;
     }
 
-    private String authOpen(String url, JSONObject body, boolean retry) {
-        String result = OkHttp.postJson(url, body.toString(), getHeaderAuthOpen());
-        if (retry && check401Open(result)) return authOpen(url, body, false);
+    private String authOpen(String url, String json, boolean retry) {
+        String result = OkHttp.postJson(url, json, getHeaderAuthOpen());
+        if (retry && check401Open(result)) return authOpen(url, json, false);
         return result;
     }
 
-    private String sign(String url, JSONObject body, boolean retry) {
+    private String sign(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        String result = OkHttp.postJson(url, body.toString(), getHeaderSign());
-        if (retry && check401(result)) return sign(url, body, false);
+        String result = OkHttp.postJson(url, json, getHeaderSign());
+        if (retry && check401(result)) return sign(url, json, false);
         return result;
     }
 
@@ -170,7 +170,7 @@ public class API {
             body = new JSONObject();
             body.put("authorize", 1);
             body.put("scope", "user:base,file:all:read,file:all:write");
-            object = new JSONObject(auth("https://open.aliyundrive.com/oauth/users/authorize?client_id=76917ccccd4441c39457a04f6084fb2f&redirect_uri=https://alist.nn.ci/tool/aliyundrive/callback&scope=user:base,file:all:read,file:all:write&state=", body, false));
+            object = new JSONObject(auth("https://open.aliyundrive.com/oauth/users/authorize?client_id=" + BuildConfig.CLIENT_ID + "&redirect_uri=https://alist.nn.ci/tool/aliyundrive/callback&scope=user:base,file:all:read,file:all:write&state=", body, false));
             String code = object.toString().substring(object.toString().indexOf("code=") + 5, 104);
             //OAuth Redirect
             body = new JSONObject();
@@ -234,7 +234,7 @@ public class API {
             body.put("nonce", 0);
             body.put("pubKey", pubKey);
             body.put("refreshToken", auth.getRefreshToken());
-            JSONObject object = new JSONObject(sign("users/v1/users/device/create_session", body, false));
+            JSONObject object = new JSONObject(sign("users/v1/users/device/create_session", body.toString(), false));
             if (!object.getBoolean("success")) throw new Exception(object.toString());
             return true;
         } catch (Exception e) {
@@ -358,7 +358,7 @@ public class API {
         JSONObject body = new JSONObject();
         body.put("file_id", fileId);
         body.put("drive_id", auth.getDriveId());
-        String url = new JSONObject(authOpen("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", body, true)).optString("url");
+        String url = new JSONObject(authOpen("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", body.toString(), true)).optString("url");
         delete(fileId);
         return url;
     }
@@ -428,7 +428,7 @@ public class API {
             body.put("share_id", auth.getShareId());
             body.put("template_id", "");
             body.put("category", "live_transcoding");
-            String json = sign("v2/file/get_share_link_video_preview_play_info", body, true);
+            String json = sign("v2/file/get_share_link_video_preview_play_info", body.toString(), true);
             JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
             Map<String, List<String>> respHeaders = new HashMap<>();
             OkHttp.stringNoRedirect(getPreviewQuality(taskList, flag), getHeader(), respHeaders);
