@@ -52,7 +52,7 @@ public class Run {
         for (Group group : groups) {
             for (Channel channel : group.getChannel()) {
                 channel.number(String.format(Locale.getDefault(), "%03d", ++number));
-                channel.logo("https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/TV/release/app/src/leanback/res/drawable-xxhdpi/ic_live.png");
+                channel.logo("https://ghproxy.com/https://raw.githubusercontent.com/FongMi/TV/release/app/src/main/res/drawable-xxhdpi/ic_img_empty.png");
                 combine(channel);
             }
         }
