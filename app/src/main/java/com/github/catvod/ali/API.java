@@ -359,7 +359,7 @@ public class API {
         body.put("file_id", fileId);
         body.put("drive_id", auth.getDriveId());
         String url = new JSONObject(authOpen("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", body.toString(), true)).optString("url");
-        delete(fileId);
+        Init.execute(() -> delete(fileId));
         return url;
     }
 
