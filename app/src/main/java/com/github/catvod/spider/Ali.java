@@ -21,7 +21,6 @@ public class Ali extends Spider {
     @Override
     public void init(Context context, String extend) {
         API.get().setRefreshToken(extend);
-        API.get().setRefreshOpenApiToken(extend);
     }
 
     @Override
@@ -37,12 +36,12 @@ public class Ali extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        API.get().checkAccessToken();
         String[] ids = id.split("\\+");
+        API.get().checkAccessToken();
         if (flag.equals("原畫")) {
             return Result.get().url(API.get().getDownloadUrl(ids[0])).subs(API.get().getSub(ids)).header(API.get().getHeader()).parse(0).string();
         } else {
-            return Result.get().url(API.get().getPreviewUrl(ids[0])).subs(API.get().getSub(ids)).header(API.get().getHeader()).parse(0).string();
+            return Result.get().url(API.get().getPreviewUrl(ids[0], flag)).subs(API.get().getSub(ids)).header(API.get().getHeader()).parse(0).string();
         }
     }
 
