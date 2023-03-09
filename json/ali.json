@@ -9,7 +9,7 @@
       "filterable": 1,
       "switchable": 0,
       "ext": "http://ali.饭太硬.ml/alitoken",
-      "jar": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
+      "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     },
     {
       "key": "易搜",
@@ -20,7 +20,7 @@
       "filterable": 0,
       "switchable": 0,
       "ext": "http://ali.饭太硬.ml/alitoken",
-      "jar": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
+      "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     },
     {
       "key": "盤搜",
@@ -31,7 +31,7 @@
       "filterable": 0,
       "switchable": 0,
       "ext": "http://ali.饭太硬.ml/alitoken",
-      "jar": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
+      "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     },
     {
       "key": "UP雲搜",
@@ -42,7 +42,7 @@
       "filterable": 0,
       "switchable": 0,
       "ext": "http://ali.饭太硬.ml/alitoken",
-      "jar": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
+      "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     },
     {
       "key": "找資源",
@@ -53,7 +53,7 @@
       "filterable": 0,
       "switchable": 0,
       "ext": "http://ali.饭太硬.ml/alitoken$$$yingshi$$$abcd1234",
-      "jar": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
+      "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     },
     {
       "key": "push_agent",
@@ -64,7 +64,7 @@
       "filterable": 0,
       "switchable": 0,
       "ext": "http://ali.饭太硬.ml/alitoken",
-      "jar": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
+      "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     }
   ]
 }

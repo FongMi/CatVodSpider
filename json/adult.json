@@ -1,11 +1,11 @@
 {
-  "spider": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;100b8d081bfead06388e6a65d12fa554",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;df10e61cf95ea6a8507162d0c9e9063f",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "lives": [
     {
       "name": "直播",
       "type": 0,
-      "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/txt/adult.txt"
+      "url": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/txt/adult.txt"
     }
   ],
   "sites": [
