@@ -2,18 +2,24 @@ package com.github.catvod.bean.ali;
 
 import android.text.TextUtils;
 
+import com.github.catvod.utils.Prefers;
+import com.google.gson.Gson;
+
 public class Auth {
 
     private String refreshToken;
     private String refreshTokenOpen;
     private String accessToken;
     private String accessTokenOpen;
-    private String shareToken;
     private String signature;
     private String deviceId;
-    private String shareId;
     private String userId;
     private String driveId;
+
+    public static Auth objectFrom(String str) {
+        if (TextUtils.isEmpty(str)) return new Auth();
+        return new Gson().fromJson(str, Auth.class);
+    }
 
     public String getRefreshToken() {
         return TextUtils.isEmpty(refreshToken) ? "" : refreshToken;
@@ -47,14 +53,6 @@ public class Auth {
         this.accessTokenOpen = accessTokenOpen;
     }
 
-    public String getShareToken() {
-        return TextUtils.isEmpty(shareToken) ? "" : shareToken;
-    }
-
-    public void setShareToken(String shareToken) {
-        this.shareToken = shareToken;
-    }
-
     public String getSignature() {
         return TextUtils.isEmpty(signature) ? "" : signature;
     }
@@ -69,14 +67,6 @@ public class Auth {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public String getShareId() {
-        return TextUtils.isEmpty(shareId) ? "" : shareId;
-    }
-
-    public void setShareId(String shareId) {
-        this.shareId = shareId;
     }
 
     public String getDriveId() {
@@ -104,5 +94,9 @@ public class Auth {
         setAccessTokenOpen("");
         setRefreshToken("");
         setAccessToken("");
+    }
+
+    public void save() {
+        Prefers.put("aliyundrive", new Gson().toJson(this));
     }
 }
