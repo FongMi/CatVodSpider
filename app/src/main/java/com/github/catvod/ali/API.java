@@ -17,6 +17,7 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.ali.Auth;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
+import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
@@ -157,6 +158,7 @@ public class API {
 
     private boolean refreshAccessToken() {
         try {
+            SpiderDebug.log("refreshAccessToken...");
             JSONObject body = new JSONObject();
             String token = auth.getRefreshToken();
             if (token.startsWith("http")) token = OkHttp.string(token).replaceAll("[^A-Za-z0-9]", "");
@@ -168,13 +170,13 @@ public class API {
             auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
             auth.setRefreshToken(object.getString("refresh_token"));
             auth.setDriveId(object.getString("default_drive_id"));
-            //OAuth Request
+            SpiderDebug.log("OAuth Request...");
             body = new JSONObject();
             body.put("authorize", 1);
             body.put("scope", "user:base,file:all:read,file:all:write");
             object = new JSONObject(auth("https://open.aliyundrive.com/oauth/users/authorize?client_id=" + BuildConfig.CLIENT_ID + "&redirect_uri=https://alist.nn.ci/tool/aliyundrive/callback&scope=user:base,file:all:read,file:all:write&state=", body, false));
             String code = object.optString("redirectUri").split("code=")[1];
-            //OAuth Redirect
+            SpiderDebug.log("OAuth Redirect...");
             body = new JSONObject();
             body.put("code", code);
             body.put("grant_type", "authorization_code");
@@ -194,6 +196,7 @@ public class API {
 
     private boolean refreshAccessTokenOpen() {
         try {
+            SpiderDebug.log("refreshAccessTokenOpen...");
             JSONObject body = new JSONObject();
             String token = auth.getRefreshTokenOpen();
             body.put("refresh_token", token);
@@ -211,6 +214,7 @@ public class API {
 
     public boolean refreshShareToken() {
         try {
+            SpiderDebug.log("refreshShareToken...");
             JSONObject body = new JSONObject();
             body.put("share_id", shareId);
             body.put("share_pwd", "");
@@ -226,6 +230,7 @@ public class API {
 
     private boolean refreshSignature() {
         try {
+            SpiderDebug.log("refreshSignature...");
             PrivateKey privateKey = new PrivateKey();
             String pubKey = "04" + BinaryAscii.hexFromBinary(privateKey.publicKey().toByteString().getBytes());
             String message = BuildConfig.APP_ID + ":" + auth.getDeviceId() + ":" + auth.getUserId() + ":" + 0;
