@@ -2,18 +2,33 @@ package com.github.catvod.bean.ali;
 
 import android.text.TextUtils;
 
+import com.github.catvod.utils.Prefers;
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
 public class Auth {
 
+    @SerializedName("refreshToken")
     private String refreshToken;
+    @SerializedName("refreshTokenOpen")
     private String refreshTokenOpen;
+    @SerializedName("accessToken")
     private String accessToken;
+    @SerializedName("accessTokenOpen")
     private String accessTokenOpen;
-    private String shareToken;
+    @SerializedName("signature")
     private String signature;
+    @SerializedName("deviceId")
     private String deviceId;
-    private String shareId;
+    @SerializedName("userId")
     private String userId;
+    @SerializedName("driveId")
     private String driveId;
+
+    public static Auth objectFrom(String str) {
+        Auth item = new Gson().fromJson(str, Auth.class);
+        return item == null ? new Auth() : item;
+    }
 
     public String getRefreshToken() {
         return TextUtils.isEmpty(refreshToken) ? "" : refreshToken;
@@ -47,14 +62,6 @@ public class Auth {
         this.accessTokenOpen = accessTokenOpen;
     }
 
-    public String getShareToken() {
-        return TextUtils.isEmpty(shareToken) ? "" : shareToken;
-    }
-
-    public void setShareToken(String shareToken) {
-        this.shareToken = shareToken;
-    }
-
     public String getSignature() {
         return TextUtils.isEmpty(signature) ? "" : signature;
     }
@@ -69,14 +76,6 @@ public class Auth {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public String getShareId() {
-        return TextUtils.isEmpty(shareId) ? "" : shareId;
-    }
-
-    public void setShareId(String shareId) {
-        this.shareId = shareId;
     }
 
     public String getDriveId() {
@@ -104,5 +103,10 @@ public class Auth {
         setAccessTokenOpen("");
         setRefreshToken("");
         setAccessToken("");
+        setSignature("");
+    }
+
+    public void save() {
+        Prefers.put("aliyundrive", new Gson().toJson(this));
     }
 }

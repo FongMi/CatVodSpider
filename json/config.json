@@ -1,6 +1,6 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;df10e61cf95ea6a8507162d0c9e9063f",
-  "wallpaper": "http://www.kf666888.cn/api/tvbox/img",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;a25f65d9985736693258d27a77386ac5",
+  "wallpaper": "http://饭太硬.ga/深色壁纸/api.php",
   "lives": [
     {
       "name": "TXT",

@@ -17,6 +17,7 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.ali.Auth;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
+import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
@@ -49,7 +50,9 @@ public class API {
     private Map<String, String> mediaId2Url;
     private final ReentrantLock lock;
     private AlertDialog dialog;
+    private String shareToken;
     private final Auth auth;
+    private String shareId;
 
     private static class Loader {
         static volatile API INSTANCE = new API();
@@ -60,16 +63,16 @@ public class API {
     }
 
     private API() {
-        this.auth = new Auth();
         this.lock = new ReentrantLock(true);
+        this.auth = Auth.objectFrom(Prefers.getString("aliyundrive"));
     }
 
     public void setRefreshToken(String token) {
-        auth.setRefreshToken(Prefers.getString("refreshToken", token));
+        if (auth.getRefreshToken().isEmpty()) auth.setRefreshToken(token);
     }
 
     public void setShareId(String shareId) {
-        auth.setShareId(shareId);
+        this.shareId = shareId;
         refreshShareToken();
     }
 
@@ -83,7 +86,7 @@ public class API {
     private HashMap<String, String> getHeaderAuth() {
         HashMap<String, String> headers = getHeader();
         headers.put("authorization", auth.getAccessToken());
-        headers.put("x-share-token", auth.getShareToken());
+        headers.put("x-share-token", shareToken);
         return headers;
     }
 
@@ -145,16 +148,13 @@ public class API {
         if (auth.getAccessToken().isEmpty()) refreshAccessToken();
     }
 
-    public void checkAccessTokenOpen() {
-        if (auth.getAccessTokenOpen().isEmpty()) refreshAccessTokenOpen();
-    }
-
     private void checkSignature() {
         if (auth.getSignature().isEmpty()) refreshSignature();
     }
 
     private boolean refreshAccessToken() {
         try {
+            SpiderDebug.log("refreshAccessToken...");
             JSONObject body = new JSONObject();
             String token = auth.getRefreshToken();
             if (token.startsWith("http")) token = OkHttp.string(token).replaceAll("[^A-Za-z0-9]", "");
@@ -166,13 +166,13 @@ public class API {
             auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
             auth.setRefreshToken(object.getString("refresh_token"));
             auth.setDriveId(object.getString("default_drive_id"));
-            //OAuth Request
+            SpiderDebug.log("OAuth Request...");
             body = new JSONObject();
             body.put("authorize", 1);
             body.put("scope", "user:base,file:all:read,file:all:write");
             object = new JSONObject(auth("https://open.aliyundrive.com/oauth/users/authorize?client_id=" + BuildConfig.CLIENT_ID + "&redirect_uri=https://alist.nn.ci/tool/aliyundrive/callback&scope=user:base,file:all:read,file:all:write&state=", body, false));
-            String code = object.toString().substring(object.toString().indexOf("code=") + 5, 104);
-            //OAuth Redirect
+            String code = object.optString("redirectUri").split("code=")[1];
+            SpiderDebug.log("OAuth Redirect...");
             body = new JSONObject();
             body.put("code", code);
             body.put("grant_type", "authorization_code");
@@ -192,6 +192,7 @@ public class API {
 
     private boolean refreshAccessTokenOpen() {
         try {
+            SpiderDebug.log("refreshAccessTokenOpen...");
             JSONObject body = new JSONObject();
             String token = auth.getRefreshTokenOpen();
             body.put("refresh_token", token);
@@ -199,6 +200,7 @@ public class API {
             JSONObject object = new JSONObject(OkHttp.postJson("https://api.nn.ci/alist/ali_open/token", body.toString(), getHeader()));
             auth.setAccessTokenOpen(object.optString("token_type") + " " + object.optString("access_token"));
             auth.setRefreshTokenOpen(object.optString("refresh_token"));
+            auth.save();
             return true;
         } catch (Exception e) {
             refreshAccessToken();
@@ -208,11 +210,12 @@ public class API {
 
     public boolean refreshShareToken() {
         try {
+            SpiderDebug.log("refreshShareToken...");
             JSONObject body = new JSONObject();
-            body.put("share_id", auth.getShareId());
+            body.put("share_id", shareId);
             body.put("share_pwd", "");
             JSONObject object = new JSONObject(post("v2/share_link/get_share_token", body));
-            auth.setShareToken(object.getString("share_token"));
+            this.shareToken = object.getString("share_token");
             return true;
         } catch (Exception e) {
             Init.show("來晚啦，該分享已失效。");
@@ -223,6 +226,7 @@ public class API {
 
     private boolean refreshSignature() {
         try {
+            SpiderDebug.log("refreshSignature...");
             PrivateKey privateKey = new PrivateKey();
             String pubKey = "04" + BinaryAscii.hexFromBinary(privateKey.publicKey().toByteString().getBytes());
             String message = BuildConfig.APP_ID + ":" + auth.getDeviceId() + ":" + auth.getUserId() + ":" + 0;
@@ -236,6 +240,7 @@ public class API {
             body.put("refreshToken", auth.getRefreshToken());
             JSONObject object = new JSONObject(sign("users/v1/users/device/create_session", body.toString(), false));
             if (!object.getBoolean("success")) throw new Exception(object.toString());
+            auth.save();
             return true;
         } catch (Exception e) {
             auth.setSignature("");
@@ -246,8 +251,8 @@ public class API {
 
     public Vod getVod(String url, String fileId) throws Exception {
         JSONObject body = new JSONObject();
-        body.put("share_id", auth.getShareId());
-        String json = API.get().post("adrive/v3/share_link/get_share_by_anonymous", body);
+        body.put("share_id", shareId);
+        String json = post("adrive/v3/share_link/get_share_by_anonymous", body);
         JSONObject object = new JSONObject(json);
         List<Item> files = new ArrayList<>();
         LinkedHashMap<String, List<String>> subMap = new LinkedHashMap<>();
@@ -276,12 +281,12 @@ public class API {
         JSONObject body = new JSONObject();
         List<Item> folders = new ArrayList<>();
         body.put("limit", 200);
-        body.put("share_id", auth.getShareId());
+        body.put("share_id", shareId);
         body.put("parent_file_id", parent.getFileId());
         body.put("order_by", "name");
         body.put("order_direction", "ASC");
         if (marker.length() > 0) body.put("marker", marker);
-        Item item = Item.objectFrom(API.get().auth("adrive/v3/file/list", body, true));
+        Item item = Item.objectFrom(auth("adrive/v3/file/list", body, true));
         for (Item file : item.getItems()) {
             if (file.getType().equals("folder")) {
                 folders.add(file);
@@ -345,16 +350,15 @@ public class API {
 
     public String getDownloadUrl(String fileId) {
         try {
-            checkAccessTokenOpen();
-            return openFile(copy(fileId));
+            fileId = copy(fileId);
+            return TextUtils.isEmpty(fileId) ? "" : open(fileId);
         } catch (Exception e) {
             e.printStackTrace();
             return "";
         }
     }
 
-    private String openFile(String fileId) throws Exception {
-        if (TextUtils.isEmpty(fileId)) return "";
+    private String open(String fileId) throws Exception {
         JSONObject body = new JSONObject();
         body.put("file_id", fileId);
         body.put("drive_id", auth.getDriveId());
@@ -365,7 +369,7 @@ public class API {
 
     private String copy(String fileId) throws Exception {
         String json = "{\"requests\":[{\"body\":{\"file_id\":\"%s\",\"share_id\":\"%s\",\"auto_rename\":true,\"to_parent_file_id\":\"root\",\"to_drive_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"0\",\"method\":\"POST\",\"url\":\"/file/copy\"}],\"resource\":\"file\"}";
-        json = String.format(json, fileId, auth.getShareId(), auth.getDriveId());
+        json = String.format(json, fileId, shareId, auth.getDriveId());
         String result = auth("adrive/v2/batch", json, true);
         return new JSONObject(result).getJSONArray("responses").getJSONObject(0).getJSONObject("body").optString("file_id");
     }
@@ -378,7 +382,7 @@ public class API {
 
     public Object[] proxySub(Map<String, String> params) {
         String fileId = params.get("file_id");
-        String text = OkHttp.string(getDownloadUrl(fileId), API.get().getHeaderAuth());
+        String text = OkHttp.string(getDownloadUrl(fileId), getHeaderAuth());
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
@@ -425,7 +429,7 @@ public class API {
             checkSignature();
             JSONObject body = new JSONObject();
             body.put("file_id", fileId);
-            body.put("share_id", auth.getShareId());
+            body.put("share_id", shareId);
             body.put("template_id", "");
             body.put("category", "live_transcoding");
             String json = sign("v2/file/get_share_link_video_preview_play_info", body.toString(), true);
@@ -493,9 +497,9 @@ public class API {
     }
 
     private void setToken(String value) {
-        Prefers.put("refreshToken", value);
         Init.show("請重新進入播放頁");
         auth.setRefreshToken(value);
+        refreshAccessToken();
         stopService();
     }
 
