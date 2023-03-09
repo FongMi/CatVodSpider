@@ -68,7 +68,7 @@ public class API {
     }
 
     public void setRefreshToken(String token) {
-        auth.setRefreshToken(token);
+        if (auth.getRefreshToken().isEmpty()) auth.setRefreshToken(token);
     }
 
     public void setShareId(String shareId) {
@@ -146,10 +146,6 @@ public class API {
 
     public void checkAccessToken() {
         if (auth.getAccessToken().isEmpty()) refreshAccessToken();
-    }
-
-    public void checkAccessTokenOpen() {
-        if (auth.getAccessTokenOpen().isEmpty()) refreshAccessTokenOpen();
     }
 
     private void checkSignature() {
@@ -256,7 +252,7 @@ public class API {
     public Vod getVod(String url, String fileId) throws Exception {
         JSONObject body = new JSONObject();
         body.put("share_id", shareId);
-        String json = API.get().post("adrive/v3/share_link/get_share_by_anonymous", body);
+        String json = post("adrive/v3/share_link/get_share_by_anonymous", body);
         JSONObject object = new JSONObject(json);
         List<Item> files = new ArrayList<>();
         LinkedHashMap<String, List<String>> subMap = new LinkedHashMap<>();
@@ -290,7 +286,7 @@ public class API {
         body.put("order_by", "name");
         body.put("order_direction", "ASC");
         if (marker.length() > 0) body.put("marker", marker);
-        Item item = Item.objectFrom(API.get().auth("adrive/v3/file/list", body, true));
+        Item item = Item.objectFrom(auth("adrive/v3/file/list", body, true));
         for (Item file : item.getItems()) {
             if (file.getType().equals("folder")) {
                 folders.add(file);
@@ -354,16 +350,15 @@ public class API {
 
     public String getDownloadUrl(String fileId) {
         try {
-            checkAccessTokenOpen();
-            return openFile(copy(fileId));
+            fileId = copy(fileId);
+            return TextUtils.isEmpty(fileId) ? "" : open(fileId);
         } catch (Exception e) {
             e.printStackTrace();
             return "";
         }
     }
 
-    private String openFile(String fileId) throws Exception {
-        if (TextUtils.isEmpty(fileId)) return "";
+    private String open(String fileId) throws Exception {
         JSONObject body = new JSONObject();
         body.put("file_id", fileId);
         body.put("drive_id", auth.getDriveId());
@@ -387,7 +382,7 @@ public class API {
 
     public Object[] proxySub(Map<String, String> params) {
         String fileId = params.get("file_id");
-        String text = OkHttp.string(getDownloadUrl(fileId), API.get().getHeaderAuth());
+        String text = OkHttp.string(getDownloadUrl(fileId), getHeaderAuth());
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
@@ -504,8 +499,8 @@ public class API {
     private void setToken(String value) {
         Init.show("請重新進入播放頁");
         auth.setRefreshToken(value);
+        refreshAccessToken();
         stopService();
-        auth.save();
     }
 
     private void stopService() {

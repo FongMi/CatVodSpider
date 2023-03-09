@@ -4,21 +4,30 @@ import android.text.TextUtils;
 
 import com.github.catvod.utils.Prefers;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 
 public class Auth {
 
+    @SerializedName("refreshToken")
     private String refreshToken;
+    @SerializedName("refreshTokenOpen")
     private String refreshTokenOpen;
+    @SerializedName("accessToken")
     private String accessToken;
+    @SerializedName("accessTokenOpen")
     private String accessTokenOpen;
+    @SerializedName("signature")
     private String signature;
+    @SerializedName("deviceId")
     private String deviceId;
+    @SerializedName("userId")
     private String userId;
+    @SerializedName("driveId")
     private String driveId;
 
     public static Auth objectFrom(String str) {
-        if (TextUtils.isEmpty(str)) return new Auth();
-        return new Gson().fromJson(str, Auth.class);
+        Auth item = new Gson().fromJson(str, Auth.class);
+        return item == null ? new Auth() : item;
     }
 
     public String getRefreshToken() {
@@ -94,6 +103,7 @@ public class Auth {
         setAccessTokenOpen("");
         setRefreshToken("");
         setAccessToken("");
+        setSignature("");
     }
 
     public void save() {
