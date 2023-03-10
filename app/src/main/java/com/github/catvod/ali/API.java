@@ -170,8 +170,9 @@ public class API {
             body.put("code", code);
             body.put("grant_type", "authorization_code");
             object = new JSONObject(post("https://api.nn.ci/alist/ali_open/code", body));
+            auth.setAccessTokenOpen(object.optString("token_type") + " " + object.optString("access_token"));
             auth.setRefreshTokenOpen(object.getString("refresh_token"));
-            refreshOpenToken();
+            auth.save();
             return true;
         } catch (Exception e) {
             SpiderDebug.log(e);
@@ -182,18 +183,6 @@ public class API {
         } finally {
             while (auth.isEmpty()) SystemClock.sleep(250);
         }
-    }
-
-    private void refreshOpenToken() throws Exception {
-        SpiderDebug.log("refreshAccessTokenOpen...");
-        JSONObject body = new JSONObject();
-        String token = auth.getRefreshTokenOpen();
-        body.put("refresh_token", token);
-        body.put("grant_type", "refresh_token");
-        JSONObject object = new JSONObject(OkHttp.postJson("https://api.nn.ci/alist/ali_open/token", body.toString(), getHeader()));
-        auth.setAccessTokenOpen(object.optString("token_type") + " " + object.optString("access_token"));
-        auth.setRefreshTokenOpen(object.optString("refresh_token"));
-        auth.save();
     }
 
     public boolean refreshShareToken() {
@@ -246,7 +235,7 @@ public class API {
         List<Item> files = new ArrayList<>();
         LinkedHashMap<String, List<String>> subMap = new LinkedHashMap<>();
         listFiles(new Item(getParentFileId(fileId, object)), files, subMap);
-        List<String> playFrom = Arrays.asList("原畫", "FHD", "HD", "SD", "LD");
+        List<String> playFrom = Arrays.asList("原畫", "高清", "標清");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
         for (Item file : files) episode.add(Trans.get(file.getDisplayName()) + "$" + file.getFileId() + findSubs(file.getName(), subMap));
@@ -334,7 +323,7 @@ public class API {
     }
 
     public String getPreviewUrl(String fileId, String flag) {
-        return Proxy.getUrl() + "?do=ali&type=m3u8&file_id=" + fileId + "&flag=" + flag;
+        return Proxy.getUrl() + "?do=ali&type=m3u8&file_id=" + fileId + "&flag=" + (flag.equals("高清") ? "FHD" : "HD");
     }
 
     public String getDownloadUrl(String fileId) {
