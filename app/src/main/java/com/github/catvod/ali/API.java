@@ -115,14 +115,18 @@ public class API {
     }
 
     private String auth(String url, String json, boolean retry) {
-        return auth(url, json, getHeaderAuth(), retry);
+        url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
+        String result = OkHttp.postJson(url, json, getHeaderAuth());
+        Log.e("auth", result);
+        if (retry && checkAuth(result)) return auth(url, json, false);
+        return result;
     }
 
-    private String auth(String url, String json, Map<String, String> header, boolean retry) {
+    private String oauth(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        String result = OkHttp.postJson(url, json, header);
-        Log.e("auth", result);
-        if (retry && check401(result)) return auth(url, json, header, false);
+        String result = OkHttp.postJson(url, json, getHeaderOpen());
+        Log.e("oauth", result);
+        if (retry && checkOpen(result)) return oauth(url, json, false);
         return result;
     }
 
@@ -130,14 +134,22 @@ public class API {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
         String result = OkHttp.postJson(url, json, getHeaderSign());
         Log.e("sign", result);
-        if (retry && check401(result)) return sign(url, json, false);
+        if (retry && checkSign(result)) return sign(url, json, false);
         return result;
     }
 
-    private boolean check401(String result) {
-        if (result.contains("3 parts")) return refreshOpenToken();
+    private boolean checkAuth(String result) {
         if (result.contains("AccessTokenInvalid")) return refreshAccessToken();
         if (result.contains("ShareLinkTokenInvalid") || result.contains("InvalidParameterNotMatch")) return refreshShareToken();
+        return false;
+    }
+
+    private boolean checkOpen(String result) {
+        if (result.contains("AccessTokenInvalid")) return refreshOpenToken();
+        return false;
+    }
+
+    private boolean checkSign(String result) {
         if (result.contains("UserDeviceOffline") || result.contains("UserDeviceIllegality") || result.contains("DeviceSessionSignatureInvalid")) return refreshSignature();
         return false;
     }
@@ -370,7 +382,7 @@ public class API {
         JSONObject body = new JSONObject();
         body.put("file_id", fileId);
         body.put("drive_id", auth.getDriveId());
-        String url = new JSONObject(auth("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", body.toString(), getHeaderOpen(), true)).getString("url");
+        String url = new JSONObject(oauth("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", body.toString(), true)).getString("url");
         Init.execute(() -> delete(fileId));
         return url;
     }
