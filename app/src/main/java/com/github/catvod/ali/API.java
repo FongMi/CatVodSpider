@@ -90,7 +90,7 @@ public class API {
         return headers;
     }
 
-    private HashMap<String, String> getHeaderAuthOpen() {
+    private HashMap<String, String> getHeaderOpen() {
         HashMap<String, String> headers = getHeader();
         headers.put("authorization", auth.getAccessTokenOpen());
         return headers;
@@ -113,15 +113,13 @@ public class API {
     }
 
     private String auth(String url, String json, boolean retry) {
-        url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        String result = OkHttp.postJson(url, json, getHeaderAuth());
-        if (retry && check401(result)) return auth(url, json, false);
-        return result;
+        return auth(url, json, getHeaderAuth(), retry);
     }
 
-    private String authOpen(String url, String json, boolean retry) {
-        String result = OkHttp.postJson(url, json, getHeaderAuthOpen());
-        if (retry && check401Open(result)) return authOpen(url, json, false);
+    private String auth(String url, String json, Map<String, String> header, boolean retry) {
+        url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
+        String result = OkHttp.postJson(url, json, header);
+        if (retry && check401(result)) return auth(url, json, header, false);
         return result;
     }
 
@@ -136,11 +134,6 @@ public class API {
         if (result.contains("AccessTokenInvalid")) return refreshAccessToken();
         if (result.contains("ShareLinkTokenInvalid") || result.contains("InvalidParameterNotMatch")) return refreshShareToken();
         if (result.contains("UserDeviceOffline") || result.contains("UserDeviceIllegality") || result.contains("DeviceSessionSignatureInvalid")) return refreshSignature();
-        return false;
-    }
-
-    private boolean check401Open(String result) {
-        if (result.contains("AccessTokenInvalid")) return refreshAccessTokenOpen();
         return false;
     }
 
@@ -178,9 +171,10 @@ public class API {
             body.put("grant_type", "authorization_code");
             object = new JSONObject(post("https://api.nn.ci/alist/ali_open/code", body));
             auth.setRefreshTokenOpen(object.getString("refresh_token"));
-            refreshAccessTokenOpen();
+            refreshOpenToken();
             return true;
         } catch (Exception e) {
+            SpiderDebug.log(e);
             stopService();
             auth.clean();
             getQRCode();
@@ -190,22 +184,16 @@ public class API {
         }
     }
 
-    private boolean refreshAccessTokenOpen() {
-        try {
-            SpiderDebug.log("refreshAccessTokenOpen...");
-            JSONObject body = new JSONObject();
-            String token = auth.getRefreshTokenOpen();
-            body.put("refresh_token", token);
-            body.put("grant_type", "refresh_token");
-            JSONObject object = new JSONObject(OkHttp.postJson("https://api.nn.ci/alist/ali_open/token", body.toString(), getHeader()));
-            auth.setAccessTokenOpen(object.optString("token_type") + " " + object.optString("access_token"));
-            auth.setRefreshTokenOpen(object.optString("refresh_token"));
-            auth.save();
-            return true;
-        } catch (Exception e) {
-            refreshAccessToken();
-            return true;
-        }
+    private void refreshOpenToken() throws Exception {
+        SpiderDebug.log("refreshAccessTokenOpen...");
+        JSONObject body = new JSONObject();
+        String token = auth.getRefreshTokenOpen();
+        body.put("refresh_token", token);
+        body.put("grant_type", "refresh_token");
+        JSONObject object = new JSONObject(OkHttp.postJson("https://api.nn.ci/alist/ali_open/token", body.toString(), getHeader()));
+        auth.setAccessTokenOpen(object.optString("token_type") + " " + object.optString("access_token"));
+        auth.setRefreshTokenOpen(object.optString("refresh_token"));
+        auth.save();
     }
 
     public boolean refreshShareToken() {
@@ -243,6 +231,7 @@ public class API {
             auth.save();
             return true;
         } catch (Exception e) {
+            SpiderDebug.log(e);
             auth.setSignature("");
             e.printStackTrace();
             return false;
@@ -362,7 +351,7 @@ public class API {
         JSONObject body = new JSONObject();
         body.put("file_id", fileId);
         body.put("drive_id", auth.getDriveId());
-        String url = new JSONObject(authOpen("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", body.toString(), true)).optString("url");
+        String url = new JSONObject(auth("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", body.toString(), getHeaderOpen(), true)).optString("url");
         Init.execute(() -> delete(fileId));
         return url;
     }

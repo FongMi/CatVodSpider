@@ -83,7 +83,13 @@ public class Utils {
     }
 
     public static String getVar(String data, String param) {
-        for (String var : data.split("var")) if (var.contains(param)) return var.split("'")[1];
+        for (String var : data.split("var")) if (var.contains(param)) return checkVar(var);
+        return "";
+    }
+
+    private static String checkVar(String var) {
+        if (var.contains("'")) return var.split("'")[1];
+        if (var.contains("\"")) return var.split("\"")[1];
         return "";
     }
 
