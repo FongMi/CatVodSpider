@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.UrlQuerySanitizer;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -86,6 +87,7 @@ public class API {
     private HashMap<String, String> getHeaderAuth() {
         HashMap<String, String> headers = getHeader();
         headers.put("authorization", auth.getAccessToken());
+        headers.put("x-canary", "client=web,app=share,version=v2.3.1");
         headers.put("x-share-token", shareToken);
         return headers;
     }
@@ -113,26 +115,41 @@ public class API {
     }
 
     private String auth(String url, String json, boolean retry) {
-        return auth(url, json, getHeaderAuth(), retry);
+        url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
+        String result = OkHttp.postJson(url, json, getHeaderAuth());
+        Log.e("auth", result);
+        if (retry && checkAuth(result)) return auth(url, json, false);
+        return result;
     }
 
-    private String auth(String url, String json, Map<String, String> header, boolean retry) {
+    private String oauth(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        String result = OkHttp.postJson(url, json, header);
-        if (retry && check401(result)) return auth(url, json, header, false);
+        String result = OkHttp.postJson(url, json, getHeaderOpen());
+        Log.e("oauth", result);
+        if (retry && checkOpen(result)) return oauth(url, json, false);
         return result;
     }
 
     private String sign(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
         String result = OkHttp.postJson(url, json, getHeaderSign());
-        if (retry && check401(result)) return sign(url, json, false);
+        Log.e("sign", result);
+        if (retry && checkSign(result)) return sign(url, json, false);
         return result;
     }
 
-    private boolean check401(String result) {
+    private boolean checkAuth(String result) {
         if (result.contains("AccessTokenInvalid")) return refreshAccessToken();
         if (result.contains("ShareLinkTokenInvalid") || result.contains("InvalidParameterNotMatch")) return refreshShareToken();
+        return false;
+    }
+
+    private boolean checkOpen(String result) {
+        if (result.contains("AccessTokenInvalid")) return refreshOpenToken();
+        return false;
+    }
+
+    private boolean checkSign(String result) {
         if (result.contains("UserDeviceOffline") || result.contains("UserDeviceIllegality") || result.contains("DeviceSessionSignatureInvalid")) return refreshSignature();
         return false;
     }
@@ -154,25 +171,13 @@ public class API {
             body.put("refresh_token", token);
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
+            Log.e("DDD", object.toString());
             auth.setUserId(object.getString("user_id"));
             auth.setDeviceId(object.getString("device_id"));
-            auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
-            auth.setRefreshToken(object.getString("refresh_token"));
             auth.setDriveId(object.getString("default_drive_id"));
-            SpiderDebug.log("OAuth Request...");
-            body = new JSONObject();
-            body.put("authorize", 1);
-            body.put("scope", "user:base,file:all:read,file:all:write");
-            object = new JSONObject(auth("https://open.aliyundrive.com/oauth/users/authorize?client_id=" + BuildConfig.CLIENT_ID + "&redirect_uri=https://alist.nn.ci/tool/aliyundrive/callback&scope=user:base,file:all:read,file:all:write&state=", body, false));
-            String code = object.optString("redirectUri").split("code=")[1];
-            SpiderDebug.log("OAuth Redirect...");
-            body = new JSONObject();
-            body.put("code", code);
-            body.put("grant_type", "authorization_code");
-            object = new JSONObject(post("https://api.nn.ci/alist/ali_open/code", body));
-            auth.setAccessTokenOpen(object.optString("token_type") + " " + object.optString("access_token"));
-            auth.setRefreshTokenOpen(object.getString("refresh_token"));
-            auth.save();
+            auth.setRefreshToken(object.getString("refresh_token"));
+            auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
+            oauthRequest();
             return true;
         } catch (Exception e) {
             SpiderDebug.log(e);
@@ -185,6 +190,44 @@ public class API {
         }
     }
 
+    private void oauthRequest() throws Exception {
+        SpiderDebug.log("OAuth Request...");
+        JSONObject body = new JSONObject();
+        body.put("authorize", 1);
+        body.put("scope", "user:base,file:all:read,file:all:write");
+        JSONObject object = new JSONObject(auth("https://open.aliyundrive.com/oauth/users/authorize?client_id=" + BuildConfig.CLIENT_ID + "&redirect_uri=https://alist.nn.ci/tool/aliyundrive/callback&scope=user:base,file:all:read,file:all:write&state=", body, false));
+        Log.e("DDD", object.toString());
+        oauthRedirect(object.getString("redirectUri").split("code=")[1]);
+    }
+
+    private void oauthRedirect(String code) throws Exception {
+        SpiderDebug.log("OAuth Redirect...");
+        JSONObject body = new JSONObject();
+        body.put("code", code);
+        body.put("grant_type", "authorization_code");
+        JSONObject object = new JSONObject(post("https://api.nn.ci/alist/ali_open/code", body));
+        Log.e("DDD", object.toString());
+        auth.setRefreshTokenOpen(object.getString("refresh_token"));
+    }
+
+    private boolean refreshOpenToken() {
+        try {
+            SpiderDebug.log("refreshAccessTokenOpen...");
+            JSONObject body = new JSONObject();
+            body.put("grant_type", "refresh_token");
+            body.put("refresh_token", auth.getRefreshTokenOpen());
+            JSONObject object = new JSONObject(post("https://api.nn.ci/alist/ali_open/token", body));
+            Log.e("DDD", object.toString());
+            auth.setRefreshTokenOpen(object.optString("refresh_token"));
+            auth.setAccessTokenOpen(object.optString("token_type") + " " + object.optString("access_token"));
+            auth.save();
+            return true;
+        } catch (Exception e) {
+            SpiderDebug.log(e);
+            return false;
+        }
+    }
+
     public boolean refreshShareToken() {
         try {
             SpiderDebug.log("refreshShareToken...");
@@ -192,7 +235,7 @@ public class API {
             body.put("share_id", shareId);
             body.put("share_pwd", "");
             JSONObject object = new JSONObject(post("v2/share_link/get_share_token", body));
-            this.shareToken = object.getString("share_token");
+            shareToken = object.getString("share_token");
             return true;
         } catch (Exception e) {
             Init.show("來晚啦，該分享已失效。");
@@ -220,9 +263,8 @@ public class API {
             auth.save();
             return true;
         } catch (Exception e) {
-            SpiderDebug.log(e);
             auth.setSignature("");
-            e.printStackTrace();
+            SpiderDebug.log(e);
             return false;
         }
     }
@@ -340,7 +382,7 @@ public class API {
         JSONObject body = new JSONObject();
         body.put("file_id", fileId);
         body.put("drive_id", auth.getDriveId());
-        String url = new JSONObject(auth("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", body.toString(), getHeaderOpen(), true)).optString("url");
+        String url = new JSONObject(oauth("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", body.toString(), true)).getString("url");
         Init.execute(() -> delete(fileId));
         return url;
     }
@@ -349,7 +391,7 @@ public class API {
         String json = "{\"requests\":[{\"body\":{\"file_id\":\"%s\",\"share_id\":\"%s\",\"auto_rename\":true,\"to_parent_file_id\":\"root\",\"to_drive_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"0\",\"method\":\"POST\",\"url\":\"/file/copy\"}],\"resource\":\"file\"}";
         json = String.format(json, fileId, shareId, auth.getDriveId());
         String result = auth("adrive/v2/batch", json, true);
-        return new JSONObject(result).getJSONArray("responses").getJSONObject(0).getJSONObject("body").optString("file_id");
+        return new JSONObject(result).getJSONArray("responses").getJSONObject(0).getJSONObject("body").getString("file_id");
     }
 
     private void delete(String fileId) {
