@@ -277,7 +277,7 @@ public class API {
         List<Item> files = new ArrayList<>();
         LinkedHashMap<String, List<String>> subMap = new LinkedHashMap<>();
         listFiles(new Item(getParentFileId(fileId, object)), files, subMap);
-        List<String> playFrom = Arrays.asList("原畫", "高清", "標清");
+        List<String> playFrom = Arrays.asList("原畫", "超清", "高清");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
         for (Item file : files) episode.add(Trans.get(file.getDisplayName()) + "$" + file.getFileId() + findSubs(file.getName(), subMap));
@@ -365,7 +365,7 @@ public class API {
     }
 
     public String getPreviewUrl(String fileId, String flag) {
-        return Proxy.getUrl() + "?do=ali&type=m3u8&file_id=" + fileId + "&flag=" + (flag.equals("高清") ? "FHD" : "HD");
+        return Proxy.getUrl() + "?do=ali&type=m3u8&file_id=" + fileId + "&flag=" + getPreviewQuality(flag);
     }
 
     public String getDownloadUrl(String fileId) {
@@ -473,6 +473,19 @@ public class API {
             return TextUtils.join("\n", lines);
         } catch (Exception e) {
             return "";
+        }
+    }
+
+    private String getPreviewQuality(String flag) {
+        switch (flag) {
+            case "2K":
+                return "QHD";
+            case "超清":
+                return "FHD";
+            case "高清":
+                return "HD";
+            default:
+                return "";
         }
     }
 
