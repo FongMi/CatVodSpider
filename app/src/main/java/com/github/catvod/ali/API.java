@@ -134,23 +134,19 @@ public class API {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
         String result = OkHttp.postJson(url, json, getHeaderSign());
         Log.e("sign", result);
-        if (retry && checkSign(result)) return sign(url, json, false);
+        if (retry && checkAuth(result)) return sign(url, json, false);
         return result;
     }
 
     private boolean checkAuth(String result) {
         if (result.contains("AccessTokenInvalid")) return refreshAccessToken();
         if (result.contains("ShareLinkTokenInvalid") || result.contains("InvalidParameterNotMatch")) return refreshShareToken();
+        if (result.contains("UserDeviceOffline") || result.contains("UserDeviceIllegality") || result.contains("DeviceSessionSignatureInvalid")) return refreshSignature();
         return false;
     }
 
     private boolean checkOpen(String result) {
         if (result.contains("AccessTokenInvalid")) return refreshOpenToken();
-        return false;
-    }
-
-    private boolean checkSign(String result) {
-        if (result.contains("UserDeviceOffline") || result.contains("UserDeviceIllegality") || result.contains("DeviceSessionSignatureInvalid")) return refreshSignature();
         return false;
     }
 
