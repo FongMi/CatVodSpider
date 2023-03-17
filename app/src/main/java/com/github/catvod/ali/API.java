@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.UrlQuerySanitizer;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,9 +25,6 @@ import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Trans;
 import com.github.catvod.utils.Utils;
-import com.starkbank.ellipticcurve.Ecdsa;
-import com.starkbank.ellipticcurve.PrivateKey;
-import com.starkbank.ellipticcurve.utils.BinaryAscii;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,13 +39,11 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class API {
 
+    private final Map<String, String> quality;
     private ScheduledExecutorService service;
-    private Map<String, String> mediaId2Url;
-    private final ReentrantLock lock;
     private AlertDialog dialog;
     private String shareToken;
     private final Auth auth;
@@ -64,8 +58,14 @@ public class API {
     }
 
     private API() {
-        this.lock = new ReentrantLock(true);
-        this.auth = Auth.objectFrom(Prefers.getString("aliyundrive"));
+        auth = Auth.objectFrom(Prefers.getString("aliyundrive"));
+        quality = new HashMap<>();
+        quality.put("4K", "UHD");
+        quality.put("2k", "QHD");
+        quality.put("超清", "FHD");
+        quality.put("高清", "HD");
+        quality.put("標清", "SD");
+        quality.put("流暢", "LD");
     }
 
     public void setRefreshToken(String token) {
@@ -98,13 +98,6 @@ public class API {
         return headers;
     }
 
-    private HashMap<String, String> getHeaderSign() {
-        HashMap<String, String> headers = getHeaderAuth();
-        headers.put("x-device-id", auth.getDeviceId());
-        headers.put("x-signature", auth.getSignature());
-        return headers;
-    }
-
     private String post(String url, JSONObject body) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
         return OkHttp.postJson(url, body.toString(), getHeader());
@@ -123,25 +116,16 @@ public class API {
     }
 
     private String oauth(String url, String json, boolean retry) {
-        url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
+        url = url.startsWith("https") ? url : "https://open.aliyundrive.com/adrive/v1.0/" + url;
         String result = OkHttp.postJson(url, json, getHeaderOpen());
         Log.e("oauth", result);
         if (retry && checkOpen(result)) return oauth(url, json, false);
         return result;
     }
 
-    private String sign(String url, String json, boolean retry) {
-        url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        String result = OkHttp.postJson(url, json, getHeaderSign());
-        Log.e("sign", result);
-        if (retry && checkAuth(result)) return sign(url, json, false);
-        return result;
-    }
-
     private boolean checkAuth(String result) {
         if (result.contains("AccessTokenInvalid")) return refreshAccessToken();
         if (result.contains("ShareLinkTokenInvalid") || result.contains("InvalidParameterNotMatch")) return refreshShareToken();
-        if (result.contains("UserDeviceOffline") || result.contains("UserDeviceIllegality") || result.contains("DeviceSessionSignatureInvalid")) return refreshSignature();
         return false;
     }
 
@@ -152,10 +136,6 @@ public class API {
 
     public void checkAccessToken() {
         if (auth.getAccessToken().isEmpty()) refreshAccessToken();
-    }
-
-    private void checkSignature() {
-        if (auth.getSignature().isEmpty()) refreshSignature();
     }
 
     private boolean refreshAccessToken() {
@@ -169,7 +149,6 @@ public class API {
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
             Log.e("DDD", object.toString());
             auth.setUserId(object.getString("user_id"));
-            auth.setDeviceId(object.getString("device_id"));
             auth.setDriveId(object.getString("default_drive_id"));
             auth.setRefreshToken(object.getString("refresh_token"));
             auth.setAccessToken(object.getString("token_type") + " " + object.getString("access_token"));
@@ -236,31 +215,6 @@ public class API {
         } catch (Exception e) {
             Init.show("來晚啦，該分享已失效。");
             e.printStackTrace();
-            return false;
-        }
-    }
-
-    private boolean refreshSignature() {
-        try {
-            SpiderDebug.log("refreshSignature...");
-            PrivateKey privateKey = new PrivateKey();
-            String pubKey = "04" + BinaryAscii.hexFromBinary(privateKey.publicKey().toByteString().getBytes());
-            String message = BuildConfig.APP_ID + ":" + auth.getDeviceId() + ":" + auth.getUserId() + ":" + 0;
-            String signature = BinaryAscii.hexFromBinary(Ecdsa.sign(message, privateKey).toDer().getBytes());
-            auth.setSignature(signature.substring(signature.length() - 128) + "01");
-            JSONObject body = new JSONObject();
-            body.put("deviceName", "samsung");
-            body.put("modelName", "SM-G9810");
-            body.put("nonce", 0);
-            body.put("pubKey", pubKey);
-            body.put("refreshToken", auth.getRefreshToken());
-            JSONObject object = new JSONObject(sign("users/v1/users/device/create_session", body.toString(), false));
-            if (!object.getBoolean("success")) throw new Exception(object.toString());
-            auth.save();
-            return true;
-        } catch (Exception e) {
-            auth.setSignature("");
-            SpiderDebug.log(e);
             return false;
         }
     }
@@ -360,27 +314,47 @@ public class API {
         return sub;
     }
 
-    public String getPreviewUrl(String fileId, String flag) {
-        return Proxy.getUrl() + "?do=ali&type=m3u8&file_id=" + fileId + "&flag=" + getPreviewQuality(flag);
-    }
-
     public String getDownloadUrl(String fileId) {
         try {
-            fileId = copy(fileId);
-            return TextUtils.isEmpty(fileId) ? "" : open(fileId);
+            String tempId = copy(fileId);
+            JSONObject body = new JSONObject();
+            body.put("file_id", tempId);
+            body.put("drive_id", auth.getDriveId());
+            String url = new JSONObject(oauth("openFile/getDownloadUrl", body.toString(), true)).getString("url");
+            Init.execute(() -> delete(tempId));
+            return url;
         } catch (Exception e) {
             e.printStackTrace();
             return "";
         }
     }
 
-    private String open(String fileId) throws Exception {
-        JSONObject body = new JSONObject();
-        body.put("file_id", fileId);
-        body.put("drive_id", auth.getDriveId());
-        String url = new JSONObject(oauth("https://open.aliyundrive.com/adrive/v1.0/openFile/getDownloadUrl", body.toString(), true)).getString("url");
-        Init.execute(() -> delete(fileId));
-        return url;
+    public String getPreviewUrl(String fileId, String flag) {
+        try {
+            String tempId = copy(fileId);
+            JSONObject body = new JSONObject();
+            body.put("file_id", tempId);
+            body.put("drive_id", auth.getDriveId());
+            body.put("category", "live_transcoding");
+            body.put("url_expire_sec", "14400");
+            String json = oauth("openFile/getVideoPreviewPlayInfo", body.toString(), true);
+            JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
+            Init.execute(() -> delete(tempId));
+            return getPreviewQuality(taskList, flag);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private String getPreviewQuality(JSONArray taskList, String flag) throws Exception {
+        for (int i = 0; i < taskList.length(); ++i) {
+            JSONObject task = taskList.getJSONObject(i);
+            if (task.getString("template_id").equals(quality.get(flag))) {
+                return task.getString("url");
+            }
+        }
+        return taskList.getJSONObject(0).getString("url");
     }
 
     private String copy(String fileId) throws Exception {
@@ -404,95 +378,6 @@ public class API {
         result[1] = "application/octet-stream";
         result[2] = new ByteArrayInputStream(text.getBytes());
         return result;
-    }
-
-    public Object[] proxyM3U8(Map<String, String> params) {
-        String fileId = params.get("file_id");
-        String flag = params.get("flag");
-        Object[] result = new Object[3];
-        result[0] = 200;
-        result[1] = "application/vnd.apple.mpegurl";
-        result[2] = new ByteArrayInputStream(refreshM3U8(fileId, flag).getBytes());
-        return result;
-    }
-
-    public Object[] proxyMedia(Map<String, String> params) {
-        try {
-            String fileId = params.get("file_id");
-            String mediaId = params.get("media_id");
-            String flag = params.get("flag");
-            lock.lock();
-            String mediaUrl = mediaId2Url.get(mediaId);
-            long expires = Long.parseLong(new UrlQuerySanitizer(mediaUrl).getValue("x-oss-expires"));
-            long current = System.currentTimeMillis() / 1000;
-            if (expires - current <= 60) {
-                refreshM3U8(fileId, flag);
-                mediaUrl = mediaId2Url.get(mediaId);
-            }
-            lock.unlock();
-            Object[] result = new Object[3];
-            result[0] = 200;
-            result[1] = "video/MP2T";
-            result[2] = OkHttp.newCall(mediaUrl, getHeader()).body().byteStream();
-            return result;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private String refreshM3U8(String fileId, String flag) {
-        try {
-            checkSignature();
-            JSONObject body = new JSONObject();
-            body.put("file_id", fileId);
-            body.put("share_id", shareId);
-            body.put("template_id", "");
-            body.put("category", "live_transcoding");
-            String json = sign("v2/file/get_share_link_video_preview_play_info", body.toString(), true);
-            JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
-            Map<String, List<String>> respHeaders = new HashMap<>();
-            OkHttp.stringNoRedirect(getPreviewQuality(taskList, flag), getHeader(), respHeaders);
-            String location = OkHttp.getRedirectLocation(respHeaders);
-            String m3u8 = OkHttp.string(location, getHeader());
-            String mediaUrlPrefix = location.substring(0, location.lastIndexOf("/")) + "/";
-            List<String> lines = new ArrayList<>();
-            int mediaId = 0;
-            mediaId2Url = new HashMap<>();
-            for (String line : m3u8.split("\n")) {
-                if (line.contains("x-oss-expires")) {
-                    mediaId += 1;
-                    mediaId2Url.put(String.valueOf(mediaId), mediaUrlPrefix + line);
-                    line = Proxy.getUrl() + "?do=ali&type=media" + "&file_id=" + fileId + "&media_id=" + mediaId + "&flag=" + flag;
-                }
-                lines.add(line);
-            }
-            return TextUtils.join("\n", lines);
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private String getPreviewQuality(String flag) {
-        switch (flag) {
-            case "2K":
-                return "QHD";
-            case "超清":
-                return "FHD";
-            case "高清":
-                return "HD";
-            default:
-                return "";
-        }
-    }
-
-    private String getPreviewQuality(JSONArray taskList, String flag) throws Exception {
-        for (int i = 0; i < taskList.length(); ++i) {
-            JSONObject task = taskList.getJSONObject(i);
-            if (task.getString("template_id").equals(flag)) {
-                return task.getString("url");
-            }
-        }
-        return taskList.getJSONObject(0).getString("url");
     }
 
     private void getQRCode() {
