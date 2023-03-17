@@ -39,7 +39,7 @@
       "searchable": 1,
       "filterable": 1,
       "changeable": 1,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/duboku.json"
+      "ext": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/duboku.json"
     },
     {
       "key": "櫻花",
