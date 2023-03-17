@@ -16,10 +16,6 @@ public class Auth {
     private String accessToken;
     @SerializedName("accessTokenOpen")
     private String accessTokenOpen;
-    @SerializedName("signature")
-    private String signature;
-    @SerializedName("deviceId")
-    private String deviceId;
     @SerializedName("userId")
     private String userId;
     @SerializedName("driveId")
@@ -62,22 +58,6 @@ public class Auth {
         this.accessTokenOpen = accessTokenOpen;
     }
 
-    public String getSignature() {
-        return TextUtils.isEmpty(signature) ? "" : signature;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
     public String getDriveId() {
         return TextUtils.isEmpty(driveId) ? "" : driveId;
     }
@@ -103,7 +83,6 @@ public class Auth {
         setAccessTokenOpen("");
         setRefreshToken("");
         setAccessToken("");
-        setSignature("");
     }
 
     public void save() {

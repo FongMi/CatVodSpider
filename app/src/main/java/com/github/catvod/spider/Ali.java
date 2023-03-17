@@ -45,8 +45,6 @@ public class Ali extends Spider {
     public static Object[] vod(Map<String, String> params) {
         String type = params.get("type");
         if (type.equals("sub")) return API.get().proxySub(params);
-        if (type.equals("m3u8")) return API.get().proxyM3U8(params);
-        if (type.equals("media")) return API.get().proxyMedia(params);
         return null;
     }
 }
