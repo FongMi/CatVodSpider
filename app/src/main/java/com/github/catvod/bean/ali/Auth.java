@@ -20,6 +20,8 @@ public class Auth {
     private String userId;
     @SerializedName("driveId")
     private String driveId;
+    @SerializedName("expire_time")
+    private String expireTime;
 
     public static Auth objectFrom(String str) {
         Auth item = new Gson().fromJson(str, Auth.class);
@@ -72,6 +74,10 @@ public class Auth {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getExpireTime() {
+        return TextUtils.isEmpty(expireTime) ? "" : expireTime;
     }
 
     public boolean isEmpty() {
