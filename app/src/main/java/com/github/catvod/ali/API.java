@@ -30,12 +30,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -69,7 +72,15 @@ public class API {
     }
 
     public void setRefreshToken(String token) {
-        if (auth.getRefreshToken().isEmpty()) auth.setRefreshToken(token);
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            long expireTime = sdf.parse(auth.getExpireTime()).getTime();
+            boolean expired = expireTime < System.currentTimeMillis();
+            if (expired) auth.setRefreshToken(token);
+        } catch (Exception e) {
+            auth.setRefreshToken(token);
+        }
     }
 
     public void setShareId(String shareId) {
@@ -365,9 +376,14 @@ public class API {
     }
 
     private void delete(String fileId) {
-        String json = "{\"requests\":[{\"body\":{\"drive_id\":\"%s\",\"file_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"%s\",\"method\":\"POST\",\"url\":\"/file/delete\"}],\"resource\":\"file\"}";
-        json = String.format(json, auth.getDriveId(), fileId, fileId);
-        auth("adrive/v2/batch", json, true);
+        try {
+            JSONObject body = new JSONObject();
+            body.put("file_id", fileId);
+            body.put("drive_id", auth.getDriveId());
+            oauth("openFile/delete", body.toString(), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Object[] proxySub(Map<String, String> params) {
