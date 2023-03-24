@@ -116,7 +116,7 @@ public class Item {
     }
 
     public String getRemark() {
-        return Utils.getSize(getSize()) + (isFolder() ? " 文件夹" : "");
+        return Utils.getSize(getSize());
     }
 
     public String getVodTag() {
