@@ -13,8 +13,8 @@ import com.github.catvod.bean.alist.Item;
 import com.github.catvod.bean.alist.Sorter;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.Trans;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONObject;
 
@@ -136,7 +136,7 @@ public class AList extends Spider {
             String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
             Drive drive = getDrive(key);
             JSONObject params = new JSONObject();
-            params.put("path", path);
+            params.put("path", drive.getPath() + path);
             params.put("password", drive.getPassword());
             String response = OkHttp.postJson(drive.getApi(), params.toString());
             return Item.objectFrom(getDetailJson(drive.isNew(), response));
@@ -151,7 +151,7 @@ public class AList extends Spider {
             String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
             Drive drive = getDrive(key);
             JSONObject params = new JSONObject();
-            params.put("path", path);
+            params.put("path", drive.getPath() + path);
             params.put("password", drive.getPassword());
             String response = OkHttp.postJson(drive.listApi(), params.toString());
             List<Item> items = Item.arrayFrom(getListJson(drive.isNew(), response));
