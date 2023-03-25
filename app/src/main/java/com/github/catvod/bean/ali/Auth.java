@@ -85,9 +85,6 @@ public class Auth {
     }
 
     public void clean() {
-        setRefreshTokenOpen("");
-        setAccessTokenOpen("");
-        setRefreshToken("");
         setAccessToken("");
     }
 

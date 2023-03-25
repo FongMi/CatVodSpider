@@ -21,6 +21,7 @@ import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
+import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Trans;
 import com.github.catvod.utils.Utils;
@@ -29,12 +30,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +61,7 @@ public class API {
     }
 
     private API() {
-        auth = new Auth();
+        auth = Auth.objectFrom(Prefers.getString("aliyundrive"));
         quality = new HashMap<>();
         quality.put("4K", "UHD");
         quality.put("2k", "QHD");
@@ -68,7 +72,15 @@ public class API {
     }
 
     public void setRefreshToken(String token) {
-        auth.setRefreshToken(token);
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            long expireTime = sdf.parse(auth.getExpireTime()).getTime();
+            boolean expired = expireTime < System.currentTimeMillis();
+            if (expired) auth.setRefreshToken(token);
+        } catch (Exception e) {
+            auth.setRefreshToken(token);
+        }
     }
 
     public void setShareId(String shareId) {
@@ -148,7 +160,7 @@ public class API {
             SpiderDebug.log("refreshAccessToken...");
             JSONObject body = new JSONObject();
             String token = auth.getRefreshToken();
-            if (token.startsWith("http")) token = OkHttp.string(token).replaceAll("[^A-Za-z0-9]", "");
+            if (token.startsWith("http")) token = OkHttp.string(token);
             body.put("refresh_token", token);
             body.put("grant_type", "refresh_token");
             JSONObject object = new JSONObject(post("https://auth.aliyundrive.com/v2/account/token", body));
@@ -191,6 +203,8 @@ public class API {
             if (checkManyRequest(result)) return;
             JSONObject object = new JSONObject(result);
             auth.setRefreshTokenOpen(object.getString("refresh_token"));
+            auth.setAccessTokenOpen(object.optString("token_type") + " " + object.optString("access_token"));
+            auth.save();
         } catch (Exception e) {
             SpiderDebug.log(e);
         }
@@ -208,6 +222,7 @@ public class API {
             JSONObject object = new JSONObject(result);
             auth.setRefreshTokenOpen(object.optString("refresh_token"));
             auth.setAccessTokenOpen(object.optString("token_type") + " " + object.optString("access_token"));
+            auth.save();
             return true;
         } catch (Exception e) {
             SpiderDebug.log(e);
