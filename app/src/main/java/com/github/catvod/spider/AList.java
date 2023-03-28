@@ -136,8 +136,8 @@ public class AList extends Spider {
             String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
             Drive drive = getDrive(key);
             JSONObject params = new JSONObject();
-            params.put("path", drive.getPath() + path);
             params.put("password", drive.getPassword());
+            params.put("path", path.startsWith(drive.getPath()) ? path : drive.getPath() + path);
             String response = OkHttp.postJson(drive.getApi(), params.toString());
             return Item.objectFrom(getDetailJson(drive.isNew(), response));
         } catch (Exception e) {
@@ -151,8 +151,8 @@ public class AList extends Spider {
             String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
             Drive drive = getDrive(key);
             JSONObject params = new JSONObject();
-            params.put("path", drive.getPath() + path);
             params.put("password", drive.getPassword());
+            params.put("path", path.startsWith(drive.getPath()) ? path : drive.getPath() + path);
             String response = OkHttp.postJson(drive.listApi(), params.toString());
             List<Item> items = Item.arrayFrom(getListJson(drive.isNew(), response));
             Iterator<Item> iterator = items.iterator();
