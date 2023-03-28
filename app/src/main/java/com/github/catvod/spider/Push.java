@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,8 +35,8 @@ public class Push extends Ali {
     private Vod vod(String url) {
         Vod vod = new Vod();
         vod.setVodId(url);
-        vod.setVodName(url);
         vod.setTypeName("FongMi");
+        vod.setVodName(url.startsWith("file://") ? new File(url).getName() : url);
         vod.setVodPic("https://pic.rmb.bdstatic.com/bjh/1d0b02d0f57f0a42201f92caba5107ed.jpeg");
         vod.setVodPlayFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
         vod.setVodPlayUrl(TextUtils.join("$$$", Arrays.asList("播放$" + url, "播放$" + url, "播放$" + url)));
