@@ -99,6 +99,7 @@ public class Item {
     }
 
     public boolean ignore(boolean isNew) {
+        if (getName().endsWith(".ts")) return false;
         if (isNew) return getType() == 0 || getType() == 4;
         return getType() == 0 || getType() == 2 || getType() == 5;
     }
