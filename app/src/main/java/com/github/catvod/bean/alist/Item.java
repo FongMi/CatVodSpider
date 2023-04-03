@@ -113,7 +113,7 @@ public class Item {
     }
 
     public String getPic() {
-        return getThumb().isEmpty() && isFolder() ? "http://img1.3png.com/281e284a670865a71d91515866552b5f172b.png" : getThumb();
+        return getThumb().isEmpty() && isFolder() ? "https://s1.ax1x.com/2023/04/03/pp4iJlq.png" : getThumb();
     }
 
     public String getRemark() {
