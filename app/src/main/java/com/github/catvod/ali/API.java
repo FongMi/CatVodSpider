@@ -147,8 +147,9 @@ public class API {
 
     private boolean checkQuotaExhausted(String result) {
         if (!result.contains("QuotaExhausted")) return false;
-        Init.show("容量不夠拉，趕快清一清。");
-        auth.clean();
+        Init.show("容量不夠拉。");
+        auth.setRefreshToken("");
+        refreshAccessToken();
         return false;
     }
 
