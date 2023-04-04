@@ -80,12 +80,19 @@ public class Auth {
         return TextUtils.isEmpty(expireTime) ? "" : expireTime;
     }
 
+    public void setExpireTime(String expireTime) {
+        this.expireTime = expireTime;
+    }
+
     public boolean isEmpty() {
         return getAccessToken().isEmpty();
     }
 
     public void clean() {
+        setRefreshToken("");
         setAccessToken("");
+        setExpireTime("");
+        save();
     }
 
     public void save() {
