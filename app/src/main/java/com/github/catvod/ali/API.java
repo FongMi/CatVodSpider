@@ -342,23 +342,25 @@ public class API {
     }
 
     public String getDownloadUrl(String fileId) {
+        String tempId = null;
         try {
-            String tempId = copy(fileId);
+            tempId = copy(fileId);
             JSONObject body = new JSONObject();
             body.put("file_id", tempId);
             body.put("drive_id", auth.getDriveId());
-            String url = new JSONObject(oauth("openFile/getDownloadUrl", body.toString(), true)).getString("url");
-            Init.execute(() -> delete(tempId));
-            return url;
+            return new JSONObject(oauth("openFile/getDownloadUrl", body.toString(), true)).getString("url");
         } catch (Exception e) {
             e.printStackTrace();
             return "";
+        } finally {
+            if (tempId != null) delete(tempId);
         }
     }
 
     public String getPreviewUrl(String fileId, String flag) {
+        String tempId = null;
         try {
-            String tempId = copy(fileId);
+            tempId = copy(fileId);
             JSONObject body = new JSONObject();
             body.put("file_id", tempId);
             body.put("drive_id", auth.getDriveId());
@@ -366,11 +368,12 @@ public class API {
             body.put("url_expire_sec", "14400");
             String json = oauth("openFile/getVideoPreviewPlayInfo", body.toString(), true);
             JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
-            Init.execute(() -> delete(tempId));
             return getPreviewQuality(taskList, flag);
         } catch (Exception e) {
             e.printStackTrace();
             return "";
+        } finally {
+            if (tempId != null) delete(tempId);
         }
     }
 
@@ -396,7 +399,7 @@ public class API {
             JSONObject body = new JSONObject();
             body.put("file_id", fileId);
             body.put("drive_id", auth.getDriveId());
-            oauth("openFile/delete", body.toString(), false);
+            oauth("openFile/delete", body.toString(), true);
         } catch (Exception e) {
             e.printStackTrace();
         }
