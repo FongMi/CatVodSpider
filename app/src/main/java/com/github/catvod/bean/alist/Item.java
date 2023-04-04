@@ -36,7 +36,8 @@ public class Item {
     }
 
     public static List<Item> arrayFrom(String str) {
-        Type listType = new TypeToken<List<Item>>() {}.getType();
+        Type listType = new TypeToken<List<Item>>() {
+        }.getType();
         return new Gson().fromJson(str, listType);
     }
 
@@ -112,8 +113,8 @@ public class Item {
         return id + getPath() + "/" + getName();
     }
 
-    public String getPic() {
-        return getThumb().isEmpty() && isFolder() ? "https://s1.ax1x.com/2023/04/03/pp4F4bT.png" : getThumb();
+    public String getPic(String pic) {
+        return getThumb().isEmpty() && isFolder() ? pic : getThumb();
     }
 
     public String getRemark() {
@@ -124,11 +125,11 @@ public class Item {
         return isFolder() ? "folder" : "file";
     }
 
-    public Vod getVod(String id) {
-        return new Vod(getVodId(id), getName(), getPic(), getRemark(), getVodTag());
+    public Vod getVod(String id, String pic) {
+        return new Vod(getVodId(id), getName(), getPic(pic), getRemark(), getVodTag());
     }
 
-    public Vod getVod(Drive drive) {
-        return new Vod(getVodId(drive.getName()), getName(), getPic(), drive.getName(), getVodTag());
+    public Vod getVod(Drive drive, String pic) {
+        return new Vod(getVodId(drive.getName()), getName(), getPic(pic), drive.getName(), getVodTag());
     }
 }

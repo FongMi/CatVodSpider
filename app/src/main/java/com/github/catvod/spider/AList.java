@@ -30,6 +30,7 @@ import java.util.concurrent.CountDownLatch;
 public class AList extends Spider {
 
     private List<Drive> drives;
+    private String vodPic;
     private String ext;
 
     private List<Filter> getFilter() {
@@ -42,7 +43,9 @@ public class AList extends Spider {
     private void fetchRule() {
         if (drives != null && !drives.isEmpty()) return;
         if (ext.startsWith("http")) ext = OkHttp.string(ext);
-        drives = Drive.objectFrom(ext).getDrives();
+        Drive drive = Drive.objectFrom(ext);
+        drives = drive.getDrives();
+        vodPic = drive.getVodPic();
     }
 
     private Drive getDrive(String name) {
@@ -84,8 +87,8 @@ public class AList extends Spider {
             Sorter.sort(type, order, folders);
             Sorter.sort(type, order, files);
         }
-        for (Item item : folders) list.add(item.getVod(tid));
-        for (Item item : files) list.add(item.getVod(tid));
+        for (Item item : folders) list.add(item.getVod(tid, vodPic));
+        for (Item item : files) list.add(item.getVod(tid, vodPic));
         return Result.get().vod(list).page().string();
     }
 
@@ -108,9 +111,9 @@ public class AList extends Spider {
         Vod vod = new Vod();
         vod.setVodId(id);
         vod.setVodName(name);
+        vod.setVodPic(vodPic);
         vod.setVodPlayFrom(key);
         vod.setVodPlayUrl(TextUtils.join("#", playUrls));
-        vod.setVodPic("http://img1.3png.com/281e284a670865a71d91515866552b5f172b.png");
         return Result.string(vod);
     }
 
@@ -167,7 +170,7 @@ public class AList extends Spider {
         try {
             String response = OkHttp.postJson(drive.searchApi(), drive.params(keyword));
             List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
-            for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive));
+            for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive, vodPic));
         } catch (Exception ignored) {
         } finally {
             cd.countDown();
