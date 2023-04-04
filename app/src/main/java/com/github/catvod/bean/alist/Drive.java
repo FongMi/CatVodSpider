@@ -17,6 +17,8 @@ public class Drive {
 
     @SerializedName("drives")
     private List<Drive> drives;
+    @SerializedName("vodPic")
+    private String vodPic;
     @SerializedName("name")
     private String name;
     @SerializedName("server")
@@ -38,6 +40,10 @@ public class Drive {
 
     public Drive(String name) {
         this.name = name;
+    }
+
+    public String getVodPic() {
+        return TextUtils.isEmpty(vodPic) ? "https://s1.ax1x.com/2023/04/03/pp4F4bT.png" : vodPic;
     }
 
     public String getName() {
