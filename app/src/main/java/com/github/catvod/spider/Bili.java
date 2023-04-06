@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.webkit.CookieManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
@@ -195,7 +196,6 @@ public class Bili extends Spider {
         checkService();
     }
 
-
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void loadWebView() {
         CookieManager cookieManager = CookieManager.getInstance();
@@ -206,7 +206,7 @@ public class Bili extends Spider {
         OkHttp.stringNoRedirect(finalUrl, getHeaders(), respHeaderMap);
         cookie = "";
         for (String kk : Objects.requireNonNull(respHeaderMap.get("set-cookie"))) {
-            cookie += kk.split(";")[0] + ";";
+            cookie = cookie.concat(kk.split(";")[0] + ";");
         }
         Prefers.put("BiliCookie", cookie);
     }
