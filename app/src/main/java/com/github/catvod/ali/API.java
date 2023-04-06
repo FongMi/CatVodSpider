@@ -162,7 +162,7 @@ public class API {
             String result = post("https://auth.aliyundrive.com/v2/account/token", body);
             user = User.objectFrom(result).save();
             if (user.getAccessToken().isEmpty()) throw new Exception(result);
-            if (oauth.getRefreshToken().isEmpty()) oauthRequest();
+            oauthRequest();
             return true;
         } catch (Exception e) {
             user.clean().save();
