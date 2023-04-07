@@ -8,7 +8,7 @@
       "searchable": 1,
       "filterable": 1,
       "switchable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken",
+      "ext": "影視天下第一",
       "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     },
     {
@@ -19,7 +19,7 @@
       "searchable": 1,
       "filterable": 0,
       "switchable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken",
+      "ext": "影視天下第一",
       "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     },
     {
@@ -30,7 +30,7 @@
       "searchable": 1,
       "filterable": 0,
       "switchable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken",
+      "ext": "影視天下第一",
       "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     },
     {
@@ -41,18 +41,7 @@
       "searchable": 1,
       "filterable": 0,
       "switchable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken",
-      "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
-    },
-    {
-      "key": "找資源",
-      "name": "找資源",
-      "type": 3,
-      "api": "csp_Zhaozy",
-      "searchable": 1,
-      "filterable": 0,
-      "switchable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken$$$yingshi$$$abcd1234",
+      "ext": "影視天下第一",
       "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     },
     {
@@ -63,7 +52,7 @@
       "searchable": 1,
       "filterable": 0,
       "switchable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken",
+      "ext": "影視天下第一",
       "jar": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar"
     }
   ]
