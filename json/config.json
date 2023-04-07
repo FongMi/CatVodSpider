@@ -76,7 +76,7 @@
       "searchable": 1,
       "filterable": 1,
       "changeable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken"
+      "ext": "影視天下第一"
     },
     {
       "key": "易搜",
@@ -86,7 +86,7 @@
       "searchable": 1,
       "filterable": 0,
       "changeable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken"
+      "ext": "影視天下第一"
     },
     {
       "key": "盤搜",
@@ -96,7 +96,7 @@
       "searchable": 1,
       "filterable": 0,
       "changeable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken"
+      "ext": "影視天下第一"
     },
     {
       "key": "UP雲搜",
@@ -106,17 +106,7 @@
       "searchable": 1,
       "filterable": 0,
       "changeable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken"
-    },
-    {
-      "key": "找資源",
-      "name": "找資源",
-      "type": 3,
-      "api": "csp_Zhaozy",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken$$$yingshi$$$abcd1234"
+      "ext": "影視天下第一"
     },
     {
       "key": "push_agent",
@@ -126,7 +116,7 @@
       "searchable": 1,
       "filterable": 0,
       "changeable": 0,
-      "ext": "http://ali.饭太硬.ml/alitoken"
+      "ext": "影視天下第一"
     }
   ]
 }
