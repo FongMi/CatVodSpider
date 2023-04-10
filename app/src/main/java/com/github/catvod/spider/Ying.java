@@ -75,7 +75,7 @@ public class Ying extends Spider {
         for (Element element : doc2.select("div.lpic > ul > li")) {
             String id = element.select("a").attr("href").split("/")[2];
             String name = element.select("h2").text();
-            String pic = "https:".concat(element.select("a > img").attr("src"));
+            String pic = element.select("a > img").attr("src");
             String remarks = element.select("span > font").text();
             remarks = remarks.contains(":") ? remarks.split(" ")[1] : remarks;
             list.add(new Vod(id, name, pic, remarks));
@@ -101,7 +101,7 @@ public class Ying extends Spider {
         for (Element element : doc.select("div.lpic > ul > li")) {
             String id = element.select("a").attr("href").split("/")[2];
             String name = element.select("h2").text();
-            String pic = "https:".concat(element.select("a > img").attr("src"));
+            String pic = element.select("a > img").attr("src");
             String remarks = element.select("span > font").text();
             remarks = remarks.contains(":") ? remarks.split(" ")[1] : remarks;
             list.add(new Vod(id, name, pic, remarks));
@@ -113,7 +113,7 @@ public class Ying extends Spider {
     public String detailContent(List<String> ids) {
         Document doc = Jsoup.parse(OkHttp.string(showUrl.concat(ids.get(0)), getHeaders()));
         String name = doc.select("div.rate > h1").text();
-        String pic = "https:".concat(doc.select("div.thumb > img").attr("src"));
+        String pic = doc.select("div.thumb > img").attr("src");
         String content = doc.select("div.info").text();
         Elements element = doc.select("div.sinfo > span > a");
 
@@ -157,7 +157,7 @@ public class Ying extends Spider {
         for (Element element : doc.select("div.lpic > ul > li")) {
             String id = element.select("a").attr("href").split("/")[2];
             String name = element.select("h2").text();
-            String pic = "https:".concat(element.select("a > img").attr("src"));
+            String pic = element.select("a > img").attr("src");
             String remarks = element.select("span > font").text();
             remarks = remarks.contains(":") ? remarks.split(" ")[1] : remarks;
             list.add(new Vod(id, name, pic, remarks));
