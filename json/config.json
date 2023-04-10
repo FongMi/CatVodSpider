@@ -109,6 +109,16 @@
       "ext": "影視天下第一"
     },
     {
+      "key": "找資源",
+      "name": "找資源",
+      "type": 3,
+      "api": "csp_Zhaozy",
+      "searchable": 1,
+      "filterable": 0,
+      "changeable": 0,
+      "ext": "影視天下第一$$$yingshi$$$abcd1234"
+    },
+    {
       "key": "push_agent",
       "name": "推送",
       "type": 3,
