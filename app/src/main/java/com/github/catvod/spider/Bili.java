@@ -76,6 +76,7 @@ public class Bili extends Spider {
             ext = new JSONObject(extend);
             if (ext.optString("cookie").length() > 0) {
                 cookie = ext.optString("cookie");
+                if (cookie.startsWith("http")) cookie = OkHttp.string(cookie);
             } else {
                 getCookie();
             }
