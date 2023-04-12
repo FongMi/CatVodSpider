@@ -2,6 +2,8 @@ package com.github.catvod.bean.ali;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.github.catvod.utils.Prefers;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -55,7 +57,13 @@ public class User {
     }
 
     public User save() {
-        Prefers.put("aliyundrive_user", new Gson().toJson(this));
+        Prefers.put("aliyundrive_user", toString());
         return this;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }
