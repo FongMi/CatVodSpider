@@ -2,6 +2,8 @@ package com.github.catvod.bean.ali;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.github.catvod.utils.Prefers;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -36,8 +38,20 @@ public class OAuth {
         return getTokenType() + " " + getAccessToken();
     }
 
-    public OAuth save() {
-        Prefers.put("aliyundrive_oauth", new Gson().toJson(this));
+    public OAuth clean() {
+        this.refreshToken = "";
+        this.accessToken = "";
         return this;
+    }
+
+    public OAuth save() {
+        Prefers.put("aliyundrive_oauth", toString());
+        return this;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }
