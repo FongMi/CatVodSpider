@@ -1,10 +1,13 @@
 package com.github.catvod.spider;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.text.TextUtils;
-
 import android.view.Gravity;
 import android.webkit.CookieManager;
 import android.widget.FrameLayout;
@@ -17,8 +20,8 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.QRCode;
-import com.github.catvod.utils.Utils;
 import com.github.catvod.utils.Trans;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,49 +42,43 @@ import java.util.concurrent.TimeUnit;
  */
 public class Bili extends Spider {
 
-    private static final String url = "https://www.bilibili.com";
-    private JSONObject ext;
+    private final String url = "https://www.bilibili.com";
     private ScheduledExecutorService service;
-    private ImageView view;
-    private static boolean login;
-    private static String finalUrl = "";
-    private static boolean FirstTime = false;
-    private static String cookie = "";
+    private AlertDialog dialog;
+    private JSONObject ext;
+    private String cookie;
+    private String extend;
+    private boolean login;
 
     private void getCookie() {
-        cookie = Prefers.getString("BiliCookie", "");
-        HashMap<String, List<String>> respHeaderMap = new HashMap<>();
-        OkHttp.string(url, getHeaders(), respHeaderMap);
-        if (cookie.isEmpty()) {
-            for (String kk : Objects.requireNonNull(respHeaderMap.get("set-cookie"))) {
-                cookie += kk.split(";")[0] + ";";
-            }
-        }
+        cookie = Prefers.getString("BiliCookie");
+        HashMap<String, List<String>> respHeader = new HashMap<>();
+        OkHttp.string(url, getHeaders(), respHeader);
+        setCookie(respHeader);
     }
 
-    private static HashMap<String, String> getHeaders() {
+    private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
+        if (!cookie.isEmpty()) headers.put("cookie", cookie);
         headers.put("User-Agent", Utils.CHROME);
         headers.put("Referer", url);
-        if (!cookie.isEmpty()) headers.put("cookie", cookie);
         return headers;
+    }
+
+    private void fetchRule() throws Exception {
+        if (login && !TextUtils.isEmpty(cookie)) return;
+        if (extend.startsWith("http")) extend = OkHttp.string(extend);
+        ext = new JSONObject(extend);
+        String cookie = ext.optString("cookie", "");
+        if (cookie.isEmpty()) getCookie();
+        else this.cookie = cookie.startsWith("http") ? OkHttp.string(cookie) : cookie;
     }
 
     @Override
     public void init(Context context, String extend) {
         try {
-            if (extend.startsWith("http")) {
-                extend = OkHttp.string(extend);
-            }
-            ext = new JSONObject(extend);
-            if (ext.optString("cookie").length() > 0) {
-                cookie = ext.optString("cookie");
-                if (cookie.startsWith("http")) cookie = OkHttp.string(cookie);
-            } else {
-                getCookie();
-            }
-            String content = OkHttp.string("https://api.bilibili.com/x/web-interface/nav", getHeaders());
-            login = new JSONObject(content).getJSONObject("data").getBoolean("isLogin");
+            this.extend = extend;
+            fetchRule();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,11 +86,13 @@ public class Bili extends Spider {
 
     @Override
     public String homeContent(boolean filter) throws Exception {
+        fetchRule();
         return Result.string(Class.arrayFrom(ext.getJSONArray("classes").toString()), ext.getJSONObject("filter"));
     }
 
     @Override
     public String homeVideoContent() throws Exception {
+        fetchRule();
         return categoryContent("窗 白噪音", "1", true, new HashMap<>());
     }
 
@@ -153,11 +152,7 @@ public class Bili extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        if (!login && !FirstTime) {
-            FirstTime = true;
-            checkService();
-            getQRCode();
-        }
+        checkLogin();
         String[] ids = id.split("\\+");
         String aid = ids[0];
         String cid = ids[1];
@@ -167,62 +162,89 @@ public class Bili extends Spider {
         return Result.get().url(url).header(getHeaders()).string();
     }
 
-    private void checkService() {
-        if (service != null) service.shutdownNow();
-        if (view != null) Init.run(() -> Utils.removeView(view));
+    private void checkLogin() throws Exception {
+        if (login) return;
+        String content = OkHttp.string("https://api.bilibili.com/x/web-interface/nav", getHeaders());
+        login = new JSONObject(content).getJSONObject("data").getBoolean("isLogin");
+        if (login) return;
+        stopService();
+        getQRCode();
     }
 
     private void getQRCode() throws JSONException {
-        JSONObject data = new JSONObject(OkHttp.string("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-mini", null));
-        String qrcode = data.getJSONObject("data").getString("url");
-        Init.run(() -> showCode(qrcode));
+        String json = OkHttp.string("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-mini", null);
+        JSONObject data = new JSONObject(json).getJSONObject("data");
+        Init.run(() -> showQRCode(data));
+    }
+
+    private void showQRCode(JSONObject data) {
+        try {
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Utils.dp2px(240), Utils.dp2px(240));
+            ImageView image = new ImageView(Init.context());
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            image.setImageBitmap(QRCode.getBitmap(data.getString("url"), 240, 2));
+            FrameLayout frame = new FrameLayout(Init.context());
+            params.gravity = Gravity.CENTER;
+            frame.addView(image, params);
+            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnDismissListener(this::dismiss).show();
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Init.execute(() -> startService(data));
+            Init.show("請使用 BiliBili App 掃描二維碼");
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void startService(JSONObject data) {
         service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(() -> {
             try {
-                String qr = data.getJSONObject("data").getString("qrcode_key");
+                String qr = data.getString("qrcode_key");
                 String url = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key=" + qr + "&source=main_mini";
-                String content = OkHttp.string(url, getHeaders());
-                finalUrl = new JSONObject(content).getJSONObject("data").getString("url");
-            } catch (JSONException e) {
+                String json = OkHttp.string(url, getHeaders());
+                url = new JSONObject(json).getJSONObject("data").getString("url");
+                if (!TextUtils.isEmpty(url)) setCookie(url);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (!finalUrl.isEmpty()) setCookie(finalUrl);
         }, 1, 1, TimeUnit.SECONDS);
     }
 
-    private void setCookie(String value) {
-        finalUrl = value;
-        loadWebView();
-        Init.show("请重新进入播放页");
-        checkService();
+    private void setCookie(String url) {
+        Init.show("請重新進入播放頁");
+        loadWebView(url);
+        stopService();
+    }
+
+    private void stopService() {
+        if (service != null) service.shutdownNow();
+        Init.run(this::dismiss);
+    }
+
+    private void dismiss(DialogInterface dialog) {
+        stopService();
+    }
+
+    private void dismiss() {
+        try {
+            if (dialog != null) dialog.dismiss();
+        } catch (Exception ignored) {
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void loadWebView() {
+    private void loadWebView(String url) {
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.flush();
         cookieManager.removeAllCookies(null);
         cookieManager.removeSessionCookies(null);
-        HashMap<String, List<String>> respHeaderMap = new HashMap<>();
-        OkHttp.stringNoRedirect(finalUrl, getHeaders(), respHeaderMap);
-        cookie = "";
-        for (String kk : Objects.requireNonNull(respHeaderMap.get("set-cookie"))) {
-            cookie = cookie.concat(kk.split(";")[0] + ";");
-        }
-        Prefers.put("BiliCookie", cookie);
+        HashMap<String, List<String>> respHeader = new HashMap<>();
+        OkHttp.stringNoRedirect(url, getHeaders(), respHeader);
+        setCookie(respHeader);
     }
 
-    private void showCode(String text) {
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER;
-        Utils.addView(view = create(text), params);
-        Init.show("请使用 BiliBili App 扫描二维码");
-    }
-
-    private ImageView create(String value) {
-        ImageView view = new ImageView(Init.context());
-        view.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        view.setImageBitmap(QRCode.getBitmap(value, 250, 2));
-        return view;
+    private void setCookie(HashMap<String, List<String>> respHeaderMap) {
+        StringBuilder sb = new StringBuilder();
+        for (String value : Objects.requireNonNull(respHeaderMap.get("set-cookie"))) sb.append(value.split(";")[0]).append(";");
+        Prefers.put("BiliCookie", cookie = sb.toString());
     }
 }
