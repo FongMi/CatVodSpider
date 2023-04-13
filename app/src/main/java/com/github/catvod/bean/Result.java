@@ -43,6 +43,10 @@ public class Result {
     @SerializedName("total")
     private int total;
 
+    public static Result objectFrom(String str) {
+        return new Gson().fromJson(str, Result.class);
+    }
+
     public static String string(List<Class> classes, List<Vod> list, LinkedHashMap<String, List<Filter>> filters) {
         return Result.get().classes(classes).vod(list).filters(filters).string();
     }
