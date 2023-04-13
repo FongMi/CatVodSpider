@@ -351,10 +351,11 @@ public class API {
             body.put("drive_id", user.getDriveId());
             return new JSONObject(oauth("openFile/getDownloadUrl", body.toString(), true)).getString("url");
         } catch (Exception e) {
+            Init.execute(this::deleteAll);
             e.printStackTrace();
             return "";
         } finally {
-            deleteAll();
+            Init.execute(this::deleteAll);
         }
     }
 
@@ -370,10 +371,11 @@ public class API {
             JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
             return getPreviewQuality(taskList, flag);
         } catch (Exception e) {
+            Init.execute(this::deleteAll);
             e.printStackTrace();
             return "";
         } finally {
-            deleteAll();
+            Init.execute(this::deleteAll);
         }
     }
 
@@ -396,21 +398,15 @@ public class API {
     }
 
     private void deleteAll() {
-        for (String tempId : tempIds) if (!TextUtils.isEmpty(tempId)) delete(tempId);
+        for (String tempId : tempIds) delete(tempId);
     }
 
     private void delete(String fileId) {
-        try {
-            SpiderDebug.log("Delete..." + fileId);
-            JSONObject body = new JSONObject();
-            body.put("file_id", fileId);
-            body.put("drive_id", user.getDriveId());
-            String result = oauth("openFile/delete", body.toString(), true);
-            SpiderDebug.log(result + "," + result.length());
-            if (result.length() == 125) tempIds.remove(fileId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        SpiderDebug.log("Delete..." + fileId);
+        String json = "{\"requests\":[{\"body\":{\"drive_id\":\"%s\",\"file_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"%s\",\"method\":\"POST\",\"url\":\"/file/delete\"}],\"resource\":\"file\"}";
+        json = String.format(json, user.getDriveId(), fileId, fileId);
+        String result = auth("adrive/v2/batch", json, true);
+        if (result.length() == 211) tempIds.remove(fileId);
     }
 
     public Object[] proxySub(Map<String, String> params) {
