@@ -96,6 +96,10 @@ public class Vod {
         this.vodContent = Trans.get(vodContent);
     }
 
+    public String getVodContent() {
+        return vodContent;
+    }
+
     public void setVodPlayFrom(String vodPlayFrom) {
         this.vodPlayFrom = Trans.get(vodPlayFrom);
     }
