@@ -1,6 +1,5 @@
 package com.github.catvod.bean;
 
-import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -16,13 +15,8 @@ public class Filter {
 
     public Filter(String key, String name, List<Value> value) {
         this.key = key;
-        this.name = Trans.get(name);
+        this.name = name;
         this.value = value;
-    }
-
-    public void trans() {
-        name = Trans.get(name);
-        for (Value item : value) item.n = Trans.get(item.n);
     }
 
     public static class Value {
@@ -33,12 +27,12 @@ public class Filter {
         private String v;
 
         public Value(String value) {
-            this.n = Trans.get(value);
+            this.n = value;
             this.v = value;
         }
 
         public Value(String n, String v) {
-            this.n = Trans.get(n);
+            this.n = n;
             this.v = v;
         }
     }

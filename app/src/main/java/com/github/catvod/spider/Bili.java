@@ -17,7 +17,6 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Prefers;
 import com.github.catvod.utils.QRCode;
-import com.github.catvod.utils.Trans;
 import com.github.catvod.utils.Utils;
 
 import org.json.JSONArray;
@@ -125,7 +124,7 @@ public class Bili extends Spider {
         for (int i = 0; i < pages.length(); ++i) {
             JSONObject page = pages.getJSONObject(i);
             String title = page.getString("part").replace("$", "_").replace("#", "_");
-            playlist.add(Trans.get(title) + "$" + aid + "+" + page.getLong("cid"));
+            playlist.add(title + "$" + aid + "+" + page.getLong("cid"));
         }
         Vod vod = new Vod();
         vod.setVodId(bvid);
