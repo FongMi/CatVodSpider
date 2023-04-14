@@ -1,6 +1,5 @@
 package com.github.catvod.bean;
 
-import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 
 public class Sub {
@@ -19,7 +18,7 @@ public class Sub {
     }
 
     public Sub name(String name) {
-        this.name = Trans.get(name);
+        this.name = name;
         return this;
     }
 

@@ -13,7 +13,6 @@ import com.github.catvod.bean.alist.Item;
 import com.github.catvod.bean.alist.Sorter;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Trans;
 import com.github.catvod.utils.Utils;
 
 import org.json.JSONObject;
@@ -105,7 +104,7 @@ public class AList extends Spider {
         List<String> playUrls = new ArrayList<>();
         for (Item item : parents) {
             if (item.isMedia(drive.isNew())) {
-                playUrls.add(Trans.get(item.getName()) + "$" + item.getVodId(path) + findSubs(path, parents));
+                playUrls.add(item.getName() + "$" + item.getVodId(path) + findSubs(path, parents));
             }
         }
         Vod vod = new Vod();

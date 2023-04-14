@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.Trans;
 import com.github.catvod.utils.Utils;
 import com.google.gson.Gson;
 
@@ -56,7 +55,7 @@ public class XPathMac extends XPath {
                 Iterator<String> keys = dcShow2Vip.keys();
                 while (keys.hasNext()) {
                     String name = keys.next();
-                    show2VipFlag.put(Trans.get(name.trim()), dcShow2Vip.getString(name).trim());
+                    show2VipFlag.put(name.trim(), dcShow2Vip.getString(name).trim());
                 }
             }
             playerConfigJs = jsonObj.optString("pCfgJs").trim();
@@ -82,7 +81,7 @@ public class XPathMac extends XPath {
                         if (keyObj == null) continue;
                         String show = keyObj.optString("show").trim();
                         if (show.isEmpty()) continue;
-                        show2VipFlag.put(Trans.get(show), key);
+                        show2VipFlag.put(show, key);
                     }
                 } catch (Exception e) {
                     SpiderDebug.log(e);
