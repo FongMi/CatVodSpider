@@ -10,7 +10,6 @@ import com.github.catvod.bean.xpath.Rule;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Trans;
 import com.github.catvod.utils.Utils;
 
 import org.json.JSONArray;
@@ -223,7 +222,7 @@ public class XPath extends Spider {
                 name = rule.getDetailUrlNameR(name);
                 String id = urlNodes.get(j).selOne(rule.getDetailUrlId()).asString().trim();
                 id = rule.getDetailUrlIdR(id);
-                vodItems.add(Trans.get(name) + "$" + id);
+                vodItems.add(name + "$" + id);
             }
             // 排除播放列表為空的播放源
             if (vodItems.size() == 0 && playFrom.size() > i) {
