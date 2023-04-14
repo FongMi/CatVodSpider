@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.catvod.demo"
-        minSdk 17
+        minSdk 21
         targetSdk 29
         ndk { abiFilters "armeabi-v7a" }
         buildConfigField("String", "CLIENT_ID", "\"${clientId}\"")
@@ -36,11 +36,12 @@ android {
 dependencies {
     //Debug For HTTP/3
     debugImplementation 'org.chromium.net:cronet-embedded:101.4951.41'
+    implementation 'com.github.thegrizzlylabs:sardine-android:0.8'
     implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     implementation 'androidx.annotation:annotation:1.5.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'cn.wanghaomiao:JsoupXpath:2.5.1'
-    implementation 'com.google.zxing:core:3.3.0'
+    implementation 'com.google.zxing:core:3.4.1'
     implementation 'org.jsoup:jsoup:1.15.3'
 }

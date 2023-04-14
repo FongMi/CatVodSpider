@@ -47,12 +47,12 @@ public class Vod {
         setVodRemarks(vodRemarks);
     }
 
-    public Vod(String vodId, String vodName, String vodPic, String vodRemarks, String vodTag) {
+    public Vod(String vodId, String vodName, String vodPic, String vodRemarks, boolean folder) {
         setVodId(vodId);
         setVodName(vodName);
         setVodPic(vodPic);
         setVodRemarks(vodRemarks);
-        setVodTag(vodTag);
+        setVodTag(folder ? "folder" : "file");
     }
 
     public void setTypeName(String typeName) {

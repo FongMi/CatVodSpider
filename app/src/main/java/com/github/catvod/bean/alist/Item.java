@@ -120,15 +120,11 @@ public class Item {
         return Utils.getSize(getSize());
     }
 
-    public String getVodTag() {
-        return isFolder() ? "folder" : "file";
-    }
-
     public Vod getVod(String id, String pic) {
-        return new Vod(getVodId(id), getName(), getPic(pic), getRemark(), getVodTag());
+        return new Vod(getVodId(id), getName(), getPic(pic), getRemark(), isFolder());
     }
 
     public Vod getVod(Drive drive, String pic) {
-        return new Vod(getVodId(drive.getName()), getName(), getPic(pic), drive.getName(), getVodTag());
+        return new Vod(getVodId(drive.getName()), getName(), getPic(pic), drive.getName(), isFolder());
     }
 }
