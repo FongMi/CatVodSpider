@@ -105,9 +105,9 @@ public class WebDAV extends Spider {
     public String detailContent(List<String> ids) throws Exception {
         String id = ids.get(0);
         String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
-        String name = id.substring(id.lastIndexOf("/") + 1);
         String parent = id.substring(0, id.lastIndexOf("/"));
         String path = parent.contains("/") ? parent.substring(parent.indexOf("/")) + "/" : "";
+        String name = parent.substring(parent.lastIndexOf("/") + 1);
         Drive drive = getDrive(key);
         List<DavResource> parents = getList(drive, path, allExt);
         List<DavResource> subs = getSubs(parents);
@@ -119,8 +119,7 @@ public class WebDAV extends Spider {
             }
         }
         Vod vod = new Vod();
-        vod.setVodId(id);
-        //TODO 資料夾名稱
+        vod.setVodId(name);
         vod.setVodName(name);
         vod.setVodPic(vodPic);
         vod.setVodPlayFrom(key);
