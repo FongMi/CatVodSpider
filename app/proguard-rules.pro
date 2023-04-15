@@ -11,7 +11,7 @@
 -keepattributes Signature
 -keepattributes *Annotation*
 -dontwarn sun.misc.**
--keep class com.google.gson.**{*;}
+-keep class com.google.gson.** { *; }
 -keep class * extends com.google.gson.TypeAdapter
 -keep class * implements com.google.gson.TypeAdapterFactory
 -keep class * implements com.google.gson.JsonSerializer
@@ -20,16 +20,20 @@
 -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
 
+# Cronet
+-keep class org.chromium.net.** { *; }
+-keep class com.google.net.cronet.** { *; }
+
+# OkHttp
+-dontwarn okhttp3.**
+-keep class okio.** { *; }
+-keep class okhttp3.** { *; }
+
+# Sardine
+-keep class com.thegrizzlylabs.sardineandroid.** { *; }
+
 # Zxing
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
-
-# OkHttp
--keep class okio.**{*;}
--keep class okhttp3.**{*;}
-
-# Cronet
--keep class org.chromium.net.**{*;}
--keep class com.google.net.cronet.**{*;}

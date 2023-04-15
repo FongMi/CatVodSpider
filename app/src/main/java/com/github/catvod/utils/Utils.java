@@ -39,7 +39,7 @@ public class Utils {
     }
 
     public static String getSize(double size) {
-        if (size == 0) return "";
+        if (size <= 0) return "";
         if (size > 1024 * 1024 * 1024 * 1024.0) {
             size /= (1024 * 1024 * 1024 * 1024.0);
             return String.format(Locale.getDefault(), "%.2f%s", size, "TB");
