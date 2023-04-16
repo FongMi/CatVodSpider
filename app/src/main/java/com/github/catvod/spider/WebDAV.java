@@ -73,7 +73,7 @@ public class WebDAV extends Spider {
         fetchRule();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        for (Drive drive : drives) classes.add(drive.init().toType());
+        for (Drive drive : drives) classes.add(drive.toType());
         for (Class item : classes) filters.put(item.getTypeId(), getFilter());
         return Result.string(classes, filters);
     }
@@ -130,8 +130,7 @@ public class WebDAV extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         String[] ids = id.split("~~~");
-        String key = ids[0].contains("/") ? ids[0].substring(0, ids[0].indexOf("/")) : ids[0];
-        return Result.get().url(getProxyUrl(key, ids[0])).subs(getSub(ids)).string();
+        return Result.get().url(getProxyUrl(ids[0])).subs(getSub(ids)).string();
     }
 
     private List<DavResource> getList(Drive drive, String path, List<String> ext) throws Exception {
@@ -172,25 +171,25 @@ public class WebDAV extends Spider {
             String[] split = text.split("@@@");
             String name = split[0];
             String ext = split[1];
-            String key = split[2].contains("/") ? split[2].substring(0, split[2].indexOf("/")) : split[2];
-            String url = getProxyUrl(key, split[2]);
+            String url = getProxyUrl(split[2]);
             sub.add(Sub.create().name(name).ext(ext).url(url));
         }
         return sub;
     }
 
-    private String getProxyUrl(String key, String path) {
-        return Proxy.getUrl() + "?do=webdav" + "&key=" + key + "&url=" + getDrive(key).getHost() + path.replace(key, "");
+    private String getProxyUrl(String url) {
+        return Proxy.getUrl() + "?do=webdav&url=" + url;
     }
 
     public static Object[] vod(Map<String, String> params) throws IOException {
-        String key = params.get("key");
         String url = params.get("url");
+        String key = url.contains("/") ? url.substring(0, url.indexOf("/")) : url;
+        url = url.substring(key.length());
         Drive drive = getDrive(key);
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
-        result[2] = drive.getWebdav().get(url);
+        result[2] = drive.getWebdav().get(drive.getHost() + url);
         return result;
     }
 }

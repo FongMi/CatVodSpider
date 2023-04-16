@@ -79,6 +79,7 @@ public class Drive {
     }
 
     public Sardine getWebdav() {
+        if (webdav == null) init();
         return webdav;
     }
 
@@ -86,11 +87,10 @@ public class Drive {
         return new Class(getName(), getName(), "1");
     }
 
-    public Drive init() {
+    private void init() {
         webdav = new OkHttpSardine();
         webdav.setCredentials(getUser(), getPass());
         setPath(Uri.parse(getServer()).getPath());
-        return this;
     }
 
     public Vod vod(DavResource item, String vodPic) {
