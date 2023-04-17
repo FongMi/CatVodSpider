@@ -1,5 +1,5 @@
 {
-  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;be7bb5c4900ed56f8cc189aeabf0a989",
+  "spider": "https://ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;b6ec08b3b229db2be16b5975104b7e56",
   "wallpaper": "http://饭太硬.ga/深色壁纸/api.php",
   "sites": [
     {
@@ -85,8 +85,7 @@
       "api": "csp_Paper",
       "searchable": 1,
       "filterable": 1,
-      "changeable": 0,
-      "ext": "影視天下第一"
+      "changeable": 0
     },
     {
       "key": "七夜",
@@ -95,8 +94,7 @@
       "api": "csp_Dovx",
       "searchable": 1,
       "filterable": 0,
-      "changeable": 0,
-      "ext": "影視天下第一"
+      "changeable": 0
     },
     {
       "key": "易搜",
@@ -105,8 +103,7 @@
       "api": "csp_YiSo",
       "searchable": 1,
       "filterable": 0,
-      "changeable": 0,
-      "ext": "影視天下第一"
+      "changeable": 0
     },
     {
       "key": "盤搜",
@@ -115,8 +112,7 @@
       "api": "csp_PanSou",
       "searchable": 1,
       "filterable": 0,
-      "changeable": 0,
-      "ext": "影視天下第一"
+      "changeable": 0
     },
     {
       "key": "UP雲搜",
@@ -125,8 +121,7 @@
       "api": "csp_UpYun",
       "searchable": 1,
       "filterable": 0,
-      "changeable": 0,
-      "ext": "影視天下第一"
+      "changeable": 0
     },
     {
       "key": "找資源",
@@ -145,8 +140,7 @@
       "api": "csp_Push",
       "searchable": 1,
       "filterable": 0,
-      "changeable": 0,
-      "ext": "影視天下第一"
+      "changeable": 0
     }
   ]
 }
