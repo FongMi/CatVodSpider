@@ -344,11 +344,14 @@ public class API {
 
     public String getDownloadUrl(String fileId) {
         try {
+            SpiderDebug.log("getDownloadUrl..." + fileId);
             tempIds.add(0, copy(fileId));
             JSONObject body = new JSONObject();
             body.put("file_id", tempIds.get(0));
             body.put("drive_id", user.getDriveId());
-            return new JSONObject(oauth("openFile/getDownloadUrl", body.toString(), true)).getString("url");
+            String json = oauth("openFile/getDownloadUrl", body.toString(), true);
+            SpiderDebug.log(json);
+            return new JSONObject(json).getString("url");
         } catch (Exception e) {
             Init.execute(this::deleteAll);
             e.printStackTrace();
@@ -360,6 +363,7 @@ public class API {
 
     public String getPreviewUrl(String fileId, String flag) {
         try {
+            SpiderDebug.log("getPreviewUrl..." + fileId);
             tempIds.add(0, copy(fileId));
             JSONObject body = new JSONObject();
             body.put("file_id", tempIds.get(0));
@@ -367,6 +371,7 @@ public class API {
             body.put("category", "live_transcoding");
             body.put("url_expire_sec", "14400");
             String json = oauth("openFile/getVideoPreviewPlayInfo", body.toString(), true);
+            SpiderDebug.log(json);
             JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
             return getPreviewQuality(taskList, flag);
         } catch (Exception e) {
