@@ -61,7 +61,7 @@ public class WebDAV extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        playExt = Arrays.asList("mp4", "mkv", "flv", "avi", "mp3", "aac", "flac", "m4a");
+        playExt = Arrays.asList("mp4", "mkv", "wmv", "flv", "avi", "mp3", "aac", "flac", "m4a");
         allExt = new ArrayList<>(Arrays.asList("ass", "ssa", "srt"));
         allExt.addAll(playExt);
         ext = extend;
