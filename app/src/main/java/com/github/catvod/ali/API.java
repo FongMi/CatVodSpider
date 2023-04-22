@@ -30,12 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -259,6 +254,15 @@ public class API {
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
         for (Item file : files) episode.add(file.getDisplayName() + "$" + file.getFileId() + findSubs(file.getName(), subMap));
+        Collections.sort(episode, (o1, o2) -> {
+            try {
+                Integer a = Integer.valueOf(o1.split("\\.")[0]);
+                Integer b = Integer.valueOf(o2.split("\\.")[0]);
+                return a.compareTo(b);
+            } catch (NumberFormatException e) {
+                return 1;
+            }
+        });
         for (int i = 0; i < playFrom.size(); i++) playUrl.add(TextUtils.join("#", episode));
         Vod vod = new Vod();
         vod.setVodId(url);
