@@ -17,6 +17,7 @@ import com.github.catvod.bean.ali.Code;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Item;
 import com.github.catvod.bean.ali.OAuth;
+import com.github.catvod.bean.ali.Sorter;
 import com.github.catvod.bean.ali.User;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
@@ -253,16 +254,8 @@ public class API {
         List<String> playFrom = Arrays.asList("原畫", "超清", "高清");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
+        Sorter.sort(files);
         for (Item file : files) episode.add(file.getDisplayName() + "$" + file.getFileId() + findSubs(file.getName(), subMap));
-        Collections.sort(episode, (o1, o2) -> {
-            try {
-                Integer a = Integer.valueOf(o1.split("\\.")[0]);
-                Integer b = Integer.valueOf(o2.split("\\.")[0]);
-                return a.compareTo(b);
-            } catch (NumberFormatException e) {
-                return 1;
-            }
-        });
         for (int i = 0; i < playFrom.size(); i++) playUrl.add(TextUtils.join("#", episode));
         Vod vod = new Vod();
         vod.setVodId(url);
