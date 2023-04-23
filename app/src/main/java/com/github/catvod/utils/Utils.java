@@ -70,6 +70,10 @@ public class Utils {
         return src;
     }
 
+    public static String removeExt(String text) {
+        return text.contains(".") ? text.substring(0, text.lastIndexOf(".")) : text;
+    }
+
     public static String substring(String text) {
         return substring(text, 1);
     }

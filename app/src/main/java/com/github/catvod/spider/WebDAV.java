@@ -52,7 +52,7 @@ public class WebDAV extends Spider {
     }
 
     private String removeExt(DavResource item) {
-        return item.getName().indexOf(".") > 0 ? item.getName().substring(0, item.getName().lastIndexOf(".")) : item.getName();
+        return Utils.removeExt(item.getName());
     }
 
     private static Drive getDrive(String name) {
