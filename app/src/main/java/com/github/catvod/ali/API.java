@@ -288,7 +288,7 @@ public class API {
             } else if (file.getCategory().equals("video") || file.getCategory().equals("audio")) {
                 files.add(file.parent(parent.getName()));
             } else if (Utils.isSub(file.getExt())) {
-                String key = file.removeExt();
+                String key = Utils.removeExt(file.getName());
                 if (!subMap.containsKey(key)) subMap.put(key, new ArrayList<>());
                 subMap.get(key).add(key + "@@@" + file.getExt() + "@@@" + file.getFileId());
             }

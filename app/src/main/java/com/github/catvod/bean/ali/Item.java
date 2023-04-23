@@ -85,8 +85,4 @@ public class Item {
     public String getDisplayName() {
         return TextUtils.join(" ", Arrays.asList(getParent(), getName(), getSize())).trim();
     }
-
-    public String removeExt() {
-        return getName().indexOf(".") > 0 ? getName().substring(0, getName().lastIndexOf(".")) : getName();
-    }
 }
