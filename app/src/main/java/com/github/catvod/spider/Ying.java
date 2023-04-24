@@ -27,7 +27,7 @@ public class Ying extends Spider {
     private static final String siteUrl = "https://www.yhpdm.com";
     private static final String listUrl = siteUrl + "/list/";
     private static final String showUrl = siteUrl + "/showp/";
-    private static final String filterUrl = "https://www.xmfans.me/yxsf/js/yx_catalog.js";
+    private static final String filterUrl = siteUrl + "/yxsf/js/yx_catalog.js";
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
