@@ -403,11 +403,14 @@ public class API {
     }
 
     private void delete(String fileId) {
-        SpiderDebug.log("Delete..." + fileId);
-        String json = "{\"requests\":[{\"body\":{\"drive_id\":\"%s\",\"file_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"%s\",\"method\":\"POST\",\"url\":\"/file/delete\"}],\"resource\":\"file\"}";
-        json = String.format(json, user.getDriveId(), fileId, fileId);
-        String result = auth("adrive/v2/batch", json, true);
-        if (result.length() == 211) tempIds.remove(fileId);
+        try {
+            SpiderDebug.log("Delete..." + fileId);
+            String json = "{\"requests\":[{\"body\":{\"drive_id\":\"%s\",\"file_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"%s\",\"method\":\"POST\",\"url\":\"/file/delete\"}],\"resource\":\"file\"}";
+            json = String.format(json, user.getDriveId(), fileId, fileId);
+            String result = auth("adrive/v2/batch", json, true);
+            if (result.length() == 211) tempIds.remove(fileId);
+        } catch (Exception ignored) {
+        }
     }
 
     public Object[] proxySub(Map<String, String> params) {
