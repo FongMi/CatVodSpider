@@ -10,7 +10,6 @@ import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.spider.Init;
 
 import java.math.BigInteger;
@@ -56,18 +55,15 @@ public class Utils {
     }
 
     public static String fixUrl(String base, String src) {
-        try {
-            if (src.startsWith("//")) {
-                Uri parse = Uri.parse(base);
-                src = parse.getScheme() + ":" + src;
-            } else if (!src.contains("://")) {
-                Uri parse = Uri.parse(base);
-                src = parse.getScheme() + "://" + parse.getHost() + src;
-            }
-        } catch (Exception e) {
-            SpiderDebug.log(e);
+        if (src.startsWith("//")) {
+            Uri parse = Uri.parse(base);
+            return parse.getScheme() + ":" + src;
+        } else if (!src.contains("://")) {
+            Uri parse = Uri.parse(base);
+            return parse.getScheme() + "://" + parse.getHost() + src;
+        } else {
+            return src;
         }
-        return src;
     }
 
     public static String removeExt(String text) {
