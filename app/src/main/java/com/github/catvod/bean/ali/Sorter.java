@@ -15,9 +15,13 @@ public class Sorter implements Comparator<Item> {
     @Override
     public int compare(Item o1, Item o2) {
         try {
-            return Integer.valueOf(Utils.removeExt(o1.getDisplayName())).compareTo(Integer.valueOf(Utils.removeExt(o2.getDisplayName())));
+            return Integer.compare(getDigit(o1.getDisplayName()), getDigit(o2.getDisplayName()));
         } catch (NumberFormatException e) {
             return o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName());
         }
+    }
+
+    private int getDigit(String text) throws NumberFormatException {
+        return Integer.parseInt(Utils.removeExt(text).replaceAll("\\D+", ""));
     }
 }
