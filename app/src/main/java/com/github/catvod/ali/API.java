@@ -399,17 +399,22 @@ public class API {
     }
 
     private void deleteAll() {
-        for (String tempId : tempIds) delete(tempId);
+        Iterator<String> iterator = tempIds.iterator();
+        while (iterator.hasNext()) {
+            boolean deleted = delete(iterator.next());
+            if (deleted) iterator.remove();
+        }
     }
 
-    private void delete(String fileId) {
+    private boolean delete(String fileId) {
         try {
             SpiderDebug.log("Delete..." + fileId);
             String json = "{\"requests\":[{\"body\":{\"drive_id\":\"%s\",\"file_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"%s\",\"method\":\"POST\",\"url\":\"/file/delete\"}],\"resource\":\"file\"}";
             json = String.format(json, user.getDriveId(), fileId, fileId);
             String result = auth("adrive/v2/batch", json, true);
-            if (result.length() == 211) tempIds.remove(fileId);
+            return result.length() == 211;
         } catch (Exception ignored) {
+            return false;
         }
     }
 
