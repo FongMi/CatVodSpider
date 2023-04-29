@@ -17,7 +17,7 @@ import java.net.URLEncoder;
  * @author zhixc
  * 
  */
-public class PanSearch extends Spider {
+public class PanSearch extends Ali {
     @Override
     public void init(Context context, String extend) {
         super.init(context, extend);
