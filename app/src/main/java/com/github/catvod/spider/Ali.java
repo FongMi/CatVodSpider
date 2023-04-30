@@ -1,6 +1,7 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.github.catvod.ali.API;
 import com.github.catvod.bean.Result;
@@ -20,7 +21,8 @@ public class Ali extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        API.get().setRefreshToken(extend);
+        String token = getToken();
+        API.get().setRefreshToken(TextUtils.isEmpty(token) ? extend : token);
     }
 
     @Override

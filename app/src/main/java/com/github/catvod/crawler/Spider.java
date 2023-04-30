@@ -38,6 +38,10 @@ public abstract class Spider {
         return "";
     }
 
+    public String getToken() {
+        return "";
+    }
+
     public boolean manualVideoCheck() {
         return false;
     }
