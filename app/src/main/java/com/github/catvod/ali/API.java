@@ -1,7 +1,9 @@
 package com.github.catvod.ali;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.SystemClock;
@@ -446,6 +448,9 @@ public class API {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             Init.execute(() -> startService(data.getParams()));
             Init.show("請使用阿里雲盤 App 掃描二維碼");
+            Intent intent = new Intent().setComponent(new ComponentName(Init.context(), "com.alicloud.databox.biz.scan.CustomizeCaptureActivity"));
+            intent.putExtra("qr_scan_result", data.getCodeContent());
+            Init.getActivity().startActivity(intent);
         } catch (Exception ignored) {
         }
     }
