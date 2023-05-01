@@ -6,7 +6,9 @@ import android.text.TextUtils;
 import com.github.catvod.ali.API;
 import com.github.catvod.bean.Result;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.utils.ReflectUtil;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -21,7 +23,12 @@ public class Ali extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        String token = getToken();
+        //适配其他tvbox或者老版本tvbox，要先判断有没有getToken方法，调用setToken也是一样的
+        Method method = ReflectUtil.getMethod(this, "getToken");
+        String token = "";
+        if (method != null) {
+            token = getToken();
+        }
         API.get().setRefreshToken(TextUtils.isEmpty(token) ? extend : token);
     }
 
