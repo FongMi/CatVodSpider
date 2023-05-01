@@ -23,6 +23,7 @@ import com.github.catvod.bean.ali.Sorter;
 import com.github.catvod.bean.ali.User;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.spider.Ctx;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
 import com.github.catvod.utils.Prefers;
@@ -448,7 +449,7 @@ public class API {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             Init.execute(() -> startService(data.getParams()));
             Init.show("請使用阿里雲盤 App 掃描二維碼");
-            Intent intent = new Intent().setComponent(new ComponentName(Init.context(), "com.alicloud.databox.biz.scan.CustomizeCaptureActivity"));
+            Intent intent = new Intent().setComponent(new ComponentName(new Ctx(Init.context()), "com.alicloud.databox.biz.scan.CustomizeCaptureActivity"));
             intent.putExtra("qr_scan_result", data.getCodeContent());
             Init.getActivity().startActivity(intent);
         } catch (Exception ignored) {
