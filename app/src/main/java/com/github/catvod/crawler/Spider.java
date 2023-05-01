@@ -42,6 +42,10 @@ public abstract class Spider {
         return "";
     }
 
+    public void setToken(String newToken){
+
+    }
+
     public boolean manualVideoCheck() {
         return false;
     }
