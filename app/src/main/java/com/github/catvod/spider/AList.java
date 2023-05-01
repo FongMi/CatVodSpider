@@ -1,15 +1,8 @@
 package com.github.catvod.spider;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
 import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
