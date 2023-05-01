@@ -1,10 +1,12 @@
 package com.github.catvod.spider;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Base64;
 
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +32,17 @@ public class XPathMac extends XPath {
     // 播放器配置js取值正則
     private String playerConfigJsRegex = "[\\W|\\S|.]*?MacPlayerConfig.player_list[\\W|\\S|.]*?=([\\W|\\S|.]*?),MacPlayerConfig.downer_list";
     // 站點里播放源對應的真實官源
-    private HashMap<String, String> show2VipFlag = new HashMap<>();
+    private final HashMap<String, String> show2VipFlag = new HashMap<>();
+
+    /**
+     * mac cms 直連和官源調用應用內播放列表支持
+     *
+     * @param context
+     * @param extend
+     */
+    public void init(Context context, String extend) {
+        super.init(context, extend);
+    }
 
     @Override
     protected void loadRuleExt(String json) {
@@ -48,46 +60,63 @@ public class XPathMac extends XPath {
             }
             playerConfigJs = jsonObj.optString("pCfgJs").trim();
             playerConfigJsRegex = jsonObj.optString("pCfgJsR", playerConfigJsRegex).trim();
-        } catch (Exception e) {
+        } catch (JSONException e) {
             SpiderDebug.log(e);
         }
     }
 
     @Override
-    public String homeContent(boolean filter) throws JSONException {
+    public String homeContent(boolean filter) {
         String result = super.homeContent(filter);
-        if (result.isEmpty() || playerConfigJs.isEmpty()) return result;
-        //嘗試通過playerConfigJs獲取展示和flag匹配關系
-        String webContent = fetch(playerConfigJs);
-        Matcher matcher = Pattern.compile(playerConfigJsRegex).matcher(webContent);
-        if (!matcher.find()) return result;
-        JSONObject jsonObject = new JSONObject(matcher.group(1));
-        Iterator<String> keys = jsonObject.keys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            JSONObject keyObj = jsonObject.optJSONObject(key);
-            if (keyObj == null) continue;
-            String show = keyObj.optString("show").trim();
-            if (show.isEmpty()) continue;
-            show2VipFlag.put(show, key);
+        if (result.length() > 0 && playerConfigJs.length() > 0) { // 嘗試通過playerConfigJs獲取展示和flag匹配關系
+            String webContent = fetch(playerConfigJs);
+            Matcher matcher = Pattern.compile(playerConfigJsRegex).matcher(webContent);
+            if (matcher.find()) {
+                try {
+                    JSONObject jsonObject = new JSONObject(matcher.group(1));
+                    Iterator<String> keys = jsonObject.keys();
+                    while (keys.hasNext()) {
+                        String key = keys.next();
+                        JSONObject keyObj = jsonObject.optJSONObject(key);
+                        if (keyObj == null) continue;
+                        String show = keyObj.optString("show").trim();
+                        if (show.isEmpty()) continue;
+                        show2VipFlag.put(show, key);
+                    }
+                } catch (Exception e) {
+                    SpiderDebug.log(e);
+                }
+            }
         }
         return result;
     }
 
     @Override
-    public String detailContent(List<String> ids) throws JSONException {
+    public String detailContent(List<String> ids) {
         String result = super.detailContent(ids);
-        if (!decodeVipFlag || result.isEmpty()) return result;
-        JSONObject jsonObject = new JSONObject(result);
-        String[] playFrom = jsonObject.optJSONArray("list").getJSONObject(0).optString("vod_play_from").split("\\$\\$\\$");
-        if (playFrom.length == 0) return result;
-        for (int i = 0; i < playFrom.length; i++) if (show2VipFlag.containsKey(playFrom[i])) playFrom[i] = show2VipFlag.get(playFrom[i]);
-        jsonObject.optJSONArray("list").getJSONObject(0).put("vod_play_from", TextUtils.join("$$$", playFrom));
-        return jsonObject.toString();
+        if (decodeVipFlag && result.length() > 0) {
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                String[] playFrom = jsonObject.optJSONArray("list").getJSONObject(0).optString("vod_play_from").split("\\$\\$\\$");
+                if (playFrom.length > 0) {
+                    for (int i = 0; i < playFrom.length; i++) {
+                        if (show2VipFlag.containsKey(playFrom[i])) {
+                            playFrom[i] = show2VipFlag.get(playFrom[i]);
+                        }
+                    }
+                    jsonObject.optJSONArray("list").getJSONObject(0).put("vod_play_from", TextUtils.join("$$$", playFrom));
+                    result = jsonObject.toString();
+                }
+            } catch (Throwable th) {
+                SpiderDebug.log(th);
+            }
+        }
+        return result;
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
+        fetchRule();
         String webUrl = rule.getPlayUrl().isEmpty() ? id : rule.getPlayUrl().replace("{playUrl}", id);
         String videoUrl = null;
         // 嘗試分析直連
@@ -122,7 +151,7 @@ public class XPathMac extends XPath {
         }
         if (videoUrl != null) {
             // 適配2.0.6的調用應用內解析列表的支持, 需要配合直連分析和匹配官源解析一起使用，參考cjt影視和極品直連
-            if (decodeVipFlag && Misc.isVip(videoUrl)) { // 使用jx:1
+            if (decodeVipFlag && Utils.isVip(videoUrl)) { // 使用jx:1
                 try {
                     JSONObject result = new JSONObject();
                     result.put("parse", 1);
@@ -145,13 +174,16 @@ public class XPathMac extends XPath {
                 }
             }
             // 如果是視頻直連 直接返回免解
-            else if (Misc.isVideoFormat(videoUrl)) {
+            else if (isVideoFormat(videoUrl)) {
                 try {
                     JSONObject result = new JSONObject();
                     result.put("parse", 0);
                     result.put("playUrl", "");
                     result.put("url", videoUrl);
-                    result.put("header", "");
+                    HashMap<String, String> headers = new HashMap<>();
+                    if (rule.getPlayUa().length() > 0) headers.put("User-Agent", rule.getPlayUa());
+                    if (rule.getPlayReferer().length() > 0) headers.put("Referer", rule.getPlayReferer());
+                    result.put("header", new Gson().toJson(headers));
                     return result.toString();
                 } catch (Exception e) {
                     SpiderDebug.log(e);

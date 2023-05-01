@@ -1,6 +1,5 @@
 package com.github.catvod.bean;
 
-import com.github.catvod.utils.Trans;
 import com.google.gson.annotations.SerializedName;
 
 public class Vod {
@@ -48,16 +47,16 @@ public class Vod {
         setVodRemarks(vodRemarks);
     }
 
-    public Vod(String vodId, String vodName, String vodPic, String vodRemarks, String vodTag) {
+    public Vod(String vodId, String vodName, String vodPic, String vodRemarks, boolean folder) {
         setVodId(vodId);
         setVodName(vodName);
         setVodPic(vodPic);
         setVodRemarks(vodRemarks);
-        setVodTag(vodTag);
+        setVodTag(folder ? "folder" : "file");
     }
 
     public void setTypeName(String typeName) {
-        this.typeName = Trans.get(typeName);
+        this.typeName = typeName;
     }
 
     public void setVodId(String vodId) {
@@ -65,7 +64,7 @@ public class Vod {
     }
 
     public void setVodName(String vodName) {
-        this.vodName = Trans.get(vodName);
+        this.vodName = vodName;
     }
 
     public void setVodPic(String vodPic) {
@@ -73,31 +72,35 @@ public class Vod {
     }
 
     public void setVodRemarks(String vodRemarks) {
-        this.vodRemarks = Trans.get(vodRemarks);
+        this.vodRemarks = vodRemarks;
     }
 
     public void setVodYear(String vodYear) {
-        this.vodYear = Trans.get(vodYear);
+        this.vodYear = vodYear;
     }
 
     public void setVodArea(String vodArea) {
-        this.vodArea = Trans.get(vodArea);
+        this.vodArea = vodArea;
     }
 
     public void setVodActor(String vodActor) {
-        this.vodActor = Trans.get(vodActor);
+        this.vodActor = vodActor;
     }
 
     public void setVodDirector(String vodDirector) {
-        this.vodDirector = Trans.get(vodDirector);
+        this.vodDirector = vodDirector;
     }
 
     public void setVodContent(String vodContent) {
-        this.vodContent = Trans.get(vodContent);
+        this.vodContent = vodContent;
+    }
+
+    public String getVodContent() {
+        return vodContent;
     }
 
     public void setVodPlayFrom(String vodPlayFrom) {
-        this.vodPlayFrom = Trans.get(vodPlayFrom);
+        this.vodPlayFrom = vodPlayFrom;
     }
 
     public void setVodPlayUrl(String vodPlayUrl) {

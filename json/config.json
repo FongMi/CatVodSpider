@@ -1,15 +1,6 @@
 {
-  "spider": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;a84fef826cb82da525469e8acf1e7d9a",
-  "wallpaper": "http://www.kf666888.cn/api/tvbox/img",
-  "lives": [
-    {
-      "name": "直播",
-      "type": 1,
-      "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/live.json",
-      "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={epg}&date={date}",
-      "logo": "http://epg.51zmt.top:8000/{logo}"
-    }
-  ],
+  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;9eb909e7a180e28b617c5fd15bda5b22",
+  "wallpaper": "http://饭太硬.ga/深色壁纸/api.php",
   "sites": [
     {
       "key": "AList",
@@ -18,8 +9,18 @@
       "api": "csp_AList",
       "searchable": 1,
       "filterable": 1,
-      "switchable": 0,
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/alist.json"
+      "changeable": 0,
+      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/alist.json"
+    },
+    {
+      "key": "WebDAV",
+      "name": "WebDAV",
+      "type": 3,
+      "api": "csp_WebDAV",
+      "searchable": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/webdav.json"
     },
     {
       "key": "哔哩",
@@ -28,8 +29,8 @@
       "api": "csp_Bili",
       "searchable": 1,
       "filterable": 1,
-      "switchable": 0,
-      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/bili.json"
+      "changeable": 0,
+      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/bili.json"
     },
     {
       "key": "泥巴",
@@ -38,57 +39,17 @@
       "api": "csp_NiNi",
       "searchable": 1,
       "filterable": 1,
-      "switchable": 1
+      "changeable": 1
     },
     {
-      "key": "快播",
-      "name": "快播",
-      "type": 1,
-      "api": "https://www.kuaibozy.com/api.php/provide/vod/",
+      "key": "獨播",
+      "name": "獨播",
+      "type": 3,
+      "api": "csp_XPathMacFilter",
       "searchable": 1,
-      "filterable": 0,
-      "switchable": 1,
-      "categories": [
-        "动漫",
-        "国产剧",
-        "日韩剧",
-        "港台剧",
-        "欧美剧",
-        "泰剧",
-        "动作片",
-        "喜剧片",
-        "爱情片",
-        "科幻片",
-        "恐怖片",
-        "剧情片",
-        "战争片",
-        "纪录片",
-        "综艺"
-      ]
-    },
-    {
-      "key": "百度",
-      "name": "百度",
-      "type": 1,
-      "api": "https://api.apibdzy.com/api.php/provide/vod/",
-      "searchable": 1,
-      "filterable": 0,
-      "switchable": 1,
-      "categories": [
-        "国产动漫",
-        "日韩动漫",
-        "大陆剧",
-        "欧美剧",
-        "韩剧",
-        "日剧",
-        "动作片",
-        "喜剧片",
-        "爱情片",
-        "科幻片",
-        "恐怖片",
-        "剧情片",
-        "战争片"
-      ]
+      "filterable": 1,
+      "changeable": 1,
+      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/duboku.json"
     },
     {
       "key": "櫻花",
@@ -97,7 +58,7 @@
       "api": "csp_Ying",
       "searchable": 1,
       "filterable": 1,
-      "switchable": 1
+      "changeable": 1
     },
     {
       "key": "巴士",
@@ -106,7 +67,7 @@
       "api": "csp_Dm84",
       "searchable": 1,
       "filterable": 1,
-      "switchable": 1
+      "changeable": 1
     },
     {
       "key": "異界",
@@ -115,7 +76,7 @@
       "api": "csp_Ysj",
       "searchable": 1,
       "filterable": 1,
-      "switchable": 1
+      "changeable": 1
     },
     {
       "key": "紙條",
@@ -124,8 +85,16 @@
       "api": "csp_Paper",
       "searchable": 1,
       "filterable": 1,
-      "switchable": 0,
-      "ext": "http://我不是.肥猫.love:63/token.php"
+      "changeable": 0
+    },
+    {
+      "key": "七夜",
+      "name": "七夜",
+      "type": 3,
+      "api": "csp_Dovx",
+      "searchable": 1,
+      "filterable": 0,
+      "changeable": 0
     },
     {
       "key": "易搜",
@@ -134,8 +103,7 @@
       "api": "csp_YiSo",
       "searchable": 1,
       "filterable": 0,
-      "switchable": 0,
-      "ext": "http://我不是.肥猫.love:63/token.php"
+      "changeable": 0
     },
     {
       "key": "盤搜",
@@ -144,8 +112,7 @@
       "api": "csp_PanSou",
       "searchable": 1,
       "filterable": 0,
-      "switchable": 0,
-      "ext": "http://我不是.肥猫.love:63/token.php"
+      "changeable": 0
     },
     {
       "key": "UP雲搜",
@@ -154,8 +121,7 @@
       "api": "csp_UpYun",
       "searchable": 1,
       "filterable": 0,
-      "switchable": 0,
-      "ext": "http://我不是.肥猫.love:63/token.php"
+      "changeable": 0
     },
     {
       "key": "找資源",
@@ -164,18 +130,8 @@
       "api": "csp_Zhaozy",
       "searchable": 1,
       "filterable": 0,
-      "switchable": 0,
-      "ext": "http://我不是.肥猫.love:63/token.php"
-    },
-    {
-      "key": "Live",
-      "name": "直播",
-      "type": 3,
-      "api": "csp_Live",
-      "searchable": 0,
-      "filterable": 0,
-      "switchable": 0,
-      "ext": "2000"
+      "changeable": 0,
+      "ext": "影視天下第一$$$test2$$$test2"
     },
     {
       "key": "push_agent",
@@ -184,8 +140,7 @@
       "api": "csp_Push",
       "searchable": 1,
       "filterable": 0,
-      "switchable": 0,
-      "ext": "http://我不是.肥猫.love:63/token.php"
+      "changeable": 0
     }
   ]
 }

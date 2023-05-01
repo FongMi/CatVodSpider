@@ -10,11 +10,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.spider.Init;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -22,9 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class Misc {
+public class Utils {
 
-    public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
+    public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
 
     public static boolean isVip(String url) {
         List<String> hosts = Arrays.asList("iqiyi.com", "v.qq.com", "youku.com", "le.com", "tudou.com", "mgtv.com", "sohu.com", "acfun.cn", "bilibili.com", "baofeng.com", "pptv.com");
@@ -33,6 +29,7 @@ public class Misc {
     }
 
     public static boolean isVideoFormat(String url) {
+        if (url.contains("url=http") || url.contains(".js") || url.contains(".css") || url.contains(".html")) return false;
         return Sniffer.RULE.matcher(url).find();
     }
 
@@ -41,7 +38,7 @@ public class Misc {
     }
 
     public static String getSize(double size) {
-        if (size == 0) return "";
+        if (size <= 0) return "";
         if (size > 1024 * 1024 * 1024 * 1024.0) {
             size /= (1024 * 1024 * 1024 * 1024.0);
             return String.format(Locale.getDefault(), "%.2f%s", size, "TB");
@@ -58,51 +55,19 @@ public class Misc {
     }
 
     public static String fixUrl(String base, String src) {
-        try {
-            if (src.startsWith("//")) {
-                Uri parse = Uri.parse(base);
-                src = parse.getScheme() + ":" + src;
-            } else if (!src.contains("://")) {
-                Uri parse = Uri.parse(base);
-                src = parse.getScheme() + "://" + parse.getHost() + src;
-            }
-        } catch (Exception e) {
-            SpiderDebug.log(e);
+        if (src.startsWith("//")) {
+            Uri parse = Uri.parse(base);
+            return parse.getScheme() + ":" + src;
+        } else if (!src.contains("://")) {
+            Uri parse = Uri.parse(base);
+            return parse.getScheme() + "://" + parse.getHost() + src;
+        } else {
+            return src;
         }
-        return src;
     }
 
-    public static JSONObject fixJsonVodHeader(JSONObject headers, String input, String url) throws JSONException {
-        if (headers == null) headers = new JSONObject();
-        if (input.contains("www.mgtv.com")) {
-            headers.put("Referer", "");
-            headers.put("User-Agent", "Mozilla/5.0");
-        } else if (url.contains("titan.mgtv")) {
-            headers.put("Referer", "");
-            headers.put("User-Agent", "Mozilla/5.0");
-        } else if (input.contains("bilibili")) {
-            headers.put("Referer", "https://www.bilibili.com/");
-            headers.put("User-Agent", Misc.CHROME);
-        }
-        return headers;
-    }
-
-    public static JSONObject jsonParse(String input, String json) throws JSONException {
-        JSONObject jsonPlayData = new JSONObject(json);
-        String url = jsonPlayData.getString("url");
-        if (url.startsWith("//")) url = "https:" + url;
-        if (!url.startsWith("http")) return null;
-        if (url.equals(input)) if (isVip(url) || !isVideoFormat(url)) return null;
-        JSONObject headers = new JSONObject();
-        String ua = jsonPlayData.optString("user-agent", "");
-        if (ua.trim().length() > 0) headers.put("User-Agent", ua);
-        String referer = jsonPlayData.optString("referer", "");
-        if (referer.trim().length() > 0) headers.put("Referer", referer);
-        headers = Misc.fixJsonVodHeader(headers, input, url);
-        JSONObject taskResult = new JSONObject();
-        taskResult.put("header", headers);
-        taskResult.put("url", url);
-        return taskResult;
+    public static String removeExt(String text) {
+        return text.contains(".") ? text.substring(0, text.lastIndexOf(".")) : text;
     }
 
     public static String substring(String text) {
@@ -118,7 +83,13 @@ public class Misc {
     }
 
     public static String getVar(String data, String param) {
-        for (String var : data.split("var")) if (var.contains(param)) return var.split("'")[1];
+        for (String var : data.split("var")) if (var.contains(param)) return checkVar(var);
+        return "";
+    }
+
+    private static String checkVar(String var) {
+        if (var.contains("'")) return var.split("'")[1];
+        if (var.contains("\"")) return var.split("\"")[1];
         return "";
     }
 

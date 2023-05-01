@@ -3,7 +3,7 @@ package com.github.catvod.bean.alist;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Vod;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -99,6 +99,7 @@ public class Item {
     }
 
     public boolean ignore(boolean isNew) {
+        if (getName().endsWith(".ts")) return false;
         if (isNew) return getType() == 0 || getType() == 4;
         return getType() == 0 || getType() == 2 || getType() == 5;
     }
@@ -111,23 +112,19 @@ public class Item {
         return id + getPath() + "/" + getName();
     }
 
-    public String getPic() {
-        return getThumb().isEmpty() && isFolder() ? "http://img1.3png.com/281e284a670865a71d91515866552b5f172b.png" : getThumb();
+    public String getPic(String pic) {
+        return getThumb().isEmpty() && isFolder() ? pic : getThumb();
     }
 
     public String getRemark() {
-        return Misc.getSize(getSize()) + (isFolder() ? " 文件夹" : "");
+        return Utils.getSize(getSize());
     }
 
-    public String getVodTag() {
-        return isFolder() ? "folder" : "file";
+    public Vod getVod(String id, String pic) {
+        return new Vod(getVodId(id), getName(), getPic(pic), getRemark(), isFolder());
     }
 
-    public Vod getVod(String id) {
-        return new Vod(getVodId(id), getName(), getPic(), getRemark(), getVodTag());
-    }
-
-    public Vod getVod(Drive drive) {
-        return new Vod(getVodId(drive.getName()), getName(), getPic(), drive.getName(), getVodTag());
+    public Vod getVod(Drive drive, String pic) {
+        return new Vod(getVodId(drive.getName()), getName(), getPic(pic), drive.getName(), isFolder());
     }
 }

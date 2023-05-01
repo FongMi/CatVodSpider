@@ -8,8 +8,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
-import com.github.catvod.utils.Trans;
+import com.github.catvod.utils.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,7 +31,7 @@ public class Dm84 extends Spider {
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Misc.CHROME);
+        headers.put("User-Agent", Utils.CHROME);
         return headers;
     }
 
@@ -141,7 +140,7 @@ public class Dm84 extends Spider {
             List<String> vodItems = new ArrayList<>();
             for (int j = 0; j < playList.size(); j++) {
                 Element e = playList.get(j);
-                vodItems.add(Trans.get(e.text()) + "$" + e.attr("href"));
+                vodItems.add(e.text() + "$" + e.attr("href"));
             }
             if (vodItems.size() > 0) {
                 sites.put(sourceName, TextUtils.join("#", vodItems));

@@ -1,20 +1,19 @@
 package com.github.catvod.spider;
 
-import android.os.SystemClock;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.util.Base64;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,35 +59,26 @@ public class Doll extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Document doc = Jsoup.parse(OkHttp.string(url + ids.get(0)));
-        String name = doc.select("meta[property=og:title]").attr("content");
+        String html = OkHttp.string(url + ids.get(0));
+        Document doc = Jsoup.parse(html);
+        StringBuilder sb = new StringBuilder();
+        String videoId = ids.get(0).split("/")[1].split("\\.")[0];
         String pic = doc.select("meta[property=og:image]").attr("content");
+        String name = doc.select("meta[property=og:title]").attr("content");
+        String voteTag = new String(Base64.decode(Utils.getVar(html, "voteTag").getBytes(), 0));
+        for (int i = 0; i < voteTag.length(); i++) sb.append(Character.toChars(voteTag.charAt(i) ^ videoId.charAt(i % videoId.length())));
+        String playUrl = URLDecoder.decode(new String(Base64.decode(sb.toString().getBytes(), 0)));
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
         vod.setVodPic(pic);
         vod.setVodName(name);
         vod.setVodPlayFrom("玩偶姐姐");
-        vod.setVodPlayUrl("播放$" + ids.get(0));
+        vod.setVodPlayUrl("播放$" + playUrl);
         return Result.string(vod);
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        HashMap<String, String> result = new HashMap<>();
-        Misc.loadWebView(url + id, getClient(result));
-        while (result.isEmpty()) SystemClock.sleep(10);
-        return Result.get().url(result.get("url")).string();
-    }
-
-    private WebViewClient getClient(HashMap<String, String> result) {
-        return new WebViewClient() {
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                if (url.endsWith(".m3u8")) {
-                    result.put("url", url);
-                    view.destroy();
-                }
-            }
-        };
+        return Result.get().url(id).string();
     }
 }

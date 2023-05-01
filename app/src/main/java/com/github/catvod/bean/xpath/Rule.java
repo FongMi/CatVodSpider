@@ -1,4 +1,4 @@
-package com.github.catvod.xpath;
+package com.github.catvod.bean.xpath;
 
 import com.github.catvod.crawler.SpiderDebug;
 
@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class XPathRule {
+public class Rule {
     /**
      * user-agent
      */
@@ -325,10 +325,10 @@ public class XPathRule {
         return src;
     }
 
-    public static XPathRule fromJson(String json) {
+    public static Rule fromJson(String json) {
         try {
             JSONObject jsonObj = new JSONObject(json);
-            XPathRule rule = new XPathRule();
+            Rule rule = new Rule();
             rule.ua = jsonObj.optString("ua");
             rule.homeUrl = jsonObj.optString("homeUrl").trim();
             rule.cateNode = jsonObj.optString("cateNode").trim();

@@ -8,8 +8,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Misc;
-import com.github.catvod.utils.Trans;
+import com.github.catvod.utils.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,14 +24,14 @@ import java.util.Map;
 
 public class Ying extends Spider {
 
-    private static final String siteUrl = "https://www.yhdmp.cc";
+    private static final String siteUrl = "https://www.yhpdm.com";
     private static final String listUrl = siteUrl + "/list/";
     private static final String showUrl = siteUrl + "/showp/";
-    private static final String filterUrl = "https://www.xmfans.me/yxsf/js/yx_catalog.js";
+    private static final String filterUrl = siteUrl + "/yxsf/js/yx_catalog.js";
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Misc.CHROME);
+        headers.put("User-Agent", Utils.CHROME);
         return headers;
     }
 
@@ -75,7 +74,7 @@ public class Ying extends Spider {
         for (Element element : doc2.select("div.lpic > ul > li")) {
             String id = element.select("a").attr("href").split("/")[2];
             String name = element.select("h2").text();
-            String pic = "https:".concat(element.select("a > img").attr("src"));
+            String pic = element.select("a > img").attr("src");
             String remarks = element.select("span > font").text();
             remarks = remarks.contains(":") ? remarks.split(" ")[1] : remarks;
             list.add(new Vod(id, name, pic, remarks));
@@ -101,7 +100,7 @@ public class Ying extends Spider {
         for (Element element : doc.select("div.lpic > ul > li")) {
             String id = element.select("a").attr("href").split("/")[2];
             String name = element.select("h2").text();
-            String pic = "https:".concat(element.select("a > img").attr("src"));
+            String pic = element.select("a > img").attr("src");
             String remarks = element.select("span > font").text();
             remarks = remarks.contains(":") ? remarks.split(" ")[1] : remarks;
             list.add(new Vod(id, name, pic, remarks));
@@ -113,7 +112,7 @@ public class Ying extends Spider {
     public String detailContent(List<String> ids) {
         Document doc = Jsoup.parse(OkHttp.string(showUrl.concat(ids.get(0)), getHeaders()));
         String name = doc.select("div.rate > h1").text();
-        String pic = "https:".concat(doc.select("div.thumb > img").attr("src"));
+        String pic = doc.select("div.thumb > img").attr("src");
         String content = doc.select("div.info").text();
         Elements element = doc.select("div.sinfo > span > a");
 
@@ -136,7 +135,7 @@ public class Ying extends Spider {
             List<String> vodItems = new ArrayList<>();
             for (int j = 0; j < playList.size(); j++) {
                 Element e = playList.get(j);
-                vodItems.add(Trans.get(e.text()) + "$" + e.attr("href"));
+                vodItems.add(e.text() + "$" + e.attr("href"));
             }
             if (vodItems.size() > 0) {
                 sites.put(sourceName, TextUtils.join("#", vodItems));
@@ -157,7 +156,7 @@ public class Ying extends Spider {
         for (Element element : doc.select("div.lpic > ul > li")) {
             String id = element.select("a").attr("href").split("/")[2];
             String name = element.select("h2").text();
-            String pic = "https:".concat(element.select("a > img").attr("src"));
+            String pic = element.select("a > img").attr("src");
             String remarks = element.select("span > font").text();
             remarks = remarks.contains(":") ? remarks.split(" ")[1] : remarks;
             list.add(new Vod(id, name, pic, remarks));

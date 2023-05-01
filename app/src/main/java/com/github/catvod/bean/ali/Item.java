@@ -2,7 +2,7 @@ package com.github.catvod.bean.ali;
 
 import android.text.TextUtils;
 
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -70,7 +70,7 @@ public class Item {
     }
 
     public String getSize() {
-        return size == 0 ? "" : "[" + Misc.getSize(size) + "]";
+        return size == 0 ? "" : "[" + Utils.getSize(size) + "]";
     }
 
     public String getParent() {
@@ -84,9 +84,5 @@ public class Item {
 
     public String getDisplayName() {
         return TextUtils.join(" ", Arrays.asList(getParent(), getName(), getSize())).trim();
-    }
-
-    public String removeExt() {
-        return getName().indexOf(".") > 0 ? getName().substring(0, getName().lastIndexOf(".")) : getName();
     }
 }

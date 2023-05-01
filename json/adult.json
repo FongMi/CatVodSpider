@@ -1,31 +1,7 @@
 {
-  "spider": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;a84fef826cb82da525469e8acf1e7d9a",
+  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;9eb909e7a180e28b617c5fd15bda5b22",
   "wallpaper": "https://gao.chuqiuyu.tk",
-  "lives": [
-    {
-      "name": "直播",
-      "type": 0,
-      "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/txt/adult.txt"
-    }
-  ],
   "sites": [
-    {
-      "key": "AList",
-      "name": "AList",
-      "type": 3,
-      "api": "csp_AList",
-      "searchable": 1,
-      "filterable": 1,
-      "switchable": 0,
-      "ext": {
-        "drives": [
-          {
-            "name": "木偶",
-            "server": "https://www.kugutsu.ml"
-          }
-        ]
-      }
-    },
     {
       "key": "泥巴",
       "name": "泥巴",
@@ -610,8 +586,7 @@
       "api": "csp_Push",
       "searchable": 1,
       "filterable": 1,
-      "switchable": 0,
-      "ext": "http://我不是.肥猫.love:63/token.php"
+      "changeable": 0
     }
   ]
 }

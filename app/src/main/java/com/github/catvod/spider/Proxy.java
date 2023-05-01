@@ -5,7 +5,6 @@ import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -13,12 +12,14 @@ public class Proxy extends Spider {
 
     private static int port = -1;
 
-    public static Object[] proxy(Map<String, String> params) throws UnsupportedEncodingException {
+    public static Object[] proxy(Map<String, String> params) throws Exception {
         switch (Objects.requireNonNull(params.get("do"))) {
             case "ck":
                 return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
             case "ali":
-                return Ali.get().vod(params);
+                return Ali.vod(params);
+            case "webdav":
+                return WebDAV.vod(params);
             default:
                 return null;
         }

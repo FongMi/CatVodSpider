@@ -2,7 +2,7 @@ package com.github.catvod.net;
 
 import android.text.TextUtils;
 
-import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,12 +50,12 @@ class OkRequest {
     }
 
     private void getInstance() {
-        Request.Builder builder = new Request.Builder().url(url);
+        Request.Builder builder = new Request.Builder();
         if (method.equals(OkHttp.GET) && params != null) setParams();
         if (method.equals(OkHttp.POST)) builder.post(getRequestBody());
         if (header != null) for (String key : header.keySet()) builder.addHeader(key, header.get(key));
         if (tag != null) builder.tag(tag);
-        request = builder.build();
+        request = builder.url(url).build();
     }
 
     private RequestBody getRequestBody() {
@@ -68,7 +68,7 @@ class OkRequest {
     private void setParams() {
         url = url + "?";
         for (String key : params.keySet()) url = url.concat(key + "=" + params.get(key) + "&");
-        url = Misc.substring(url);
+        url = Utils.substring(url);
     }
 
     public String execute(OkHttpClient client) {

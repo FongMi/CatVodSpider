@@ -1,7 +1,5 @@
 package com.github.catvod.bean;
 
-import androidx.annotation.NonNull;
-
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -11,7 +9,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +39,10 @@ public class Result {
     private int limit;
     @SerializedName("total")
     private int total;
+
+    public static Result objectFrom(String str) {
+        return new Gson().fromJson(str, Result.class);
+    }
 
     public static String string(List<Class> classes, List<Vod> list, LinkedHashMap<String, List<Filter>> filters) {
         return Result.get().classes(classes).vod(list).filters(filters).string();
@@ -97,15 +98,12 @@ public class Result {
 
     public Result filters(JSONObject object) {
         if (object == null) return this;
-        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {
-        }.getType();
-        LinkedHashMap<String, List<Filter>> filters = new Gson().fromJson(object.toString(), listType);
-        for (Map.Entry<String, List<Filter>> entry : filters.entrySet()) for (Filter filter : entry.getValue()) filter.trans();
-        this.filters = filters;
+        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {}.getType();
+        this.filters = new Gson().fromJson(object.toString(), listType);
         return this;
     }
 
-    public Result header(HashMap<String, String> header) {
+    public Result header(Map<String, String> header) {
         if (header.isEmpty()) return this;
         this.header = new Gson().toJson(header);
         return this;
@@ -156,7 +154,6 @@ public class Result {
         return toString();
     }
 
-    @NonNull
     @Override
     public String toString() {
         return new Gson().toJson(this);
