@@ -1,5 +1,6 @@
 package com.github.catvod.utils;
 
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -31,6 +32,10 @@ public class Utils {
     public static boolean isVideoFormat(String url) {
         if (url.contains("url=http") || url.contains(".js") || url.contains(".css") || url.contains(".html")) return false;
         return Sniffer.RULE.matcher(url).find();
+    }
+
+    public static boolean isMobile() {
+        return Init.context().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
     }
 
     public static boolean isSub(String ext) {
