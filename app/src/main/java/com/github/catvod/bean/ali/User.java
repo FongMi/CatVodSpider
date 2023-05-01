@@ -44,6 +44,10 @@ public class User {
         return TextUtils.isEmpty(refreshToken) ? "" : refreshToken;
     }
 
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     public String getAuthorization() {
         return getTokenType() + " " + getAccessToken();
     }

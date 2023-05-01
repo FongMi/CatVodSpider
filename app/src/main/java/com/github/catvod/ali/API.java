@@ -1,9 +1,7 @@
 package com.github.catvod.ali;
 
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.SystemClock;
@@ -23,7 +21,6 @@ import com.github.catvod.bean.ali.Sorter;
 import com.github.catvod.bean.ali.User;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.spider.Ctx;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
 import com.github.catvod.utils.Prefers;
@@ -34,7 +31,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -143,6 +146,8 @@ public class API {
     private boolean isManyRequest(String result) {
         if (!result.contains("Too Many Requests")) return false;
         Init.show("洗洗睡吧，Too Many Requests。");
+        oauth.clean().save();
+        user.clean().save();
         return true;
     }
 
@@ -353,7 +358,6 @@ public class API {
             SpiderDebug.log(json);
             return new JSONObject(json).getString("url");
         } catch (Exception e) {
-            Init.execute(this::deleteAll);
             e.printStackTrace();
             return "";
         } finally {
@@ -375,7 +379,6 @@ public class API {
             JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
             return getPreviewQuality(taskList, flag);
         } catch (Exception e) {
-            Init.execute(this::deleteAll);
             e.printStackTrace();
             return "";
         } finally {
@@ -432,8 +435,13 @@ public class API {
     }
 
     private void getQRCode() {
-        Data data = Data.objectFrom(OkHttp.string("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3")).getContent().getData();
-        Init.run(() -> showQRCode(data));
+        if (Utils.isMobile()) {
+            user.setRefreshToken(refreshToken);
+            refreshAccessToken();
+        } else {
+            Data data = Data.objectFrom(OkHttp.string("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3")).getContent().getData();
+            Init.run(() -> showQRCode(data));
+        }
     }
 
     private void showQRCode(Data data) {
@@ -449,9 +457,6 @@ public class API {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             Init.execute(() -> startService(data.getParams()));
             Init.show("請使用阿里雲盤 App 掃描二維碼");
-            Intent intent = new Intent().setComponent(new ComponentName(new Ctx(Init.context()), "com.alicloud.databox.biz.scan.CustomizeCaptureActivity"));
-            intent.putExtra("qr_scan_result", data.getCodeContent());
-            Init.getActivity().startActivity(intent);
         } catch (Exception ignored) {
         }
     }
