@@ -445,7 +445,7 @@ public class API {
             FrameLayout frame = new FrameLayout(Init.context());
             EditText input = new EditText(Init.context());
             frame.addView(input, params);
-            dialog = new AlertDialog.Builder(Init.getActivity()).setTitle("請輸入Token").setView(frame).setNegativeButton(android.R.string.cancel, (dialog, which) -> onNegative()).setPositiveButton(android.R.string.ok, (dialog, which) -> onPositive(input.getText().toString())).show();
+            dialog = new AlertDialog.Builder(Init.getActivity()).setTitle("請輸入Token").setView(frame).setNegativeButton(android.R.string.cancel, null).setPositiveButton(android.R.string.ok, (dialog, which) -> onPositive(input.getText().toString())).show();
         } catch (Exception ignored) {
         }
     }
@@ -457,15 +457,6 @@ public class API {
             else if (text.length() == 32) setToken(text);
             else if (text.contains(":")) setToken(OkHttp.string("http://" + text + "/proxy?do=ali&type=token"));
         });
-    }
-
-    private void onNegative() {
-        try {
-            dialog.dismiss();
-            Init.getActivity().finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void showQRCode(Data data) {
