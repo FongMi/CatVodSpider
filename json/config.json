@@ -1,5 +1,5 @@
 {
-  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;dadcea0e365a64c6cd3c48b7dd948772",
+  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;d363f8bc338d10a6fe558e148a3f5d65",
   "wallpaper": "http://饭太硬.ga/深色壁纸/api.php",
   "sites": [
     {
@@ -88,10 +88,10 @@
       "changeable": 0
     },
     {
-      "key": "易搜",
-      "name": "易搜",
+      "key": "雲搜",
+      "name": "雲搜",
       "type": 3,
-      "api": "csp_YiSo",
+      "api": "csp_UpYun",
       "searchable": 1,
       "filterable": 0,
       "changeable": 0
@@ -110,15 +110,6 @@
       "name": "盤搜索",
       "type": 3,
       "api": "csp_PanSearch",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0
-    },
-    {
-      "key": "UP雲搜",
-      "name": "UP雲搜",
-      "type": 3,
-      "api": "csp_UpYun",
       "searchable": 1,
       "filterable": 0,
       "changeable": 0

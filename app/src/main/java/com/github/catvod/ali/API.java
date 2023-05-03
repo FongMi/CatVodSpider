@@ -7,6 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -21,6 +23,7 @@ import com.github.catvod.bean.ali.Sorter;
 import com.github.catvod.bean.ali.User;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.net.OkResult;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
 import com.github.catvod.utils.Prefers;
@@ -41,6 +44,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class API {
 
@@ -79,6 +83,14 @@ public class API {
         this.refreshToken = token;
     }
 
+    public Object[] getToken() {
+        Object[] result = new Object[3];
+        result[0] = 200;
+        result[1] = "text/plain";
+        result[2] = new ByteArrayInputStream(user.getRefreshToken().getBytes());
+        return result;
+    }
+
     public void setShareId(String shareId) {
         this.shareId = shareId;
         refreshShareToken();
@@ -105,42 +117,31 @@ public class API {
         return headers;
     }
 
+    private String alist(String url, JSONObject body) throws Exception {
+        url = "https://api.nn.ci/alist/ali_open/" + url;
+        OkResult result = OkHttp.postJson(url, body.toString(), getHeader());
+        if (isManyRequest(result.getBody())) return "";
+        if (result.getCode() == 200) return result.getBody();
+        throw new Exception(result.getBody());
+    }
+
     private String post(String url, JSONObject body) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        return OkHttp.postJson(url, body.toString(), getHeader());
+        return OkHttp.postJson(url, body.toString(), getHeader()).getBody();
     }
 
     private String auth(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        String result = OkHttp.postJson(url, json, getHeaderAuth());
-        if (retry && checkAuth(result)) return auth(url, json, false);
-        return result;
+        OkResult result = OkHttp.postJson(url, json, getHeaderAuth());
+        if (retry && result.getCode() != 200 && refreshAccessToken()) return auth(url, json, false);
+        return result.getBody();
     }
 
     private String oauth(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://open.aliyundrive.com/adrive/v1.0/" + url;
-        String result = OkHttp.postJson(url, json, getHeaderOpen());
-        if (retry && checkOpen(result)) return oauth(url, json, false);
-        return result;
-    }
-
-    private boolean checkAuth(String result) {
-        if (result.contains("AccessTokenInvalid")) return refreshAccessToken();
-        if (result.contains("ShareLinkTokenInvalid") || result.contains("InvalidParameterNotMatch")) return refreshShareToken();
-        return checkQuotaExhausted(result);
-    }
-
-    private boolean checkOpen(String result) {
-        if (result.contains("AccessTokenInvalid")) return refreshOpenToken();
-        return false;
-    }
-
-    private boolean checkQuotaExhausted(String result) {
-        if (!result.contains("QuotaExhausted")) return false;
-        Init.show("容量不夠拉。");
-        user.clean().save();
-        refreshAccessToken();
-        return false;
+        OkResult result = OkHttp.postJson(url, json, getHeaderOpen());
+        if (retry && result.getCode() != 200 && refreshOpenToken()) return oauth(url, json, false);
+        return result.getBody();
     }
 
     private boolean isManyRequest(String result) {
@@ -151,11 +152,9 @@ public class API {
         return true;
     }
 
-    private boolean isInvalidOpenToken(String result) {
-        if (!result.contains("invalid refresh_token")) return false;
-        oauth.clean().save();
-        oauthRequest();
-        return true;
+    private boolean onTimeout() {
+        stopService();
+        return false;
     }
 
     public void checkAccessToken() {
@@ -178,10 +177,11 @@ public class API {
             if (oauth.getAccessToken().isEmpty()) oauthRequest();
             return true;
         } catch (Exception e) {
+            if (e instanceof TimeoutException) return onTimeout();
+            e.printStackTrace();
             user.clean().save();
-            SpiderDebug.log(e);
             stopService();
-            getQRCode();
+            startFlow();
             return true;
         } finally {
             while (user.getAccessToken().isEmpty()) SystemClock.sleep(250);
@@ -198,7 +198,7 @@ public class API {
             String result = auth(url, body.toString(), true);
             oauthRedirect(Code.objectFrom(result).getCode());
         } catch (Exception e) {
-            SpiderDebug.log(e);
+            e.printStackTrace();
         }
     }
 
@@ -208,12 +208,10 @@ public class API {
             JSONObject body = new JSONObject();
             body.put("code", code);
             body.put("grant_type", "authorization_code");
-            String result = post("https://api.nn.ci/alist/ali_open/code", body);
-            if (isManyRequest(result)) return;
-            oauth = OAuth.objectFrom(result).save();
-            SpiderDebug.log(oauth.toString());
+            oauth = OAuth.objectFrom(alist("code", body)).save();
         } catch (Exception e) {
-            SpiderDebug.log(e);
+            e.printStackTrace();
+            oauth.clean().save();
         }
     }
 
@@ -223,39 +221,35 @@ public class API {
             JSONObject body = new JSONObject();
             body.put("grant_type", "refresh_token");
             body.put("refresh_token", oauth.getRefreshToken());
-            String result = post("https://api.nn.ci/alist/ali_open/token", body);
-            if (isManyRequest(result)) return false;
-            if (isInvalidOpenToken(result)) return true;
-            oauth = OAuth.objectFrom(result).save();
-            SpiderDebug.log(oauth.toString());
+            oauth = OAuth.objectFrom(alist("token", body)).save();
             return true;
         } catch (Exception e) {
-            SpiderDebug.log(e);
-            return false;
+            e.printStackTrace();
+            oauth.clean().save();
+            oauthRequest();
+            return true;
         }
     }
 
-    public boolean refreshShareToken() {
+    private void refreshShareToken() {
         try {
             SpiderDebug.log("refreshShareToken...");
             JSONObject body = new JSONObject();
             body.put("share_id", shareId);
             body.put("share_pwd", "");
-            JSONObject object = new JSONObject(post("v2/share_link/get_share_token", body));
-            shareToken = object.getString("share_token");
-            return true;
+            String result = post("v2/share_link/get_share_token", body);
+            shareToken = new JSONObject(result).getString("share_token");
         } catch (Exception e) {
-            Init.show("來晚啦，該分享已失效。");
             e.printStackTrace();
-            return false;
+            Init.show("來晚啦，該分享已失效。");
         }
     }
 
     public Vod getVod(String url, String fileId) throws Exception {
         JSONObject body = new JSONObject();
         body.put("share_id", shareId);
-        String json = post("adrive/v3/share_link/get_share_by_anonymous", body);
-        JSONObject object = new JSONObject(json);
+        String result = post("adrive/v3/share_link/get_share_by_anonymous", body);
+        JSONObject object = new JSONObject(result);
         List<Item> files = new ArrayList<>();
         LinkedHashMap<String, List<String>> subMap = new LinkedHashMap<>();
         listFiles(new Item(getParentFileId(fileId, object)), files, subMap);
@@ -434,14 +428,35 @@ public class API {
         return result;
     }
 
-    private void getQRCode() {
+    private void startFlow() {
         if (Utils.isMobile()) {
-            user.setRefreshToken(refreshToken);
-            refreshAccessToken();
+            Init.run(this::showInput);
         } else {
-            Data data = Data.objectFrom(OkHttp.string("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3")).getContent().getData();
+            String url = "https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3";
+            Data data = Data.objectFrom(OkHttp.string(url)).getContent().getData();
             Init.run(() -> showQRCode(data));
         }
+    }
+
+    private void showInput() {
+        try {
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(Utils.dp2px(16), Utils.dp2px(16), Utils.dp2px(16), Utils.dp2px(16));
+            FrameLayout frame = new FrameLayout(Init.context());
+            EditText input = new EditText(Init.context());
+            frame.addView(input, params);
+            dialog = new AlertDialog.Builder(Init.getActivity()).setTitle("請輸入Token").setView(frame).setNegativeButton(android.R.string.cancel, null).setPositiveButton(android.R.string.ok, (dialog, which) -> onPositive(input.getText().toString())).show();
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void onPositive(String text) {
+        dialog.dismiss();
+        Init.execute(() -> {
+            if (text.startsWith("http")) setToken(OkHttp.string(text));
+            else if (text.length() == 32) setToken(text);
+            else if (text.contains(":")) setToken(OkHttp.string("http://" + text + "/proxy?do=ali&type=token"));
+        });
     }
 
     private void showQRCode(Data data) {
@@ -470,7 +485,8 @@ public class API {
     }
 
     private void setToken(String value) {
-        Init.show("請重新進入播放頁");
+        SpiderDebug.log("Token:" + value);
+        Init.show("Token:" + value);
         this.refreshToken = value;
         refreshAccessToken();
         stopService();
