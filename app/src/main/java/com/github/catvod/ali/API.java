@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class API {
 
@@ -151,6 +152,11 @@ public class API {
         return true;
     }
 
+    private boolean onTimeout() {
+        stopService();
+        return false;
+    }
+
     public void checkAccessToken() {
         if (user.getAccessToken().isEmpty()) refreshAccessToken();
     }
@@ -171,10 +177,11 @@ public class API {
             if (oauth.getAccessToken().isEmpty()) oauthRequest();
             return true;
         } catch (Exception e) {
+            if (e instanceof TimeoutException) return onTimeout();
             e.printStackTrace();
             user.clean().save();
             stopService();
-            getQRCode();
+            startFlow();
             return true;
         } finally {
             while (user.getAccessToken().isEmpty()) SystemClock.sleep(250);
@@ -421,7 +428,7 @@ public class API {
         return result;
     }
 
-    private void getQRCode() {
+    private void startFlow() {
         if (Utils.isMobile()) {
             Init.run(this::showInput);
         } else {
@@ -438,7 +445,7 @@ public class API {
             FrameLayout frame = new FrameLayout(Init.context());
             EditText input = new EditText(Init.context());
             frame.addView(input, params);
-            dialog = new AlertDialog.Builder(Init.getActivity()).setTitle("請輸入Token").setView(frame).setNegativeButton(android.R.string.cancel, null).setPositiveButton(android.R.string.ok, (dialog, which) -> onPositive(input.getText().toString())).show();
+            dialog = new AlertDialog.Builder(Init.getActivity()).setTitle("請輸入Token").setView(frame).setNegativeButton(android.R.string.cancel, (dialog, which) -> onNegative()).setPositiveButton(android.R.string.ok, (dialog, which) -> onPositive(input.getText().toString())).show();
         } catch (Exception ignored) {
         }
     }
@@ -450,6 +457,15 @@ public class API {
             else if (text.length() == 32) setToken(text);
             else if (text.contains(":")) setToken(OkHttp.string("http://" + text + "/proxy?do=ali&type=token"));
         });
+    }
+
+    private void onNegative() {
+        try {
+            dialog.dismiss();
+            Init.getActivity().finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void showQRCode(Data data) {

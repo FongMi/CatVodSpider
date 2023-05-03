@@ -35,7 +35,10 @@ public class Utils {
     }
 
     public static boolean isMobile() {
-        return Init.context().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
+        boolean hasCamera = Init.context().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+        boolean hasPhone = Init.context().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
+        boolean hasBT = Init.context().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
+        return hasCamera && hasPhone && hasBT;
     }
 
     public static boolean isSub(String ext) {
