@@ -7,6 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -77,6 +79,14 @@ public class API {
 
     public void setRefreshToken(String token) {
         this.refreshToken = token;
+    }
+
+    public Object[] getToken() {
+        Object[] result = new Object[3];
+        result[0] = 200;
+        result[1] = "text/plain";
+        result[2] = new ByteArrayInputStream(user.getRefreshToken().getBytes());
+        return result;
     }
 
     public void setShareId(String shareId) {
@@ -178,6 +188,7 @@ public class API {
             if (oauth.getAccessToken().isEmpty()) oauthRequest();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             user.clean().save();
             SpiderDebug.log(e);
             stopService();
@@ -436,12 +447,33 @@ public class API {
 
     private void getQRCode() {
         if (Utils.isMobile()) {
-            user.setRefreshToken(refreshToken);
-            refreshAccessToken();
+            Init.run(this::showInput);
         } else {
-            Data data = Data.objectFrom(OkHttp.string("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3")).getContent().getData();
+            String url = "https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3";
+            Data data = Data.objectFrom(OkHttp.string(url)).getContent().getData();
             Init.run(() -> showQRCode(data));
         }
+    }
+
+    private void showInput() {
+        try {
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(Utils.dp2px(16), Utils.dp2px(16), Utils.dp2px(16), Utils.dp2px(16));
+            FrameLayout frame = new FrameLayout(Init.context());
+            EditText input = new EditText(Init.context());
+            frame.addView(input, params);
+            dialog = new AlertDialog.Builder(Init.getActivity()).setTitle("請輸入Token").setView(frame).setNegativeButton(android.R.string.cancel, null).setPositiveButton(android.R.string.ok, (dialog, which) -> onPositive(input.getText().toString())).show();
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void onPositive(String text) {
+        dialog.dismiss();
+        Init.execute(() -> {
+            if (text.startsWith("http")) setToken(OkHttp.string(text));
+            else if (text.length() == 32) setToken(text);
+            else if (text.contains(":")) setToken(OkHttp.string("http://" + text + "/proxy?do=ali&type=token"));
+        });
     }
 
     private void showQRCode(Data data) {
@@ -470,7 +502,8 @@ public class API {
     }
 
     private void setToken(String value) {
-        Init.show("請重新進入播放頁");
+        SpiderDebug.log("Token:" + value);
+        Init.show("Token:" + value);
         this.refreshToken = value;
         refreshAccessToken();
         stopService();
