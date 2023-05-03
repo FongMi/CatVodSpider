@@ -71,14 +71,14 @@ class OkRequest {
         url = Utils.substring(url);
     }
 
-    public String execute(OkHttpClient client) {
+    public OkResult execute(OkHttpClient client) {
         try {
             Response response = client.newCall(request).execute();
             if (respHeader != null) respHeader.clear();
             if (respHeader != null) respHeader.putAll(response.headers().toMultimap());
-            return response.body().string();
+            return new OkResult(response.code(), response.body().string());
         } catch (IOException e) {
-            return "";
+            return new OkResult();
         }
     }
 }
