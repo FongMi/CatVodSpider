@@ -48,7 +48,7 @@ public class WebDAV extends Spider {
     }
 
     private String getExt(DavResource item) {
-        return item.getName().substring(item.getName().lastIndexOf(".") + 1);
+        return Utils.getExt(item.getName());
     }
 
     private String removeExt(DavResource item) {
