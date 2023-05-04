@@ -37,6 +37,17 @@ public class Push extends Ali {
         return super.playerContent(flag, id, vipFlags);
     }
 
+    private Vod vod(String url) {
+        Vod vod = new Vod();
+        vod.setVodId(url);
+        vod.setTypeName("FongMi");
+        vod.setVodName(url.startsWith("file://") ? new File(url).getName() : url);
+        vod.setVodPic("https://pic.rmb.bdstatic.com/bjh/1d0b02d0f57f0a42201f92caba5107ed.jpeg");
+        vod.setVodPlayFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
+        vod.setVodPlayUrl(TextUtils.join("$$$", Arrays.asList("播放$" + url, "播放$" + url, "播放$" + url)));
+        return vod;
+    }
+
     private List<Sub> getSubs(String url) {
         if (!url.startsWith("file://")) return Collections.emptyList();
         File file = new File(url.replace("file://", ""));
@@ -47,16 +58,5 @@ public class Push extends Ali {
             if (Utils.isSub(ext)) subs.add(Sub.create().name(Utils.removeExt(temp.getName())).ext(ext).url("file://" + temp.getAbsolutePath()));
         }
         return subs;
-    }
-
-    private Vod vod(String url) {
-        Vod vod = new Vod();
-        vod.setVodId(url);
-        vod.setTypeName("FongMi");
-        vod.setVodName(url.startsWith("file://") ? new File(url).getName() : url);
-        vod.setVodPic("https://pic.rmb.bdstatic.com/bjh/1d0b02d0f57f0a42201f92caba5107ed.jpeg");
-        vod.setVodPlayFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
-        vod.setVodPlayUrl(TextUtils.join("$$$", Arrays.asList("播放$" + url, "播放$" + url, "播放$" + url)));
-        return vod;
     }
 }
