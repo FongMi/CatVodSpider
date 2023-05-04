@@ -45,6 +45,10 @@ public class Utils {
         return ext.equals("srt") || ext.equals("ass") || ext.equals("ssa");
     }
 
+    public static String getExt(String name) {
+        return name.substring(name.lastIndexOf(".") + 1);
+    }
+
     public static String getSize(double size) {
         if (size <= 0) return "";
         if (size > 1024 * 1024 * 1024 * 1024.0) {
