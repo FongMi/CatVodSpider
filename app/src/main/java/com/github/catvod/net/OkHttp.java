@@ -64,7 +64,7 @@ public class OkHttp {
     }
 
     public static String string(OkHttpClient client, String method, String url, String tag, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return new OkRequest(method, url, params, header, respHeader).tag(tag).execute(client);
+        return new OkRequest(method, url, params, header, respHeader).tag(tag).execute(client).getBody();
     }
 
     public static String string(String url) {
@@ -103,11 +103,11 @@ public class OkHttp {
         return string(client(), POST, url, null, params, header, respHeader);
     }
 
-    public static String postJson(String url, String json) {
+    public static OkResult postJson(String url, String json) {
         return postJson(url, json, null);
     }
 
-    public static String postJson(String url, String json, Map<String, String> header) {
+    public static OkResult postJson(String url, String json, Map<String, String> header) {
         return new OkRequest(POST, url, json, header).execute(client());
     }
 

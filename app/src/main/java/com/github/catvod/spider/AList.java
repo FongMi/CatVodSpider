@@ -142,7 +142,7 @@ public class AList extends Spider {
             JSONObject params = new JSONObject();
             params.put("password", drive.getPassword());
             params.put("path", path.startsWith(drive.getPath()) ? path : drive.getPath() + path);
-            String response = OkHttp.postJson(drive.getApi(), params.toString());
+            String response = OkHttp.postJson(drive.getApi(), params.toString()).getBody();
             return Item.objectFrom(getDetailJson(drive.isNew(), response));
         } catch (Exception e) {
             return new Item();
@@ -157,7 +157,7 @@ public class AList extends Spider {
             JSONObject params = new JSONObject();
             params.put("password", drive.getPassword());
             params.put("path", path.startsWith(drive.getPath()) ? path : drive.getPath() + path);
-            String response = OkHttp.postJson(drive.listApi(), params.toString());
+            String response = OkHttp.postJson(drive.listApi(), params.toString()).getBody();
             List<Item> items = Item.arrayFrom(getListJson(drive.isNew(), response));
             Iterator<Item> iterator = items.iterator();
             if (filter) while (iterator.hasNext()) if (iterator.next().ignore(drive.isNew())) iterator.remove();
@@ -169,7 +169,7 @@ public class AList extends Spider {
 
     private void search(CountDownLatch cd, List<Vod> list, Drive drive, String keyword) {
         try {
-            String response = OkHttp.postJson(drive.searchApi(), drive.params(keyword));
+            String response = OkHttp.postJson(drive.searchApi(), drive.params(keyword)).getBody();
             List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
             for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive, vodPic));
         } catch (Exception ignored) {

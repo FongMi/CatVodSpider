@@ -50,9 +50,10 @@ public class Ali extends Spider {
         return Result.get().url(url).subs(API.get().getSub(ids)).header(API.get().getHeader()).parse(0).string();
     }
 
-    public static Object[] vod(Map<String, String> params) {
+    public static Object[] proxy(Map<String, String> params) {
         String type = params.get("type");
         if (type.equals("sub")) return API.get().proxySub(params);
+        if (type.equals("token")) return API.get().getToken();
         return null;
     }
 }
