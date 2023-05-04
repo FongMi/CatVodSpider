@@ -47,6 +47,7 @@ public class Local extends Spider {
         if (files == null) return Result.string(items);
         Arrays.sort(files, (a, b) -> a.getName().compareTo(b.getName()));
         for (File file : files) {
+            if (file.getName().startsWith(".")) continue;
             if (file.isDirectory()) folders.add(create(file));
             else if (Utils.MEDIA.contains(Utils.getExt(file.getName()))) media.add(create(file));
         }
