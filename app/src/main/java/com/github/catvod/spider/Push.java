@@ -53,9 +53,9 @@ public class Push extends Ali {
         File file = new File(url.replace("file://", ""));
         if (file.getParentFile() == null) return Collections.emptyList();
         List<Sub> subs = new ArrayList<>();
-        for (File temp : Objects.requireNonNull(file.getParentFile().listFiles())) {
-            String ext = Utils.getExt(temp.getName());
-            if (Utils.isSub(ext)) subs.add(Sub.create().name(Utils.removeExt(temp.getName())).ext(ext).url("file://" + temp.getAbsolutePath()));
+        for (File f : Objects.requireNonNull(file.getParentFile().listFiles())) {
+            String ext = Utils.getExt(f.getName());
+            if (Utils.isSub(ext)) subs.add(Sub.create().name(Utils.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
         }
         return subs;
     }
