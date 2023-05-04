@@ -43,12 +43,12 @@ public class Hanime extends Spider {
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         Document doc1 = Jsoup.parse(OkHttp.string(siteUrl.concat("/search?genre=裏番"), getHeaders()));
-        List<String> sorts = doc1.select("div.hentai-sort-options").eachText();
+        List<String> sorts = doc1.select("div.hentai-sort-options-wrapper").eachText();
         List<String> years = doc1.getElementById("year").select("option").eachAttr("value");
         Document doc2 = Jsoup.parse(OkHttp.string(siteUrl, getHeaders()));
         for (Element element : doc2.select("a.nav-item")) {
             String text = element.text();
-            if (text.equals("新番預告") || text.equals("H漫畫") || text.equals("我的清單")) continue;
+            if (text.equals("新番預告") || text.equals("H漫畫")) continue;
             classes.add(new Class(text));
             List<Filter> array = new ArrayList<>();
             array.add(getFilter("排序", "by", sorts));
@@ -76,9 +76,9 @@ public class Hanime extends Spider {
         String target = siteUrl.concat("/search?genre=").concat(tid).concat("&page=").concat(pg).concat("&sort=").concat(extend.get("by")).concat("&year=").concat(extend.get("year"));
         Document doc = Jsoup.parse(OkHttp.string(target, getHeaders()));
         for (Element element : doc.select("div.col-xs-6")) {
-            String pic = element.select("div > a > div >img").get(1).attr("src");
-            String url = element.select("div > div > div > a").attr("href");
-            String name = element.select("div > div > div > a").text();
+            String pic = element.select("img").get(1).attr("src");
+            String url = element.select("a.overlay").attr("href");
+            String name = element.select("div.card-mobile-title").text();
             String id = url.split("=")[1];
             list.add(new Vod(id, name, pic));
         }
@@ -101,7 +101,7 @@ public class Hanime extends Spider {
     public String detailContent(List<String> ids) throws Exception {
         Document doc = Jsoup.parse(OkHttp.string(siteUrl.concat("/watch?v=").concat(ids.get(0)), getHeaders()));
         String name = doc.getElementById("shareBtn-title").text();
-        String content = doc.getElementById("caption").text();
+        String content = doc.select("div.video-caption-text").text();
         String pic = doc.select("meta[property=og:image]").attr("content");
         String url = doc.getElementById("video-sd").attr("value");
         Vod vod = new Vod();
@@ -120,9 +120,9 @@ public class Hanime extends Spider {
         String target = siteUrl.concat("/search?query=").concat(key).concat("&genre=&sort=&year=&month=&duration=");
         Document doc = Jsoup.parse(OkHttp.string(target, getHeaders()));
         for (Element element : doc.select("div.col-xs-6")) {
-            String pic = element.select("div > a > div >img").get(1).attr("src");
-            String url = element.select("div > div > div > a").attr("href");
-            String name = element.select("div > div > div > a").text();
+            String pic = element.select("img").get(1).attr("src");
+            String url = element.select("a.overlay").attr("href");
+            String name = element.select("div.card-mobile-title").text();
             String id = url.split("=")[1];
             list.add(new Vod(id, name, pic));
         }
