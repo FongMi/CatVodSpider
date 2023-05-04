@@ -105,7 +105,7 @@ public class Item {
     }
 
     public String getExt() {
-        return getName().substring(getName().lastIndexOf(".") + 1);
+        return Utils.getExt(getName());
     }
 
     public String getVodId(String id) {

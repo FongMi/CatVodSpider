@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Image;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -43,7 +44,7 @@ public class Drive {
     }
 
     public String getVodPic() {
-        return TextUtils.isEmpty(vodPic) ? "https://s1.ax1x.com/2023/04/03/pp4F4bT.png" : vodPic;
+        return TextUtils.isEmpty(vodPic) ? Image.FOLDER : vodPic;
     }
 
     public String getName() {

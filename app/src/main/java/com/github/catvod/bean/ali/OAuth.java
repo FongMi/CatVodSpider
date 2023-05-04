@@ -2,7 +2,8 @@ package com.github.catvod.bean.ali;
 
 import android.text.TextUtils;
 
-import com.github.catvod.utils.Prefers;
+import com.github.catvod.ali.API;
+import com.github.catvod.utils.FileUtil;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -43,7 +44,7 @@ public class OAuth {
     }
 
     public OAuth save() {
-        Prefers.put("aliyundrive_oauth", toString());
+        FileUtil.write(API.get().getOAuthCache(), toString());
         return this;
     }
 
