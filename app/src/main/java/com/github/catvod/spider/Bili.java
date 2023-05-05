@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -201,12 +202,14 @@ public class Bili extends Spider {
     }
 
     private void setCookie(String url) {
-        Map<String, List<String>> respHeader = new HashMap<>();
-        OkHttp.stringNoRedirect(url, header, respHeader);
-        StringBuilder sb = new StringBuilder();
-        for (String value : Objects.requireNonNull(respHeader.get("set-cookie"))) sb.append(value.split(";")[0]).append(";");
-        Init.run(() -> Prefers.put("BiliQRCode", true), 5000);
-        Prefers.put("BiliCookie", sb.toString());
+        String cookie = "";
+        try {
+            URL abc = new URL(url);
+            String[] kk = abc.getQuery().split("&");
+            for (String a : kk) cookie += a + ";";
+        } catch (Exception ignored) {
+        }
+        Prefers.put("BiliCookie", cookie);
         Init.show("請重新進入播放頁");
         stopService();
     }
