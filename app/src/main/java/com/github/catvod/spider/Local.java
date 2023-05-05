@@ -33,8 +33,14 @@ public class Local extends Spider {
     @Override
     public String homeContent(boolean filter) throws Exception {
         List<Class> classes = new ArrayList<>();
-        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-        classes.add(new Class(root, "本地文件", "1"));
+        classes.add(new Class(Environment.getExternalStorageDirectory().getAbsolutePath(), "本地文件", "1"));
+        File[] files = new File("/storage").listFiles();
+        if (files == null) return Result.string(classes, new ArrayList<>());
+        List<String> exclude = Arrays.asList("emulated", "sdcard", "self");
+        for (File file : files) {
+            if (exclude.contains(file.getName())) continue;
+            classes.add(new Class(file.getAbsolutePath(), file.getName(), "1"));
+        }
         return Result.string(classes, new ArrayList<>());
     }
 
