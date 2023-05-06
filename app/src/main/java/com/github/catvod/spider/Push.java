@@ -4,11 +4,16 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Result;
+import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.utils.Utils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Push extends Ali {
 
@@ -26,7 +31,7 @@ public class Push extends Ali {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        if (flag.equals("直連")) return Result.get().url(id).string();
+        if (flag.equals("直連")) return Result.get().url(id).subs(getSubs(id)).string();
         if (flag.equals("嗅探")) return Result.get().parse().url(id).string();
         if (flag.equals("解析")) return Result.get().parse().jx().url(id).string();
         return super.playerContent(flag, id, vipFlags);
@@ -41,5 +46,17 @@ public class Push extends Ali {
         vod.setVodPlayFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
         vod.setVodPlayUrl(TextUtils.join("$$$", Arrays.asList("播放$" + url, "播放$" + url, "播放$" + url)));
         return vod;
+    }
+
+    private List<Sub> getSubs(String url) {
+        if (!url.startsWith("file://")) return Collections.emptyList();
+        File file = new File(url.replace("file://", ""));
+        if (file.getParentFile() == null) return Collections.emptyList();
+        List<Sub> subs = new ArrayList<>();
+        for (File f : Objects.requireNonNull(file.getParentFile().listFiles())) {
+            String ext = Utils.getExt(f.getName());
+            if (Utils.isSub(ext)) subs.add(Sub.create().name(Utils.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
+        }
+        return subs;
     }
 }

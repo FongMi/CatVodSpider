@@ -17,8 +17,6 @@ import java.util.List;
 
 public class Drive {
 
-    @SerializedName("vodPic")
-    private String vodPic;
     @SerializedName("drives")
     private List<Drive> drives;
     @SerializedName("name")
@@ -44,10 +42,6 @@ public class Drive {
 
     public List<Drive> getDrives() {
         return drives == null ? new ArrayList<>() : drives;
-    }
-
-    public String getVodPic() {
-        return TextUtils.isEmpty(vodPic) ? "" : vodPic;
     }
 
     public String getName() {

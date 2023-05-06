@@ -26,7 +26,7 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.net.OkResult;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
-import com.github.catvod.utils.Prefers;
+import com.github.catvod.utils.FileUtil;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Utils;
 
@@ -34,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -66,10 +67,18 @@ public class API {
         return Loader.INSTANCE;
     }
 
+    public File getUserCache() {
+        return FileUtil.getCacheFile("aliyundrive_user");
+    }
+
+    public File getOAuthCache() {
+        return FileUtil.getCacheFile("aliyundrive_oauth");
+    }
+
     private API() {
         tempIds = new ArrayList<>();
-        oauth = OAuth.objectFrom(Prefers.getString("aliyundrive_oauth"));
-        user = User.objectFrom(Prefers.getString("aliyundrive_user"));
+        oauth = OAuth.objectFrom(FileUtil.read(getOAuthCache()));
+        user = User.objectFrom(FileUtil.read(getUserCache()));
         quality = new HashMap<>();
         quality.put("4K", "UHD");
         quality.put("2k", "QHD");
@@ -432,9 +441,7 @@ public class API {
         if (Utils.isMobile()) {
             Init.run(this::showInput);
         } else {
-            String url = "https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3";
-            Data data = Data.objectFrom(OkHttp.string(url)).getContent().getData();
-            Init.run(() -> showQRCode(data));
+            showQRCode();
         }
     }
 
@@ -445,18 +452,29 @@ public class API {
             FrameLayout frame = new FrameLayout(Init.context());
             EditText input = new EditText(Init.context());
             frame.addView(input, params);
-            dialog = new AlertDialog.Builder(Init.getActivity()).setTitle("請輸入Token").setView(frame).setNegativeButton(android.R.string.cancel, null).setPositiveButton(android.R.string.ok, (dialog, which) -> onPositive(input.getText().toString())).show();
+            dialog = new AlertDialog.Builder(Init.getActivity()).setTitle("請輸入Token").setView(frame).setNeutralButton("QRCode", (dialog, which) -> onNeutral()).setNegativeButton(android.R.string.cancel, null).setPositiveButton(android.R.string.ok, (dialog, which) -> onPositive(input.getText().toString())).show();
         } catch (Exception ignored) {
         }
     }
 
+    private void onNeutral() {
+        dismiss();
+        Init.execute(this::showQRCode);
+    }
+
     private void onPositive(String text) {
-        dialog.dismiss();
+        dismiss();
         Init.execute(() -> {
             if (text.startsWith("http")) setToken(OkHttp.string(text));
             else if (text.length() == 32) setToken(text);
             else if (text.contains(":")) setToken(OkHttp.string("http://" + text + "/proxy?do=ali&type=token"));
         });
+    }
+
+    private void showQRCode() {
+        String url = "https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3";
+        Data data = Data.objectFrom(OkHttp.string(url)).getContent().getData();
+        Init.run(() -> showQRCode(data));
     }
 
     private void showQRCode(Data data) {
