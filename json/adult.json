@@ -1,7 +1,24 @@
 {
-  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;0f7dff3487cc344aac1f291e27ee29ca",
+  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;77633695c1b9eb30846e021f48424a6d",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "sites": [
+    {
+      "key": "AList",
+      "name": "AList",
+      "type": 3,
+      "api": "csp_AList",
+      "searchable": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "ext": {
+        "drives": [
+          {
+            "name": "AV",
+            "server": "https://a74d291e-3b91-45a5-9ec6-9f08a9178e59.id.repl.co"
+          }
+        ]
+      }
+    },
     {
       "key": "泥巴",
       "name": "泥巴",
