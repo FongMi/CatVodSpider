@@ -3,6 +3,23 @@
   "wallpaper": "https://gao.chuqiuyu.tk",
   "sites": [
     {
+      "key": "AList",
+      "name": "AList",
+      "type": 3,
+      "api": "csp_AList",
+      "searchable": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "ext": {
+        "drives": [
+          {
+            "name": "JAV",
+            "server": "https://hub-ccyiq.run.goorm.site"
+          }
+        ]
+      }
+    },
+    {
       "key": "泥巴",
       "name": "泥巴",
       "type": 3,
