@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -23,13 +24,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -202,14 +200,10 @@ public class Bili extends Spider {
     }
 
     private void setCookie(String url) {
-        String cookie = "";
-        try {
-            URL abc = new URL(url);
-            String[] kk = abc.getQuery().split("&");
-            for (String a : kk) cookie += a + ";";
-        } catch (Exception ignored) {
-        }
-        Prefers.put("BiliCookie", cookie);
+        StringBuilder cookie = new StringBuilder();
+        String[] aa = Uri.parse(url).getQuery().split("&");
+        for (String a : aa) cookie.append(a).append(";");
+        Prefers.put("BiliCookie", cookie.toString());
         Init.show("請重新進入播放頁");
         stopService();
     }
