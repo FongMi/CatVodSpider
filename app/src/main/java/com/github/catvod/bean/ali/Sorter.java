@@ -22,6 +22,6 @@ public class Sorter implements Comparator<Item> {
     }
 
     private int getDigit(String text) throws NumberFormatException {
-        return Integer.parseInt(Utils.removeExt(text).replaceAll("\\D+", ""));
+        return Integer.parseInt(Utils.removeExt(text).replace("1080P", "").replace("4K", "").replaceAll("\\D+", ""));
     }
 }
