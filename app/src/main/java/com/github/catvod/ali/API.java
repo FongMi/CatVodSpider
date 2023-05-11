@@ -101,6 +101,8 @@ public class API {
     }
 
     public void setShareId(String shareId) {
+        if (!getOAuthCache().exists()) oauth.clean().save();
+        if (!getUserCache().exists()) user.clean().save();
         this.shareId = shareId;
         refreshShareToken();
     }
