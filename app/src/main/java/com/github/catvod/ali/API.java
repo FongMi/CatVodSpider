@@ -538,7 +538,7 @@ public class API {
     private void setToken(String value) {
         SpiderDebug.log("Token:" + value);
         Init.show("Token:" + value);
-        this.refreshToken = value;
+        user.setRefreshToken(value);
         refreshAccessToken();
         stopService();
     }
