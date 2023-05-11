@@ -125,11 +125,12 @@ public class API {
         return headers;
     }
 
-    private String alist(String url, JSONObject body) throws Exception {
-        url = "https://api.nn.ci/alist/ali_open/" + url;
+    private boolean alist(String url, JSONObject body) {
         OkResult result = OkHttp.postJson(url, body.toString(), getHeader());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
-        return result.getBody();
+        if (isManyRequest(result.getBody())) return false;
+        oauth = OAuth.objectFrom(result.getBody()).save();
+        return true;
     }
 
     private String post(String url, JSONObject body) {
@@ -206,7 +207,7 @@ public class API {
         }
     }
 
-    private void oauthRequest() {
+    private boolean oauthRequest() {
         try {
             SpiderDebug.log("OAuth Request...");
             JSONObject body = new JSONObject();
@@ -214,37 +215,35 @@ public class API {
             body.put("scope", "user:base,file:all:read,file:all:write");
             String url = "https://open.aliyundrive.com/oauth/users/authorize?client_id=" + BuildConfig.CLIENT_ID + "&redirect_uri=https://alist.nn.ci/tool/aliyundrive/callback&scope=user:base,file:all:read,file:all:write&state=";
             String result = auth(url, body.toString(), true);
-            oauthRedirect(Code.objectFrom(result).getCode());
+            return oauthRedirect(Code.objectFrom(result).getCode());
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    private void oauthRedirect(String code) {
+    private boolean oauthRedirect(String code) {
         try {
             SpiderDebug.log("OAuth Redirect...");
             JSONObject body = new JSONObject();
             body.put("code", code);
             body.put("grant_type", "authorization_code");
-            String result = alist("code", body);
-            if (isManyRequest(result)) return;
-            oauth = OAuth.objectFrom(result).save();
+            return alist("https://api.nn.ci/alist/ali_open/code", body);
         } catch (Exception e) {
             e.printStackTrace();
             oauth.clean().save();
+            return false;
         }
     }
 
     private boolean refreshOpenToken() {
         try {
+            if (oauth.getRefreshToken().isEmpty()) return oauthRequest();
             SpiderDebug.log("refreshOpenToken...");
             JSONObject body = new JSONObject();
             body.put("grant_type", "refresh_token");
             body.put("refresh_token", oauth.getRefreshToken());
-            String result = alist("token", body);
-            if (isManyRequest(result)) return false;
-            oauth = OAuth.objectFrom(result).save();
-            return true;
+            return alist("https://api.nn.ci/alist/ali_open/token", body);
         } catch (Exception e) {
             e.printStackTrace();
             oauth.clean().save();
