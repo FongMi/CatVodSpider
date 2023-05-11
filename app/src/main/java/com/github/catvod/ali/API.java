@@ -103,7 +103,6 @@ public class API {
     public void setShareId(String shareId) {
         this.shareId = shareId;
         refreshShareToken();
-        checkAccessToken();
     }
 
     public HashMap<String, String> getHeader() {
@@ -129,9 +128,8 @@ public class API {
     private String alist(String url, JSONObject body) throws Exception {
         url = "https://api.nn.ci/alist/ali_open/" + url;
         OkResult result = OkHttp.postJson(url, body.toString(), getHeader());
-        if (isManyRequest(result.getBody())) return "";
-        if (result.getCode() == 200) return result.getBody();
-        throw new Exception(result.getBody());
+        SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
+        return result.getBody();
     }
 
     private String post(String url, JSONObject body) {
@@ -142,14 +140,17 @@ public class API {
     private String auth(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
         OkResult result = OkHttp.postJson(url, json, getHeaderAuth());
-        if (retry && result.getCode() != 200 && refreshAccessToken()) return auth(url, json, false);
+        SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
+        if (retry && result.getCode() == 401 && refreshAccessToken()) return auth(url, json, false);
+        if (retry && result.getCode() == 429) return auth(url, json, false);
         return result.getBody();
     }
 
     private String oauth(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://open.aliyundrive.com/adrive/v1.0/" + url;
         OkResult result = OkHttp.postJson(url, json, getHeaderOpen());
-        if (retry && result.getCode() != 200 && refreshOpenToken()) return oauth(url, json, false);
+        SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
+        if (retry && result.getCode() == 401 && refreshOpenToken()) return oauth(url, json, false);
         return result.getBody();
     }
 
@@ -157,7 +158,6 @@ public class API {
         if (!result.contains("Too Many Requests")) return false;
         Init.show("洗洗睡吧，Too Many Requests。");
         oauth.clean().save();
-        user.clean().save();
         return true;
     }
 
@@ -166,8 +166,18 @@ public class API {
         return false;
     }
 
-    public void checkAccessToken() {
-        if (user.getAccessToken().isEmpty()) refreshAccessToken();
+    private void refreshShareToken() {
+        try {
+            SpiderDebug.log("refreshShareToken...");
+            JSONObject body = new JSONObject();
+            body.put("share_id", shareId);
+            body.put("share_pwd", "");
+            String result = post("v2/share_link/get_share_token", body);
+            shareToken = new JSONObject(result).getString("share_token");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Init.show("來晚啦，該分享已失效。");
+        }
     }
 
     private boolean refreshAccessToken() {
@@ -183,7 +193,6 @@ public class API {
             user = User.objectFrom(result).save();
             SpiderDebug.log(user.toString());
             if (user.getAccessToken().isEmpty()) throw new Exception(result);
-            if (oauth.getAccessToken().isEmpty()) oauthRequest();
             return true;
         } catch (Exception e) {
             if (e instanceof TimeoutException) return onTimeout();
@@ -217,7 +226,9 @@ public class API {
             JSONObject body = new JSONObject();
             body.put("code", code);
             body.put("grant_type", "authorization_code");
-            oauth = OAuth.objectFrom(alist("code", body)).save();
+            String result = alist("code", body);
+            if (isManyRequest(result)) return;
+            oauth = OAuth.objectFrom(result).save();
         } catch (Exception e) {
             e.printStackTrace();
             oauth.clean().save();
@@ -230,27 +241,14 @@ public class API {
             JSONObject body = new JSONObject();
             body.put("grant_type", "refresh_token");
             body.put("refresh_token", oauth.getRefreshToken());
-            oauth = OAuth.objectFrom(alist("token", body)).save();
+            String result = alist("token", body);
+            if (isManyRequest(result)) return false;
+            oauth = OAuth.objectFrom(result).save();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             oauth.clean().save();
-            oauthRequest();
-            return true;
-        }
-    }
-
-    private void refreshShareToken() {
-        try {
-            SpiderDebug.log("refreshShareToken...");
-            JSONObject body = new JSONObject();
-            body.put("share_id", shareId);
-            body.put("share_pwd", "");
-            String result = post("v2/share_link/get_share_token", body);
-            shareToken = new JSONObject(result).getString("share_token");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Init.show("來晚啦，該分享已失效。");
+            return false;
         }
     }
 
@@ -404,6 +402,7 @@ public class API {
         String json = "{\"requests\":[{\"body\":{\"file_id\":\"%s\",\"share_id\":\"%s\",\"auto_rename\":true,\"to_parent_file_id\":\"root\",\"to_drive_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"0\",\"method\":\"POST\",\"url\":\"/file/copy\"}],\"resource\":\"file\"}";
         json = String.format(json, fileId, shareId, user.getDriveId());
         String result = auth("adrive/v2/batch", json, true);
+        if (result.contains("ForbiddenNoPermission.File")) return copy(fileId);
         return new JSONObject(result).getJSONArray("responses").getJSONObject(0).getJSONObject("body").getString("file_id");
     }
 
@@ -497,8 +496,9 @@ public class API {
     private void startService(Map<String, String> params) {
         service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(() -> {
-            Data result = Data.objectFrom(OkHttp.post("https://passport.aliyundrive.com/newlogin/qrcode/query.do?appName=aliyun_drive&fromSite=52&_bx-v=2.2.3", params)).getContent().getData();
-            if (result.hasToken()) setToken(result.getToken());
+            String result = OkHttp.post("https://passport.aliyundrive.com/newlogin/qrcode/query.do?appName=aliyun_drive&fromSite=52&_bx-v=2.2.3", params);
+            Data data = Data.objectFrom(result).getContent().getData();
+            if (data.hasToken()) setToken(data.getToken());
         }, 1, 1, TimeUnit.SECONDS);
     }
 
