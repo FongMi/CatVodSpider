@@ -371,7 +371,7 @@ public class API {
 
     public JSONObject getVideoPreviewPlayInfo(String fileId) {
         try {
-            SpiderDebug.log("getPreviewUrl..." + fileId);
+            SpiderDebug.log("getVideoPreviewPlayInfo..." + fileId);
             tempIds.add(0, copy(fileId));
             JSONObject body = new JSONObject();
             body.put("file_id", tempIds.get(0));
