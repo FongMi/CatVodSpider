@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.github.catvod.BuildConfig;
+import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.ali.Code;
@@ -37,6 +38,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -337,7 +339,7 @@ public class API {
         return sb.toString();
     }
 
-    public List<Sub> getSub(String[] ids) {
+    public List<Sub> getSubs(String[] ids) {
         List<Sub> sub = new ArrayList<>();
         for (String text : ids) {
             if (!text.contains("@@@")) continue;
@@ -367,7 +369,7 @@ public class API {
         }
     }
 
-    public String getPreviewUrl(String fileId, String flag) {
+    public JSONObject getVideoPreviewPlayInfo(String fileId) {
         try {
             SpiderDebug.log("getPreviewUrl..." + fileId);
             tempIds.add(0, copy(fileId));
@@ -377,17 +379,35 @@ public class API {
             body.put("category", "live_transcoding");
             body.put("url_expire_sec", "14400");
             String json = oauth("openFile/getVideoPreviewPlayInfo", body.toString(), true);
-            JSONArray taskList = new JSONObject(json).getJSONObject("video_preview_play_info").getJSONArray("live_transcoding_task_list");
-            return getPreviewQuality(taskList, flag);
+            return new JSONObject(json).getJSONObject("video_preview_play_info");
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
+            return new JSONObject();
         } finally {
             Init.execute(this::deleteAll);
         }
     }
 
-    private String getPreviewQuality(JSONArray taskList, String flag) throws Exception {
+    public String playerContent(String[] ids) {
+        return Result.get().url(getDownloadUrl(ids[0])).subs(getSubs(ids)).header(getHeader()).string();
+    }
+
+    public String playerContent(String[] ids, String flag) {
+        try {
+            JSONObject playInfo = getVideoPreviewPlayInfo(ids[0]);
+            String url = getPreviewUrl(playInfo, flag);
+            List<Sub> subs = getSubs(ids);
+            subs.addAll(getSubs(playInfo));
+            return Result.get().url(url).subs(subs).header(getHeader()).string();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.get().url("").string();
+        }
+    }
+
+    private String getPreviewUrl(JSONObject playInfo, String flag) throws Exception {
+        if (!playInfo.has("live_transcoding_task_list")) return "";
+        JSONArray taskList = playInfo.getJSONArray("live_transcoding_task_list");
         for (int i = 0; i < taskList.length(); ++i) {
             JSONObject task = taskList.getJSONObject(i);
             if (task.getString("template_id").equals(quality.get(flag))) {
@@ -395,6 +415,19 @@ public class API {
             }
         }
         return taskList.getJSONObject(0).getString("url");
+    }
+
+    private List<Sub> getSubs(JSONObject playInfo) throws Exception {
+        if (!playInfo.has("live_transcoding_subtitle_task_list")) return Collections.emptyList();
+        JSONArray taskList = playInfo.getJSONArray("live_transcoding_subtitle_task_list");
+        List<Sub> subs = new ArrayList<>();
+        for (int i = 0; i < taskList.length(); ++i) {
+            JSONObject task = taskList.getJSONObject(i);
+            String lang = task.getString("language");
+            String url = task.getString("url");
+            subs.add(Sub.create().url(url).name(lang).lang(lang).ext("vtt"));
+        }
+        return subs;
     }
 
     private String copy(String fileId) throws Exception {
