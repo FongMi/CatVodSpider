@@ -11,12 +11,16 @@ import java.io.InputStreamReader;
 
 public class FileUtil {
 
-    public static File getCacheDir() {
+    public static File getExternalCacheDir() {
         return Init.context().getExternalCacheDir();
     }
 
+    public static File getCacheDir() {
+        return Init.context().getCacheDir();
+    }
+
     public static File getCacheFile(String fileName) {
-        return new File(getCacheDir(), fileName);
+        return getExternalCacheDir().canWrite() ? new File(getExternalCacheDir(), fileName) : new File(getCacheDir(), fileName);
     }
 
     public static void write(File file, String data) {
