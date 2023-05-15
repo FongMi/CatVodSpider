@@ -6,6 +6,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -27,7 +28,7 @@ public class TuGou extends Ali {
         header.put("User-Agent", Utils.CHROME);
         header.put("Host", "tugousou.com");
         header.put("Origin", URL);
-        header.put("Referer", URL+"/");
+        header.put("Referer", URL + "/");
         return header;
     }
 
@@ -40,12 +41,10 @@ public class TuGou extends Ali {
     public String searchContent(String key, boolean quick) {
         Map<String, String> params = new HashMap<>();
         params.put("keyword", key);
-        String searchUrl = URL + "/search";
-        String html = OkHttp.post(searchUrl, params, getHeader());
+        String html = OkHttp.post(URL + "/search", params, getHeader());
         Element container = Jsoup.parse(html).select(".layui-container").get(1);
         Elements aElements = container.select("p[class=layui-font-16] > a");
         Elements pElements = container.select("p[class=layui-font-14 layui-font-gray text-align-right]");
-
         List<Vod> list = new ArrayList<>();
         for (int i = 0; i < aElements.size(); i++) {
             Element item = aElements.get(i);
