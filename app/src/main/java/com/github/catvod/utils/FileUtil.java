@@ -11,16 +11,12 @@ import java.io.InputStreamReader;
 
 public class FileUtil {
 
-    public static File getExternalCacheDir() {
+    public static File getCacheDir() {
         return Init.context().getExternalCacheDir();
     }
 
-    public static File getCacheDir() {
-        return Init.context().getCacheDir();
-    }
-
     public static File getCacheFile(String fileName) {
-        return getExternalCacheDir().canWrite() ? new File(getExternalCacheDir(), fileName) : new File(getCacheDir(), fileName);
+        return new File(getCacheDir(), fileName);
     }
 
     public static void write(File file, String data) {
@@ -33,8 +29,20 @@ public class FileUtil {
             fos.write(data);
             fos.flush();
             fos.close();
+            chmod(file);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static File chmod(File file) {
+        try {
+            Process process = Runtime.getRuntime().exec("chmod 777 " + file);
+            process.waitFor();
+            return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return file;
         }
     }
 
