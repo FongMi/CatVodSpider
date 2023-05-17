@@ -43,6 +43,7 @@ public class Miss extends Spider {
             String pic = div.select("img").attr("data-src");
             if (pic.isEmpty()) pic = div.select("img").attr("src");
             String remark = div.select("span").text();
+            if (TextUtils.isEmpty(name)) continue;
             list.add(new Vod(id, name, pic, remark));
         }
         return Result.string(classes, list, filters);
@@ -61,8 +62,8 @@ public class Miss extends Spider {
             String name = div.select("a.text-secondary").text();
             String pic = div.select("img").attr("data-src");
             if (pic.isEmpty()) pic = div.select("img").attr("src");
-            if (TextUtils.isEmpty(name)) continue;
             String remark = div.select("span").text();
+            if (TextUtils.isEmpty(name)) continue;
             list.add(new Vod(id, name, pic, remark));
         }
         return Result.string(list);
@@ -92,6 +93,7 @@ public class Miss extends Spider {
             String pic = div.select("img").attr("data-src");
             if (pic.isEmpty()) pic = div.select("img").attr("src");
             String remark = div.select("span").text();
+            if (TextUtils.isEmpty(name)) continue;
             list.add(new Vod(id, name, pic, remark));
         }
         return Result.string(list);
