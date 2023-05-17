@@ -18,14 +18,16 @@ public class Drive {
 
     @SerializedName("drives")
     private List<Drive> drives;
+    @SerializedName("params")
+    private Map<String, String> params;
+    @SerializedName("login")
+    private Login login;
     @SerializedName("vodPic")
     private String vodPic;
     @SerializedName("name")
     private String name;
     @SerializedName("server")
     private String server;
-    @SerializedName("password")
-    private String password;
     @SerializedName("version")
     private int version;
     @SerializedName("path")
@@ -37,6 +39,14 @@ public class Drive {
 
     public List<Drive> getDrives() {
         return drives == null ? new ArrayList<>() : drives;
+    }
+
+    public Map<String, String> getParams() {
+        return params == null ? new HashMap<>() : params;
+    }
+
+    public Login getLogin() {
+        return login;
     }
 
     public Drive(String name) {
@@ -53,10 +63,6 @@ public class Drive {
 
     public String getServer() {
         return TextUtils.isEmpty(server) ? "" : server;
-    }
-
-    public String getPassword() {
-        return TextUtils.isEmpty(password) ? "" : password;
     }
 
     public int getVersion() {
@@ -89,6 +95,10 @@ public class Drive {
 
     public String settingsApi() {
         return getHost() + "/api/public/settings";
+    }
+
+    public String loginApi() {
+        return getHost() + "/api/auth/login";
     }
 
     public String listApi() {
