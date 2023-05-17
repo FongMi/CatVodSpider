@@ -30,6 +30,7 @@ public class AList extends Spider {
 
     private List<Drive> drives;
     private String vodPic;
+    private String token;
     private String ext;
 
     private List<Filter> getFilter() {
@@ -49,6 +50,23 @@ public class AList extends Spider {
 
     private Drive getDrive(String name) {
         return drives.get(drives.indexOf(new Drive(name))).check();
+    }
+
+    public HashMap<String, String> getHeader() {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", Utils.CHROME);
+        if (token != null) headers.put("Authorization", token);
+        return headers;
+    }
+
+    private String post(Drive drive, String url, String param) {
+        return post(drive, url, param, true);
+    }
+
+    private String post(Drive drive, String url, String param, boolean retry) {
+        String response = OkHttp.postJson(url, param, getHeader()).getBody();
+        if (retry && response.contains("Guest user is disabled") && login(drive)) return post(drive, url, param, false);
+        return response;
     }
 
     @Override
@@ -132,15 +150,30 @@ public class AList extends Spider {
         return Result.get().url(getDetail(ids[0]).getUrl()).subs(getSub(ids)).string();
     }
 
+    private boolean login(Drive drive) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("username", drive.getLogin().getUsername());
+            params.put("password", drive.getLogin().getPassword());
+            String response = OkHttp.postJson(drive.loginApi(), params.toString()).getBody();
+            token = new JSONObject(response).getJSONObject("data").getString("token");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private Item getDetail(String id) {
         try {
             String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
             String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
             Drive drive = getDrive(key);
+            path = path.startsWith(drive.getPath()) ? path : drive.getPath() + path;
             JSONObject params = new JSONObject();
-            params.put("password", drive.getPassword());
-            params.put("path", path.startsWith(drive.getPath()) ? path : drive.getPath() + path);
-            String response = OkHttp.postJson(drive.getApi(), params.toString()).getBody();
+            params.put("path", path);
+            params.put("password", drive.getParams().get(path));
+            String response = post(drive, drive.getApi(), params.toString());
             return Item.objectFrom(getDetailJson(drive.isNew(), response));
         } catch (Exception e) {
             return new Item();
@@ -152,10 +185,11 @@ public class AList extends Spider {
             String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
             String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
             Drive drive = getDrive(key);
+            path = path.startsWith(drive.getPath()) ? path : drive.getPath() + path;
             JSONObject params = new JSONObject();
-            params.put("password", drive.getPassword());
-            params.put("path", path.startsWith(drive.getPath()) ? path : drive.getPath() + path);
-            String response = OkHttp.postJson(drive.listApi(), params.toString()).getBody();
+            params.put("path", path);
+            params.put("password", drive.getParams().get(path));
+            String response = post(drive, drive.listApi(), params.toString());
             List<Item> items = Item.arrayFrom(getListJson(drive.isNew(), response));
             Iterator<Item> iterator = items.iterator();
             if (filter) while (iterator.hasNext()) if (iterator.next().ignore(drive.isNew())) iterator.remove();
@@ -167,7 +201,7 @@ public class AList extends Spider {
 
     private void search(CountDownLatch cd, List<Vod> list, Drive drive, String keyword) {
         try {
-            String response = OkHttp.postJson(drive.searchApi(), drive.params(keyword)).getBody();
+            String response = post(drive, drive.searchApi(), drive.params(keyword));
             List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
             for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive, vodPic));
         } catch (Exception ignored) {
