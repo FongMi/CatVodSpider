@@ -133,7 +133,11 @@
       "type": 3,
       "api": "csp_Push",
       "searchable": 1,
-      "changeable": 0
+      "changeable": 0,
+      "ads": [
+        "#EXT-X-DISCONTINUITY\\r*\\n*#EXTINF:6.433333,[\\s\\S]*?#EXT-X-DISCONTINUITY",
+        "#EXT-X-DISCONTINUITY\\r*\\n*#EXTINF:6.666667,[\\s\\S]*?#EXT-X-DISCONTINUITY"
+      ]
     }
   ]
 }
