@@ -61,9 +61,6 @@
       "api": "https://cj.lziapi.com/api.php/provide/vod/at/xml/",
       "searchable": 1,
       "changeable": 1,
-      "ads": [
-        "#EXT-X-DISCONTINUITY\\r*\\n*#EXTINF:6.433333,[\\s\\S]*?#EXT-X-DISCONTINUITY"
-      ],
       "categories": [
         "国产动漫",
         "日韩动漫",
@@ -99,9 +96,6 @@
       "api": "http://cj.ffzyapi.com/api.php/provide/vod/at/xml/",
       "searchable": 1,
       "changeable": 1,
-      "ads": [
-        "#EXT-X-DISCONTINUITY\\r*\\n*#EXTINF:6.666667,[\\s\\S]*?#EXT-X-DISCONTINUITY"
-      ],
       "categories": [
         "国产动漫",
         "日韩动漫",
@@ -210,6 +204,19 @@
       "api": "csp_Push",
       "searchable": 1,
       "changeable": 0
+    }
+  ],
+  "rules": [
+    {
+      "hosts": [
+        "vip.ffzy",
+        "vip.lz",
+        "hd.lz"
+      ],
+      "regex": [
+        "#EXT-X-DISCONTINUITY\\r*\\n*#EXTINF:6.433333,[\\s\\S]*?#EXT-X-DISCONTINUITY",
+        "#EXT-X-DISCONTINUITY\\r*\\n*#EXTINF:6.666667,[\\s\\S]*?#EXT-X-DISCONTINUITY"
+      ]
     }
   ]
 }
