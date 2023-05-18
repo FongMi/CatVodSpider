@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 public class FileUtil {
 
     public static File getCacheDir() {
-        return Init.context().getExternalCacheDir();
+        return Init.context().getCacheDir();
     }
 
     public static File getCacheFile(String fileName) {
