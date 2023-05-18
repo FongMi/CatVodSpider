@@ -227,7 +227,16 @@
       ]
     },
     {
-      "name": "火山",
+      "name": "全域嗅探",
+      "host": [
+        "*"
+      ],
+      "regex": [
+        "http((?!http).)*?video/tos*"
+      ]
+    },
+    {
+      "name": "火山嗅探",
       "host": [
         "huoshan.com"
       ],
@@ -236,7 +245,7 @@
       ]
     },
     {
-      "name": "抖音",
+      "name": "抖音嗅探",
       "host": [
         "douyin.com"
       ],
