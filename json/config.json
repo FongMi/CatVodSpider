@@ -227,15 +227,6 @@
       ]
     },
     {
-      "name": "全域嗅探",
-      "host": [
-        "*"
-      ],
-      "regex": [
-        "http((?!http).)*?video/tos*"
-      ]
-    },
-    {
       "name": "火山嗅探",
       "host": [
         "huoshan.com"
