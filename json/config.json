@@ -221,18 +221,6 @@
   ],
   "doh": [
     {
-      "name": "騰訊",
-      "url": "https://doh.pub/dns-query"
-    },
-    {
-      "name": "阿里",
-      "url": "https://dns.alidns.com/dns-query"
-    },
-    {
-      "name": "360",
-      "url": "https://doh.360.cn/dns-query"
-    },
-    {
       "name": "Google",
       "url": "https://dns.google/dns-query",
       "ips": [
