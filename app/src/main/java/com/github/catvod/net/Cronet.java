@@ -1,6 +1,5 @@
 package com.github.catvod.net;
 
-import com.github.catvod.crawler.Spider;
 import com.github.catvod.spider.Init;
 import com.google.net.cronet.okhttptransport.CronetInterceptor;
 
@@ -9,7 +8,6 @@ import org.chromium.net.CronetEngine;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 
 public class Cronet {
@@ -53,14 +51,6 @@ public class Cronet {
 
     private static OkHttpClient noRedirect() {
         return get().noRedirect;
-    }
-
-    public static Dns safeDns() {
-        try {
-            return (Dns) Spider.class.getMethod("safeDns").invoke(null);
-        } catch (Exception e) {
-            return Dns.SYSTEM;
-        }
     }
 
     public static void stringNoRedirect(String url, Map<String, String> header, Map<String, List<String>> respHeader) {
