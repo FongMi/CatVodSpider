@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.github.catvod.bean.Class;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Image;
+import com.github.catvod.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -19,7 +20,7 @@ public class Drive {
     @SerializedName("drives")
     private List<Drive> drives;
     @SerializedName("params")
-    private Map<String, String> params;
+    private List<Param> params;
     @SerializedName("login")
     private Login login;
     @SerializedName("vodPic")
@@ -32,6 +33,8 @@ public class Drive {
     private int version;
     @SerializedName("path")
     private String path;
+    @SerializedName("token")
+    private String token;
 
     public static Drive objectFrom(String str) {
         return new Gson().fromJson(str, Drive.class);
@@ -41,8 +44,8 @@ public class Drive {
         return drives == null ? new ArrayList<>() : drives;
     }
 
-    public Map<String, String> getParams() {
-        return params == null ? new HashMap<>() : params;
+    public List<Param> getParams() {
+        return params == null ? new ArrayList<>() : params;
     }
 
     public Login getLogin() {
@@ -79,6 +82,14 @@ public class Drive {
 
     public void setPath(String path) {
         this.path = TextUtils.isEmpty(path) ? "" : path;
+    }
+
+    public String getToken() {
+        return TextUtils.isEmpty(token) ? "" : token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public boolean isNew() {
@@ -133,6 +144,18 @@ public class Drive {
             params.put("path", "/");
             return new Gson().toJson(params);
         }
+    }
+
+    public HashMap<String, String> getHeader() {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", Utils.CHROME);
+        if (!getToken().isEmpty()) headers.put("Authorization", token);
+        return headers;
+    }
+
+    public String findPass(String path) {
+        for (Param param : getParams()) if (path.startsWith(param.getPath())) return param.getPass();
+        return "";
     }
 
     @Override
