@@ -286,7 +286,7 @@
     },
     {
       "name": "火山嗅探",
-      "host": [
+      "hosts": [
         "huoshan.com"
       ],
       "regex": [
@@ -295,7 +295,7 @@
     },
     {
       "name": "抖音嗅探",
-      "host": [
+      "hosts": [
         "douyin.com"
       ],
       "regex": [
