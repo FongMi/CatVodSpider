@@ -12,6 +12,7 @@ import com.github.catvod.bean.alist.Drive;
 import com.github.catvod.bean.alist.Item;
 import com.github.catvod.bean.alist.Sorter;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
 
@@ -30,7 +31,6 @@ public class AList extends Spider {
 
     private List<Drive> drives;
     private String vodPic;
-    private String token;
     private String ext;
 
     private List<Filter> getFilter() {
@@ -52,19 +52,13 @@ public class AList extends Spider {
         return drives.get(drives.indexOf(new Drive(name))).check();
     }
 
-    public HashMap<String, String> getHeader() {
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Utils.CHROME);
-        if (token != null) headers.put("Authorization", token);
-        return headers;
-    }
-
     private String post(Drive drive, String url, String param) {
         return post(drive, url, param, true);
     }
 
     private String post(Drive drive, String url, String param, boolean retry) {
-        String response = OkHttp.postJson(url, param, getHeader()).getBody();
+        String response = OkHttp.postJson(url, param, drive.getHeader()).getBody();
+        SpiderDebug.log(response);
         if (retry && response.contains("Guest user is disabled") && login(drive)) return post(drive, url, param, false);
         return response;
     }
@@ -156,7 +150,7 @@ public class AList extends Spider {
             params.put("username", drive.getLogin().getUsername());
             params.put("password", drive.getLogin().getPassword());
             String response = OkHttp.postJson(drive.loginApi(), params.toString()).getBody();
-            token = new JSONObject(response).getJSONObject("data").getString("token");
+            drive.setToken(new JSONObject(response).getJSONObject("data").getString("token"));
             return true;
         } catch (Exception e) {
             e.printStackTrace();
