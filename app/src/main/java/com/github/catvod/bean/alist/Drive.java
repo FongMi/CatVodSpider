@@ -20,7 +20,7 @@ public class Drive {
     @SerializedName("drives")
     private List<Drive> drives;
     @SerializedName("params")
-    private Map<String, String> params;
+    private List<Param> params;
     @SerializedName("login")
     private Login login;
     @SerializedName("vodPic")
@@ -44,8 +44,8 @@ public class Drive {
         return drives == null ? new ArrayList<>() : drives;
     }
 
-    public Map<String, String> getParams() {
-        return params == null ? new HashMap<>() : params;
+    public List<Param> getParams() {
+        return params == null ? new ArrayList<>() : params;
     }
 
     public Login getLogin() {
@@ -151,6 +151,11 @@ public class Drive {
         headers.put("User-Agent", Utils.CHROME);
         if (!getToken().isEmpty()) headers.put("Authorization", token);
         return headers;
+    }
+
+    public String findPass(String path) {
+        for (Param param : getParams()) if (path.startsWith(param.getPath())) return param.getPass();
+        return "";
     }
 
     @Override
