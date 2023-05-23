@@ -138,6 +138,15 @@
       ]
     },
     {
+      "key": "熊熊",
+      "name": "熊熊",
+      "type": 1,
+      "api": "https://v.3412.net.cn/macapi.php/provide/vod",
+      "playUrl": "https://player.3412.net.cn/?url=",
+      "searchable": 1,
+      "changeable": 1
+    },
+    {
       "key": "櫻花",
       "name": "櫻花",
       "type": 3,
