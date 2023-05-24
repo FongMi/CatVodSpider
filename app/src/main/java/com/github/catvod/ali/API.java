@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -439,10 +438,10 @@ public class API {
     }
 
     private void deleteAll() {
-        Iterator<String> iterator = tempIds.iterator();
-        while (iterator.hasNext()) {
-            boolean deleted = delete(iterator.next());
-            if (deleted) iterator.remove();
+        List<String> ids = new ArrayList<>(tempIds);
+        for (String id : ids) {
+            boolean deleted = delete(id);
+            if (deleted) tempIds.remove(id);
         }
     }
 
