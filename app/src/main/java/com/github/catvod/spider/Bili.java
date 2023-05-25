@@ -44,23 +44,43 @@ public class Bili extends Spider {
     private String extend;
     private boolean login;
 
-    private String getCookie(String cookie) {
+    private String getCookie() {
         String cache = Prefers.getString("BiliCookie");
         if (!TextUtils.isEmpty(cache)) return cache;
-        if (cookie.startsWith("http")) return OkHttp.string(cookie).replace("\n", "").trim();
-        return cookie.isEmpty() ? "buvid3=84B0395D-C9F2-C490-E92E-A09AB48FE26E71636infoc" : cookie;
+        if (!ext.optString("cookie").isEmpty()) {
+            if (ext.optString("cookie").startsWith("http")) return OkHttp.string(ext.optString("cookie")).replace("\n", "").trim();
+            return ext.optString("cookie");
+        }
+        return "buvid3=84B0395D-C9F2-C490-E92E-A09AB48FE26E71636infoc";
     }
 
     private void setHeader() {
-        header.put("cookie", getCookie(ext.optString("cookie")));
+        header.put("cookie", getCookie());
         header.put("Referer", "https://www.bilibili.com");
         header.put("User-Agent", Utils.CHROME);
     }
 
     private void fetchRule() throws Exception {
         if (header.containsKey("cookie") && header.get("cookie").length() > 0) return;
-        if (extend.startsWith("http")) extend = OkHttp.string(extend);
-        ext = new JSONObject(extend);
+        if (extend.startsWith("http")) {
+            extend = OkHttp.string(extend);
+            ext = new JSONObject(extend);
+        } else {
+            JSONArray newFilter = new JSONArray("[{\"key\":\"order\",\"name\":\"排序\",\"value\":[{\"n\":\"综合排序\",\"v\":\"0\"},{\"n\":\"最多点击\",\"v\":\"click\"},{\"n\":\"最新发布\",\"v\":\"pubdate\"},{\"n\":\"最多弹幕\",\"v\":\"dm\"},{\"n\":\"最多收藏\",\"v\":\"stow\"}]},{\"key\":\"duration\",\"name\":\"时长\",\"value\":[{\"n\":\"全部时长\",\"v\":\"0\"},{\"n\":\"60分钟以上\",\"v\":\"4\"},{\"n\":\"30~60分钟\",\"v\":\"3\"},{\"n\":\"10~30分钟\",\"v\":\"2\"},{\"n\":\"10分钟以下\",\"v\":\"1\"}]}]");
+            String[] typeC = extend.split("#");
+            JSONArray classes = new JSONArray();
+            JSONObject filters = new JSONObject();
+            for (String kk : typeC) {
+                JSONObject c = new JSONObject();
+                c.put("type_name", kk);
+                c.put("type_id", kk);
+                classes.put(c);
+                filters.put(kk, newFilter);
+            }
+            ext = new JSONObject();
+            ext.put("classes", classes);
+            ext.put("filter", filters);
+        }
         setHeader();
     }
 
