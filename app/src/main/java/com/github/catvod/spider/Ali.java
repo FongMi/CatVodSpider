@@ -40,7 +40,7 @@ public class Ali extends Spider {
         return flag.equals("原畫") ? API.get().playerContent(ids) : API.get().playerContent(ids, flag);
     }
 
-    public static Object[] proxy(Map<String, String> params) {
+    public static Object[] proxy(Map<String, String> params) throws Exception {
         String type = params.get("type");
         if (type.equals("sub")) return API.get().proxySub(params);
         if (type.equals("token")) return API.get().getToken();

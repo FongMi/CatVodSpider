@@ -47,6 +47,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import okhttp3.Response;
+
 public class API {
 
     private final Map<String, String> quality;
@@ -457,13 +459,14 @@ public class API {
         }
     }
 
-    public Object[] proxySub(Map<String, String> params) {
+    public Object[] proxySub(Map<String, String> params) throws Exception {
         String fileId = params.get("file_id");
-        String text = OkHttp.string(getDownloadUrl(fileId), getHeaderAuth());
+        Response res = OkHttp.newCall(getDownloadUrl(fileId), getHeaderAuth());
+        byte[] body = Utils.getUTF8(res.body().bytes());
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
-        result[2] = new ByteArrayInputStream(text.getBytes());
+        result[2] = new ByteArrayInputStream(body);
         return result;
     }
 
