@@ -104,12 +104,12 @@ public class Bili extends Spider {
     @Override
     public String homeVideoContent() throws Exception {
         fetchRule();
-        return categoryContent("窗 白噪音", "1", true, new HashMap<>());
+        return categoryContent(ext.optJSONArray("classes").optJSONObject(0).optString("type_id"), "1", true, new HashMap<>());
     }
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        String duration = extend.containsKey("duration") ? extend.get("duration") : "0";
+        String duration = extend.containsKey("duration") ? extend.get("duration") : "4";
         if (extend.containsKey("tid")) tid = tid + " " + extend.get("tid");
         String url = "https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=" + URLEncoder.encode(tid) + "&duration=" + duration + "&page=" + pg;
         JSONObject resp = new JSONObject(OkHttp.string(url, header));
