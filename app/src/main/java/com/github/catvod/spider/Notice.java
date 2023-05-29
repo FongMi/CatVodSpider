@@ -26,7 +26,7 @@ public class Notice extends Spider {
         for (int i = 0; i < 3; i++) sb.append(extend).append("                    ");
         view = new MarqueeView(Init.context());
         view.setText(sb.toString());
-        view.setBackgroundColor(Color.parseColor("#CCFFFFFF"));
+        view.setBackgroundColor(Color.argb(200, 255, 255, 255));
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, Utils.dp2px(56));
         params.gravity = Gravity.TOP;
         Utils.addView(view, params);
@@ -39,7 +39,7 @@ public class Notice extends Spider {
     }
 
     private void updateColor() {
-        Init.run(runnable, 250);
+        Init.run(runnable, 500);
     }
 
     private final Runnable runnable = new Runnable() {
