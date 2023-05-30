@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 public class ScrollTextView extends TextView {
 
-    private Scroller scroller;
-    private int duration = 30;
+    private final Scroller scroller;
+    private int duration;
 
     public ScrollTextView(Context context) {
         this(context, null);
@@ -25,7 +25,8 @@ public class ScrollTextView extends TextView {
         super(context, attrs, defStyle);
         setSingleLine();
         setEllipsize(null);
-        setVisibility(INVISIBLE);
+        setHorizontallyScrolling(true);
+        setScroller(scroller = new Scroller(getContext(), new LinearInterpolator()));
     }
 
     public void setDuration(int duration) {
@@ -33,14 +34,11 @@ public class ScrollTextView extends TextView {
     }
 
     public void startScroll() {
-        int width = -1 * getWidth();
-        setHorizontallyScrolling(true);
-        setScroller(scroller = new Scroller(getContext(), new LinearInterpolator()));
-        int scrollingLen = calculateScrollingLen();
-        int distance = scrollingLen - (getWidth() + width);
-        scroller.startScroll(width, 0, distance, 0, duration * 1000);
-        setVisibility(VISIBLE);
-        invalidate();
+        scroller.startScroll(-getWidth(), 0, calculateScrollingLen(), 0, duration * 1000);
+    }
+
+    public void stopScroll() {
+        if (scroller != null) scroller.abortAnimation();
     }
 
     private int calculateScrollingLen() {
@@ -54,10 +52,6 @@ public class ScrollTextView extends TextView {
     @Override
     public void computeScroll() {
         super.computeScroll();
-        if (scroller == null) return;
-        if (scroller.isFinished()) {
-            scroller.abortAnimation();
-            setVisibility(GONE);
-        }
+        if (scroller != null && scroller.isFinished()) stopScroll();
     }
 }
