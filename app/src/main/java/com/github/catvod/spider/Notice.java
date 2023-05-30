@@ -16,21 +16,28 @@ public class Notice extends Spider {
 
     private static final String SPACE = "                                        ";
     private ScrollTextView view;
+    private String text;
+    private int time;
 
     @Override
     public void init(Context context, String extend) {
         super.init(context, extend);
         String[] splits = extend.split(";");
-        String text = splits[0];
-        int duration = splits.length > 1 ? Integer.parseInt(splits[1]) : 30;
-        Init.run(() -> createView(text, duration));
+        this.text = splits[0];
+        this.time = splits.length > 1 ? Integer.parseInt(splits[1]) : 30;
     }
 
-    private void createView(String text, int duration) {
-        createText(text, duration);
+    @Override
+    public String homeContent(boolean filter) throws Exception {
+        Init.run(this::createView);
+        return "";
+    }
+
+    private void createView() {
         createLayout();
-        hide(duration);
-        updateColor();
+        createText();
+        setColor();
+        hide();
     }
 
     private void createLayout() {
@@ -39,12 +46,12 @@ public class Notice extends Spider {
         Utils.addView(view, params);
     }
 
-    private void createText(String text, int duration) {
+    private void createText() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 2; i++) sb.append(SPACE).append(text);
         view = new ScrollTextView(Init.context());
         view.setTextSize(20);
-        view.setDuration(duration);
+        view.setDuration(time);
         view.setText(sb.toString());
         view.setTypeface(null, Typeface.BOLD);
         view.setPadding(0, Utils.dp2px(16), 0, Utils.dp2px(16));
@@ -52,11 +59,11 @@ public class Notice extends Spider {
         view.startScroll();
     }
 
-    private void hide(int duration) {
-        Init.run(() -> Utils.removeView(view), duration * 1000);
+    private void hide() {
+        Init.run(() -> Utils.removeView(view), time * 1000);
     }
 
-    private void updateColor() {
+    private void setColor() {
         Init.run(runnable, 500);
     }
 
@@ -65,7 +72,7 @@ public class Notice extends Spider {
         public void run() {
             Random random = new Random();
             view.setTextColor(Color.argb(255, random.nextInt(128), random.nextInt(128), random.nextInt(128)));
-            updateColor();
+            setColor();
         }
     };
 }
