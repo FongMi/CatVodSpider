@@ -20,7 +20,7 @@ public class Notice extends Spider {
     @Override
     public void init(Context context, String extend) {
         super.init(context, extend);
-        String[] splits = extend.split("#");
+        String[] splits = extend.split(";");
         String text = splits[0];
         int duration = splits.length > 1 ? Integer.parseInt(splits[1]) : 30;
         Init.run(() -> createView(text, duration));
