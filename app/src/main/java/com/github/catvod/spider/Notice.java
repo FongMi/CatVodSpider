@@ -34,16 +34,10 @@ public class Notice extends Spider {
     }
 
     private void createView() {
-        createLayout();
         createText();
+        createRoot();
         setColor();
         hide();
-    }
-
-    private void createLayout() {
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.TOP;
-        Utils.addView(view, params);
     }
 
     private void createText() {
@@ -57,6 +51,12 @@ public class Notice extends Spider {
         view.setPadding(0, Utils.dp2px(16), 0, Utils.dp2px(16));
         view.setBackgroundColor(Color.argb(200, 255, 255, 255));
         view.startScroll();
+    }
+
+    private void createRoot() {
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.TOP;
+        Utils.addView(view, params);
     }
 
     private void hide() {
