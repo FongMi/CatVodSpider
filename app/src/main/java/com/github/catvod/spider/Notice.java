@@ -29,8 +29,8 @@ public class Notice extends Spider {
     private void createView(String text, int duration) {
         createText(text, duration);
         createLayout();
+        hide(duration);
         updateColor();
-        hide();
     }
 
     private void createLayout() {
@@ -52,8 +52,8 @@ public class Notice extends Spider {
         view.startScroll();
     }
 
-    private void hide() {
-        Init.run(() -> Utils.removeView(view), 30 * 1000);
+    private void hide(int duration) {
+        Init.run(() -> Utils.removeView(view), duration * 1000);
     }
 
     private void updateColor() {
