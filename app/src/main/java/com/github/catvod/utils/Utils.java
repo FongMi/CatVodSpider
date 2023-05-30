@@ -171,6 +171,15 @@ public class Utils {
         }
     }
 
+    public static void removeView(View view) {
+        try {
+            ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            group.removeView(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void loadWebView(String url, WebViewClient client) {
         Init.run(() -> {
             WebView webView = new WebView(Init.context());
