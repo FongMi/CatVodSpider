@@ -42,6 +42,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'cn.wanghaomiao:JsoupXpath:2.5.1'
     implementation 'com.google.zxing:core:3.3.0'
-    implementation 'com.hierynomus:smbj:0.11.5'
     implementation 'org.jsoup:jsoup:1.15.3'
 }
