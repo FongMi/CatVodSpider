@@ -29,17 +29,12 @@
 -keep class org.chromium.net.** { *; }
 -keep class com.google.net.cronet.** { *; }
 
-# Jsoup
--keep class org.jsoup.**{ *; }
-
 # Sardine
 -keep class com.thegrizzlylabs.sardineandroid.** { *; }
 
 # Smbj
 -keep class com.hierynomus.** { *; }
-
-# XPath
--keep class org.seimicrawler.xpath.**{ *; }
+-keep class net.engio.mbassy.** { *; }
 
 # Zxing
 -keep class com.google.zxing.** { *; }
