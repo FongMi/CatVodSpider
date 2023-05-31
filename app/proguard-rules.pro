@@ -20,19 +20,29 @@
 -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
 
-# Cronet
--keep class org.chromium.net.** { *; }
--keep class com.google.net.cronet.** { *; }
-
 # OkHttp
 -dontwarn okhttp3.**
 -keep class okio.** { *; }
 -keep class okhttp3.** { *; }
 
+# Cronet
+-keep class org.chromium.net.** { *; }
+-keep class com.google.net.cronet.** { *; }
+
+# Jsoup
+-keep class org.jsoup.**{ *; }
+
 # Sardine
 -keep class com.thegrizzlylabs.sardineandroid.** { *; }
 
+# Smbj
+-keep class com.hierynomus.** { *; }
+
+# XPath
+-keep class org.seimicrawler.xpath.**{ *; }
+
 # Zxing
+-keep class com.google.zxing.** { *; }
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
