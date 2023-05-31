@@ -34,6 +34,7 @@
 
 # Smbj
 -keep class com.hierynomus.** { *; }
+-keep class net.engio.mbassy.** { *; }
 
 # Zxing
 -keep class com.google.zxing.** { *; }
