@@ -35,8 +35,6 @@
 # Smbj
 -keep class org.bouncycastle.** { *; }
 -keep class com.hierynomus.** { *; }
--keep class net.engio.** { *; }
--keep class org.slf4j.** { *; }
 
 # Zxing
 -keep class com.google.zxing.** { *; }
