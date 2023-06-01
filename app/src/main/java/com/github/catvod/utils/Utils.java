@@ -56,12 +56,8 @@ public class Utils {
         return Arrays.equals(bytes, newBytes);
     }
 
-    public static byte[] getUTF8(byte[] bytes) throws Exception {
-        if (isGBK(bytes)) {
-            return new String(bytes, Charset.forName("GBK")).getBytes("UTF-8");
-        } else {
-            return bytes;
-        }
+    public static byte[] toUtf8(byte[] bytes) throws Exception {
+        return isGBK(bytes) ? new String(bytes, Charset.forName("GBK")).getBytes("UTF-8") : bytes;
     }
 
     public static boolean isSub(String ext) {
