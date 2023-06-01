@@ -12,6 +12,7 @@ android {
         targetSdk 28
         ndk { abiFilters "armeabi-v7a" }
         buildConfigField("String", "CLIENT_ID", "\"${clientId}\"")
+        multiDexEnabled true
     }
 
     buildTypes {
