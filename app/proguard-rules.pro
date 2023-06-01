@@ -33,8 +33,8 @@
 -keep class com.thegrizzlylabs.sardineandroid.** { *; }
 
 # Smbj
--keep class org.bouncycastle.** { *; }
 -keep class com.hierynomus.** { *; }
+-keep class net.engio.mbassy.** { *; }
 
 # Zxing
 -keep class com.google.zxing.** { *; }
