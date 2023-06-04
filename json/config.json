@@ -1,5 +1,5 @@
 {
-  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;388b76449e755e157bf0812c5621bd78",
+  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;4698f64899d582ca9986f8c45564dd38",
   "wallpaper": "http://饭太硬.ga/深色壁纸/api.php",
   "sites": [
     {
@@ -226,6 +226,15 @@
       "api": "csp_Push",
       "searchable": 1,
       "changeable": 0
+    },
+    {
+      "key": "公告",
+      "name": "公告",
+      "type": 3,
+      "api": "csp_Notice",
+      "searchable": 0,
+      "changeable": 0,
+      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/notice.json"
     }
   ],
   "doh": [
