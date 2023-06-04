@@ -1,36 +1,31 @@
-package com.github.catvod.spider;
+package com.github.catvod.utils;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
-import com.github.catvod.crawler.Spider;
+import com.github.catvod.spider.Init;
 import com.github.catvod.ui.ScrollTextView;
-import com.github.catvod.utils.Utils;
 
 import java.util.Random;
 
-public class Notice extends Spider {
+public class Notice {
 
     private static final String SPACE = "                                        ";
     private ScrollTextView view;
     private String text;
     private int time;
 
-    @Override
-    public void init(Context context, String extend) {
-        super.init(context, extend);
+    public static void show(String msg) {
+        new Notice().init(msg);
+    }
+
+    public void init(String extend) {
         String[] splits = extend.split(";");
         this.text = splits[0];
         this.time = splits.length > 1 ? Integer.parseInt(splits[1]) : 30;
-    }
-
-    @Override
-    public String homeContent(boolean filter) throws Exception {
         Init.run(this::createView);
-        return "";
     }
 
     private void createView() {
