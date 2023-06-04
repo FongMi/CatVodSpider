@@ -8,7 +8,6 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.Notice;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -41,7 +40,6 @@ public class Init {
     public static void init(Context context) {
         get().app = ((Application) context);
         SpiderDebug.log("自定義爬蟲代碼載入成功！");
-        Notice.show("https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/notice.json");
     }
 
     public static void execute(Runnable runnable) {

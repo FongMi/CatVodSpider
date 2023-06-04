@@ -1,13 +1,15 @@
-package com.github.catvod.utils;
+package com.github.catvod.spider;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
+import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.spider.Init;
 import com.github.catvod.ui.ScrollTextView;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONObject;
 
@@ -16,29 +18,39 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
-public class Notice {
+public class Notice extends Spider {
 
     private static final String SPACE = "                                        ";
     private ScrollTextView view;
+    private String extend;
     private int duration;
     private String msg;
 
-    public static void show(String url) {
-        new Notice().init(url);
-    }
-
-    public void init(String url) {
+    public static void show(String extend) {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
-            String json = OkHttp.string(url);
-            JSONObject object = new JSONObject(json);
-            msg = object.optString("msg");
-            duration = object.optInt("duration", 30);
-            String date = object.optString("date");
-            boolean show = msg.length() > 0 && (date.isEmpty() || new Date().after(sdf.parse(date)));
-            if (show) Init.run(this::createView);
+            Notice notice = new Notice();
+            notice.init(null, extend);
+            notice.homeContent(false);
         } catch (Exception ignored) {
         }
+    }
+
+    @Override
+    public void init(Context context, String extend) {
+        this.extend = extend;
+    }
+
+    @Override
+    public String homeContent(boolean filter) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+        String json = OkHttp.string(extend);
+        JSONObject object = new JSONObject(json);
+        msg = object.optString("msg");
+        duration = object.optInt("duration", 30);
+        String date = object.optString("date");
+        boolean show = msg.length() > 0 && (date.isEmpty() || new Date().after(sdf.parse(date)));
+        if (show) Init.run(this::createView);
+        return "";
     }
 
     private void createView() {
