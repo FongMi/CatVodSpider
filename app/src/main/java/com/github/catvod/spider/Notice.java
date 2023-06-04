@@ -49,7 +49,7 @@ public class Notice extends Spider {
         duration = object.optInt("duration", 30);
         String date = object.optString("date");
         boolean show = msg.length() > 0 && (date.isEmpty() || new Date().after(sdf.parse(date)));
-        if (show) Init.run(this::createView);
+        if (show) Init.run(this::createView, 500);
         return "";
     }
 
