@@ -39,6 +39,7 @@ public class ScrollTextView extends TextView {
 
     public void stopScroll() {
         if (scroller != null) scroller.abortAnimation();
+        setVisibility(GONE);
     }
 
     private int calculateScrollingLen() {

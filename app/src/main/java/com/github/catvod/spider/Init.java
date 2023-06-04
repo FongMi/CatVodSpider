@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.github.catvod.crawler.SpiderDebug;
+import com.github.catvod.utils.Notice;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -40,6 +41,7 @@ public class Init {
     public static void init(Context context) {
         SpiderDebug.log("自定義爬蟲代碼載入成功！");
         get().app = ((Application) context);
+        Notice.show("FongMi 天下第一;10");
     }
 
     public static void execute(Runnable runnable) {
