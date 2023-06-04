@@ -3,6 +3,7 @@ package com.github.catvod.spider;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Base64;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
@@ -43,7 +44,7 @@ public class Notice extends Spider {
     @Override
     public String homeContent(boolean filter) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
-        String json = OkHttp.string(extend);
+        String json = extend.startsWith("http") ? OkHttp.string(extend) : new String(Base64.decode(extend, Base64.DEFAULT));
         JSONObject object = new JSONObject(json);
         msg = object.optString("msg");
         duration = object.optInt("duration", 30);
