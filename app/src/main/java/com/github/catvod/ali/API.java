@@ -148,7 +148,7 @@ public class API {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
         OkResult result = OkHttp.postJson(url, json, getHeaderAuth());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
-        if (retry && result.getCode() == 401 && refreshAccessToken()) return auth(url, json, false);
+        if (retry && (result.getCode() == 400 || result.getCode() == 401) && refreshAccessToken()) return auth(url, json, false);
         if (retry && result.getCode() == 429) return auth(url, json, false);
         return result.getBody();
     }
@@ -157,7 +157,7 @@ public class API {
         url = url.startsWith("https") ? url : "https://open.aliyundrive.com/adrive/v1.0/" + url;
         OkResult result = OkHttp.postJson(url, json, getHeaderOpen());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
-        if (retry && result.getCode() == 401 && refreshOpenToken()) return oauth(url, json, false);
+        if (retry && (result.getCode() == 400 || result.getCode() == 401) && refreshOpenToken()) return oauth(url, json, false);
         return result.getBody();
     }
 
