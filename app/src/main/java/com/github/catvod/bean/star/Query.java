@@ -48,22 +48,9 @@ public class Query {
         this.page = page;
     }
 
-    private int getStart(String year) {
-        return 1900 + (year.contains("年代") ? Integer.parseInt(year.split("年代")[0]) : 70);
-    }
-
     public void setYear(String year) {
-        if (year.contains("更早") || year.contains("年代")) {
-            int start = getStart(year);
-            setStartTime(start);
-            setEndTime(start + 9);
-        } else if (year.contains("年")) {
-            setStartTime(Integer.parseInt(year.replace("年", "")));
-            setEndTime(Integer.parseInt(year.replace("年", "")));
-        } else if (year.contains("-")) {
-            setStartTime(Integer.parseInt(year.split("-")[1]));
-            setEndTime(Integer.parseInt(year.split("-")[0]));
-        }
+        setStartTime(Integer.parseInt(year));
+        setEndTime(Integer.parseInt(year));
     }
 
     @Override
