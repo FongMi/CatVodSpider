@@ -1,6 +1,6 @@
 {
   "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;a954689c65dff0bf8728a895798bb68a",
-  "wallpaper": "http://饭太硬.ga/深色壁纸/api.php",
+  "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
       "key": "本地",
