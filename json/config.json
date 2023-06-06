@@ -46,6 +46,13 @@
       "changeable": 1
     },
     {
+      "key": "星星",
+      "name": "星星",
+      "type": 3,
+      "api": "csp_Star",
+      "searchable": 1
+    },
+    {
       "key": "獨播",
       "name": "獨播",
       "type": 3,

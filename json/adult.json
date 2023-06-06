@@ -27,13 +27,6 @@
       "ext": "1"
     },
     {
-      "key": "星星",
-      "name": "星星",
-      "type": 3,
-      "api": "csp_Star",
-      "searchable": 1
-    },
-    {
       "key": "量子",
       "name": "量子",
       "type": 0,
