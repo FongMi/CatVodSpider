@@ -59,7 +59,7 @@ public class Condition {
         List<Filter.Value> values = new ArrayList<>();
         values.add(new Filter.Value("全部", ""));
         Collections.sort(getTime(), Collections.reverseOrder());
-        for (Integer year : getTime()) if (year >= 2000) values.add(new Filter.Value(String.valueOf(year)));
+        for (Integer year : getTime()) if (year >= 2010) values.add(new Filter.Value(String.valueOf(year)));
         return values;
     }
 }
