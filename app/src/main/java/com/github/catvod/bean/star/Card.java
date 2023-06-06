@@ -15,7 +15,7 @@ public class Card {
 
     @SerializedName("name")
     private String name;
-    @SerializedName("img")
+    @SerializedName(value = "img", alternate = "picurl")
     private String img;
     @SerializedName("id")
     private String id;
