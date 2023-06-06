@@ -12,6 +12,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Logger.addLogAdapter(new AndroidLogAdapter());
         Init.init(getApplicationContext());
         new Thread(() -> {
 
