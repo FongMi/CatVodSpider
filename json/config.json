@@ -50,7 +50,8 @@
       "name": "星星",
       "type": 3,
       "api": "csp_Star",
-      "searchable": 1
+      "searchable": 1,
+      "changeable": 1
     },
     {
       "key": "獨播",
