@@ -8,7 +8,7 @@ import java.util.List;
 public class Detail {
 
     @SerializedName("id")
-    private Integer id;
+    private String id;
     @SerializedName("videos")
     private List<Video> videos;
     @SerializedName("actor")
@@ -34,7 +34,7 @@ public class Detail {
         return new Gson().fromJson(str, Detail.class);
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
