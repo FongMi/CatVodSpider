@@ -1,5 +1,8 @@
 package com.fongmi.tools;
 
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +14,16 @@ import java.util.stream.Stream;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
-public class Util {
+public class Utils {
+
+	public static boolean isJson(String text) {
+		try {
+			JsonParser.parseString(text);
+			return true;
+		} catch (JsonSyntaxException e) {
+			return false;
+		}
+	}
 
 	public static String call(String url) throws IOException {
 		return new OkHttpClient().newCall(new Request.Builder().url(url).build()).execute().body().string();
