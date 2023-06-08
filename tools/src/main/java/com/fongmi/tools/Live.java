@@ -13,25 +13,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class Run {
+public class Live {
 
     private final List<Group> groups;
     private final List<Data> data;
     private final Gson gson;
 
     public static void main(String[] args) throws IOException {
-        new Run().start("http://home.jundie.top:81/Cat/tv/live.txt");
+        new Live().start("http://home.jundie.top:81/Cat/tv/live.txt");
     }
 
-    public Run() {
+    public Live() {
         groups = new ArrayList<>();
-        data = Data.arrayFrom(Util.getFile(getClass(), "data.json"));
+        data = Data.arrayFrom(Utils.getFile(getClass(), "data.json"));
         gson = new Gson().newBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     }
 
     private void start(String text) throws IOException {
         //parseTxt(Util.getFile(getClass(), "live.txt"));
-        parse(Util.call(text));
+        parse(Utils.call(text));
         writeFile();
     }
 
@@ -44,7 +44,6 @@ public class Run {
                 Group group = groups.get(groups.size() - 1);
                 String name = split[0];
                 String url = split[1].trim();
-                if (url.startsWith("http://txtest")) url = url.replace("http://txtest", "http://121.51.249.6/txtest");
                 group.find(Channel.create().name(name).epg(name)).addUrls(url.split("#"));
             }
         }
