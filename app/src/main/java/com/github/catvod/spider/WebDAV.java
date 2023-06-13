@@ -67,7 +67,6 @@ public class WebDAV extends Spider {
 
     @Override
     public String homeContent(boolean filter) throws Exception {
-        fetchRule();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (Drive drive : drives) classes.add(drive.toType());
