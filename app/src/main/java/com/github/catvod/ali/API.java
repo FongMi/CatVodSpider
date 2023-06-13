@@ -233,7 +233,7 @@ public class API {
             JSONObject body = new JSONObject();
             body.put("code", code);
             body.put("grant_type", "authorization_code");
-            return alist("https://api.nn.ci/alist/ali_open/code", body);
+            return alist("https://api-cf.nn.ci/alist/ali_open/code", body);
         } catch (Exception e) {
             e.printStackTrace();
             oauth.clean().save();
@@ -248,7 +248,7 @@ public class API {
             JSONObject body = new JSONObject();
             body.put("grant_type", "refresh_token");
             body.put("refresh_token", oauth.getRefreshToken());
-            return alist("https://api.nn.ci/alist/ali_open/token", body);
+            return alist("https://api-cf.nn.ci/alist/ali_open/token", body);
         } catch (Exception e) {
             e.printStackTrace();
             oauth.clean().save();
