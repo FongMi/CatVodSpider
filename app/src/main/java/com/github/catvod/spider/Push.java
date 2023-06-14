@@ -59,21 +59,20 @@ public class Push extends Ali {
 
     private void setHttpSub(String url, List<Sub> subs) {
         try {
-            String ext = Utils.getExt(url);
-            if (!ext.equals("mp4") && !ext.equals("mkv")) return;
-            List<String> types = Arrays.asList(".srt", ".ass");
-            for (String type : types) detectSub(Utils.removeExt(url).concat(type), subs);
+            List<String> vodTypes = Arrays.asList("mp4", "mkv");
+            List<String> subTypes = Arrays.asList("srt", "ass");
+            if (!vodTypes.contains(Utils.getExt(url))) return;
+            for (String ext : subTypes) detectSub(url, ext, subs);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void detectSub(String url, List<Sub> subs) throws Exception {
-        if (OkHttp.newCall(url).code() == 200) {
-            String ext = Utils.getExt(url);
-            String name = Uri.parse(url).getLastPathSegment();
-            subs.add(Sub.create().name(name).ext(ext).url(url));
-        }
+    private void detectSub(String url, String ext, List<Sub> subs) throws Exception {
+        url = Utils.removeExt(url).concat(".").concat(ext);
+        if (OkHttp.newCall(url).code() != 200) return;
+        String name = Uri.parse(url).getLastPathSegment();
+        subs.add(Sub.create().name(name).ext(ext).url(url));
     }
 
     private void setFileSub(String url, List<Sub> subs) {
