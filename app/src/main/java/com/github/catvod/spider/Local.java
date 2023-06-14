@@ -77,7 +77,7 @@ public class Local extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return Result.get().url(id).subs(getSubs(id)).string();
+        return Result.get().url("file://" + id).subs(getSubs(id)).string();
     }
 
     private Vod create(File file) {
