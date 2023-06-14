@@ -1,17 +1,18 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,14 +51,31 @@ public class Push extends Ali {
     }
 
     private List<Sub> getSubs(String url) {
-        if (!url.startsWith("file://")) return Collections.emptyList();
-        File file = new File(url.replace("file://", ""));
-        if (file.getParentFile() == null) return Collections.emptyList();
         List<Sub> subs = new ArrayList<>();
+        if (url.startsWith("file://")) setFileSub(url, subs);
+        if (url.startsWith("http://")) setHttpSub(url, subs);
+        return subs;
+    }
+
+    private void setHttpSub(String url, List<Sub> subs) {
+        try {
+            String ext = url.substring(url.lastIndexOf(".") + 1);
+            if (!ext.equals("mp4") && !ext.equals("mkv")) return;
+            String srt = Utils.removeExt(url).concat(".srt");
+            String ass = Utils.removeExt(url).concat(".ass");
+            if (OkHttp.newCall(srt).code() == 200) subs.add(Sub.create().name(Uri.parse(srt).getLastPathSegment()).ext("srt").url(srt));
+            if (OkHttp.newCall(ass).code() == 200) subs.add(Sub.create().name(Uri.parse(ass).getLastPathSegment()).ext("ass").url(ass));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setFileSub(String url, List<Sub> subs) {
+        File file = new File(url.replace("file://", ""));
+        if (file.getParentFile() == null) return;
         for (File f : Objects.requireNonNull(file.getParentFile().listFiles())) {
             String ext = Utils.getExt(f.getName());
             if (Utils.isSub(ext)) subs.add(Sub.create().name(Utils.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
         }
-        return subs;
     }
 }
