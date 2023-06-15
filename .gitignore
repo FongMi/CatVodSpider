@@ -2,7 +2,6 @@
 .idea
 *build
 *.jks
-*.pro
 *i.java
 *r.java
 /local.properties
