@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.catvod.demo"
-        minSdk 17
+        minSdk 16
         targetSdk 28
         ndk { abiFilters "armeabi-v7a" }
         buildConfigField("String", "CLIENT_ID", "\"${clientId}\"")
