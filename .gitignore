@@ -3,4 +3,5 @@
 *build
 *.jks
 *i.java
+*r.java
 /local.properties

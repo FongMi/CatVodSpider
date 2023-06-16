@@ -1,5 +1,5 @@
 {
-  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;a6934bc36ece4231bc9d2748f96ceaf9",
+  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;1d3a24e2944970cff7f5eb9fd1fcf532",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "sites": [
     {
@@ -14,10 +14,6 @@
           {
             "name": "SOD",
             "server": "https://a.sodaz.xyz"
-          },
-          {
-            "name": "AV",
-            "server": "https://a74d291e-3b91-45a5-9ec6-9f08a9178e59.id.repl.co"
           }
         ]
       }
