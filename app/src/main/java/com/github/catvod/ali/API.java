@@ -2,8 +2,10 @@ package com.github.catvod.ali;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -472,7 +474,7 @@ public class API {
         if (Utils.isMobile()) {
             Init.run(this::showInput);
         } else {
-            showQRCode();
+            getQRCode();
         }
     }
 
@@ -490,7 +492,7 @@ public class API {
 
     private void onNeutral() {
         dismiss();
-        Init.execute(this::showQRCode);
+        Init.execute(this::getQRCode);
     }
 
     private void onPositive(String text) {
@@ -502,10 +504,23 @@ public class API {
         });
     }
 
-    private void showQRCode() {
-        String url = "https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3";
-        Data data = Data.objectFrom(OkHttp.string(url)).getContent().getData();
-        Init.run(() -> showQRCode(data));
+    private void getQRCode() {
+        String json = OkHttp.string("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web&isMobile=false&lang=zh_CN&returnUrl=&bizParams=&_bx-v=2.2.3");
+        Data data = Data.objectFrom(json).getContent().getData();
+        Init.run(() -> openApp(json, data));
+    }
+
+    private void openApp(String json, Data data) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setClassName("com.alicloud.databox", "com.taobao.login4android.scan.QrScanActivity");
+            intent.putExtra("key_scanParam", json);
+            Init.getActivity().startActivity(intent);
+        } catch (Exception e) {
+            showQRCode(data);
+        } finally {
+            Init.execute(() -> startService(data.getParams()));
+        }
     }
 
     private void showQRCode(Data data) {
@@ -517,9 +532,10 @@ public class API {
             FrameLayout frame = new FrameLayout(Init.context());
             params.gravity = Gravity.CENTER;
             frame.addView(image, params);
-            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnDismissListener(this::dismiss).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(Init.getActivity()).setView(frame);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) builder.setOnDismissListener(this::dismiss);
+            dialog = builder.show();
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            Init.execute(() -> startService(data.getParams()));
             Init.show("請使用阿里雲盤 App 掃描二維碼");
         } catch (Exception ignored) {
         }
