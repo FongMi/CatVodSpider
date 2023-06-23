@@ -13,8 +13,9 @@ import android.webkit.WebViewClient;
 
 import com.github.catvod.spider.Init;
 
+import org.mozilla.universalchardet.UniversalDetector;
+
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
@@ -49,15 +50,11 @@ public class Utils {
         return hasCamera && hasPhone && hasBT;
     }
 
-    public static boolean isGbk(byte[] bytes) {
-        Charset charset = Charset.forName("GBK");
-        String str = new String(bytes, charset);
-        byte[] newBytes = str.getBytes(charset);
-        return Arrays.equals(bytes, newBytes);
-    }
-
     public static byte[] toUtf8(byte[] bytes) throws Exception {
-        return isGbk(bytes) ? new String(bytes, Charset.forName("GBK")).getBytes("UTF-8") : bytes;
+        UniversalDetector detector = new UniversalDetector(null);
+        detector.handleData(bytes, 0, bytes.length);
+        detector.dataEnd();
+        return new String(bytes, detector.getDetectedCharset()).getBytes("UTF-8");
     }
 
     public static boolean isSub(String ext) {
