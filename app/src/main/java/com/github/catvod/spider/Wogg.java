@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 /**
  * @author zhixc
  */
@@ -29,7 +28,6 @@ public class Wogg extends Ali {
     private final String siteURL = "https://tvfan.xxooo.cf";
 
     private final Pattern regexAli = Pattern.compile("(https://www.aliyundrive.com/s/[^\"]+)");
-
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
@@ -40,6 +38,13 @@ public class Wogg extends Ali {
     @Override
     public void init(Context context, String extend) {
         super.init(context, extend);
+    }
+
+    @Override
+    public String detailContent(List<String> ids) throws Exception {
+        Matcher matcher = regexAli.matcher(OkHttp.string(siteURL + ids.get(0), getHeader()));
+        if (matcher.find()) return super.detailContent(Arrays.asList(matcher.group(1)));
+        return "";
     }
 
     @Override
@@ -56,12 +61,5 @@ public class Wogg extends Ali {
             list.add(new Vod(vodId, name, pic, remark));
         }
         return Result.string(list);
-    }
-
-    @Override
-    public String detailContent(List<String> ids) throws Exception {
-        Matcher matcher = regexAli.matcher(OkHttp.string(siteURL + ids.get(0), getHeader()));
-        if (matcher.find()) return super.detailContent(Arrays.asList(matcher.group(1)));
-        return "";
     }
 }
