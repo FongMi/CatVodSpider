@@ -37,6 +37,7 @@
 -keep class net.engio.mbassy.** { *; }
 
 # Zxing
+-keep class com.google.zxing.** { *; }
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
