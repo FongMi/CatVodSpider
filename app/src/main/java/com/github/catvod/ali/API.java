@@ -134,7 +134,7 @@ public class API {
         //https://api-cf.nn.ci/alist/ali_open/
         //https://api.xhofe.top/alist/ali_open/
         //https://sni_api_nn_ci.cooluc.com/alist/ali_open/
-        String api = "https://api.xhofe.top/alist/ali_open/" + url;
+        String api = "https://aliapi.ewwe.gq/alist/ali_open/" + url;
         OkResult result = OkHttp.postJson(api, body.toString(), getHeader());
         SpiderDebug.log(result.getCode() + "," + api + "," + result.getBody());
         if (isManyRequest(result.getBody())) return false;
