@@ -53,6 +53,10 @@ public class User {
         return getTokenType() + " " + getAccessToken();
     }
 
+    public boolean isAuthed() {
+        return getTokenType().length() > 0 && getAccessToken().length() > 0;
+    }
+
     public User clean() {
         this.refreshToken = "";
         this.accessToken = "";

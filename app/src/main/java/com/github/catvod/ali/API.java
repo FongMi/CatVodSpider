@@ -118,9 +118,9 @@ public class API {
 
     private HashMap<String, String> getHeaderAuth() {
         HashMap<String, String> headers = getHeader();
-        headers.put("authorization", user.getAuthorization());
         headers.put("x-share-token", shareToken);
         headers.put("X-Canary", "client=Android,app=adrive,version=v4.3.1");
+        if (user.isAuthed()) headers.put("authorization", user.getAuthorization());
         return headers;
     }
 
@@ -134,7 +134,7 @@ public class API {
         //https://api-cf.nn.ci/alist/ali_open/
         //https://api.xhofe.top/alist/ali_open/
         //https://sni_api_nn_ci.cooluc.com/alist/ali_open/
-        String api = "https://api.xhofe.top/alist/ali_open/" + url;
+        String api = "https://aliapi.ewwe.gq/alist/ali_open/" + url;
         OkResult result = OkHttp.postJson(api, body.toString(), getHeader());
         SpiderDebug.log(result.getCode() + "," + api + "," + result.getBody());
         if (isManyRequest(result.getBody())) return false;
@@ -535,9 +535,7 @@ public class API {
             FrameLayout frame = new FrameLayout(Init.context());
             params.gravity = Gravity.CENTER;
             frame.addView(image, params);
-            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).create();
-            dialog.setOnDismissListener(this::dismiss);
-            dialog.show();
+            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnDismissListener(this::dismiss).show();
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             Init.show("請使用阿里雲盤 App 掃描二維碼");
         } catch (Exception ignored) {
