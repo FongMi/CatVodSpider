@@ -118,9 +118,9 @@ public class API {
 
     private HashMap<String, String> getHeaderAuth() {
         HashMap<String, String> headers = getHeader();
-        headers.put("authorization", user.getAuthorization());
         headers.put("x-share-token", shareToken);
         headers.put("X-Canary", "client=Android,app=adrive,version=v4.3.1");
+        if (user.isAuthed()) headers.put("authorization", user.getAuthorization());
         return headers;
     }
 
