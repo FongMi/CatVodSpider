@@ -131,8 +131,12 @@ public class API {
     }
 
     private boolean alist(String url, JSONObject body) {
-        OkResult result = OkHttp.postJson(url, body.toString(), getHeader());
-        SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
+        //https://api-cf.nn.ci/alist/ali_open/
+        //https://api.xhofe.top/alist/ali_open/
+        //https://sni_api_nn_ci.cooluc.com/alist/ali_open/
+        String api = "https://api.xhofe.top/alist/ali_open/" + url;
+        OkResult result = OkHttp.postJson(api, body.toString(), getHeader());
+        SpiderDebug.log(result.getCode() + "," + api + "," + result.getBody());
         if (isManyRequest(result.getBody())) return false;
         oauth = OAuth.objectFrom(result.getBody()).save();
         return true;
@@ -234,7 +238,7 @@ public class API {
             JSONObject body = new JSONObject();
             body.put("code", code);
             body.put("grant_type", "authorization_code");
-            return alist("https://api.xhofe.top/alist/ali_open/code", body);
+            return alist("code", body);
         } catch (Exception e) {
             e.printStackTrace();
             oauth.clean().save();
@@ -249,7 +253,7 @@ public class API {
             JSONObject body = new JSONObject();
             body.put("grant_type", "refresh_token");
             body.put("refresh_token", oauth.getRefreshToken());
-            return alist("https://api.xhofe.top/alist/ali_open/token", body);
+            return alist("token", body);
         } catch (Exception e) {
             e.printStackTrace();
             oauth.clean().save();
