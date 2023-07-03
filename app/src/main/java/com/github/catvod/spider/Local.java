@@ -27,7 +27,7 @@ public class Local extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        format = new SimpleDateFormat("yyyyy/MM/dd HH:mm:ss", Locale.getDefault());
+        format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
     }
 
     @Override
