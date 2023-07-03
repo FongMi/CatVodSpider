@@ -392,7 +392,7 @@ public class API {
     }
 
     public String playerContent(String[] ids) {
-        return Result.get().url(getDownloadUrl(ids[0])).subs(getSubs(ids)).header(getHeader()).string();
+        return Result.get().url(getDownloadUrl(ids[0])).octet().subs(getSubs(ids)).header(getHeader()).string();
     }
 
     public String playerContent(String[] ids, String flag) {
@@ -401,7 +401,7 @@ public class API {
             String url = getPreviewUrl(playInfo, flag);
             List<Sub> subs = getSubs(ids);
             subs.addAll(getSubs(playInfo));
-            return Result.get().url(url).subs(subs).header(getHeader()).string();
+            return Result.get().url(url).m3u8().subs(subs).header(getHeader()).string();
         } catch (Exception e) {
             e.printStackTrace();
             return Result.get().url("").string();
