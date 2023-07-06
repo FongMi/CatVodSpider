@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -47,7 +48,8 @@ public class Bili extends Spider {
     private String getCookie() {
         String cache = Prefers.getString("BiliCookie");
         if (!TextUtils.isEmpty(cache)) return cache;
-        if (ext.optString("cookie").startsWith("http")) return OkHttp.string(ext.optString("cookie")).replace("\n", "").trim();
+        if (ext.optString("cookie").startsWith("http"))
+            return OkHttp.string(ext.optString("cookie")).replace("\n", "").trim();
         return ext.optString("cookie", "buvid3=84B0395D-C9F2-C490-E92E-A09AB48FE26E71636infoc");
     }
 
@@ -164,10 +166,82 @@ public class Bili extends Spider {
         String[] ids = id.split("\\+");
         String aid = ids[0];
         String cid = ids[1];
-        String url = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + cid + "&qn=120&fourk=1";
+        String url = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + cid + "&qn=120&fnval=4048&fourk=1";
         JSONObject resp = new JSONObject(OkHttp.string(url, header));
-        url = resp.getJSONObject("data").getJSONArray("durl").getJSONObject(0).getString("url");
-        return Result.get().url(url).header(header).string();
+        JSONObject dash = resp.optJSONObject("data").optJSONObject("dash");
+        JSONArray video = dash.optJSONArray("video");
+        JSONArray audio = dash.optJSONArray("audio");
+        StringBuilder videoList = new StringBuilder();
+        StringBuilder audioList = new StringBuilder();
+        for (int i = 0; i < video.length(); i++) {
+            JSONObject vjson = video.getJSONObject(i);
+            videoList.append(getDashMedia(vjson));
+        }
+        for (int i = 0; i < audio.length(); i++) {
+            JSONObject ajson = audio.getJSONObject(i);
+            audioList.append(getDashMedia(ajson));
+        }
+        String mpd = getDash(dash, videoList.toString(), audioList.toString());
+        String dashUrl = "data:application/dash+xml;base64," + Base64.encodeToString(mpd.getBytes(), 0);
+        return Result.get().url(dashUrl).header(header).string();
+    }
+
+    public static String getDashMedia(JSONObject dash) throws Exception {
+        JSONObject vod_audio_id = new JSONObject();
+        vod_audio_id.put("30280", "192000");
+        vod_audio_id.put("30232", "132000");
+        vod_audio_id.put("30216", "64000");
+        String qnid = dash.getString("id");
+        int codecid = dash.getInt("codecid");
+        String media_codecs = dash.getString("codecs");
+        Integer media_bandwidth = dash.getInt("bandwidth");
+        String media_startWithSAP = dash.getString("startWithSap");
+        String media_mimeType = dash.getString("mimeType");
+        String media_BaseURL = dash.getString("baseUrl").replace("&", "&amp;");
+        String media_SegmentBase_indexRange = dash.getJSONObject("SegmentBase").getString("indexRange");
+        String media_SegmentBase_Initialization = dash.getJSONObject("SegmentBase").getString("Initialization");
+        String mediaType = media_mimeType.split("/")[0];
+        String media_type_params = "";
+
+        if (mediaType.equals("video")) {
+            Integer media_frameRate = dash.getInt("frameRate");
+            String media_sar = dash.getString("sar");
+            Integer media_width = dash.getInt("width");
+            Integer media_height = dash.getInt("height");
+            media_type_params = String.format("height='%d' width='%d' frameRate='%d' sar='%s'", media_height, media_width, media_frameRate, media_sar);
+        } else if (mediaType.equals("audio")) {
+            String audioSamplingRate = vod_audio_id.getString(qnid);
+            media_type_params = String.format("numChannels='2' sampleRate='%s'", audioSamplingRate);
+        }
+
+        qnid += "_" + codecid;
+
+        return String.format(
+                "<AdaptationSet>\n" +
+                        "       <ContentComponent contentType=\"%s\"/>\n" +
+                        "       <Representation id=\"%s\" bandwidth=\"%d\" codecs=\"%s\" mimeType=\"%s\" %s startWithSAP=\"%b\">\n" +
+                        "           <BaseURL>%s</BaseURL>\n" +
+                        "           <SegmentBase indexRange=\"%s\">\n" +
+                        "           <Initialization range=\"%s\"/>\n" +
+                        "           </SegmentBase>\n" +
+                        "       </Representation>\n" +
+                        "   </AdaptationSet>",
+                mediaType, qnid, media_bandwidth, media_codecs, media_mimeType, media_type_params, media_startWithSAP, media_BaseURL,
+                media_SegmentBase_indexRange, media_SegmentBase_Initialization);
+    }
+
+
+    public static String getDash(JSONObject ja, String videoList, String audioList) throws Exception {
+        Integer duration = ja.getInt("duration");
+        Integer minBufferTime = ja.getInt("minBufferTime");
+        return String.format(
+                "<MPD xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"urn:mpeg:dash:schema:mpd:2011\" xsi:schemaLocation=\"urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd\" type=\"static\" mediaPresentationDuration=\"PT%dS\" minBufferTime=\"PT%dS\" profiles=\"urn:mpeg:dash:profile:isoff-on-demand:2011\">\n" +
+                        "  <Period duration=\"PT%dS\" start=\"PT0S\">\n" +
+                        "    %s\n" +
+                        "    %s\n" +
+                        "  </Period>\n" +
+                        "</MPD>",
+                duration, minBufferTime, duration, videoList, audioList);
     }
 
     private void checkLogin() throws Exception {
