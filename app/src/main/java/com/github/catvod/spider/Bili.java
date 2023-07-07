@@ -17,13 +17,17 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.bili.Dash;
+import com.github.catvod.bean.bili.Data;
+import com.github.catvod.bean.bili.Media;
+import com.github.catvod.bean.bili.Page;
 import com.github.catvod.bean.bili.Resp;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Prefers;
+import com.github.catvod.utils.FileUtil;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Utils;
 
+import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,9 +56,9 @@ public class Bili extends Spider {
 
     private void setHeader() {
         header = new HashMap<>();
-        header.put("cookie", Prefers.getString("BiliCookie", COOKIE));
-        header.put("Referer", "https://www.bilibili.com");
+        header.put("cookie", getCookie());
         header.put("User-Agent", Utils.CHROME);
+        header.put("Referer", "https://www.bilibili.com");
     }
 
     private void setAudio() {
@@ -69,6 +73,15 @@ public class Bili extends Spider {
         items.add(new Filter("order", "排序", Arrays.asList(new Filter.Value("預設", "totalrank"), new Filter.Value("最多點擊", "click"), new Filter.Value("最新發布", "pubdate"), new Filter.Value("最多彈幕", "dm"), new Filter.Value("最多收藏", "stow"))));
         items.add(new Filter("duration", "時長", Arrays.asList(new Filter.Value("全部時長", "0"), new Filter.Value("60分鐘以上", "4"), new Filter.Value("30~60分鐘", "3"), new Filter.Value("10~30分鐘", "2"), new Filter.Value("10分鐘以下", "1"))));
         return items;
+    }
+
+    private File getUserCache() {
+        return FileUtil.getCacheFile("bilibili_user");
+    }
+
+    private String getCookie() {
+        String cookie = FileUtil.read(getUserCache());
+        return TextUtils.isEmpty(cookie) ? COOKIE : cookie;
     }
 
     @Override
@@ -123,7 +136,7 @@ public class Bili extends Spider {
 
         api = "https://api.bilibili.com/x/web-interface/view?aid=" + aid;
         json = OkHttp.string(api, header);
-        Resp.Data detail = Resp.objectFrom(json).getData();
+        Data detail = Resp.objectFrom(json).getData();
         Vod vod = new Vod();
         vod.setVodId(id);
         vod.setVodPic(detail.getPic());
@@ -134,7 +147,7 @@ public class Bili extends Spider {
 
         api = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + detail.getCid() + "&qn=120&fnval=4048&fourk=1";
         json = OkHttp.string(api, header);
-        Resp.Data play = Resp.objectFrom(json).getData();
+        Data play = Resp.objectFrom(json).getData();
         List<String> playList = new ArrayList<>();
         List<String> playFrom = new ArrayList<>();
         for (int i = 0; i < play.getAcceptQuality().size(); i++) {
@@ -142,7 +155,7 @@ public class Bili extends Spider {
             List<String> vodItems = new ArrayList<>();
             if (!login && quality > 32) continue;
             if (!vip && quality > 80) continue;
-            for (Resp.Page page : detail.getPages()) vodItems.add(page.getPart() + "$" + aid + "+" + page.getCid() + "+" + quality);
+            for (Page page : detail.getPages()) vodItems.add(page.getPart() + "$" + aid + "+" + page.getCid() + "+" + quality);
             playList.add(TextUtils.join("#", vodItems));
             playFrom.add(play.getAcceptDescription().get(i));
         }
@@ -171,12 +184,12 @@ public class Bili extends Spider {
 
         StringBuilder videoList = new StringBuilder();
         StringBuilder audioList = new StringBuilder();
-        for (Dash.Media video : dash.getVideo()) {
+        for (Media video : dash.getVideo()) {
             if (video.getId().equals(qn)) {
                 videoList.append(getMedia(video));
             }
         }
-        for (Dash.Media audio : dash.getAudio()) {
+        for (Media audio : dash.getAudio()) {
             for (String key : audios.keySet()) {
                 if (audio.getId().equals(key)) {
                     audioList.append(getMedia(audio));
@@ -189,7 +202,7 @@ public class Bili extends Spider {
         return Result.get().url(url).header(header).string();
     }
 
-    private String getMedia(Dash.Media media) {
+    private String getMedia(Media media) {
         if (media.getMimeType().startsWith("video")) {
             return getAdaptationSet(media, String.format(Locale.getDefault(), "height='%s' width='%s' frameRate='%s' sar='%s'", media.getHeight(), media.getWidth(), media.getFrameRate(), media.getSar()));
         } else if (media.getMimeType().startsWith("audio")) {
@@ -199,7 +212,7 @@ public class Bili extends Spider {
         }
     }
 
-    private String getAdaptationSet(Dash.Media media, String params) {
+    private String getAdaptationSet(Media media, String params) {
         String id = media.getId() + "_" + media.getCodecId();
         String type = media.getMimeType().split("/")[0];
         String baseUrl = media.getBaseUrl().replace("&", "&amp;");
@@ -236,20 +249,19 @@ public class Bili extends Spider {
 
     private void checkLogin() {
         String json = OkHttp.string("https://api.bilibili.com/x/web-interface/nav", header);
-        Resp.Data data = Resp.objectFrom(json).getData();
+        Data data = Resp.objectFrom(json).getData();
         login = data.isLogin();
         vip = data.getVipType() > 0;
-        boolean showCode = Prefers.getBoolean("BiliQRCode", true);
-        if (!login && showCode) getQRCode();
+        if (!login && !getUserCache().exists()) getQRCode();
     }
 
     private void getQRCode() {
         String json = OkHttp.string("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-mini");
-        Resp.Data data = Resp.objectFrom(json).getData();
+        Data data = Resp.objectFrom(json).getData();
         Init.run(() -> showQRCode(data));
     }
 
-    private void showQRCode(Resp.Data data) {
+    private void showQRCode(Data data) {
         try {
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Utils.dp2px(240), Utils.dp2px(240));
             ImageView image = new ImageView(Init.context());
@@ -266,7 +278,7 @@ public class Bili extends Spider {
         }
     }
 
-    private void startService(Resp.Data data) {
+    private void startService(Data data) {
         service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(() -> {
             String url = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key=" + data.getQrcodeKey() + "&source=main_mini";
@@ -280,7 +292,7 @@ public class Bili extends Spider {
         StringBuilder cookie = new StringBuilder();
         String[] splits = Uri.parse(url).getQuery().split("&");
         for (String split : splits) cookie.append(split).append(";");
-        Prefers.put("BiliCookie", cookie.toString());
+        FileUtil.write(getUserCache(), cookie.toString());
         Init.show("請重新進入播放頁");
         stopService();
     }
@@ -291,7 +303,7 @@ public class Bili extends Spider {
     }
 
     private void dismiss(DialogInterface dialog) {
-        Prefers.put("BiliQRCode", false);
+        FileUtil.write(getUserCache(), COOKIE);
         stopService();
     }
 
