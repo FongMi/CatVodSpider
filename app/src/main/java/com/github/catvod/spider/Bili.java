@@ -145,23 +145,24 @@ public class Bili extends Spider {
         Resp resp = Resp.objectFrom(json);
         Dash dash = resp.getData().getDash();
 
-        String videoList = "", audioList = "";
+        StringBuilder videoList = new StringBuilder();
+        StringBuilder audioList = new StringBuilder();
         for (Dash.Media video : dash.getVideo()) {
             if (video.getId().equals(qn)) {
-                videoList = getMedia(video);
+                videoList.append(getMedia(video));
                 break;
             }
         }
         for (Dash.Media audio : dash.getAudio()) {
             for (String key : audios.keySet()) {
                 if (audio.getId().equals(key)) {
-                    audioList = getMedia(audio);
+                    audioList.append(getMedia(audio));
                     break;
                 }
             }
         }
 
-        String mpd = getMpd(dash, videoList, audioList);
+        String mpd = getMpd(dash, videoList.toString(), audioList.toString());
         String url = "data:application/dash+xml;base64," + Base64.encodeToString(mpd.getBytes(), 0);
         return Result.get().url(url).header(header).string();
     }
