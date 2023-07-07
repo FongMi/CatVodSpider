@@ -28,6 +28,7 @@ import org.jsoup.Jsoup;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -40,10 +41,12 @@ public class Bili extends Spider {
 
     private ScheduledExecutorService service;
     private HashMap<String, String> header;
+    private static JSONObject vod_audio_id = new JSONObject();
     private AlertDialog dialog;
     private JSONObject ext;
     private String extend;
     private boolean login;
+    private static int vip = 0;
 
     private String getCookie() {
         String cache = Prefers.getString("BiliCookie");
@@ -89,6 +92,9 @@ public class Bili extends Spider {
             this.extend = extend;
             this.header = new HashMap<>();
             fetchRule();
+            vod_audio_id.put("30280", "192000");
+            vod_audio_id.put("30232", "132000");
+            vod_audio_id.put("30216", "64000");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,13 +143,65 @@ public class Bili extends Spider {
         String detailUrl = "https://api.bilibili.com/x/web-interface/view?aid=" + aid;
         JSONObject detailResp = new JSONObject(OkHttp.string(detailUrl, header));
         JSONObject detailData = detailResp.getJSONObject("data");
-        List<String> playlist = new ArrayList<>();
-        JSONArray pages = detailData.getJSONArray("pages");
-        for (int i = 0; i < pages.length(); ++i) {
-            JSONObject page = pages.getJSONObject(i);
-            String title = page.getString("part").replace("$", "_").replace("#", "_");
-            playlist.add(title + "$" + aid + "+" + page.getLong("cid"));
+
+        String defaultQn = "120";
+    /*
+        6	240P    极速	    仅mp4方式支持
+        16	360P    流畅
+        32	480P    清晰
+        64	720P    高清	    web端默认值
+                            B站前端需要登录才能选择，但是直接发送请求可以不登录就拿到720P的取流地址
+                            无720P时则为720P60
+        74	720P60 高帧率	需要认证登录账号
+        80	1080P   高清	    TV端与APP端默认值
+                            需要认证登录账号
+        112	1080P+  高码率	大多情况需求认证大会员账号
+        116	1080P60 高帧率	大多情况需求认证大会员账号
+        120	4K      超清	    需要fnval&128=128且fourk=1
+                            大多情况需求认证大会员账号
+        125	HDR     真彩色	仅支持dash方式
+                            需要fnval&64=64
+                            大多情况需求认证大会员账号
+        126	        杜比视界	仅支持dash方式
+                            需要fnval&512=512
+                            大多情况需求认证大会员账号
+        127	8K      超高清	仅支持dash方式
+                            需要fnval&1024=1024
+                            大多情况需求认证大会员账号
+     */
+
+        String playurldata = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + detailData.getString("cid") + "&qn=" + defaultQn + "&fnval=4048&fourk=1";
+        JSONObject response = new JSONObject(OkHttp.string(playurldata, header));
+        JSONObject data = response.getJSONObject("data");
+        JSONArray acceptDescription = data.getJSONArray("accept_description");
+        JSONArray acceptQuality = data.getJSONArray("accept_quality");
+        ArrayList<String> tempQuality = new ArrayList<>();
+        ArrayList<String> playFrom = new ArrayList<>();
+        for (int i = 0; i < acceptQuality.length(); i++) {
+            if (!login) { // Check login and set up quality
+                if (acceptQuality.optInt(i) > 32)
+                    continue;
+            } else if (vip == 0) { // Check vip and set up quality
+                if (acceptQuality.optInt(i) > 80)
+                    continue;
+            }
+            playFrom.add(acceptDescription.getString(i));
+            tempQuality.add(acceptQuality.getString(i));
         }
+        StringBuilder plist = new StringBuilder();
+        for (String Quality : tempQuality) {
+            ArrayList<String> playList = new ArrayList<>();
+            JSONArray pages = detailData.getJSONArray("pages");
+            int length = pages.length();
+            for (int i = 0; i < length; i++) {
+                JSONObject page = pages.getJSONObject(i);
+                long cid = page.getLong("cid");
+                String playUrl = i + "$" + aid + "+" + cid + "+" + Quality;
+                playList.add(playUrl);
+            }
+            plist.append(TextUtils.join("#", playList)).append("$$$");
+        }
+
         Vod vod = new Vod();
         vod.setVodId(bvid);
         vod.setVodName(detailData.getString("title"));
@@ -151,8 +209,8 @@ public class Bili extends Spider {
         vod.setTypeName(detailData.getString("tname"));
         vod.setVodRemarks(detailData.getLong("duration") / 60 + "分鐘");
         vod.setVodContent(detailData.getString("desc"));
-        vod.setVodPlayFrom("B站");
-        vod.setVodPlayUrl(TextUtils.join("#", playlist));
+        vod.setVodPlayFrom(TextUtils.join("$$$", playFrom));
+        vod.setVodPlayUrl(plist.toString());
         return Result.string(vod);
     }
 
@@ -166,22 +224,33 @@ public class Bili extends Spider {
         String[] ids = id.split("\\+");
         String aid = ids[0];
         String cid = ids[1];
-        String url = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + cid + "&qn=120&fnval=4048&fourk=1";
-        JSONObject resp = new JSONObject(OkHttp.string(url, header));
-        JSONObject dash = resp.optJSONObject("data").optJSONObject("dash");
-        JSONArray video = dash.optJSONArray("video");
-        JSONArray audio = dash.optJSONArray("audio");
-        StringBuilder videoList = new StringBuilder();
-        StringBuilder audioList = new StringBuilder();
+        String Qn = ids[2];
+        String urls = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + cid + "&qn=" + Qn + "&fnval=4048&fourk=1";
+        // 视频链接时效性限制 2 小时， 得重新请求，暂不处理1
+
+        String videoList = "", audioList = "";
+        JSONObject resp = new JSONObject(OkHttp.string(urls, header)).optJSONObject("data").optJSONObject("dash");
+        JSONArray video = resp.optJSONArray("video");
+        JSONArray audio = resp.optJSONArray("audio");
         for (int i = 0; i < video.length(); i++) {
-            JSONObject vjson = video.getJSONObject(i);
-            videoList.append(getDashMedia(vjson));
+            JSONObject videoDash = video.getJSONObject(i);
+            if (videoDash.getString("id").equals(Qn)) {
+                videoList = getDashMedia(videoDash);
+                break;
+            }
         }
         for (int i = 0; i < audio.length(); i++) {
-            JSONObject ajson = audio.getJSONObject(i);
-            audioList.append(getDashMedia(ajson));
+            JSONObject audioDash = audio.getJSONObject(i);
+            Iterator<String> keys = vod_audio_id.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                if (audioDash.getString("id").equals(key)) {
+                    audioList = getDashMedia(audioDash);
+                    break;
+                }
+            }
         }
-        String mpd = getDash(dash, videoList.toString(), audioList.toString());
+        String mpd = getDash(resp, videoList, audioList);
         String dashUrl = "data:application/dash+xml;base64," + Base64.encodeToString(mpd.getBytes(), 0);
         return Result.get().url(dashUrl).header(header).string();
     }
