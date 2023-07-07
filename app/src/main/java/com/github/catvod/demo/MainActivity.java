@@ -15,7 +15,11 @@ public class MainActivity extends Activity {
         //Logger.addLogAdapter(new AndroidLogAdapter());
         Init.init(getApplicationContext());
         new Thread(() -> {
+            try {
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }).start();
     }
 }

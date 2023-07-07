@@ -34,13 +34,13 @@ public class Result {
     @SerializedName("jx")
     private int jx;
     @SerializedName("page")
-    private int page;
+    private Integer page;
     @SerializedName("pagecount")
-    private int pagecount;
+    private Integer pagecount;
     @SerializedName("limit")
-    private int limit;
+    private Integer limit;
     @SerializedName("total")
-    private int total;
+    private Integer total;
 
     public static Result objectFrom(String str) {
         return new Gson().fromJson(str, Result.class);
