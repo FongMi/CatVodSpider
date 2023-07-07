@@ -281,6 +281,15 @@
   ],
   "rules": [
     {
+      "name": "星星",
+      "hosts": [
+        "aws.ulivetv.net"
+      ],
+      "regex": [
+        "#EXT-X-DISCONTINUITY[\\s\\S]*?#EXT-X-DISCONTINUITY"
+      ]
+    },
+    {
       "name": "量子廣告",
       "hosts": [
         "vip.lz",
