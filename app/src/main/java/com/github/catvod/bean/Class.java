@@ -26,7 +26,7 @@ public class Class {
     }
 
     public Class(String typeId, String typeName) {
-        this(typeId, typeName, "");
+        this(typeId, typeName, null);
     }
 
     public Class(String typeId, String typeName, String typeFlag) {
