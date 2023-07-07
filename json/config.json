@@ -1,5 +1,5 @@
 {
-  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;b7931872492dbe98f688172bb9382a25",
+  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;40d39a990ed96f7df0d3aca57c9589f6",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -280,15 +280,6 @@
     }
   ],
   "rules": [
-    {
-      "name": "星星",
-      "hosts": [
-        "aws.ulivetv.net"
-      ],
-      "regex": [
-        "#EXT-X-DISCONTINUITY[\\s\\S]*?#EXT-X-DISCONTINUITY"
-      ]
-    },
     {
       "name": "量子廣告",
       "hosts": [
