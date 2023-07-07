@@ -1,8 +1,16 @@
 package com.github.catvod.spider;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.view.Gravity;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
@@ -12,6 +20,8 @@ import com.github.catvod.bean.bili.Dash;
 import com.github.catvod.bean.bili.Resp;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Prefers;
+import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Utils;
 
 import java.net.URLEncoder;
@@ -22,6 +32,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author ColaMint & FongMi & 唐三
@@ -29,13 +42,17 @@ import java.util.Map;
 public class Bili extends Spider {
 
     private static final String COOKIE = "buvid3=84B0395D-C9F2-C490-E92E-A09AB48FE26E71636infoc";
+    private ScheduledExecutorService service;
     private Map<String, String> header;
     private Map<String, String> audios;
+    private AlertDialog dialog;
     private String extend;
+    private boolean login;
+    private boolean vip;
 
     private void setHeader() {
         header = new HashMap<>();
-        header.put("cookie", COOKIE);
+        header.put("cookie", Prefers.getString("BiliCookie", COOKIE));
         header.put("Referer", "https://www.bilibili.com");
         header.put("User-Agent", Utils.CHROME);
     }
@@ -96,6 +113,8 @@ public class Bili extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
+        if (!login) checkLogin();
+
         String id = ids.get(0);
         String api = "https://api.bilibili.com/x/web-interface/archive/stat?bvid=" + id;
         String json = OkHttp.string(api, header);
@@ -117,13 +136,18 @@ public class Bili extends Spider {
         json = OkHttp.string(api, header);
         Resp.Data play = Resp.objectFrom(json).getData();
         List<String> playList = new ArrayList<>();
-        for (String quality : play.getAcceptQuality()) {
+        List<String> playFrom = new ArrayList<>();
+        for (int i = 0; i < play.getAcceptQuality().size(); i++) {
+            int quality = play.getAcceptQuality().get(i);
             List<String> vodItems = new ArrayList<>();
+            if (!login && quality > 32) continue;
+            if (!vip && quality > 80) continue;
             for (Resp.Page page : detail.getPages()) vodItems.add(page.getPart() + "$" + aid + "+" + page.getCid() + "+" + quality);
             playList.add(TextUtils.join("#", vodItems));
+            playFrom.add(play.getAcceptDescription().get(i));
         }
 
-        vod.setVodPlayFrom(TextUtils.join("$$$", play.getAcceptDescription()));
+        vod.setVodPlayFrom(TextUtils.join("$$$", playFrom));
         vod.setVodPlayUrl(TextUtils.join("$$$", playList));
         return Result.string(vod);
     }
@@ -208,5 +232,73 @@ public class Bili extends Spider {
                 dash.getDuration(),
                 videoList,
                 audioList);
+    }
+
+    private void checkLogin() {
+        String json = OkHttp.string("https://api.bilibili.com/x/web-interface/nav", header);
+        Resp.Data data = Resp.objectFrom(json).getData();
+        login = data.isLogin();
+        vip = data.getVipType() > 0;
+        boolean showCode = Prefers.getBoolean("BiliQRCode", true);
+        if (!login && showCode) getQRCode();
+    }
+
+    private void getQRCode() {
+        String json = OkHttp.string("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-mini");
+        Resp.Data data = Resp.objectFrom(json).getData();
+        Init.run(() -> showQRCode(data));
+    }
+
+    private void showQRCode(Resp.Data data) {
+        try {
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Utils.dp2px(240), Utils.dp2px(240));
+            ImageView image = new ImageView(Init.context());
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            image.setImageBitmap(QRCode.getBitmap(data.getUrl(), 240, 2));
+            FrameLayout frame = new FrameLayout(Init.context());
+            params.gravity = Gravity.CENTER;
+            frame.addView(image, params);
+            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnDismissListener(this::dismiss).show();
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Init.show("請使用 BiliBili App 掃描二維碼");
+            Init.execute(() -> startService(data));
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void startService(Resp.Data data) {
+        service = Executors.newScheduledThreadPool(1);
+        service.scheduleAtFixedRate(() -> {
+            String url = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key=" + data.getQrcodeKey() + "&source=main_mini";
+            String json = OkHttp.string(url, header);
+            url = Resp.objectFrom(json).getData().getUrl();
+            if (url.length() > 0) setCookie(url);
+        }, 1, 1, TimeUnit.SECONDS);
+    }
+
+    private void setCookie(String url) {
+        StringBuilder cookie = new StringBuilder();
+        String[] splits = Uri.parse(url).getQuery().split("&");
+        for (String split : splits) cookie.append(split).append(";");
+        Prefers.put("BiliCookie", cookie.toString());
+        Init.show("請重新進入播放頁");
+        stopService();
+    }
+
+    private void stopService() {
+        if (service != null) service.shutdownNow();
+        Init.run(this::dismiss);
+    }
+
+    private void dismiss(DialogInterface dialog) {
+        Prefers.put("BiliQRCode", false);
+        stopService();
+    }
+
+    private void dismiss() {
+        try {
+            if (dialog != null) dialog.dismiss();
+        } catch (Exception ignored) {
+        }
     }
 }

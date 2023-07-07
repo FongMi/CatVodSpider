@@ -35,6 +35,14 @@ public class Resp {
 
         @SerializedName("result")
         private JsonElement result;
+        @SerializedName("isLogin")
+        private boolean isLogin;
+        @SerializedName("vipType")
+        private int vipType;
+        @SerializedName("qrcode_key")
+        private String qrcodeKey;
+        @SerializedName("url")
+        private String url;
         @SerializedName("aid")
         private String aid;
         @SerializedName("cid")
@@ -52,7 +60,7 @@ public class Resp {
         @SerializedName("accept_description")
         private List<String> acceptDescription;
         @SerializedName("accept_quality")
-        private List<String> acceptQuality;
+        private List<Integer> acceptQuality;
         @SerializedName("pages")
         private List<Page> pages;
         @SerializedName("dash")
@@ -60,6 +68,22 @@ public class Resp {
 
         public JsonElement getResult() {
             return result;
+        }
+
+        public boolean isLogin() {
+            return isLogin;
+        }
+
+        public int getVipType() {
+            return vipType;
+        }
+
+        public String getQrcodeKey() {
+            return TextUtils.isEmpty(qrcodeKey) ? "" : qrcodeKey;
+        }
+
+        public String getUrl() {
+            return TextUtils.isEmpty(url) ? "" : url;
         }
 
         public String getAid() {
@@ -94,7 +118,7 @@ public class Resp {
             return acceptDescription == null ? Collections.emptyList() : acceptDescription;
         }
 
-        public List<String> getAcceptQuality() {
+        public List<Integer> getAcceptQuality() {
             return acceptQuality == null ? Collections.emptyList() : acceptQuality;
         }
 
