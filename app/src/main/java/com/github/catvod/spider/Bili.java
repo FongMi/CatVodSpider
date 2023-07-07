@@ -270,7 +270,7 @@ public class Bili extends Spider {
             FrameLayout frame = new FrameLayout(Init.context());
             params.gravity = Gravity.CENTER;
             frame.addView(image, params);
-            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnDismissListener(this::dismiss).show();
+            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnCancelListener(this::cancel).setOnDismissListener(this::dismiss).show();
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             Init.show("請使用 BiliBili App 掃描二維碼");
             Init.execute(() -> startService(data));
@@ -288,6 +288,11 @@ public class Bili extends Spider {
         }, 1, 1, TimeUnit.SECONDS);
     }
 
+    private void stopService() {
+        if (service != null) service.shutdownNow();
+        Init.run(this::dismiss);
+    }
+
     private void setCookie(String url) {
         StringBuilder cookie = new StringBuilder();
         String[] splits = Uri.parse(url).getQuery().split("&");
@@ -297,13 +302,12 @@ public class Bili extends Spider {
         stopService();
     }
 
-    private void stopService() {
-        if (service != null) service.shutdownNow();
-        Init.run(this::dismiss);
+    private void cancel(DialogInterface dialog) {
+        FileUtil.write(getUserCache(), COOKIE);
+        stopService();
     }
 
     private void dismiss(DialogInterface dialog) {
-        FileUtil.write(getUserCache(), COOKIE);
         stopService();
     }
 
