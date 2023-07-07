@@ -145,7 +145,7 @@ public class Bili extends Spider {
         vod.setVodContent(detail.getDesc());
         vod.setVodRemarks(detail.getDuration() / 60 + "分鐘");
 
-        api = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + detail.getCid() + "&qn=120&fnval=4048&fourk=1";
+        api = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + detail.getCid() + "&qn=127&fnval=4048&fourk=1";
         json = OkHttp.string(api, header);
         Data play = Resp.objectFrom(json).getData();
         List<String> playList = new ArrayList<>();
