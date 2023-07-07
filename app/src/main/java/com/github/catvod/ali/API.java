@@ -535,7 +535,7 @@ public class API {
             FrameLayout frame = new FrameLayout(Init.context());
             params.gravity = Gravity.CENTER;
             frame.addView(image, params);
-            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnDismissListener(this::dismiss).show();
+            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnCancelListener(this::dismiss).setOnDismissListener(this::dismiss).show();
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             Init.show("請使用阿里雲盤 App 掃描二維碼");
         } catch (Exception ignored) {
