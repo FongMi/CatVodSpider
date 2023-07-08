@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.github.catvod.spider.Init;
 
@@ -153,6 +154,10 @@ public class Utils {
     public static void loadUrl(WebView webView, String script, ValueCallback<String> callback) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) webView.evaluateJavascript(script, callback);
         else webView.loadUrl(script);
+    }
+
+    public static void notify(String msg) {
+        Init.run(() -> Toast.makeText(Init.context(), msg, Toast.LENGTH_LONG).show());
     }
 
     public static void addView(View view, ViewGroup.LayoutParams params) {
