@@ -5,7 +5,6 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.Toast;
 
 import com.github.catvod.crawler.SpiderDebug;
 
@@ -52,10 +51,6 @@ public class Init {
 
     public static void run(Runnable runnable, int delay) {
         get().handler.postDelayed(runnable, delay);
-    }
-
-    public static void show(String msg) {
-        get().handler.post(() -> Toast.makeText(context(), msg, Toast.LENGTH_LONG).show());
     }
 
     public static Activity getActivity() throws Exception {
