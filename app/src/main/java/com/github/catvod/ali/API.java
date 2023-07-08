@@ -168,7 +168,7 @@ public class API {
 
     private boolean isManyRequest(String result) {
         if (!result.contains("Too Many Requests")) return false;
-        Init.show("洗洗睡吧，Too Many Requests。");
+        Utils.notify("洗洗睡吧，Too Many Requests。");
         oauth.clean().save();
         return true;
     }
@@ -188,7 +188,7 @@ public class API {
             shareToken = new JSONObject(result).getString("share_token");
         } catch (Exception e) {
             e.printStackTrace();
-            Init.show("來晚啦，該分享已失效。");
+            Utils.notify("來晚啦，該分享已失效。");
         }
     }
 
@@ -537,7 +537,7 @@ public class API {
             frame.addView(image, params);
             dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnCancelListener(this::dismiss).setOnDismissListener(this::dismiss).show();
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            Init.show("請使用阿里雲盤 App 掃描二維碼");
+            Utils.notify("請使用阿里雲盤 App 掃描二維碼");
         } catch (Exception ignored) {
         }
     }
@@ -553,7 +553,7 @@ public class API {
 
     private void setToken(String value) {
         SpiderDebug.log("Token:" + value);
-        Init.show("Token:" + value);
+        Utils.notify("Token:" + value);
         user.setRefreshToken(value);
         refreshAccessToken();
         stopService();
