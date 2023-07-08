@@ -119,7 +119,8 @@ public class Bili extends Spider {
 
     @Override
     public String homeVideoContent() throws Exception {
-        return categoryContent("窗 白噪音", "1", true, new HashMap<>());
+        String[] types = extend.get("type").getAsString().split("#");
+        return categoryContent(types[0], "1", true, new HashMap<>());
     }
 
     @Override
@@ -269,7 +270,7 @@ public class Bili extends Spider {
         if (login || getUserCache().exists() && COOKIE.equals(cookie)) return;
         String json = OkHttp.string("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-mini");
         Data data = Resp.objectFrom(json).getData();
-        Init.run(() -> openApp1(data));
+        Init.run(() -> openApp(data));
     }
 
     private Intent getIntent(String pkgName, Data data) {
@@ -279,15 +280,7 @@ public class Bili extends Spider {
         return intent;
     }
 
-    private void openApp1(Data data) {
-        try {
-            Init.getActivity().startActivity(getIntent("tv.danmaku.bili", data));
-        } catch (Exception e) {
-            openApp2(data);
-        }
-    }
-
-    private void openApp2(Data data) {
+    private void openApp(Data data) {
         try {
             Init.getActivity().startActivity(getIntent("com.bilibili.app.in", data));
         } catch (Exception e) {
