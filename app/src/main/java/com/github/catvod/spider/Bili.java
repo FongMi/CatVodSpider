@@ -260,7 +260,7 @@ public class Bili extends Spider {
     private void getQRCode() {
         String json = OkHttp.string("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-mini");
         Data data = Resp.objectFrom(json).getData();
-        Init.run(() -> openApp(data));
+        Init.run(() -> showQRCode(data));
     }
 
     private void openApp(Data data) {
@@ -287,6 +287,7 @@ public class Bili extends Spider {
             dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnCancelListener(this::cancel).setOnDismissListener(this::dismiss).show();
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             Utils.notify("請使用 BiliBili App 掃描二維碼");
+            Init.execute(() -> startService(data));
         } catch (Exception ignored) {
         }
     }
