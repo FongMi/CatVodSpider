@@ -27,6 +27,8 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.FileUtil;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Utils;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -50,8 +52,8 @@ public class Bili extends Spider {
     private ScheduledExecutorService service;
     private Map<String, String> audios;
     private AlertDialog dialog;
+    private JsonObject extend;
     private String cookie;
-    private String extend;
     private boolean login;
     private boolean vip;
 
@@ -78,6 +80,14 @@ public class Bili extends Spider {
         audios.put("30216", "64000");
     }
 
+    private void setCookie() {
+        String config = extend.get("cookie").getAsString();
+        if (config.startsWith("http")) config = OkHttp.string(config).trim();
+        if (TextUtils.isEmpty(config)) config = COOKIE;
+        cookie = FileUtil.read(getUserCache());
+        cookie = cookie.isEmpty() ? config : cookie;
+    }
+
     private List<Filter> getFilter() {
         List<Filter> items = new ArrayList<>();
         items.add(new Filter("order", "排序", Arrays.asList(new Filter.Value("預設", "totalrank"), new Filter.Value("最多點擊", "click"), new Filter.Value("最新發布", "pubdate"), new Filter.Value("最多彈幕", "dm"), new Filter.Value("最多收藏", "stow"))));
@@ -91,9 +101,8 @@ public class Bili extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        this.extend = extend;
-        this.cookie = FileUtil.read(getUserCache());
-        this.cookie = TextUtils.isEmpty(cookie) ? COOKIE : cookie;
+        this.extend = JsonParser.parseString(extend).getAsJsonObject();
+        setCookie();
         setAudio();
     }
 
@@ -101,7 +110,7 @@ public class Bili extends Spider {
     public String homeContent(boolean filter) throws Exception {
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        String[] types = extend.split("#");
+        String[] types = extend.get("type").getAsString().split("#");
         for (String type : types) {
             classes.add(new Class(type));
             filters.put(type, getFilter());
@@ -111,7 +120,7 @@ public class Bili extends Spider {
 
     @Override
     public String homeVideoContent() throws Exception {
-        return categoryContent(extend.split("#")[0], "1", true, new HashMap<>());
+        return categoryContent("窗 白噪音", "1", true, new HashMap<>());
     }
 
     @Override
@@ -321,16 +330,16 @@ public class Bili extends Spider {
     }
 
     private void setCookie(String url) {
-        StringBuilder cookie = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         String[] splits = Uri.parse(url).getQuery().split("&");
-        for (String split : splits) cookie.append(split).append(";");
-        FileUtil.write(getUserCache(), this.cookie = cookie.toString());
+        for (String split : splits) sb.append(split).append(";");
+        FileUtil.write(getUserCache(), cookie = sb.toString());
         Utils.notify("請重新進入播放頁");
         stopService();
     }
 
     private void cancel(DialogInterface dialog) {
-        FileUtil.write(getUserCache(), COOKIE);
+        FileUtil.write(getUserCache(), cookie = COOKIE);
         stopService();
     }
 
