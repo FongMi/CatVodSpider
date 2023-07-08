@@ -81,11 +81,10 @@ public class Bili extends Spider {
     }
 
     private void setCookie() {
-        String config = extend.get("cookie").getAsString();
-        if (config.startsWith("http")) config = OkHttp.string(config).trim();
-        if (TextUtils.isEmpty(config)) config = COOKIE;
-        cookie = FileUtil.read(getUserCache());
-        cookie = cookie.isEmpty() ? config : cookie;
+        cookie = extend.get("cookie").getAsString();
+        if (cookie.startsWith("http")) cookie = OkHttp.string(cookie).trim();
+        if (TextUtils.isEmpty(cookie)) cookie = FileUtil.read(getUserCache());
+        if (TextUtils.isEmpty(cookie)) cookie = COOKIE;
     }
 
     private List<Filter> getFilter() {
