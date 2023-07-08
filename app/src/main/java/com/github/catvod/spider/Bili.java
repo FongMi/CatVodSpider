@@ -252,12 +252,13 @@ public class Bili extends Spider {
     private void checkLogin() {
         String json = OkHttp.string("https://api.bilibili.com/x/web-interface/nav", getMember());
         Data data = Resp.objectFrom(json).getData();
-        login = data.isLogin();
         vip = data.getVipType() > 0;
-        if (!login && !getUserCache().exists()) getQRCode();
+        login = data.isLogin();
+        getQRCode();
     }
 
     private void getQRCode() {
+        if (login || getUserCache().exists() && COOKIE.equals(cookie)) return;
         String json = OkHttp.string("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-mini");
         Data data = Resp.objectFrom(json).getData();
         Init.run(() -> openApp1(data));
