@@ -210,7 +210,7 @@ public class Bili extends Spider {
 
         String mpd = getMpd(dash, videoList.toString(), audioList.toString());
         String url = "data:application/dash+xml;base64," + Base64.encodeToString(mpd.getBytes(), 0);
-        return Result.get().url(url).header(getMember()).string();
+        return Result.get().url(url).dash().header(getMember()).string();
     }
 
     private String getMedia(Media media) {
