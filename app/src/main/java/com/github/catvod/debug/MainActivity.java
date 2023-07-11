@@ -1,4 +1,4 @@
-package com.github.catvod.demo;
+package com.github.catvod.debug;
 
 import android.app.Activity;
 import android.os.Bundle;
