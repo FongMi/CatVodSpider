@@ -32,7 +32,6 @@ public class Push extends Ali {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        if (id.contains("youtube.com")) return Result.get().url(Youtube.fetch(id)).string();
         if (flag.equals("直連")) return Result.get().url(id).subs(getSubs(id)).string();
         if (flag.equals("嗅探")) return Result.get().parse().url(id).string();
         if (flag.equals("解析")) return Result.get().parse().jx().url(id).string();
