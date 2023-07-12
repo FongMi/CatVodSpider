@@ -20,8 +20,6 @@ public class Proxy extends Spider {
                 return Ali.proxy(params);
             case "webdav":
                 return WebDAV.vod(params);
-            case "alist":
-                return AList.proxy(params);
             default:
                 return null;
         }

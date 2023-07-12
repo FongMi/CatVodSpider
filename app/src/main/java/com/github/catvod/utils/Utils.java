@@ -51,11 +51,15 @@ public class Utils {
         return hasCamera && hasPhone && hasBT;
     }
 
-    public static byte[] toUtf8(byte[] bytes) throws Exception {
-        UniversalDetector detector = new UniversalDetector(null);
-        detector.handleData(bytes, 0, bytes.length);
-        detector.dataEnd();
-        return new String(bytes, detector.getDetectedCharset()).getBytes("UTF-8");
+    public static byte[] toUtf8(byte[] bytes) {
+        try {
+            UniversalDetector detector = new UniversalDetector(null);
+            detector.handleData(bytes, 0, bytes.length);
+            detector.dataEnd();
+            return new String(bytes, detector.getDetectedCharset()).getBytes("UTF-8");
+        } catch (Exception e) {
+            return bytes;
+        }
     }
 
     public static boolean isSub(String ext) {
