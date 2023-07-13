@@ -3,9 +3,9 @@
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
 # Spider
+-keep class com.github.catvod.js.* { *; }
 -keep class com.github.catvod.crawler.* { *; }
 -keep class com.github.catvod.spider.* { public <methods>; }
--keep class com.github.catvod.parser.* { public <methods>; }
 
 # Gson
 -keepattributes Signature
