@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.js.JSLoader;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -40,7 +39,6 @@ public class Init {
     public static void init(Context context) {
         get().app = ((Application) context);
         SpiderDebug.log("自定義爬蟲代碼載入成功！");
-        JSLoader.init();
     }
 
     public static void execute(Runnable runnable) {
