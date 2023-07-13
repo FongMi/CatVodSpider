@@ -20,7 +20,7 @@ public class Method {
     }
 
     @Keep
-    public class test {
+    public static class test {
 
         @Keep
         @JSMethod
