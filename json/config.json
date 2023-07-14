@@ -66,14 +66,6 @@
       "ext": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/duboku.json"
     },
     {
-      "key": "傢伙",
-      "name": "傢伙",
-      "type": 4,
-      "api": " https://php.iptv.hz.cz/moguys.php",
-      "searchable": 1,
-      "changeable": 1
-    },
-    {
       "key": "量子",
       "name": "量子",
       "type": 0,
