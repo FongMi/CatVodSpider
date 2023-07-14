@@ -7,25 +7,15 @@ import com.whl.quickjs.wrapper.QuickJSContext;
 
 public class Method {
 
-    private final QuickJSContext context;
+    private QuickJSContext ctx;
 
-    public Method(QuickJSContext context) {
-        this.context = context;
+    public Method(QuickJSContext ctx) {
+        this.ctx = ctx;
     }
 
     @Keep
     @JSMethod
     public void showToast(String msg) {
         Utils.notify(msg);
-    }
-
-    @Keep
-    public static class test {
-
-        @Keep
-        @JSMethod
-        public int add(int a, int b) {
-            return a + b;
-        }
     }
 }
