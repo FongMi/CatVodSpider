@@ -1,5 +1,5 @@
 {
-  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;8ebd953e794760d656dc0e0cbe9f8d65",
+  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;ae1463f4584754ef50ab902920ccb7da",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -64,14 +64,6 @@
       "searchable": 1,
       "changeable": 1,
       "ext": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/duboku.json"
-    },
-    {
-      "key": "傢伙",
-      "name": "傢伙",
-      "type": 4,
-      "api": " https://php.iptv.hz.cz/moguys.php",
-      "searchable": 1,
-      "changeable": 1
     },
     {
       "key": "量子",
