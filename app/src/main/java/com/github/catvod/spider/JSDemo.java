@@ -20,7 +20,6 @@ public class JSDemo extends Spider {
 
     @Override
     public void destroy() {
-        super.destroy();
         jsContext.destroy();
     }
 }
