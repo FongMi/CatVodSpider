@@ -35,14 +35,6 @@ public class Item {
         return new Gson().fromJson(str, Item.class);
     }
 
-    public static Item playList(Item copy, String vodPic) {
-        Item item = new Item();
-        item.name = "播放列表";
-        item.path = copy.path;
-        item.thumb = vodPic;
-        return item;
-    }
-
     public static List<Item> arrayFrom(String str) {
         Type listType = new TypeToken<List<Item>>() {}.getType();
         return new Gson().fromJson(str, listType);
