@@ -17,17 +17,13 @@ move "%~dp0\Smali_classes\com\github\catvod\spider" "%~dp0\spider.jar\smali\com\
 move "%~dp0\Smali_classes\com\github\catvod\parser" "%~dp0\spider.jar\smali\com\github\catvod\"
 move "%~dp0\Smali_classes\com\github\catvod\js" "%~dp0\spider.jar\smali\com\github\catvod\"
 
-rd /s/q "%~dp0\Smali_classes"
-
 java -jar "%~dp0\3rd\apktool_2.4.1.jar" b "%~dp0\spider.jar" -c
 
 move "%~dp0\spider.jar\dist\dex.jar" "%~dp0\custom_spider.jar"
 
 certUtil -hashfile "%~dp0\custom_spider.jar" MD5 | find /i /v "md5" | find /i /v "certutil" > "%~dp0\custom_spider.jar.md5"
 
-rd /s/q "%~dp0\spider.jar\smali\com\github\catvod\spider"
-rd /s/q "%~dp0\spider.jar\smali\com\github\catvod\parser"
-rd /s/q "%~dp0\spider.jar\smali\com\github\catvod\js"
-
 rd /s/q "%~dp0\spider.jar\build"
+rd /s/q "%~dp0\spider.jar\smali"
 rd /s/q "%~dp0\spider.jar\dist"
+rd /s/q "%~dp0\Smali_classes"
