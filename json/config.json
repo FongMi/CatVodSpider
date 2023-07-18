@@ -66,6 +66,14 @@
       "ext": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/duboku.json"
     },
     {
+      "key": "廠長",
+      "name": "廠長",
+      "type": 3,
+      "api": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/js/czzy_open.js",
+      "searchable": 1,
+      "changeable": 1
+    },
+    {
       "key": "量子",
       "name": "量子",
       "type": 0,
