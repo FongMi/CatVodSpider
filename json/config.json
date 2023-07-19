@@ -69,7 +69,7 @@
       "key": "廠長",
       "name": "廠長",
       "type": 3,
-      "api": "https://fongmi.cachefly.net/catvod/CatVodOpen/main/open/czzy_open.js",
+      "api": "https://fongmi.cachefly.net/FongMi/CatVodOpen/main/open/czzy_open.js",
       "searchable": 1,
       "changeable": 1
     },
@@ -77,14 +77,15 @@
       "key": "愛看",
       "name": "愛看",
       "type": 3,
-      "api": "https://fongmi.cachefly.net/catvod/CatVodOpen/main/open/ikanbot_open.js",
+      "api": "https://fongmi.cachefly.net/FongMi/CatVodOpen/main/open/ikanbot_open.js",
       "searchable": 1,
       "changeable": 1
-    },{
+    },
+    {
       "key": "快看",
       "name": "快看",
       "type": 3,
-      "api": "https://fongmi.cachefly.net/catvod/CatVodOpen/main/open/kkys_open.js",
+      "api": "https://fongmi.cachefly.net/FongMi/CatVodOpen/main/open/kkys_open.js",
       "searchable": 1,
       "changeable": 1
     },
