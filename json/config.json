@@ -74,6 +74,14 @@
       "changeable": 1
     },
     {
+      "key": "愛看",
+      "name": "愛看",
+      "type": 3,
+      "api": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/js/ikanbot_open.js",
+      "searchable": 1,
+      "changeable": 1
+    },
+    {
       "key": "量子",
       "name": "量子",
       "type": 0,
