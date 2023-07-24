@@ -28,7 +28,7 @@ public class Miss extends Spider {
         List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        List<String> typeIds = Arrays.asList("chinese-subtitle", "new", "release", "uncensored-leak", "siro", "luxu", "gana", "maan", "scute", "ara", "uncensored-leak", "fc2", "heyzo", "tokyohot", "1pondo", "caribbeancom", "caribbeancompr", "10musume", "pacopacomama", "gachinco", "xxxav", "marriedslash", "naughty4610", "naughty0930", "madou", "twav");
+        List<String> typeIds = Arrays.asList("chinese-subtitle", "new", "release", "uncensored-leak", "today-hot", "weekly-hot", "monthly-hot", "siro", "luxu", "gana", "maan", "scute", "ara", "uncensored-leak", "fc2", "heyzo", "tokyohot", "1pondo", "caribbeancom", "caribbeancompr", "10musume", "pacopacomama", "gachinco", "xxxav", "marriedslash", "naughty4610", "naughty0930", "madou", "twav");
         Document doc = Jsoup.parse(OkHttp.string(url));
         for (Element a : doc.select("nav").select("a")) {
             String typeName = a.text();
