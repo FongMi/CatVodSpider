@@ -25,9 +25,8 @@ public class Push extends Ali {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        String url = ids.get(0).trim();
-        if (url.contains("aliyundrive")) return super.detailContent(ids);
-        return Result.string(vod(url));
+        if (pattern.matcher(ids.get(0)).find()) return super.detailContent(ids);
+        return Result.string(vod(ids.get(0)));
     }
 
     @Override
