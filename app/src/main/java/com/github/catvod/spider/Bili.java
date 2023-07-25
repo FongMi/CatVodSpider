@@ -200,6 +200,9 @@ public class Bili extends Spider {
                 videoList.append(getMedia(video));
             }
         }
+        if (videoList.length() == 0 && dash.getVideo().size() > 0) {
+            videoList.append(getMedia(dash.getVideo().get(0)));
+        }
         for (Media audio : dash.getAudio()) {
             for (String key : audios.keySet()) {
                 if (audio.getId().equals(key)) {
