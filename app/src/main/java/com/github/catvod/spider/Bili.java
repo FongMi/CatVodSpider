@@ -193,27 +193,34 @@ public class Bili extends Spider {
         Resp resp = Resp.objectFrom(json);
         Dash dash = resp.getData().getDash();
 
-        StringBuilder videoList = new StringBuilder();
-        StringBuilder audioList = new StringBuilder();
-        for (Media video : dash.getVideo()) {
-            if (video.getId().equals(qn)) {
-                videoList.append(getMedia(video));
-            }
-        }
-        if (videoList.length() == 0 && dash.getVideo().size() > 0) {
-            videoList.append(getMedia(dash.getVideo().get(0)));
-        }
+        StringBuilder video = new StringBuilder();
+        StringBuilder audio = new StringBuilder();
+        findAudio(dash, audio);
+        findVideo(dash, video, qn);
+        boolean empty = video.length() == 0 && dash.getVideo().size() > 0;
+        if (empty) findVideo(dash, video, dash.getVideo().get(0).getId());
+
+        String mpd = getMpd(dash, video.toString(), audio.toString());
+        String url = "data:application/dash+xml;base64," + Base64.encodeToString(mpd.getBytes(), 0);
+        return Result.get().url(url).dash().header(getMember()).string();
+    }
+
+    private void findAudio(Dash dash, StringBuilder sb) {
         for (Media audio : dash.getAudio()) {
             for (String key : audios.keySet()) {
                 if (audio.getId().equals(key)) {
-                    audioList.append(getMedia(audio));
+                    sb.append(getMedia(audio));
                 }
             }
         }
+    }
 
-        String mpd = getMpd(dash, videoList.toString(), audioList.toString());
-        String url = "data:application/dash+xml;base64," + Base64.encodeToString(mpd.getBytes(), 0);
-        return Result.get().url(url).dash().header(getMember()).string();
+    private void findVideo(Dash dash, StringBuilder sb, String qn) {
+        for (Media video : dash.getVideo()) {
+            if (video.getId().equals(qn)) {
+                sb.append(getMedia(video));
+            }
+        }
     }
 
     private String getMedia(Media media) {
