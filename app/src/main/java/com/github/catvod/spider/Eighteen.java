@@ -78,11 +78,28 @@ public class Eighteen extends Spider {
 
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
+        return searchContent(key, "1");
+    }
+
+    @Override
+    public String searchContent(String key, boolean quick, String pg) throws Exception {
+        return searchContent(key, pg);
+    }
+
+    @Override
+    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
+        HashMap<String, String> result = new HashMap<>();
+        Utils.loadWebView(url + id, getClient(result));
+        while (result.isEmpty()) SystemClock.sleep(10);
+        return Result.get().url(result.get("url")).string();
+    }
+
+    private String searchContent(String key, String pg) {
         HashMap<String, String> params = new HashMap<>();
         params.put("search_keyword", key);
         params.put("search_type", "fc");
         params.put("op", "search");
-        String res = OkHttp.post(url + "searchform_search/all/index.html", params);
+        String res = OkHttp.post(url + "searchform_search/all/" + pg + ".html", params);
         List<Vod> list = new ArrayList<>();
         for (Element div : Jsoup.parse(res).select("div.post")) {
             String id = div.select("a").attr("href").replace(url, "");
@@ -92,14 +109,6 @@ public class Eighteen extends Spider {
             list.add(new Vod(id, name, pic, remark));
         }
         return Result.string(list);
-    }
-
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        HashMap<String, String> result = new HashMap<>();
-        Utils.loadWebView(url + id, getClient(result));
-        while (result.isEmpty()) SystemClock.sleep(10);
-        return Result.get().url(result.get("url")).string();
     }
 
     private WebViewClient getClient(HashMap<String, String> result) {
