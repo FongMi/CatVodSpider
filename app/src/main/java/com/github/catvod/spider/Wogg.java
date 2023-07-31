@@ -12,10 +12,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  */
 public class Wogg extends Ali {
 
-    private final String siteURL = "https://tvfan.xxooo.cf";
+    private final String siteURL = "http://tvfan.xxooo.cf";
 
     private final Pattern regexAli = Pattern.compile("(https://www.aliyundrive.com/s/[^\"]+)");
 
@@ -49,7 +49,16 @@ public class Wogg extends Ali {
 
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
-        String searchURL = siteURL + "/index.php/vodsearch/-------------.html?wd=" + URLEncoder.encode(key);
+        return searchContent(key, "1");
+    }
+
+    @Override
+    public String searchContent(String key, boolean quick, String pg) throws Exception {
+        return searchContent(key, pg);
+    }
+
+    private String searchContent(String key, String pg) {
+        String searchURL = siteURL + String.format("/index.php/vodsearch/%s----------%s---.html", URLEncoder.encode(key), pg);
         String html = OkHttp.string(searchURL, getHeader());
         Elements items = Jsoup.parse(html).select(".module-search-item");
         List<Vod> list = new ArrayList<>();

@@ -85,8 +85,22 @@ public class Miss extends Spider {
 
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
+        return searchContent(key, "1");
+    }
+
+    @Override
+    public String searchContent(String key, boolean quick, String pg) throws Exception {
+        return searchContent(key, pg);
+    }
+
+    @Override
+    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
+        return Result.get().parse().url(url + id).string();
+    }
+
+    private String searchContent(String key, String pg) {
         List<Vod> list = new ArrayList<>();
-        Document doc = Jsoup.parse(OkHttp.string(url + "search/" + key));
+        Document doc = Jsoup.parse(OkHttp.string(url + "search/" + key + "?page=" + pg));
         for (Element div : doc.select("div.thumbnail")) {
             String id = div.select("a.text-secondary").attr("href").replace(url, "");
             String name = div.select("a.text-secondary").text();
@@ -97,10 +111,5 @@ public class Miss extends Spider {
             list.add(new Vod(id, name, pic, remark));
         }
         return Result.string(list);
-    }
-
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return Result.get().parse().url(url + id).string();
     }
 }
