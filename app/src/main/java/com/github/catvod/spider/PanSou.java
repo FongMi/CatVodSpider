@@ -64,7 +64,12 @@ public class PanSou extends Ali {
         List<Vod> list = new ArrayList<>();
         for (Element item : items) {
             String title = item.selectFirst("template").text().trim();
-            if (title.contains(key)) list.add(new Vod(item.attr("href"), title, "https://inews.gtimg.com/newsapp_bt/0/13263837859/1000"));
+            if (!title.contains(key)) continue;
+            Vod vod = new Vod();
+            vod.setVodId(item.attr("href"));
+            vod.setVodPic("https://inews.gtimg.com/newsapp_bt/0/13263837859/1000");
+            vod.setVodName(title);
+            list.add(vod);
         }
         return Result.string(list);
     }

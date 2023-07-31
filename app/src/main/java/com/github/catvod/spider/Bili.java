@@ -182,6 +182,11 @@ public class Bili extends Spider {
     }
 
     @Override
+    public String searchContent(String key, boolean quick, String pg) throws Exception {
+        return categoryContent(key, pg, true, new HashMap<>());
+    }
+
+    @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         String[] ids = id.split("\\+");
         String aid = ids[0];
