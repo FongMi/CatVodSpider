@@ -21,7 +21,7 @@ import java.util.List;
 
 public class Eighteen extends Spider {
 
-    private final String url = "https://maa1812.com/zh/";
+    private final String url = "https://maa1815.com/zh/";
 
     @Override
     public String homeContent(boolean filter) throws Exception {
