@@ -17,11 +17,7 @@ import com.github.catvod.BuildConfig;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
-import com.github.catvod.bean.ali.Code;
-import com.github.catvod.bean.ali.Data;
-import com.github.catvod.bean.ali.Item;
-import com.github.catvod.bean.ali.OAuth;
-import com.github.catvod.bean.ali.User;
+import com.github.catvod.bean.ali.*;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.net.OkResult;
@@ -58,8 +54,10 @@ public class API {
     private String refreshToken;
     private String shareToken;
     private String shareId;
+    private String driveId;
     private OAuth oauth;
     private User user;
+    private Drive drive;
 
     private static class Loader {
         static volatile API INSTANCE = new API();
@@ -77,10 +75,15 @@ public class API {
         return FileUtil.getCacheFile("aliyundrive_oauth");
     }
 
+    public File getDriveCache() {
+        return FileUtil.getCacheFile("aliyundrive_drive");
+    }
+
     private API() {
         tempIds = new ArrayList<>();
         oauth = OAuth.objectFrom(FileUtil.read(getOAuthCache()));
         user = User.objectFrom(FileUtil.read(getUserCache()));
+        drive = Drive.objectFrom(FileUtil.read(getUserCache()));
         quality = new HashMap<>();
         quality.put("4K", "UHD");
         quality.put("2k", "QHD");
@@ -105,6 +108,7 @@ public class API {
     public void setShareId(String shareId) {
         if (!getOAuthCache().exists()) oauth.clean().save();
         if (!getUserCache().exists()) user.clean().save();
+        if (!getDriveCache().exists()) drive.clean().save();
         this.shareId = shareId;
         refreshShareToken();
     }
@@ -153,7 +157,8 @@ public class API {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
         OkResult result = OkHttp.postJson(url, json, getHeaderAuth());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
-        if (retry && (result.getCode() == 400 || result.getCode() == 401) && refreshAccessToken()) return auth(url, json, false);
+        if (retry && (result.getCode() == 400 || result.getCode() == 401) && refreshAccessToken())
+            return auth(url, json, false);
         if (retry && result.getCode() == 429) return auth(url, json, false);
         return result.getBody();
     }
@@ -162,7 +167,8 @@ public class API {
         url = url.startsWith("https") ? url : "https://open.aliyundrive.com/adrive/v1.0/" + url;
         OkResult result = OkHttp.postJson(url, json, getHeaderOpen());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
-        if (retry && (result.getCode() == 400 || result.getCode() == 401) && refreshOpenToken()) return oauth(url, json, false);
+        if (retry && (result.getCode() == 400 || result.getCode() == 401) && refreshOpenToken())
+            return oauth(url, json, false);
         return result.getBody();
     }
 
@@ -214,6 +220,20 @@ public class API {
             return true;
         } finally {
             while (user.getAccessToken().isEmpty()) SystemClock.sleep(250);
+        }
+    }
+
+    private boolean getDriveId() {
+        try {
+            SpiderDebug.log("Obtain drive id...");
+            String result = auth("https://user.aliyundrive.com/v2/user/get", "{}", false);
+            drive = Drive.objectFrom(result).save();
+            driveId = drive.getResourceDriveId().isEmpty() ? drive.getDriveId() : drive.getResourceDriveId();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            drive.clean().save();
+            return false;
         }
     }
 
@@ -272,7 +292,8 @@ public class API {
         List<String> playFrom = Arrays.asList("原畫", "超清", "高清");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
-        for (Item file : files) episode.add(file.getDisplayName() + "$" + file.getFileId() + findSubs(file.getName(), subs));
+        for (Item file : files)
+            episode.add(file.getDisplayName() + "$" + file.getFileId() + findSubs(file.getName(), subs));
         for (int i = 0; i < playFrom.size(); i++) playUrl.add(TextUtils.join("#", episode));
         Vod vod = new Vod();
         vod.setVodId(url);
@@ -338,7 +359,8 @@ public class API {
         pair(Utils.removeExt(name1).toLowerCase(), items, subs);
         if (subs.isEmpty()) subs.addAll(items);
         StringBuilder sb = new StringBuilder();
-        for (Item sub : subs) sb.append("+").append(Utils.removeExt(sub.getName())).append("@@@").append(sub.getExt()).append("@@@").append(sub.getFileId());
+        for (Item sub : subs)
+            sb.append("+").append(Utils.removeExt(sub.getName())).append("@@@").append(sub.getExt()).append("@@@").append(sub.getFileId());
         return sb.toString();
     }
 
@@ -358,10 +380,11 @@ public class API {
     public String getDownloadUrl(String fileId) {
         try {
             SpiderDebug.log("getDownloadUrl..." + fileId);
+            if (!getDriveId()) throw new Exception("unable obtain drive id");
             tempIds.add(0, copy(fileId));
             JSONObject body = new JSONObject();
             body.put("file_id", tempIds.get(0));
-            body.put("drive_id", user.getDriveId());
+            body.put("drive_id", driveId);
             String json = oauth("openFile/getDownloadUrl", body.toString(), true);
             return new JSONObject(json).getString("url");
         } catch (Exception e) {
@@ -375,10 +398,11 @@ public class API {
     public JSONObject getVideoPreviewPlayInfo(String fileId) {
         try {
             SpiderDebug.log("getVideoPreviewPlayInfo..." + fileId);
+            if (!getDriveId()) throw new Exception("unable obtain drive id");
             tempIds.add(0, copy(fileId));
             JSONObject body = new JSONObject();
             body.put("file_id", tempIds.get(0));
-            body.put("drive_id", user.getDriveId());
+            body.put("drive_id", driveId);
             body.put("category", "live_transcoding");
             body.put("url_expire_sec", "14400");
             String json = oauth("openFile/getVideoPreviewPlayInfo", body.toString(), true);
@@ -436,7 +460,7 @@ public class API {
     private String copy(String fileId) throws Exception {
         SpiderDebug.log("Copy..." + fileId);
         String json = "{\"requests\":[{\"body\":{\"file_id\":\"%s\",\"share_id\":\"%s\",\"auto_rename\":true,\"to_parent_file_id\":\"root\",\"to_drive_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"0\",\"method\":\"POST\",\"url\":\"/file/copy\"}],\"resource\":\"file\"}";
-        json = String.format(json, fileId, shareId, user.getDriveId());
+        json = String.format(json, fileId, shareId, driveId);
         String result = auth("adrive/v2/batch", json, true);
         if (result.contains("ForbiddenNoPermission.File")) return copy(fileId);
         return new JSONObject(result).getJSONArray("responses").getJSONObject(0).getJSONObject("body").getString("file_id");
@@ -454,7 +478,7 @@ public class API {
         try {
             SpiderDebug.log("Delete..." + fileId);
             String json = "{\"requests\":[{\"body\":{\"drive_id\":\"%s\",\"file_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"%s\",\"method\":\"POST\",\"url\":\"/file/delete\"}],\"resource\":\"file\"}";
-            json = String.format(json, user.getDriveId(), fileId, fileId);
+            json = String.format(json, driveId, fileId, fileId);
             String result = auth("adrive/v2/batch", json, true);
             return result.length() == 211;
         } catch (Exception ignored) {
