@@ -72,7 +72,7 @@ public class Push extends Ali {
     private void setFileSub(String url, List<Sub> subs) {
         File file = new File(url.replace("file://", ""));
         if (file.getParentFile() == null) return;
-        for (File f : Objects.requireNonNull(file.getParentFile().listFiles())) {
+        for (File f : file.getParentFile().listFiles()) {
             String ext = Utils.getExt(f.getName());
             if (Utils.isSub(ext)) subs.add(Sub.create().name(Utils.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
         }

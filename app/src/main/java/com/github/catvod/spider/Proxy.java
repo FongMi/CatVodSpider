@@ -13,7 +13,7 @@ public class Proxy extends Spider {
     private static int port = -1;
 
     public static Object[] proxy(Map<String, String> params) throws Exception {
-        switch (Objects.requireNonNull(params.get("do"))) {
+        switch (params.get("do")) {
             case "ck":
                 return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
             case "ali":

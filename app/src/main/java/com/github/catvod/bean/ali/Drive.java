@@ -45,7 +45,6 @@ public class Drive {
         return TextUtils.isEmpty(sboxDriveId) ? "" : sboxDriveId;
     }
 
-
     public Drive clean() {
         this.driveId = "";
         this.resourceDriveId = "";
