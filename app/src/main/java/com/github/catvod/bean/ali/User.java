@@ -48,7 +48,9 @@ public class User {
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
-
+    public void setDriveId(String driveId) {
+        this.driveId = driveId;
+    }
     public String getAuthorization() {
         return getTokenType() + " " + getAccessToken();
     }
