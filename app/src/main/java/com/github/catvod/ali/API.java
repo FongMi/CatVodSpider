@@ -83,7 +83,7 @@ public class API {
         tempIds = new ArrayList<>();
         oauth = OAuth.objectFrom(FileUtil.read(getOAuthCache()));
         user = User.objectFrom(FileUtil.read(getUserCache()));
-        drive = Drive.objectFrom(FileUtil.read(getUserCache()));
+        drive = Drive.objectFrom(FileUtil.read(getDriveCache()));
         quality = new HashMap<>();
         quality.put("4K", "UHD");
         quality.put("2k", "QHD");
@@ -227,11 +227,11 @@ public class API {
             String result = auth("https://user.aliyundrive.com/v2/user/get", "{}", false);
             drive = Drive.objectFrom(result).save();
             driveId = drive.getResourceDriveId().isEmpty() ? drive.getDriveId() : drive.getResourceDriveId();
-            return true;
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             drive.clean().save();
-            return false;
+            return true;
         }
     }
 
@@ -376,7 +376,7 @@ public class API {
     public String getDownloadUrl(String fileId) {
         try {
             SpiderDebug.log("getDownloadUrl..." + fileId);
-            if (!getDriveId()) throw new Exception("unable obtain drive id");
+            if (getDriveId()) throw new Exception("unable obtain drive id");
             tempIds.add(0, copy(fileId));
             JSONObject body = new JSONObject();
             body.put("file_id", tempIds.get(0));
@@ -394,7 +394,7 @@ public class API {
     public JSONObject getVideoPreviewPlayInfo(String fileId) {
         try {
             SpiderDebug.log("getVideoPreviewPlayInfo..." + fileId);
-            if (!getDriveId()) throw new Exception("unable obtain drive id");
+            if (getDriveId()) throw new Exception("unable obtain drive id");
             tempIds.add(0, copy(fileId));
             JSONObject body = new JSONObject();
             body.put("file_id", tempIds.get(0));
