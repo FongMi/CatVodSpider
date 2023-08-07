@@ -35,7 +35,10 @@
       "api": "csp_Bili",
       "searchable": 1,
       "changeable": 0,
-      "viewType": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.597
+      },
       "ext": {
         "type": "帕梅拉#太极拳#广场舞#演唱会",
         "cookie": ""

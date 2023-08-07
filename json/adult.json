@@ -53,7 +53,11 @@
       "name": "玩偶",
       "type": 3,
       "api": "csp_Doll",
-      "searchable": 1
+      "searchable": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.309
+      }
     },
     {
       "key": "18AV",
@@ -61,7 +65,10 @@
       "type": 3,
       "api": "csp_Eighteen",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.486
+      }
     },
     {
       "key": "Jable",
@@ -69,7 +76,10 @@
       "type": 3,
       "api": "csp_Jable",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.309
+      }
     },
     {
       "key": "MissAV",
@@ -77,22 +87,21 @@
       "type": 3,
       "api": "csp_Miss",
       "searchable": 1,
-      "viewType": 1
-    },
-    {
-      "key": "Supjav",
-      "name": "Supjav",
-      "type": 3,
-      "api": "csp_Supjav",
-      "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.777
+      }
     },
     {
       "key": "Hanime",
       "name": "Hanime",
       "type": 3,
       "api": "csp_Hanime",
-      "searchable": 1
+      "searchable": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 0.68
+      }
     },
     {
       "key": "51smt4.xyz",
@@ -100,7 +109,10 @@
       "type": 1,
       "api": "http://51smt4.xyz/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "jcspcj8.com",
@@ -108,7 +120,10 @@
       "type": 0,
       "api": "http://jcspcj8.com/api?ac=videolist",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "bttcj.com",
@@ -116,7 +131,10 @@
       "type": 0,
       "api": "http://bttcj.com/inc/sapi.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "cjmygzy.com",
@@ -124,7 +142,10 @@
       "type": 0,
       "api": "http://cjmygzy.com/inc/sapi.php?ac=videolist",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "91md.me",
@@ -132,7 +153,10 @@
       "type": 1,
       "api": "http://91md.me/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "dadiapi.com",
@@ -140,7 +164,10 @@
       "type": 0,
       "api": "http://dadiapi.com/api.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "secj8.com",
@@ -148,7 +175,10 @@
       "type": 0,
       "api": "http://secj8.com/inc/sapi.php?ac=videolist",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "api.putaozy.net",
@@ -156,7 +186,10 @@
       "type": 1,
       "api": "http://api.putaozy.net/inc/apijson_vod.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "llzxcj.com",
@@ -164,7 +197,10 @@
       "type": 0,
       "api": "http://llzxcj.com/inc/sck.php?ac=videolist",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "apilj.com",
@@ -172,7 +208,10 @@
       "type": 1,
       "api": "http://apilj.com/api.php/provide/vod/at/json/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "f2dcj6.com",
@@ -180,7 +219,10 @@
       "type": 0,
       "api": "http://f2dcj6.com/sapi?ac=videolist",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "99zy.pw",
@@ -188,7 +230,10 @@
       "type": 1,
       "api": "http://99zy.pw/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "ggmmzy.com",
@@ -196,7 +241,10 @@
       "type": 0,
       "api": "http://www.ggmmzy.com:9999/inc/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "fhapi9.com",
@@ -204,7 +252,10 @@
       "type": 1,
       "api": "http://fhapi9.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "feifei67.com",
@@ -212,7 +263,10 @@
       "type": 1,
       "api": "http://www.feifei67.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "sdszyapi.com",
@@ -220,7 +274,10 @@
       "type": 0,
       "api": "http://sdszyapi.com/home/cjapi/asbb/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "madouse.la",
@@ -228,7 +285,10 @@
       "type": 1,
       "api": "http://madouse.la/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "xjjzyapi.com",
@@ -236,7 +296,10 @@
       "type": 0,
       "api": "http://xjjzyapi.com/home/cjapi/askl/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "shabizy.com",
@@ -244,7 +307,10 @@
       "type": 0,
       "api": "http://www.shabizy.com:777/inc/sea",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji21.com",
@@ -252,7 +318,10 @@
       "type": 0,
       "api": "http://www.caiji21.com/home/cjapi/klkl/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji25.com",
@@ -260,7 +329,10 @@
       "type": 0,
       "api": "http://www.caiji25.com/home/cjapi/p0as/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji26.com",
@@ -268,7 +340,10 @@
       "type": 0,
       "api": "http://caiji26.com/home/cjapi/p0g8/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji24.com",
@@ -276,7 +351,10 @@
       "type": 0,
       "api": "http://www.caiji24.com/home/cjapi/p0d2/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "lbapiby.com",
@@ -284,7 +362,10 @@
       "type": 0,
       "api": "http://lbapiby.com/api.php/provide/vod/at/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "api.maozyapi.com",
@@ -292,7 +373,10 @@
       "type": 1,
       "api": "https://api.maozyapi.com/inc/apijson_vod.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "888dav.com",
@@ -300,7 +384,10 @@
       "type": 1,
       "api": "https://www.888dav.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "mgav1.cc",
@@ -308,7 +395,10 @@
       "type": 0,
       "api": "https://www.mgav1.cc/api.php/provide/vod/at/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "mgzyz1.com",
@@ -316,7 +406,10 @@
       "type": 1,
       "api": "https://mgzyz1.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "msnii.com",
@@ -324,7 +417,10 @@
       "type": 0,
       "api": "https://www.msnii.com/api/xml.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "kkzy.me",
@@ -332,7 +428,10 @@
       "type": 1,
       "api": "https://kkzy.me/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji.huakuiapi.com",
@@ -340,7 +439,10 @@
       "type": 1,
       "api": "https://caiji.huakuiapi.com/inc/apijson_vod.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "siwazyw.cc",
@@ -348,7 +450,10 @@
       "type": 1,
       "api": "https://siwazyw.cc/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "pgxdy.com",
@@ -356,7 +461,10 @@
       "type": 0,
       "api": "https://www.pgxdy.com/api/xml.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "api.sexnguon.com",
@@ -364,7 +472,10 @@
       "type": 1,
       "api": "https://api.sexnguon.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "dmmapi.com",
@@ -372,7 +483,10 @@
       "type": 0,
       "api": "https://www.dmmapi.com/home/cjapi/asd2c7/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "xx55zyapi.com",
@@ -380,7 +494,10 @@
       "type": 0,
       "api": "https://xx55zyapi.com/home/cjapi/ascf/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "kxgav.com",
@@ -388,7 +505,10 @@
       "type": 0,
       "api": "https://www.kxgav.com/api/xml.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji02.com",
@@ -396,7 +516,10 @@
       "type": 0,
       "api": "https://www.caiji02.com/home/cjapi/cfas/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "xrbsp.com",
@@ -404,7 +527,10 @@
       "type": 0,
       "api": "https://www.xrbsp.com/api/xml.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji07.com",
@@ -412,7 +538,10 @@
       "type": 0,
       "api": "https://www.caiji07.com/home/cjapi/cfcf/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "lbapi9.com",
@@ -420,7 +549,10 @@
       "type": 1,
       "api": "https://lbapi9.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji03.com",
@@ -428,7 +560,10 @@
       "type": 0,
       "api": "https://www.caiji03.com/home/cjapi/cfg8/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji08.com",
@@ -436,7 +571,10 @@
       "type": 0,
       "api": "https://www.caiji08.com/home/cjapi/cfkl/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji10.com",
@@ -444,7 +582,10 @@
       "type": 0,
       "api": "https://www.caiji10.com/home/cjapi/cfs6/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "52zyapi.com",
@@ -452,7 +593,10 @@
       "type": 0,
       "api": "https://52zyapi.com/home/cjapi/asda/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "apittzy.com",
@@ -460,7 +604,10 @@
       "type": 1,
       "api": "https://apittzy.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "api.xiuseapi.com",
@@ -468,7 +615,10 @@
       "type": 1,
       "api": "https://api.xiuseapi.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji01.com",
@@ -476,7 +626,10 @@
       "type": 0,
       "api": "https://www.caiji01.com/home/cjapi/cfd2/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji22.com",
@@ -484,7 +637,10 @@
       "type": 0,
       "api": "https://www.caiji22.com/home/cjapi/klp0/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji23.com",
@@ -492,7 +648,10 @@
       "type": 0,
       "api": "https://www.caiji23.com/home/cjapi/kls6/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "afasu.com",
@@ -500,7 +659,10 @@
       "type": 0,
       "api": "https://www.afasu.com/api/xml.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "hghhh.com",
@@ -508,7 +670,10 @@
       "type": 1,
       "api": "https://hghhh.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "sewozyapi.com",
@@ -516,7 +681,10 @@
       "type": 1,
       "api": "https://sewozyapi.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "gdlsp.com",
@@ -524,7 +692,10 @@
       "type": 0,
       "api": "https://www.gdlsp.com/api/xml.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji04.com",
@@ -532,7 +703,10 @@
       "type": 0,
       "api": "https://www.caiji04.com/home/cjapi/cfc7/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji09.com",
@@ -540,7 +714,10 @@
       "type": 0,
       "api": "https://www.caiji09.com/home/cjapi/cfp0/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji05.com",
@@ -548,7 +725,10 @@
       "type": 0,
       "api": "https://www.caiji05.com/home/cjapi/cfda/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "jgczyapi.com",
@@ -556,7 +736,10 @@
       "type": 0,
       "api": "https://jgczyapi.com/home/cjapi/kld2/mc10/vod/xml",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji.caomeiapi.com",
@@ -564,7 +747,10 @@
       "type": 1,
       "api": "https://caiji.caomeiapi.com/inc/apijson_vod.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji.523zyw.com",
@@ -572,7 +758,10 @@
       "type": 1,
       "api": "https://caiji.523zyw.com/inc/apijson_vod.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "caiji.naichaapi.com",
@@ -580,7 +769,10 @@
       "type": 1,
       "api": "https://caiji.naichaapi.com/inc/apijson_vod.php",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "api.apilyzy.com",
@@ -588,7 +780,10 @@
       "type": 1,
       "api": "https://api.apilyzy.com/api.php/provide/vod/",
       "searchable": 1,
-      "viewType": 1
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      }
     },
     {
       "key": "push_agent",
