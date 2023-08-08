@@ -8,9 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.Provider;
-import java.security.Security;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -31,14 +29,12 @@ public class SSLCompat extends SSLSocketFactory {
     }
 
     public SSLCompat(SSLSocketFactory factory) {
-        HttpsURLConnection.setDefaultSSLSocketFactory(factory);
         socketFactory = factory;
     }
 
     public static SSLCompat get() {
         try {
             Provider provider = Conscrypt.newProvider();
-            Security.insertProviderAt(provider, 1);
             SSLContext context = SSLContext.getInstance("TLS", provider);
             context.init(null, new TrustManager[]{TM}, null);
             return new SSLCompat(context.getSocketFactory());
