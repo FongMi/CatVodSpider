@@ -3,11 +3,13 @@ package com.github.catvod.net;
 import com.github.catvod.crawler.Spider;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
+import okhttp3.ConnectionSpec;
 import okhttp3.Dns;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
