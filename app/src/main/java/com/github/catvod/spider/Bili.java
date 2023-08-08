@@ -29,6 +29,8 @@ import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -109,6 +111,13 @@ public class Bili extends Spider {
     public String homeContent(boolean filter) throws Exception {
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
+        JSONObject jSONObject = new JSONObject();
+        if (extend.has("json")) {
+            JSONObject json = new JSONObject(OkHttp.string(extend.get("json").getAsString()));
+            jSONObject.put("class", json.getJSONArray("classes"));
+            jSONObject.put("filters", json.getJSONObject("filter"));
+            return jSONObject.toString();
+        }
         String[] types = extend.get("type").getAsString().split("#");
         for (String type : types) {
             classes.add(new Class(type));
@@ -119,6 +128,14 @@ public class Bili extends Spider {
 
     @Override
     public String homeVideoContent() throws Exception {
+        if (extend.has("json")) {
+            String api = "https://api.bilibili.com/x/web-interface/popular?ps=20";
+            String json = OkHttp.string(api, getGuest());
+            Resp resp = Resp.objectFrom(json);
+            List<Vod> list = new ArrayList<>();
+            for (Resp.Result item : Resp.Result.arrayFrom(resp.getData().getList())) list.add(item.getVod());
+            return Result.string(list);
+        }
         String[] types = extend.get("type").getAsString().split("#");
         return categoryContent(types[0], "1", true, new HashMap<>());
     }
@@ -156,23 +173,23 @@ public class Bili extends Spider {
         vod.setVodContent(detail.getDesc());
         vod.setVodRemarks(detail.getDuration() / 60 + "分鐘");
 
-        api = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + detail.getCid() + "&qn=127&fnval=4048&fourk=1";
-        json = OkHttp.string(api, getMember());
-        Data play = Resp.objectFrom(json).getData();
-        List<String> playList = new ArrayList<>();
-        List<String> playFrom = new ArrayList<>();
-        for (int i = 0; i < play.getAcceptQuality().size(); i++) {
-            int quality = play.getAcceptQuality().get(i);
-            List<String> vodItems = new ArrayList<>();
-            if (!login && quality > 32) continue;
-            if (!vip && quality > 80) continue;
-            for (Page page : detail.getPages()) vodItems.add(page.getPart() + "$" + aid + "+" + page.getCid() + "+" + quality);
-            playList.add(TextUtils.join("#", vodItems));
-            playFrom.add(play.getAcceptDescription().get(i));
-        }
+        Map<String, String> vod_play = new LinkedHashMap<>();
+        ArrayList<String> playList = new ArrayList<>();
+        for (Page page : detail.getPages()) playList.add(page.getPart() + "$" + aid + "+" + page.getCid());
+        vod_play.put("B站", TextUtils.join("#", playList));
 
-        vod.setVodPlayFrom(TextUtils.join("$$$", playFrom));
-        vod.setVodPlayUrl(TextUtils.join("$$$", playList));
+        api = "https://api.bilibili.com/x/web-interface/archive/related?bvid=" + id;
+        JSONArray related = new JSONObject(OkHttp.string(api, getMember())).optJSONArray("data");
+        playList = new ArrayList<>();
+        for (int i = 0; i < related.length(); i++) {
+            JSONObject relatedData = related.getJSONObject(i);
+            playList.add(relatedData.getString("title") + "$" + relatedData.optLong("aid") + "+" + relatedData.optLong("cid"));
+        }
+        vod_play.put("相关推荐", TextUtils.join("#", playList));
+
+
+        vod.setVodPlayFrom(TextUtils.join("$$$", vod_play.keySet()));
+        vod.setVodPlayUrl(TextUtils.join("$$$", vod_play.values()));
         return Result.string(vod);
     }
 
@@ -191,7 +208,7 @@ public class Bili extends Spider {
         String[] ids = id.split("\\+");
         String aid = ids[0];
         String cid = ids[1];
-        String qn = ids[2];
+        String qn = "127";
 
         String api = "https://api.bilibili.com/x/player/playurl?avid=" + aid + "&cid=" + cid + "&qn=" + qn + "&fnval=4048&fourk=1";
         String json = OkHttp.string(api, getMember());

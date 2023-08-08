@@ -12,6 +12,8 @@ public class Data {
 
     @SerializedName("result")
     private JsonElement result;
+    @SerializedName("list")
+    private JsonElement list;
     @SerializedName("isLogin")
     private Boolean isLogin;
     @SerializedName("vipType")
@@ -45,6 +47,9 @@ public class Data {
 
     public JsonElement getResult() {
         return result;
+    }
+    public JsonElement getList() {
+        return list;
     }
 
     public boolean isLogin() {
