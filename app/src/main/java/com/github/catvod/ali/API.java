@@ -47,7 +47,6 @@ import okhttp3.Response;
 
 public class API {
 
-    private final Map<String, String> quality;
     private ScheduledExecutorService service;
     private final List<String> tempIds;
     private AlertDialog dialog;
@@ -84,13 +83,6 @@ public class API {
         oauth = OAuth.objectFrom(FileUtil.read(getOAuthCache()));
         user = User.objectFrom(FileUtil.read(getUserCache()));
         drive = Drive.objectFrom(FileUtil.read(getDriveCache()));
-        quality = new HashMap<>();
-        quality.put("4K", "UHD");
-        quality.put("2k", "QHD");
-        quality.put("超清", "FHD");
-        quality.put("高清", "HD");
-        quality.put("標清", "SD");
-        quality.put("流暢", "LD");
     }
 
     public void setRefreshToken(String token) {
@@ -287,7 +279,7 @@ public class API {
         List<Item> files = new ArrayList<>();
         List<Item> subs = new ArrayList<>();
         listFiles(new Item(getParentFileId(fileId, object)), files, subs);
-        List<String> playFrom = Arrays.asList("原畫", "超清", "高清");
+        List<String> playFrom = Arrays.asList("原畫", "普畫");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
         for (Item file : files) episode.add(file.getDisplayName() + "$" + file.getFileId() + findSubs(file.getName(), subs));
@@ -411,14 +403,15 @@ public class API {
         }
     }
 
-    public String playerContent(String[] ids) {
-        return Result.get().url(getDownloadUrl(ids[0])).octet().subs(getSubs(ids)).header(getHeader()).string();
+    public String playerContent(String[] ids, boolean original) {
+        if (original) return Result.get().url(getDownloadUrl(ids[0])).octet().subs(getSubs(ids)).header(getHeader()).string();
+        else return getPreviewContent(ids);
     }
 
-    public String playerContent(String[] ids, String flag) {
+    private String getPreviewContent(String[] ids) {
         try {
             JSONObject playInfo = getVideoPreviewPlayInfo(ids[0]);
-            String url = getPreviewUrl(playInfo, flag);
+            String url = getPreviewUrl(playInfo);
             List<Sub> subs = getSubs(ids);
             subs.addAll(getSubs(playInfo));
             return Result.get().url(url).m3u8().subs(subs).header(getHeader()).string();
@@ -428,13 +421,16 @@ public class API {
         }
     }
 
-    private String getPreviewUrl(JSONObject playInfo, String flag) throws Exception {
+    private String getPreviewUrl(JSONObject playInfo) throws Exception {
         if (!playInfo.has("live_transcoding_task_list")) return "";
         JSONArray taskList = playInfo.getJSONArray("live_transcoding_task_list");
-        for (int i = 0; i < taskList.length(); ++i) {
-            JSONObject task = taskList.getJSONObject(i);
-            if (task.getString("template_id").equals(quality.get(flag))) {
-                return task.getString("url");
+        List<String> templates = Arrays.asList("UHD", "QHD", "FHD", "HD", "SD", "LD");
+        for (String template : templates) {
+            for (int i = 0; i < taskList.length(); ++i) {
+                JSONObject task = taskList.getJSONObject(i);
+                if (task.getString("template_id").equals(template)) {
+                    return task.getString("url");
+                }
             }
         }
         return taskList.getJSONObject(0).getString("url");
