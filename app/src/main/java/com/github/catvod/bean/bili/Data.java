@@ -48,6 +48,7 @@ public class Data {
     public JsonElement getResult() {
         return result;
     }
+
     public JsonElement getList() {
         return list;
     }
