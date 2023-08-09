@@ -122,17 +122,13 @@ public class Bili extends Spider {
     }
 
     @Override
-    public String homeVideoContent() throws Exception {
-        if (extend.has("json")) {
-            String api = "https://api.bilibili.com/x/web-interface/popular?ps=20";
-            String json = OkHttp.string(api, getGuest());
-            Resp resp = Resp.objectFrom(json);
-            List<Vod> list = new ArrayList<>();
-            for (Resp.Result item : Resp.Result.arrayFrom(resp.getData().getList())) list.add(item.getVod());
-            return Result.string(list);
-        }
-        String[] types = extend.get("type").getAsString().split("#");
-        return categoryContent(types[0], "1", true, new HashMap<>());
+    public String homeVideoContent() {
+        String api = "https://api.bilibili.com/x/web-interface/popular?ps=20";
+        String json = OkHttp.string(api, getGuest());
+        Resp resp = Resp.objectFrom(json);
+        List<Vod> list = new ArrayList<>();
+        for (Resp.Result item : Resp.Result.arrayFrom(resp.getData().getList())) list.add(item.getVod());
+        return Result.string(list);
     }
 
     @Override
