@@ -1,5 +1,5 @@
 {
-  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;1de1a94d0429f343a35986ef5e9145d6",
+  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;edae7af0ef2089cfc135c90ce085aacd",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "sites": [
     {
@@ -67,7 +67,7 @@
       "searchable": 1,
       "style": {
         "type": "rect",
-        "ratio": 1.486
+        "ratio": 1.485
       }
     },
     {
@@ -78,7 +78,7 @@
       "searchable": 1,
       "style": {
         "type": "rect",
-        "ratio": 1.309
+        "ratio": 1.77
       }
     },
     {

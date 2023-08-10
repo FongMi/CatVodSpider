@@ -1,5 +1,5 @@
 {
-  "classes": [
+  "class": [
     {
       "type_name": "帕梅拉",
       "type_id": "帕梅拉"
@@ -37,6 +37,6 @@
       "type_id": "动物世界"
     }
   ],
-  "filter": {
+  "filters": {
   }
 }

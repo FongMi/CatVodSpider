@@ -29,6 +29,7 @@ import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -109,15 +110,9 @@ public class Bili extends Spider {
 
     @Override
     public String homeContent(boolean filter) throws Exception {
+        if (extend.has("json")) return OkHttp.string(extend.get("json").getAsString());
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        JSONObject jSONObject = new JSONObject();
-        if (extend.has("json")) {
-            JSONObject json = new JSONObject(OkHttp.string(extend.get("json").getAsString()));
-            jSONObject.put("class", json.getJSONArray("classes"));
-            jSONObject.put("filters", json.getJSONObject("filter"));
-            return jSONObject.toString();
-        }
         String[] types = extend.get("type").getAsString().split("#");
         for (String type : types) {
             classes.add(new Class(type));
@@ -127,17 +122,13 @@ public class Bili extends Spider {
     }
 
     @Override
-    public String homeVideoContent() throws Exception {
-        if (extend.has("json")) {
-            String api = "https://api.bilibili.com/x/web-interface/popular?ps=20";
-            String json = OkHttp.string(api, getGuest());
-            Resp resp = Resp.objectFrom(json);
-            List<Vod> list = new ArrayList<>();
-            for (Resp.Result item : Resp.Result.arrayFrom(resp.getData().getList())) list.add(item.getVod());
-            return Result.string(list);
-        }
-        String[] types = extend.get("type").getAsString().split("#");
-        return categoryContent(types[0], "1", true, new HashMap<>());
+    public String homeVideoContent() {
+        String api = "https://api.bilibili.com/x/web-interface/popular?ps=20";
+        String json = OkHttp.string(api, getGuest());
+        Resp resp = Resp.objectFrom(json);
+        List<Vod> list = new ArrayList<>();
+        for (Resp.Result item : Resp.Result.arrayFrom(resp.getData().getList())) list.add(item.getVod());
+        return Result.string(list);
     }
 
     @Override
@@ -186,7 +177,6 @@ public class Bili extends Spider {
             playList.add(relatedData.getString("title") + "$" + relatedData.optLong("aid") + "+" + relatedData.optLong("cid"));
         }
         vod_play.put("相关推荐", TextUtils.join("#", playList));
-
 
         vod.setVodPlayFrom(TextUtils.join("$$$", vod_play.keySet()));
         vod.setVodPlayUrl(TextUtils.join("$$$", vod_play.values()));
@@ -259,35 +249,11 @@ public class Bili extends Spider {
         String id = media.getId() + "_" + media.getCodecId();
         String type = media.getMimeType().split("/")[0];
         String baseUrl = media.getBaseUrl().replace("&", "&amp;");
-        return String.format(Locale.getDefault(),
-                "<AdaptationSet>\n" +
-                        "<ContentComponent contentType=\"%s\"/>\n" +
-                        "<Representation id=\"%s\" bandwidth=\"%s\" codecs=\"%s\" mimeType=\"%s\" %s startWithSAP=\"%s\">\n" +
-                        "<BaseURL>%s</BaseURL>\n" +
-                        "<SegmentBase indexRange=\"%s\">\n" +
-                        "<Initialization range=\"%s\"/>\n" +
-                        "</SegmentBase>\n" +
-                        "</Representation>\n" +
-                        "</AdaptationSet>",
-                type,
-                id, media.getBandWidth(), media.getCodecs(), media.getMimeType(), params, media.getStartWithSap(),
-                baseUrl,
-                media.getSegmentBase().getIndexRange(),
-                media.getSegmentBase().getInitialization());
+        return String.format(Locale.getDefault(), "<AdaptationSet>\n" + "<ContentComponent contentType=\"%s\"/>\n" + "<Representation id=\"%s\" bandwidth=\"%s\" codecs=\"%s\" mimeType=\"%s\" %s startWithSAP=\"%s\">\n" + "<BaseURL>%s</BaseURL>\n" + "<SegmentBase indexRange=\"%s\">\n" + "<Initialization range=\"%s\"/>\n" + "</SegmentBase>\n" + "</Representation>\n" + "</AdaptationSet>", type, id, media.getBandWidth(), media.getCodecs(), media.getMimeType(), params, media.getStartWithSap(), baseUrl, media.getSegmentBase().getIndexRange(), media.getSegmentBase().getInitialization());
     }
 
     private String getMpd(Dash dash, String videoList, String audioList) {
-        return String.format(Locale.getDefault(),
-                "<MPD xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"urn:mpeg:dash:schema:mpd:2011\" xsi:schemaLocation=\"urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd\" type=\"static\" mediaPresentationDuration=\"PT%sS\" minBufferTime=\"PT%sS\" profiles=\"urn:mpeg:dash:profile:isoff-on-demand:2011\">\n" +
-                        "<Period duration=\"PT%sS\" start=\"PT0S\">\n" +
-                        "%s\n" +
-                        "%s\n" +
-                        "</Period>\n" +
-                        "</MPD>",
-                dash.getDuration(), dash.getMinBufferTime(),
-                dash.getDuration(),
-                videoList,
-                audioList);
+        return String.format(Locale.getDefault(), "<MPD xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"urn:mpeg:dash:schema:mpd:2011\" xsi:schemaLocation=\"urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd\" type=\"static\" mediaPresentationDuration=\"PT%sS\" minBufferTime=\"PT%sS\" profiles=\"urn:mpeg:dash:profile:isoff-on-demand:2011\">\n" + "<Period duration=\"PT%sS\" start=\"PT0S\">\n" + "%s\n" + "%s\n" + "</Period>\n" + "</MPD>", dash.getDuration(), dash.getMinBufferTime(), dash.getDuration(), videoList, audioList);
     }
 
     private void checkLogin() {
