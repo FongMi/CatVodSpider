@@ -135,6 +135,7 @@ public class Bili extends Spider {
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
         String order = extend.containsKey("order") ? extend.get("order") : "totalrank";
         String duration = extend.containsKey("duration") ? extend.get("duration") : "0";
+        tid = extend.containsKey("tid") ? extend.get("tid") : tid;
         String api = "https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=" + URLEncoder.encode(tid) + "&order=" + order + "&duration=" + duration + "&page=" + pg;
         String json = OkHttp.string(api, getGuest());
         Resp resp = Resp.objectFrom(json);
