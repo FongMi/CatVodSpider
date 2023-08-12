@@ -35,6 +35,8 @@ public class Drive {
     private String path;
     @SerializedName("token")
     private String token;
+    @SerializedName("search")
+    private Boolean search;
 
     public static Drive objectFrom(String str) {
         return new Gson().fromJson(str, Drive.class);
@@ -90,6 +92,10 @@ public class Drive {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Boolean search() {
+        return search == null || search;
     }
 
     public boolean isNew() {
