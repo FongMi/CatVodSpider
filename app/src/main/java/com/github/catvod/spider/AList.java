@@ -25,7 +25,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class AList extends Spider {
 
@@ -130,9 +134,10 @@ public class AList extends Spider {
     public String searchContent(String keyword, boolean quick) throws Exception {
         fetchRule();
         List<Vod> list = new ArrayList<>();
-        CountDownLatch cd = new CountDownLatch(drives.size());
-        for (Drive drive : drives) new Thread(() -> search(cd, list, drive.check(), keyword)).start();
-        cd.await();
+        List<Job> jobs = new ArrayList<>();
+        ExecutorService executor = Executors.newCachedThreadPool();
+        for (Drive drive : drives) if (drive.search()) jobs.add(new Job(drive.check(), keyword));
+        for (Future<List<Vod>> future : executor.invokeAll(jobs, 15, TimeUnit.SECONDS)) list.addAll(future.get());
         return Result.string(list);
     }
 
@@ -191,17 +196,6 @@ public class AList extends Spider {
         }
     }
 
-    private void search(CountDownLatch cd, List<Vod> list, Drive drive, String keyword) {
-        try {
-            String response = post(drive, drive.searchApi(), drive.params(keyword));
-            List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
-            for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive, vodPic));
-        } catch (Exception ignored) {
-        } finally {
-            cd.countDown();
-        }
-    }
-
     private String getListJson(boolean isNew, String response) throws Exception {
         if (isNew) {
             return new JSONObject(response).getJSONObject("data").getJSONArray("content").toString();
@@ -243,5 +237,25 @@ public class AList extends Spider {
             sub.add(Sub.create().name(name).ext(ext).url(url));
         }
         return sub;
+    }
+
+    class Job implements Callable<List<Vod>> {
+
+        private final Drive drive;
+        private final String keyword;
+
+        public Job(Drive drive, String keyword) {
+            this.drive = drive;
+            this.keyword = keyword;
+        }
+
+        @Override
+        public List<Vod> call() throws Exception {
+            List<Vod> list = new ArrayList<>();
+            String response = post(drive, drive.searchApi(), drive.params(keyword));
+            List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
+            for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive, vodPic));
+            return list;
+        }
     }
 }
