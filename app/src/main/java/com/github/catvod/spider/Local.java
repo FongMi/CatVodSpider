@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class Local extends Spider {
 
@@ -59,7 +58,7 @@ public class Local extends Spider {
         }
         items.addAll(folders);
         items.addAll(media);
-        return Result.string(items);
+        return Result.get().vod(items).page().string();
     }
 
     @Override
