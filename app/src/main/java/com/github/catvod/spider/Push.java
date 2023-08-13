@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class Push extends Ali {
 
@@ -64,7 +63,7 @@ public class Push extends Ali {
 
     private void detectSub(String url, String ext, List<Sub> subs) {
         url = Utils.removeExt(url).concat(".").concat(ext);
-        if (OkHttp.string(url).length() > 100) return;
+        if (OkHttp.string(url).length() < 100) return;
         String name = Uri.parse(url).getLastPathSegment();
         subs.add(Sub.create().name(name).ext(ext).url(url));
     }
