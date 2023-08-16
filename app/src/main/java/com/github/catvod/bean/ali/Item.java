@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Item {
+public class Item implements Comparable<Item> {
 
     @SerializedName("items")
     private List<Item> items;
@@ -84,5 +84,10 @@ public class Item {
 
     public String getDisplayName() {
         return TextUtils.join(" ", Arrays.asList(getParent(), getName(), getSize())).trim();
+    }
+    
+    @Override
+    public int compareTo(Item item) {
+        return this.getName().compareTo(item.getName());
     }
 }

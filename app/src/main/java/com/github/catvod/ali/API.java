@@ -279,6 +279,7 @@ public class API {
         List<Item> files = new ArrayList<>();
         List<Item> subs = new ArrayList<>();
         listFiles(new Item(getParentFileId(fileId, object)), files, subs);
+        Collections.sort(files);
         List<String> playFrom = Arrays.asList("原畫", "普畫");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
