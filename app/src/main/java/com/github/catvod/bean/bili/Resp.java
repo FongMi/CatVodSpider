@@ -34,6 +34,8 @@ public class Resp {
 
         @SerializedName("bvid")
         private String bvid;
+        @SerializedName("aid")
+        private String aid;
         @SerializedName("title")
         private String title;
         @SerializedName("pic")
@@ -50,6 +52,10 @@ public class Resp {
             return TextUtils.isEmpty(bvid) ? "" : bvid;
         }
 
+        public String getAid() {
+            return TextUtils.isEmpty(aid) ? "" : aid;
+        }
+
         public String getTitle() {
             return TextUtils.isEmpty(title) ? "" : title;
         }
@@ -64,7 +70,7 @@ public class Resp {
 
         public Vod getVod() {
             Vod vod = new Vod();
-            vod.setVodId(getBvId());
+            vod.setVodId(getBvId() + "@" + getAid());
             vod.setVodName(Jsoup.parse(getTitle()).text());
             vod.setVodRemarks(getDuration().split(":")[0] + "分鐘");
             vod.setVodPic(getPic().startsWith("//") ? "https:" + getPic() : getPic());
