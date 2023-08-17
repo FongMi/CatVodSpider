@@ -15,7 +15,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +30,6 @@ public class Wogg extends Ali {
 	private final String siteURL = "http://tvfan.xxooo.cf";
 	
 	private JSONObject filters;
-	private final Pattern regexAli = Pattern.compile("(https://www.aliyundrive.com/s/[^\"]+)");
 	private final Pattern regexCategory = Pattern.compile("/vodtype/(\\w+).html");
 	private final Pattern regexPageTotal = Pattern.compile("\\$\\(\"\\.mac_total\"\\)\\.text\\('(\\d+)'\\);");
 	
@@ -72,7 +74,7 @@ public class Wogg extends Ali {
 			}
 		}
 		
-		Document doc = Jsoup.parse(OkHttp.string(siteURL + String.format("/index.php/vodshow/%s.html", String.join("-", urlParams)), getHeader()));
+		Document doc = Jsoup.parse(OkHttp.string(String.format("%s/index.php/vodshow/%s.html", siteURL, String.join("-", urlParams)), getHeader()));
 		int page = Integer.parseInt(pg), limit = 72, total = 0;
 		Matcher matcher = regexPageTotal.matcher(doc.html());
 		if (matcher.find()) {
@@ -97,9 +99,37 @@ public class Wogg extends Ali {
 	
 	@Override
 	public String detailContent(List<String> ids) throws Exception {
-		Matcher matcher = regexAli.matcher(OkHttp.string(siteURL + ids.get(0), getHeader()));
-		if (matcher.find()) return super.detailContent(Collections.singletonList(matcher.group(1)));
-		return "";
+		String vodId = ids.get(0);
+		
+		Document doc = Jsoup.parse(OkHttp.string(siteURL + vodId, getHeader()));
+		
+		Vod item = new Vod();
+		item.setVodId(vodId);
+		item.setVodName(doc.selectFirst(".video-info-header > .page-title").text());
+		item.setVodPic(doc.selectFirst(".module-item-pic img").attr("data-src"));
+		item.setVodArea(doc.select(".video-info-header a.tag-link").last().text());
+		item.setTypeName(String.join(",", doc.select(".video-info-header div.tag-link a").eachText()));
+		
+		List<String> shareLinks = doc.select(".module-row-text").eachAttr("data-clipboard-text");
+		item.setVodPlayUrl(super.detailContentVodPlayUrl(shareLinks));
+		item.setVodPlayFrom(super.detailContentVodPlayFrom(shareLinks));
+		
+		Elements elements = doc.select(".video-info-item");
+		for (Element e : elements) {
+			String title = e.previousElementSibling().text();
+			if (title.contains("导演")) {
+				item.setVodDirector(String.join(",", e.select("a").eachText()));
+			} else if (title.contains("主演")) {
+				item.setVodActor(String.join(",", e.select("a").eachText()));
+			} else if (title.contains("年代")) {
+				item.setVodYear(e.selectFirst("a").text().trim());
+			} else if (title.contains("备注")) {
+				item.setVodRemarks(e.text().trim());
+			} else if (title.contains("剧情")) {
+				item.setVodContent(e.selectFirst(".sqjj_a").text().replace("[收起部分]", "").trim());
+			}
+		}
+		return Result.string(item);
 	}
 	
 	@Override
