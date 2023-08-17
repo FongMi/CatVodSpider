@@ -149,14 +149,11 @@ public class Bili extends Spider {
         if (!login) checkLogin();
 
         String[] split = ids.get(0).split("@");
-     //   String api = "https://api.bilibili.com/x/web-interface/archive/stat?bvid=" + id;
-     //   String json = OkHttp.string(api, getMember());
-     //   Resp resp = Resp.objectFrom(json);
         String id = split[0];
         String aid = split[1];
 
-        api = "https://api.bilibili.com/x/web-interface/view?aid=" + aid;
-        json = OkHttp.string(api, getMember());
+        String api = "https://api.bilibili.com/x/web-interface/view?aid=" + aid;
+        String json = OkHttp.string(api, getMember());
         Data detail = Resp.objectFrom(json).getData();
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
