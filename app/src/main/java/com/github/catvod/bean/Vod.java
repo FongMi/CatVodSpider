@@ -133,7 +133,7 @@ public class Vod {
         private Float ratio;
 
         public static Style rect() {
-            return rect(0.8f);
+            return rect(0.75f);
         }
 
         public static Style rect(float ratio) {
