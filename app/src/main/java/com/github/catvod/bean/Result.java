@@ -26,7 +26,7 @@ public class Result {
     @SerializedName("format")
     private String format;
     @SerializedName("url")
-    private String url;
+    private Object url;
     @SerializedName("subs")
     private List<Sub> subs;
     @SerializedName("parse")
@@ -127,6 +127,11 @@ public class Result {
     }
 
     public Result url(String url) {
+        this.url = url;
+        return this;
+    }
+
+    public Result url(List<String> url) {
         this.url = url;
         return this;
     }
