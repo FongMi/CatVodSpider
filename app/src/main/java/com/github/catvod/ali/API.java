@@ -17,7 +17,12 @@ import com.github.catvod.BuildConfig;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
-import com.github.catvod.bean.ali.*;
+import com.github.catvod.bean.ali.Code;
+import com.github.catvod.bean.ali.Data;
+import com.github.catvod.bean.ali.Drive;
+import com.github.catvod.bean.ali.Item;
+import com.github.catvod.bean.ali.OAuth;
+import com.github.catvod.bean.ali.User;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.net.OkResult;
@@ -412,7 +417,7 @@ public class API {
     private String getPreviewContent(String[] ids) {
         try {
             JSONObject playInfo = getVideoPreviewPlayInfo(ids[0]);
-            String url = getPreviewUrl(playInfo);
+            List<String> url = getPreviewUrl(playInfo);
             List<Sub> subs = getSubs(ids);
             subs.addAll(getSubs(playInfo));
             return Result.get().url(url).m3u8().subs(subs).header(getHeader()).string();
@@ -422,19 +427,17 @@ public class API {
         }
     }
 
-    private String getPreviewUrl(JSONObject playInfo) throws Exception {
-        if (!playInfo.has("live_transcoding_task_list")) return "";
+    private List<String> getPreviewUrl(JSONObject playInfo) throws Exception {
+        if (!playInfo.has("live_transcoding_task_list")) return Collections.emptyList();
         JSONArray taskList = playInfo.getJSONArray("live_transcoding_task_list");
-        List<String> templates = Arrays.asList("UHD", "QHD", "FHD", "HD", "SD", "LD");
-        for (String template : templates) {
-            for (int i = 0; i < taskList.length(); ++i) {
-                JSONObject task = taskList.getJSONObject(i);
-                if (task.getString("template_id").equals(template)) {
-                    return task.getString("url");
-                }
-            }
+        List<String> url = new ArrayList<>();
+        for (int i = taskList.length() - 1; i >= 0; i--) {
+            JSONObject task = taskList.getJSONObject(i);
+            if (!task.optString("status").equals("finished")) continue;
+            url.add(task.optString("template_id"));
+            url.add(task.optString("url"));
         }
-        return taskList.getJSONObject(0).getString("url");
+        return url;
     }
 
     private List<Sub> getSubs(JSONObject playInfo) throws Exception {

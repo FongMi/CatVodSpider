@@ -58,7 +58,6 @@ public class Bili extends Spider {
     private JsonObject extend;
     private String cookie;
     private boolean login;
-    private boolean vip;
 
     private Map<String, String> getHeader(String cookie) {
         Map<String, String> headers = new HashMap<>();
@@ -163,22 +162,22 @@ public class Bili extends Spider {
         vod.setVodContent(detail.getDesc());
         vod.setVodRemarks(detail.getDuration() / 60 + "分鐘");
 
-        Map<String, String> vod_play = new LinkedHashMap<>();
-        ArrayList<String> playList = new ArrayList<>();
-        for (Page page : detail.getPages()) playList.add(page.getPart() + "$" + aid + "+" + page.getCid());
-        vod_play.put("B站", TextUtils.join("#", playList));
+        LinkedHashMap<String, String> flag = new LinkedHashMap<>();
+        ArrayList<String> episode = new ArrayList<>();
+        for (Page page : detail.getPages()) episode.add(page.getPart() + "$" + aid + "+" + page.getCid());
+        flag.put("B站", TextUtils.join("#", episode));
 
+        episode = new ArrayList<>();
         api = "https://api.bilibili.com/x/web-interface/archive/related?bvid=" + id;
-        JSONArray related = new JSONObject(OkHttp.string(api, getMember())).optJSONArray("data");
-        playList = new ArrayList<>();
-        for (int i = 0; i < related.length(); i++) {
-            JSONObject relatedData = related.getJSONObject(i);
-            playList.add(relatedData.getString("title") + "$" + relatedData.optLong("aid") + "+" + relatedData.optLong("cid"));
+        JSONArray array = new JSONObject(OkHttp.string(api, getMember())).optJSONArray("data");
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject object = array.getJSONObject(i);
+            episode.add(object.getString("title") + "$" + object.optLong("aid") + "+" + object.optLong("cid"));
         }
-        vod_play.put("相关推荐", TextUtils.join("#", playList));
+        flag.put("相关推荐", TextUtils.join("#", episode));
 
-        vod.setVodPlayFrom(TextUtils.join("$$$", vod_play.keySet()));
-        vod.setVodPlayUrl(TextUtils.join("$$$", vod_play.values()));
+        vod.setVodPlayFrom(TextUtils.join("$$$", flag.keySet()));
+        vod.setVodPlayUrl(TextUtils.join("$$$", flag.values()));
         return Result.string(vod);
     }
 
@@ -258,7 +257,6 @@ public class Bili extends Spider {
     private void checkLogin() {
         String json = OkHttp.string("https://api.bilibili.com/x/web-interface/nav", getMember());
         Data data = Resp.objectFrom(json).getData();
-        vip = data.getVipType() > 0;
         login = data.isLogin();
         getQRCode();
     }
