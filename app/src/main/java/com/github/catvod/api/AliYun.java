@@ -1,4 +1,4 @@
-package com.github.catvod.ali;
+package com.github.catvod.api;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -50,7 +50,7 @@ import java.util.concurrent.TimeoutException;
 
 import okhttp3.Response;
 
-public class API {
+public class AliYun {
 
     private ScheduledExecutorService service;
     private final List<String> tempIds;
@@ -64,10 +64,10 @@ public class API {
     private Drive drive;
 
     private static class Loader {
-        static volatile API INSTANCE = new API();
+        static volatile AliYun INSTANCE = new AliYun();
     }
 
-    public static API get() {
+    public static AliYun get() {
         return Loader.INSTANCE;
     }
 
@@ -83,7 +83,7 @@ public class API {
         return FileUtil.getCacheFile("aliyundrive_drive");
     }
 
-    private API() {
+    private AliYun() {
         tempIds = new ArrayList<>();
         oauth = OAuth.objectFrom(FileUtil.read(getOAuthCache()));
         user = User.objectFrom(FileUtil.read(getUserCache()));
