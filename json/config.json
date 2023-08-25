@@ -34,13 +34,10 @@
       "type": 3,
       "api": "https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/bili_open.js",
       "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 1,
       "changeable": 0,
       "ext": {
-          "categories": "沙雕动画#沙雕穿越#沙雕",
-          "cookie": ""
-        // "cookie": "DedeUserID=XXX; DedeUserID__ckMd5=XXX; Expires=XXX; SESSDATA=XXX; bili_jct=XXX;"
+        "categories": "沙雕动画#沙雕穿越#沙雕",
+        "cookie": ""
       }
     },
     {
