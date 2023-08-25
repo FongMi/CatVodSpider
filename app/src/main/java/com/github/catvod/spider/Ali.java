@@ -2,7 +2,7 @@ package com.github.catvod.spider;
 
 import android.content.Context;
 
-import com.github.catvod.ali.API;
+import com.github.catvod.api.AliYun;
 import com.github.catvod.bean.Result;
 import com.github.catvod.crawler.Spider;
 
@@ -20,7 +20,7 @@ public class Ali extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        API.get().setRefreshToken(extend);
+        AliYun.get().setRefreshToken(extend);
     }
 
     @Override
@@ -30,19 +30,19 @@ public class Ali extends Spider {
         if (!matcher.find()) return "";
         String shareId = matcher.group(1);
         String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
-        API.get().setShareId(shareId);
-        return Result.string(API.get().getVod(url, fileId));
+        AliYun.get().setShareId(shareId);
+        return Result.string(AliYun.get().getVod(url, fileId));
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        return API.get().playerContent(id.split("\\+"), flag.equals("原畫"));
+        return AliYun.get().playerContent(id.split("\\+"), flag.equals("原畫"));
     }
 
     public static Object[] proxy(Map<String, String> params) throws Exception {
         String type = params.get("type");
-        if (type.equals("sub")) return API.get().proxySub(params);
-        if (type.equals("token")) return API.get().getToken();
+        if (type.equals("sub")) return AliYun.get().proxySub(params);
+        if (type.equals("token")) return AliYun.get().getToken();
         return null;
     }
 }
