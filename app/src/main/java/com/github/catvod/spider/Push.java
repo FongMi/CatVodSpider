@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
 
@@ -15,16 +16,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Push extends Ali {
+public class Push extends Spider {
+
+    private final Ali ali;
+
+    public Push() {
+        ali = new Ali();
+    }
 
     @Override
     public void init(Context context, String extend) {
-        super.init(context, extend);
+        ali.init(context, extend);
     }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        if (pattern.matcher(ids.get(0)).find()) return super.detailContent(ids);
+        if (Ali.pattern.matcher(ids.get(0)).find()) return ali.detailContent(ids);
         return Result.string(vod(ids.get(0)));
     }
 
@@ -33,7 +40,7 @@ public class Push extends Ali {
         if (flag.equals("直連")) return Result.get().url(id).subs(getSubs(id)).string();
         if (flag.equals("嗅探")) return Result.get().parse().url(id).string();
         if (flag.equals("解析")) return Result.get().parse().jx().url(id).string();
-        return super.playerContent(flag, id, vipFlags);
+        return ali.playerContent(flag, id, vipFlags);
     }
 
     private Vod vod(String url) {
