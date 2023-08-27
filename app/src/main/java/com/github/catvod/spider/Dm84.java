@@ -32,6 +32,7 @@ public class Dm84 extends Spider {
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Utils.CHROME);
+        headers.put("Accept", Utils.ACCEPT);
         return headers;
     }
 
