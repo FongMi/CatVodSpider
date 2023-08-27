@@ -2,6 +2,7 @@ package com.github.catvod.net;
 
 import android.text.TextUtils;
 
+import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.utils.Utils;
 
 import java.io.IOException;
@@ -76,8 +77,12 @@ class OkRequest {
             Response response = client.newCall(request).execute();
             if (respHeader != null) respHeader.clear();
             if (respHeader != null) respHeader.putAll(response.headers().toMultimap());
-            return new OkResult(response.code(), response.body().string());
+            int code = response.code();
+            String body = response.body().string();
+            SpiderDebug.log(code + "," + body);
+            return new OkResult(code, body);
         } catch (IOException e) {
+            SpiderDebug.log(e);
             return new OkResult();
         }
     }
