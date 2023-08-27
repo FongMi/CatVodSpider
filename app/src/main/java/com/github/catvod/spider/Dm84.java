@@ -7,7 +7,7 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.Cronet;
+import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
 
 import org.jsoup.Jsoup;
@@ -32,6 +32,7 @@ public class Dm84 extends Spider {
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Utils.CHROME);
+        headers.put("Accept", Utils.ACCEPT);
         return headers;
     }
 
@@ -55,7 +56,7 @@ public class Dm84 extends Spider {
         List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        Document doc = Jsoup.parse(Cronet.string(siteUrl, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(siteUrl, getHeaders()));
         for (Element element : doc.select("ul.nav_row > li > a")) {
             if (element.attr("href").startsWith("/list")) {
                 String id = element.attr("href").split("-")[1].substring(0, 1);
@@ -64,7 +65,7 @@ public class Dm84 extends Spider {
             }
         }
         for (Class item : classes) {
-            doc = Jsoup.parse(Cronet.string(siteUrl + "/list-" + item.getTypeId() + ".html", getHeaders()));
+            doc = Jsoup.parse(OkHttp.string(siteUrl + "/list-" + item.getTypeId() + ".html", getHeaders()));
             Elements elements = doc.select("ul.list_filter > li > div");
             List<Filter> array = new ArrayList<>();
             array.add(getFilter("類型", "type", elements.get(0).select("a").eachText()));
@@ -93,7 +94,7 @@ public class Dm84 extends Spider {
         String type = URLEncoder.encode(extend.get("type"));
         String year = extend.get("year");
         String target = siteUrl + String.format("/show-%s--%s-%s--%s-%s.html", tid, by, type, year, pg);
-        Document doc = Jsoup.parse(Cronet.string(target, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(target, getHeaders()));
         for (Element element : doc.select("div.item")) {
             String img = element.select("a.cover").attr("data-bg");
             String url = element.select("a.title").attr("href");
@@ -107,7 +108,7 @@ public class Dm84 extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        Document doc = Jsoup.parse(Cronet.string(siteUrl.concat("/v/").concat(ids.get(0)), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(siteUrl.concat("/v/").concat(ids.get(0)), getHeaders()));
         String name = doc.select("h1.v_title").text();
         String remarks = doc.select("p.v_desc > span.desc").text();
         String img = doc.select("meta[property=og:image]").attr("content");
@@ -157,7 +158,7 @@ public class Dm84 extends Spider {
     public String searchContent(String key, boolean quick) {
         List<Vod> list = new ArrayList<>();
         String target = siteUrl.concat("/s----------.html?wd=").concat(key);
-        Document doc = Jsoup.parse(Cronet.string(target, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(target, getHeaders()));
         for (Element element : doc.select("div.item")) {
             String img = element.select("a.cover").attr("data-bg");
             String url = element.select("a.title").attr("href");
@@ -171,7 +172,7 @@ public class Dm84 extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        Document doc = Jsoup.parse(Cronet.string(siteUrl.concat(id), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(siteUrl.concat(id), getHeaders()));
         String url = doc.select("iframe").attr("src");
         return Result.get().url(url).parse().header(getHeaders()).string();
     }
