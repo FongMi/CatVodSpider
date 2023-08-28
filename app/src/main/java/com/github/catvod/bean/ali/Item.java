@@ -1,7 +1,7 @@
 package com.github.catvod.bean.ali;
 
 import android.text.TextUtils;
-
+import com.github.catvod.utils.ChineseComparator;
 import com.github.catvod.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -88,6 +88,6 @@ public class Item implements Comparable<Item> {
     
     @Override
     public int compareTo(Item item) {
-        return this.getName().compareTo(item.getName());
+        return ChineseComparator.compare(this.getDisplayName(), item.getDisplayName());
     }
 }
