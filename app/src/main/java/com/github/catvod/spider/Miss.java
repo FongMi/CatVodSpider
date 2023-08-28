@@ -28,12 +28,12 @@ public class Miss extends Spider {
         List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        List<String> typeIds = Arrays.asList("chinese-subtitle", "new", "release", "uncensored-leak", "today-hot", "weekly-hot", "monthly-hot", "siro", "luxu", "gana", "maan", "scute", "ara", "uncensored-leak", "fc2", "heyzo", "tokyohot", "1pondo", "caribbeancom", "caribbeancompr", "10musume", "pacopacomama", "gachinco", "xxxav", "marriedslash", "naughty4610", "naughty0930", "madou", "twav");
         Document doc = Jsoup.parse(OkHttp.string(url));
-        for (Element a : doc.select("nav").select("a")) {
+        for (Element a : doc.select("nav a")) {
             String typeName = a.text();
+            if (!a.attr("href").startsWith("http")) continue;
             String typeId = a.attr("href").replace(url, "");
-            if (!typeIds.contains(typeId)) continue;
+            if (typeId.startsWith("http")) continue;
             classes.add(new Class(typeId, typeName));
             filters.put(typeId, Arrays.asList(new Filter("filters", "過濾", Arrays.asList(new Filter.Value("全部", ""), new Filter.Value("單人作品", "individual"), new Filter.Value("中文字幕", "chinese-subtitle")))));
         }
