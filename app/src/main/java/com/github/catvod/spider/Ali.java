@@ -56,7 +56,7 @@ public class Ali extends Spider {
      */
     public String detailContentVodPlayFrom(List<String> ids) {
         List<String> playFrom = new ArrayList<>();
-        if (ids.size() < 1) return TextUtils.join("$$$", Arrays.asList("原畫", "普畫"));
+        if (ids.size() < 2) return TextUtils.join("$$$", Arrays.asList("原畫", "普畫"));
         for (int i = 1; i <= ids.size(); i++) {
             playFrom.add(String.format(Locale.getDefault(), "原畫#%02d", i));
             playFrom.add(String.format(Locale.getDefault(), "普畫#%02d", i));
