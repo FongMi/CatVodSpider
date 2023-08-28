@@ -1,13 +1,18 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.github.catvod.api.AliYun;
-import android.text.TextUtils;
 import com.github.catvod.bean.Result;
+import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,57 +30,53 @@ public class Ali extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        String url = ids.get(0).trim();
-        Matcher matcher = pattern.matcher(url);
-        if (!matcher.find()) return "";
-        String shareId = matcher.group(1);
-        String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
-        AliYun.get().setShareId(shareId);
-        return Result.string(AliYun.get().getVod(url, fileId));
+        String id = ids.get(0).trim();
+        Matcher matcher = pattern.matcher(id);
+        return matcher.find() ? Result.string(parseVod(matcher, id)) : "";
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        API.get().setShareId(id.split("@")[0]);
+        AliYun.get().setShareId(id.split("@")[0]);
         return AliYun.get().playerContent(id.split("@")[1].split("\\+"), flag.split("#")[0].equals("原畫"));
     }
-    
-    /**
-     * 获取详情内容视频播放地址（多 share_link 模式）
-     *
-     * @param ids share_link 集合
-     * @return 详情内容视频播放地址
-     */
-    public String detailContentVodPlayUrl(List<String> ids) throws Exception {
-        List<String> playUrl = new ArrayList<>();
-        for (String id : ids) {
-            Matcher matcher = pattern.matcher(id);
-            if (matcher.find()) {
-                String shareId = matcher.group(1);
-                String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
-                API.get().setShareId(shareId);
-                playUrl.add(API.get().getVod(id, fileId).getVodPlayUrl());
-            }
-        }
-        return TextUtils.join("$$$", playUrl);
+
+    private Vod parseVod(Matcher matcher, String id) {
+        String shareId = matcher.group(1);
+        String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
+        AliYun.get().setShareId(shareId);
+        return AliYun.get().getVod(id, fileId);
     }
-    
+
     /**
-     * 获取详情内容视频播放来源（多 shared_link 模式）
+     * 獲取詳情內容視頻播放來源（多 shared_link）
      *
      * @param ids share_link 集合
-     * @return 详情内容视频播放来源
+     * @return 詳情內容視頻播放來源
      */
     public String detailContentVodPlayFrom(List<String> ids) {
         List<String> playFrom = new ArrayList<>();
-        if (ids.size() > 1) {
-            for (int i = 1; i <= ids.size(); i++) {
-                playFrom.addAll(Arrays.asList(String.format(Locale.CHINA, "原畫#%02d", i), String.format(Locale.CHINA, "普畫#%02d", i)));
-            }
-        } else {
-            playFrom.addAll(Arrays.asList("原畫", "普畫"));
+        if (ids.size() < 1) return TextUtils.join("$$$", Arrays.asList("原畫", "普畫"));
+        for (int i = 1; i <= ids.size(); i++) {
+            playFrom.add(String.format(Locale.getDefault(), "原畫#%02d", i));
+            playFrom.add(String.format(Locale.getDefault(), "普畫#%02d", i));
         }
         return TextUtils.join("$$$", playFrom);
+    }
+
+    /**
+     * 獲取詳情內容視頻播放地址（多 share_link）
+     *
+     * @param ids share_link 集合
+     * @return 詳情內容視頻播放地址
+     */
+    public String detailContentVodPlayUrl(List<String> ids) {
+        List<String> playUrl = new ArrayList<>();
+        for (String id : ids) {
+            Matcher matcher = pattern.matcher(id);
+            if (matcher.find()) playUrl.add(parseVod(matcher, id).getVodPlayUrl());
+        }
+        return TextUtils.join("$$$", playUrl);
     }
 
     public static Object[] proxy(Map<String, String> params) throws Exception {
