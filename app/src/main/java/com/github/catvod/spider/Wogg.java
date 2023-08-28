@@ -7,6 +7,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import org.jsoup.Jsoup;
@@ -31,7 +32,7 @@ public class Wogg extends Ali {
     private final Pattern regexCategory = Pattern.compile("/vodtype/(\\w+).html");
     private final Pattern regexPageTotal = Pattern.compile("\\$\\(\"\\.mac_total\"\\)\\.text\\('(\\d+)'\\);");
 
-    private String extend;
+    private JsonObject extend;
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
@@ -41,7 +42,8 @@ public class Wogg extends Ali {
 
     @Override
     public void init(Context context, String extend) {
-        this.extend = extend;
+        this.extend = JsonParser.parseString(extend).getAsJsonObject();
+        super.init(context, this.extend.get("token").getAsString());
     }
 
     @Override
@@ -55,7 +57,7 @@ public class Wogg extends Ali {
                 classes.add(new Class(mather.group(1), e.text().trim()));
             }
         }
-        return Result.string(classes, this.parseVodListFromDoc(doc), filter ? JsonParser.parseString(OkHttp.string(extend)) : null);
+        return Result.string(classes, this.parseVodListFromDoc(doc), filter ? JsonParser.parseString(OkHttp.string(extend.get("filter").getAsString())) : null);
     }
 
     @Override
