@@ -288,7 +288,7 @@ public class AliYun {
         List<String> playFrom = Arrays.asList("原畫", "普畫");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
-        for (Item file : files) episode.add(file.getDisplayName() + "$" + file.getFileId() + findSubs(file.getName(), subs));
+        for (Item file : files) episode.add(file.getDisplayName() + "$" + API.get().shareId + "@" + file.getFileId() + findSubs(file.getName(), subs));
         for (int i = 0; i < playFrom.size(); i++) playUrl.add(TextUtils.join("#", episode));
         Vod vod = new Vod();
         vod.setVodId(url);

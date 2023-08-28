@@ -116,7 +116,11 @@ public class Vod {
     public void setVodPlayUrl(String vodPlayUrl) {
         this.vodPlayUrl = vodPlayUrl;
     }
-
+    
+    public String getVodPlayUrl() {
+        return vodPlayUrl;
+    }
+    
     public void setVodTag(String vodTag) {
         this.vodTag = vodTag;
     }
