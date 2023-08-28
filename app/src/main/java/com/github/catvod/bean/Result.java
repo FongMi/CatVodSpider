@@ -1,6 +1,7 @@
 package com.github.catvod.bean;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
@@ -54,6 +55,10 @@ public class Result {
         return Result.get().classes(classes).vod(list).filters(filters).string();
     }
 
+    public static String string(List<Class> classes, List<Vod> list, JsonElement filters) {
+        return Result.get().classes(classes).vod(list).filters(filters).string();
+    }
+
     public static String string(List<Class> classes, LinkedHashMap<String, List<Filter>> filters) {
         return Result.get().classes(classes).filters(filters).string();
     }
@@ -102,6 +107,13 @@ public class Result {
         if (object == null) return this;
         Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {}.getType();
         this.filters = new Gson().fromJson(object.toString(), listType);
+        return this;
+    }
+
+    public Result filters(JsonElement element) {
+        if (element == null) return this;
+        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {}.getType();
+        this.filters = new Gson().fromJson(element.toString(), listType);
         return this;
     }
 
