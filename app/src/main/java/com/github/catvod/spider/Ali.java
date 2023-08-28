@@ -36,7 +36,7 @@ public class Ali extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        API.get().setShareId(id.split("@")[0]);
+        AliYun.get().setShareId(id.split("@")[0]);
         return AliYun.get().playerContent(id.split("@")[1].split("\\+"), flag.split("#")[0].equals("原畫"));
     }
     
@@ -53,8 +53,8 @@ public class Ali extends Spider {
             if (matcher.find()) {
                 String shareId = matcher.group(1);
                 String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
-                API.get().setShareId(shareId);
-                playUrl.add(API.get().getVod(id, fileId).getVodPlayUrl());
+                AliYun.get().setShareId(shareId);
+                playUrl.add(AliYun.get().getVod(id, fileId).getVodPlayUrl());
             }
         }
         return TextUtils.join("$$$", playUrl);
