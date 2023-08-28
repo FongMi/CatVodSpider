@@ -60,10 +60,9 @@ public class AliYun {
     private String refreshToken;
     private String shareToken;
     private String shareId;
-    private String driveId;
     private OAuth oauth;
-    private User user;
     private Drive drive;
+    private User user;
 
     private static class Loader {
         static volatile AliYun INSTANCE = new AliYun();
@@ -87,8 +86,8 @@ public class AliYun {
 
     private AliYun() {
         tempIds = new ArrayList<>();
-        oauth = OAuth.objectFrom(FileUtil.read(getOAuthCache()));
         user = User.objectFrom(FileUtil.read(getUserCache()));
+        oauth = OAuth.objectFrom(FileUtil.read(getOAuthCache()));
         drive = Drive.objectFrom(FileUtil.read(getDriveCache()));
     }
 
@@ -105,9 +104,10 @@ public class AliYun {
     }
 
     public void setShareId(String shareId) {
-        if (!getOAuthCache().exists()) oauth.clean().save();
         if (!getUserCache().exists()) user.clean().save();
+        if (!getOAuthCache().exists()) oauth.clean().save();
         if (!getDriveCache().exists()) drive.clean().save();
+        if (shareId.equals(this.shareId)) return;
         this.shareId = shareId;
         refreshShareToken();
     }
@@ -194,7 +194,7 @@ public class AliYun {
             JsonObject param = new JsonObject();
             String token = user.getRefreshToken();
             if (token.isEmpty()) token = refreshToken;
-            if (token.startsWith("http")) token = OkHttp.string(token).trim();
+            if (token != null && token.startsWith("http")) token = OkHttp.string(token).trim();
             param.addProperty("refresh_token", token);
             param.addProperty("grant_type", "refresh_token");
             String json = post("https://auth.aliyundrive.com/v2/account/token", param);
@@ -214,10 +214,9 @@ public class AliYun {
     }
 
     private void getDriveId() {
-        SpiderDebug.log("Obtain drive id...");
-        String result = auth("https://user.aliyundrive.com/v2/user/get", "{}", false);
-        drive = Drive.objectFrom(result).save();
-        driveId = drive.getResourceDriveId().isEmpty() ? drive.getDriveId() : drive.getResourceDriveId();
+        SpiderDebug.log("Get Drive Id...");
+        String json = auth("https://user.aliyundrive.com/v2/user/get", "{}", true);
+        drive = Drive.objectFrom(json).save();
     }
 
     private boolean oauthRequest() {
@@ -340,12 +339,11 @@ public class AliYun {
 
     public String getDownloadUrl(String fileId) {
         try {
-            getDriveId();
             SpiderDebug.log("getDownloadUrl..." + fileId);
-            tempIds.add(0, copy(fileId, true));
+            tempIds.add(0, copy(fileId));
             JsonObject param = new JsonObject();
             param.addProperty("file_id", tempIds.get(0));
-            param.addProperty("drive_id", driveId);
+            param.addProperty("drive_id", drive.getDriveId());
             String json = oauth("openFile/getDownloadUrl", param.toString(), true);
             return Download.objectFrom(json).getUrl();
         } catch (Exception e) {
@@ -358,12 +356,11 @@ public class AliYun {
 
     public Preview.Info getVideoPreviewPlayInfo(String fileId) {
         try {
-            getDriveId();
             SpiderDebug.log("getVideoPreviewPlayInfo..." + fileId);
-            tempIds.add(0, copy(fileId, true));
+            tempIds.add(0, copy(fileId));
             JsonObject param = new JsonObject();
             param.addProperty("file_id", tempIds.get(0));
-            param.addProperty("drive_id", driveId);
+            param.addProperty("drive_id", drive.getDriveId());
             param.addProperty("category", "live_transcoding");
             param.addProperty("url_expire_sec", "14400");
             String json = oauth("openFile/getVideoPreviewPlayInfo", param.toString(), true);
@@ -405,14 +402,12 @@ public class AliYun {
         return subs;
     }
 
-    private String copy(String fileId, boolean retry) throws Exception {
-        SpiderDebug.log("Copy..." + fileId);
+    private String copy(String fileId) {
+        if (drive.getDriveId().isEmpty()) getDriveId();
+        SpiderDebug.log("Copy..." + fileId + "," + shareId + "," + drive.getDriveId());
         String json = "{\"requests\":[{\"body\":{\"file_id\":\"%s\",\"share_id\":\"%s\",\"auto_rename\":true,\"to_parent_file_id\":\"root\",\"to_drive_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"0\",\"method\":\"POST\",\"url\":\"/file/copy\"}],\"resource\":\"file\"}";
-        json = String.format(json, fileId, shareId, driveId);
+        json = String.format(json, fileId, shareId, drive.getDriveId());
         Res res = Res.objectFrom(auth("adrive/v2/batch", json, true));
-        if (res.getResponse().getStatus() == 403 && retry) refreshShareToken();
-        if (res.getResponse().getStatus() == 403 && retry) copy(fileId, false);
-        if (res.getResponse().getStatus() == 403 && !retry) throw new Exception(res.getResponse().getBody().getMessage());
         return res.getResponse().getBody().getFileId();
     }
 
@@ -427,7 +422,7 @@ public class AliYun {
     private boolean delete(String fileId) {
         SpiderDebug.log("Delete..." + fileId);
         String json = "{\"requests\":[{\"body\":{\"drive_id\":\"%s\",\"file_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"%s\",\"method\":\"POST\",\"url\":\"/file/delete\"}],\"resource\":\"file\"}";
-        json = String.format(json, driveId, fileId, fileId);
+        json = String.format(json, drive.getDriveId(), fileId, fileId);
         Res res = Res.objectFrom(auth("adrive/v2/batch", json, true));
         return res.getResponse().getStatus() == 404;
     }
