@@ -153,7 +153,8 @@ public class AliYun {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
         OkResult result = OkHttp.postJson(url, json, getHeaderAuth());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
-        if (retry && (result.getCode() == 400 || result.getCode() == 401) && refreshAccessToken()) return auth(url, json, false);
+        if (retry && result.getCode() == 400 && refreshShareToken()) return auth(url, json, false);
+        if (retry && result.getCode() == 401 && refreshAccessToken()) return auth(url, json, false);
         if (retry && result.getCode() == 429) return auth(url, json, false);
         return result.getBody();
     }
@@ -178,7 +179,7 @@ public class AliYun {
         return false;
     }
 
-    private void refreshShareToken() {
+    private boolean refreshShareToken() {
         SpiderDebug.log("refreshShareToken...");
         JsonObject param = new JsonObject();
         param.addProperty("share_id", shareId);
@@ -186,6 +187,7 @@ public class AliYun {
         String json = post("v2/share_link/get_share_token", param);
         shareToken = Share.objectFrom(json).getShareToken();
         if (shareToken.isEmpty()) Utils.notify("來晚啦，該分享已失效。");
+        return shareToken.length() > 0;
     }
 
     private boolean refreshAccessToken() {
