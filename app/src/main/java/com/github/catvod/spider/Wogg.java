@@ -49,6 +49,7 @@ public class Wogg extends Ali {
     @Override
     public String homeContent(boolean filter) {
         List<Class> classes = new ArrayList<>();
+        String url = extend.get("filter").getAsString();
         Document doc = Jsoup.parse(OkHttp.string(siteUrl, getHeader()));
         Elements elements = doc.select(".nav-link");
         for (Element e : elements) {
@@ -57,7 +58,7 @@ public class Wogg extends Ali {
                 classes.add(new Class(mather.group(1), e.text().trim()));
             }
         }
-        return Result.string(classes, this.parseVodListFromDoc(doc), filter ? JsonParser.parseString(OkHttp.string(extend.get("filter").getAsString())) : null);
+        return Result.string(classes, parseVodListFromDoc(doc), filter ? JsonParser.parseString(OkHttp.string(url)) : null);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class Wogg extends Ali {
         Matcher matcher = regexPageTotal.matcher(doc.html());
         if (matcher.find()) total = Integer.parseInt(matcher.group(1));
         int count = total <= limit ? 1 : ((int) Math.ceil(total / (double) limit));
-        return Result.get().vod(this.parseVodListFromDoc(doc)).page(page, count, limit, total).string();
+        return Result.get().vod(parseVodListFromDoc(doc)).page(page, count, limit, total).string();
     }
 
     private List<Vod> parseVodListFromDoc(Document doc) {
