@@ -8,6 +8,7 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
 
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -101,9 +102,10 @@ public class Hanime extends Spider {
     public String detailContent(List<String> ids) throws Exception {
         Document doc = Jsoup.parse(OkHttp.string(siteUrl.concat("/watch?v=").concat(ids.get(0)), getHeaders()));
         String name = doc.getElementById("shareBtn-title").text();
-        String content = doc.select("div.video-caption-text").text();
-        String pic = doc.select("meta[property=og:image]").attr("content");
-        String url = doc.getElementById("video-sd").attr("value");
+        JSONObject json = new JSONObject(doc.select("script[type=application/ld+json]").html().trim());
+        String content = json.optString("description");
+        String pic = json.optJSONArray("thumbnailUrl").optString(0);
+        String url = json.optString("contentUrl");;
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
         vod.setVodPic(pic);
