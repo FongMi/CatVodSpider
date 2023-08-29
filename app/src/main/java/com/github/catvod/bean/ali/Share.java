@@ -10,6 +10,8 @@ import java.util.List;
 
 public class Share {
 
+    @SerializedName("share_id")
+    private String shareId;
     @SerializedName("share_token")
     private String shareToken;
     @SerializedName("expire_time")
@@ -42,8 +44,14 @@ public class Share {
     @SerializedName("file_infos")
     private List<Item> fileInfos;
 
+    private long time;
+
     public static Share objectFrom(String str) {
         return new Gson().fromJson(str, Share.class);
+    }
+
+    public String getShareId() {
+        return TextUtils.isEmpty(shareId) ? "" : shareId;
     }
 
     public String getShareToken() {
@@ -104,5 +112,19 @@ public class Share {
 
     public List<Item> getFileInfos() {
         return fileInfos == null ? Collections.emptyList() : fileInfos;
+    }
+
+    public Share setTime() {
+        this.time = System.currentTimeMillis() + 60 * 60 * 1000;
+        return this;
+    }
+
+    public Share setShareId(String shareId) {
+        this.shareId = shareId;
+        return this;
+    }
+
+    public boolean alive(String shareId) {
+        return getShareId().equals(shareId) && System.currentTimeMillis() <= time;
     }
 }

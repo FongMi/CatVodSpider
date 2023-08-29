@@ -58,8 +58,7 @@ public class AliYun {
     private final List<String> tempIds;
     private AlertDialog dialog;
     private String refreshToken;
-    private String shareToken;
-    private String shareId;
+    private Share share;
     private OAuth oauth;
     private Drive drive;
     private User user;
@@ -112,7 +111,7 @@ public class AliYun {
 
     private HashMap<String, String> getHeaderAuth() {
         HashMap<String, String> headers = getHeader();
-        headers.put("x-share-token", shareToken);
+        headers.put("x-share-token", share.getShareToken());
         headers.put("X-Canary", "client=Android,app=adrive,version=v4.3.1");
         if (user.isAuthed()) headers.put("authorization", user.getAuthorization());
         return headers;
@@ -144,7 +143,6 @@ public class AliYun {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
         OkResult result = OkHttp.postJson(url, json, getHeaderAuth());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
-        if (retry && result.getBody().contains("InvalidParameterNotMatch.ShareId") && refreshShareToken()) return auth(url, json, false);
         if (retry && result.getCode() == 401 && refreshAccessToken()) return auth(url, json, false);
         if (retry && result.getCode() == 429) return auth(url, json, false);
         return result.getBody();
@@ -170,22 +168,15 @@ public class AliYun {
         return false;
     }
 
-    private String check(String shareId) {
-        if (shareId.equals(this.shareId)) return shareId;
-        this.shareId = shareId;
-        refreshShareToken();
-        return shareId;
-    }
-
-    private boolean refreshShareToken() {
+    private void refreshShareToken(String shareId) {
+        if (share != null && share.alive(shareId)) return;
         SpiderDebug.log("refreshShareToken...");
         JsonObject param = new JsonObject();
         param.addProperty("share_id", shareId);
         param.addProperty("share_pwd", "");
         String json = post("v2/share_link/get_share_token", param);
-        shareToken = Share.objectFrom(json).getShareToken();
-        if (shareToken.isEmpty()) Utils.notify("來晚啦，該分享已失效。");
-        return shareToken.length() > 0;
+        share = Share.objectFrom(json).setShareId(shareId).setTime();
+        if (share.getShareToken().isEmpty()) Utils.notify("來晚啦，該分享已失效。");
     }
 
     private boolean refreshAccessToken() {
@@ -247,8 +238,9 @@ public class AliYun {
     }
 
     public Vod getVod(String url, String shareId, String fileId) {
+        refreshShareToken(shareId);
         JsonObject param = new JsonObject();
-        param.addProperty("share_id", check(shareId));
+        param.addProperty("share_id", shareId);
         Share share = Share.objectFrom(post("adrive/v3/share_link/get_share_by_anonymous", param));
         List<Item> files = new ArrayList<>();
         List<Item> subs = new ArrayList<>();
@@ -339,6 +331,7 @@ public class AliYun {
 
     public String getDownloadUrl(String shareId, String fileId) {
         try {
+            refreshShareToken(shareId);
             SpiderDebug.log("getDownloadUrl..." + fileId);
             tempIds.add(0, copy(shareId, fileId));
             JsonObject param = new JsonObject();
@@ -356,6 +349,7 @@ public class AliYun {
 
     public Preview.Info getVideoPreviewPlayInfo(String shareId, String fileId) {
         try {
+            refreshShareToken(shareId);
             SpiderDebug.log("getVideoPreviewPlayInfo..." + fileId);
             tempIds.add(0, copy(shareId, fileId));
             JsonObject param = new JsonObject();
@@ -406,7 +400,7 @@ public class AliYun {
         if (drive.getDriveId().isEmpty()) getDriveId();
         SpiderDebug.log("Copy..." + fileId);
         String json = "{\"requests\":[{\"body\":{\"file_id\":\"%s\",\"share_id\":\"%s\",\"auto_rename\":true,\"to_parent_file_id\":\"root\",\"to_drive_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"0\",\"method\":\"POST\",\"url\":\"/file/copy\"}],\"resource\":\"file\"}";
-        json = String.format(json, fileId, check(shareId), drive.getDriveId());
+        json = String.format(json, fileId, shareId, drive.getDriveId());
         Res res = Res.objectFrom(auth("adrive/v2/batch", json, true));
         return res.getResponse().getBody().getFileId();
     }
