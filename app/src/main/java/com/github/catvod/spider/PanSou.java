@@ -1,7 +1,5 @@
 package com.github.catvod.spider;
 
-import android.content.Context;
-
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.net.OkHttp;
@@ -31,11 +29,6 @@ public class PanSou extends Ali {
         headers.put("Referer", siteUrl + id);
         headers.put("_bid", "6d14a5dd6c07980d9dc089a693805ad8");
         return headers;
-    }
-
-    @Override
-    public void init(Context context, String extend) {
-        super.init(context, extend);
     }
 
     @Override
