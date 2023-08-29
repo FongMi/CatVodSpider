@@ -37,15 +37,13 @@ public class Ali extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        AliYun.get().setShareId(id.split("@")[0]);
-        return AliYun.get().playerContent(id.split("@")[1].split("\\+"), flag.split("#")[0].equals("原畫"));
+        return AliYun.get().playerContent(id.split("\\+"), flag.split("#")[0].equals("原畫"));
     }
 
     private Vod parseVod(Matcher matcher, String id) {
         String shareId = matcher.group(1);
         String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
-        AliYun.get().setShareId(shareId);
-        return AliYun.get().getVod(id, fileId);
+        return AliYun.get().getVod(id, shareId, fileId);
     }
 
     /**
@@ -56,7 +54,7 @@ public class Ali extends Spider {
      */
     public String detailContentVodPlayFrom(List<String> ids) {
         List<String> playFrom = new ArrayList<>();
-        if (ids.size() < 1) return TextUtils.join("$$$", Arrays.asList("原畫", "普畫"));
+        if (ids.size() < 2) return TextUtils.join("$$$", Arrays.asList("原畫", "普畫"));
         for (int i = 1; i <= ids.size(); i++) {
             playFrom.add(String.format(Locale.getDefault(), "原畫#%02d", i));
             playFrom.add(String.format(Locale.getDefault(), "普畫#%02d", i));
