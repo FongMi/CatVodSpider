@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.github.catvod.R;
 import com.github.catvod.spider.Init;
+import com.github.catvod.spider.Miss;
 
 public class MainActivity extends Activity {
 
@@ -16,7 +17,8 @@ public class MainActivity extends Activity {
         Init.init(getApplicationContext());
         new Thread(() -> {
             try {
-
+                Miss m = new Miss();
+                m.homeContent(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -1,7 +1,5 @@
 package com.github.catvod.spider;
 
-import android.content.Context;
-
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.net.OkHttp;
@@ -35,11 +33,6 @@ public class PanSearch extends Ali {
         header.put("x-nextjs-data", "1");
         header.put("referer", URL);
         return header;
-    }
-
-    @Override
-    public void init(Context context, String extend) {
-        super.init(context, extend);
     }
 
     @Override
