@@ -21,6 +21,7 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -28,11 +29,7 @@ public class Utils {
     public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
     public static final String ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
     public static final List<String> MEDIA = Arrays.asList("mp4", "mkv", "wmv", "flv", "avi", "mp3", "aac", "flac", "m4a", "ape", "ogg");
-    public static final Pattern RULE = Pattern.compile(
-            "http((?!http).){12,}?\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)\\?.*|" +
-                    "http((?!http).){12,}\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)|" +
-                    "http((?!http).)*?video/tos*"
-    );
+    public static final Pattern RULE = Pattern.compile("http((?!http).){12,}?\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)\\?.*|" + "http((?!http).){12,}\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)|" + "http((?!http).)*?video/tos*");
 
     public static boolean isVip(String url) {
         List<String> hosts = Arrays.asList("iqiyi.com", "v.qq.com", "youku.com", "le.com", "tudou.com", "mgtv.com", "sohu.com", "acfun.cn", "bilibili.com", "baofeng.com", "pptv.com");
@@ -193,5 +190,15 @@ public class Utils {
             webView.setWebViewClient(client);
             webView.loadUrl(url);
         });
+    }
+
+    public static int getDigit(String text) {
+        try {
+            Matcher matcher = Pattern.compile(".*(1080|720|2160|4k|4K).*").matcher(text);
+            if (matcher.find()) text = matcher.group(1) + text;
+            return Integer.parseInt(text.replaceAll("\\D+", ""));
+        } catch (Exception e) {
+            return -1;
+        }
     }
 }
