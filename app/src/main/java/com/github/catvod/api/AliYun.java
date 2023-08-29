@@ -103,15 +103,6 @@ public class AliYun {
         return result;
     }
 
-    public void setShareId(String shareId) {
-        if (!getUserCache().exists()) user.clean().save();
-        if (!getOAuthCache().exists()) oauth.clean().save();
-        if (!getDriveCache().exists()) drive.clean().save();
-        if (shareId.equals(this.shareId)) return;
-        this.shareId = shareId;
-        refreshShareToken();
-    }
-
     public HashMap<String, String> getHeader() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Utils.CHROME);
@@ -153,7 +144,7 @@ public class AliYun {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
         OkResult result = OkHttp.postJson(url, json, getHeaderAuth());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
-        if (retry && result.getCode() == 400 && refreshShareToken()) return auth(url, json, false);
+        if (retry && result.getBody().contains("InvalidParameterNotMatch.ShareId") && refreshShareToken()) return auth(url, json, false);
         if (retry && result.getCode() == 401 && refreshAccessToken()) return auth(url, json, false);
         if (retry && result.getCode() == 429) return auth(url, json, false);
         return result.getBody();
@@ -177,6 +168,13 @@ public class AliYun {
     private boolean onTimeout() {
         stopService();
         return false;
+    }
+
+    private String check(String shareId) {
+        if (shareId.equals(this.shareId)) return shareId;
+        this.shareId = shareId;
+        refreshShareToken();
+        return shareId;
     }
 
     private boolean refreshShareToken() {
@@ -248,18 +246,18 @@ public class AliYun {
         return alist("token", param);
     }
 
-    public Vod getVod(String url, String fileId) {
+    public Vod getVod(String url, String shareId, String fileId) {
         JsonObject param = new JsonObject();
-        param.addProperty("share_id", shareId);
+        param.addProperty("share_id", check(shareId));
         Share share = Share.objectFrom(post("adrive/v3/share_link/get_share_by_anonymous", param));
         List<Item> files = new ArrayList<>();
         List<Item> subs = new ArrayList<>();
-        listFiles(new Item(getParentFileId(fileId, share)), files, subs);
+        listFiles(shareId, new Item(getParentFileId(fileId, share)), files, subs);
         Collections.sort(files);
         List<String> playFrom = Arrays.asList("原畫", "普畫");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
-        for (Item file : files) episode.add(file.getDisplayName() + "$" + shareId + "@" + file.getFileId() + findSubs(file.getName(), subs));
+        for (Item file : files) episode.add(file.getDisplayName() + "$" + shareId + "+" + file.getFileId() + findSubs(file.getName(), subs));
         for (int i = 0; i < playFrom.size(); i++) playUrl.add(TextUtils.join("#", episode));
         Vod vod = new Vod();
         vod.setVodId(url);
@@ -272,11 +270,11 @@ public class AliYun {
         return vod;
     }
 
-    private void listFiles(Item folder, List<Item> files, List<Item> subs) {
-        listFiles(folder, files, subs, "");
+    private void listFiles(String shareId, Item folder, List<Item> files, List<Item> subs) {
+        listFiles(shareId, folder, files, subs, "");
     }
 
-    private void listFiles(Item parent, List<Item> files, List<Item> subs, String marker) {
+    private void listFiles(String shareId, Item parent, List<Item> files, List<Item> subs, String marker) {
         List<Item> folders = new ArrayList<>();
         JsonObject param = new JsonObject();
         param.addProperty("limit", 200);
@@ -296,10 +294,10 @@ public class AliYun {
             }
         }
         if (item.getNextMarker().length() > 0) {
-            listFiles(parent, files, subs, item.getNextMarker());
+            listFiles(shareId, parent, files, subs, item.getNextMarker());
         }
         for (Item folder : folders) {
-            listFiles(folder, files, subs);
+            listFiles(shareId, folder, files, subs);
         }
     }
 
@@ -333,16 +331,16 @@ public class AliYun {
             String[] split = text.split("@@@");
             String name = split[0];
             String ext = split[1];
-            String url = Proxy.getUrl() + "?do=ali&type=sub&file_id=" + split[2];
+            String url = Proxy.getUrl() + "?do=ali&type=sub&shareId=" + ids[0] + "&fileId=" + split[2];
             sub.add(Sub.create().name(name).ext(ext).url(url));
         }
         return sub;
     }
 
-    public String getDownloadUrl(String fileId) {
+    public String getDownloadUrl(String shareId, String fileId) {
         try {
             SpiderDebug.log("getDownloadUrl..." + fileId);
-            tempIds.add(0, copy(fileId));
+            tempIds.add(0, copy(shareId, fileId));
             JsonObject param = new JsonObject();
             param.addProperty("file_id", tempIds.get(0));
             param.addProperty("drive_id", drive.getDriveId());
@@ -356,10 +354,10 @@ public class AliYun {
         }
     }
 
-    public Preview.Info getVideoPreviewPlayInfo(String fileId) {
+    public Preview.Info getVideoPreviewPlayInfo(String shareId, String fileId) {
         try {
             SpiderDebug.log("getVideoPreviewPlayInfo..." + fileId);
-            tempIds.add(0, copy(fileId));
+            tempIds.add(0, copy(shareId, fileId));
             JsonObject param = new JsonObject();
             param.addProperty("file_id", tempIds.get(0));
             param.addProperty("drive_id", drive.getDriveId());
@@ -376,12 +374,12 @@ public class AliYun {
     }
 
     public String playerContent(String[] ids, boolean original) {
-        if (original) return Result.get().url(getDownloadUrl(ids[0])).octet().subs(getSubs(ids)).header(getHeader()).string();
+        if (original) return Result.get().url(getDownloadUrl(ids[0], ids[1])).octet().subs(getSubs(ids)).header(getHeader()).string();
         else return getPreviewContent(ids);
     }
 
     private String getPreviewContent(String[] ids) {
-        Preview.Info info = getVideoPreviewPlayInfo(ids[0]);
+        Preview.Info info = getVideoPreviewPlayInfo(ids[0], ids[1]);
         List<String> url = getPreviewUrl(info);
         List<Sub> subs = getSubs(ids);
         subs.addAll(getSubs(info));
@@ -404,11 +402,11 @@ public class AliYun {
         return subs;
     }
 
-    private String copy(String fileId) {
+    private String copy(String shareId, String fileId) {
         if (drive.getDriveId().isEmpty()) getDriveId();
-        SpiderDebug.log("Copy..." + fileId + "," + shareId + "," + drive.getDriveId());
+        SpiderDebug.log("Copy..." + fileId);
         String json = "{\"requests\":[{\"body\":{\"file_id\":\"%s\",\"share_id\":\"%s\",\"auto_rename\":true,\"to_parent_file_id\":\"root\",\"to_drive_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"0\",\"method\":\"POST\",\"url\":\"/file/copy\"}],\"resource\":\"file\"}";
-        json = String.format(json, fileId, shareId, drive.getDriveId());
+        json = String.format(json, fileId, check(shareId), drive.getDriveId());
         Res res = Res.objectFrom(auth("adrive/v2/batch", json, true));
         return res.getResponse().getBody().getFileId();
     }
@@ -430,8 +428,9 @@ public class AliYun {
     }
 
     public Object[] proxySub(Map<String, String> params) throws Exception {
-        String fileId = params.get("file_id");
-        Response res = OkHttp.newCall(getDownloadUrl(fileId), getHeaderAuth());
+        String fileId = params.get("fileId");
+        String shareId = params.get("shareId");
+        Response res = OkHttp.newCall(getDownloadUrl(shareId, fileId), getHeaderAuth());
         byte[] body = Utils.toUtf8(res.body().bytes());
         Object[] result = new Object[3];
         result[0] = 200;
