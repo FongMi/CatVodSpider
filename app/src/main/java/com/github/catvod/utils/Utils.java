@@ -192,13 +192,13 @@ public class Utils {
         });
     }
 
-    public static int getDigit(String text) {
+    public static String getDigit(String text) {
         try {
             Matcher matcher = Pattern.compile(".*(1080|720|2160|4k|4K).*").matcher(text);
-            if (matcher.find()) text = matcher.group(1) + text;
-            return Integer.parseInt(text.replaceAll("\\D+", ""));
+            if (matcher.find()) text = matcher.group(1) + " " + text;
+            return text.replaceAll("\\D+", "");
         } catch (Exception e) {
-            return -1;
+            return "";
         }
     }
 }

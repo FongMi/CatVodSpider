@@ -24,7 +24,7 @@ public class Zhaozy extends Ali {
 
     private final Pattern regexAli = Pattern.compile("(https://www.aliyundrive.com/s/[^\"]+)");
     private final Pattern regexVid = Pattern.compile("(\\S+)");
-    private final String siteUrl = "https://zhaoziyuan.la/";
+    private final String siteUrl = "https://zhaoziyuan.me/";
     private String username;
     private String password;
 
@@ -42,7 +42,7 @@ public class Zhaozy extends Ali {
         params.put("password", password);
         Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Utils.CHROME);
-        headers.put("Referer", siteUrl + "login.html");
+        headers.put("Referer", siteUrl + "stop.html");
         headers.put("Origin", siteUrl);
         Map<String, List<String>> resp = new HashMap<>();
         OkHttp.post(siteUrl + "logiu.html", params, headers, resp);
@@ -69,7 +69,7 @@ public class Zhaozy extends Ali {
 
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
-        String url = siteUrl + "so?filename=" + URLEncoder.encode(key);
+        String url = siteUrl + "sox?filename=" + URLEncoder.encode(key);
         Document doc = Jsoup.parse(OkHttp.string(url, getHeader()));
         List<Vod> list = new ArrayList<>();
         for (Element element : doc.select("div.li_con div.news_text")) {
