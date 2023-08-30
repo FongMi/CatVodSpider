@@ -87,11 +87,11 @@ public class Item implements Comparable<Item> {
     }
 
     public String getSortName() {
-        return TextUtils.join(" ", Arrays.asList(getParent(), getName())).trim();
+        return TextUtils.join(" ", Arrays.asList(getParent(), Utils.getDigit(getName()))).trim();
     }
 
     @Override
     public int compareTo(Item item) {
-        return Integer.compare(Utils.getDigit(getSortName()), Utils.getDigit(item.getSortName()));
+        return getSortName().compareTo(item.getSortName());
     }
 }
