@@ -1,5 +1,5 @@
 {
-  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;ee906871fa3ef19a87da0fad4947e36b",
+  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;e202ef069c4742cadfd707f4b144ed2a",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -179,6 +179,14 @@
       "name": "盤搜",
       "type": 3,
       "api": "csp_PanSou",
+      "searchable": 1,
+      "changeable": 0
+    },
+    {
+      "key": "小紙條",
+      "name": "小紙條",
+      "type": 3,
+      "api": "csp_XiaoZhiTiao",
       "searchable": 1,
       "changeable": 0
     },
