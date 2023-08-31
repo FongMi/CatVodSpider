@@ -30,7 +30,7 @@
     },
     {
       "key": "bili_open",
-      "name": "哔哩(open)",
+      "name": "哔哩貓",
       "type": 3,
       "api": "https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/bili_open.js",
       "searchable": 1,
@@ -64,18 +64,6 @@
       "api": "csp_NiNi",
       "searchable": 1,
       "changeable": 1
-    },
-    {
-      "key": "玩偶",
-      "name": "玩偶",
-      "type": 3,
-      "api": "csp_Wogg",
-      "searchable": 1,
-      "changeable": 0,
-      "ext": {
-        "token": "影視天下第一",
-        "filter": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/wogg.json"
-      }
     },
     {
       "key": "星星",
@@ -159,6 +147,27 @@
       "changeable": 1
     },
     {
+      "key": "玩偶",
+      "name": "玩偶",
+      "type": 3,
+      "api": "csp_Wogg",
+      "searchable": 1,
+      "changeable": 0,
+      "ext": {
+        "token": "影視天下第一",
+        "filter": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/wogg.json"
+      }
+    },
+    {
+      "key": "紙條",
+      "name": "紙條",
+      "type": 4,
+      "api": "http://home.jundie.top:9520/spider/cli_gitCafe",
+      "searchable": 1,
+      "changeable": 0,
+      "ext": "44160c32d4ca40c6b7cebf66ce40e7e1"
+    },
+    {
       "key": "七夜",
       "name": "七夜",
       "type": 3,
@@ -191,8 +200,8 @@
       "changeable": 0
     },
     {
-      "key": "小紙條",
-      "name": "小紙條",
+      "key": "紙條搜",
+      "name": "紙條搜",
       "type": 3,
       "api": "csp_XiaoZhiTiao",
       "searchable": 1,
