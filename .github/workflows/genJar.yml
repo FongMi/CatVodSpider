@@ -1,0 +1,27 @@
+name: Spider Jar Gen CI
+
+on: workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+        cache: gradle
+        
+    - name: Build with Gradle
+      run: ./buildAndGenJar.bat ec
+        
+    - name: Update spider jar
+      uses: EndBug/add-and-commit@v7
+      with:
+        default_author: github_actions
+        message: 'update spider jar'
+        add: "['./jar/custom_spider.jar', './jar/custom_spider.jar.md5']"
