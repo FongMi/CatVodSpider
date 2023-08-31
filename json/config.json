@@ -164,7 +164,8 @@
       "type": 4,
       "api": "http://home.jundie.top:9520/spider/cli_gitCafe",
       "searchable": 1,
-      "changeable": 0
+      "changeable": 0,
+      "ext": "44160c32d4ca40c6b7cebf66ce40e7e1"
     },
     {
       "key": "七夜",
