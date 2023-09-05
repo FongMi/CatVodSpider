@@ -83,6 +83,10 @@ public class OkHttp {
         return string(url, null, header, respHeader);
     }
 
+    public static String get(String url, Map<String, String> params, Map<String, String> header) {
+        return string(url, params, header, null);
+    }
+
     public static String string(String url, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
         return string(url, null, params, header, respHeader);
     }
