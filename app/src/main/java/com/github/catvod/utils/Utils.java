@@ -196,6 +196,8 @@ public class Utils {
         try {
             Matcher matcher = Pattern.compile(".*(1080|720|2160|4k|4K).*").matcher(text);
             if (matcher.find()) text = matcher.group(1) + " " + text;
+            matcher = Pattern.compile("^([0-9]+)").matcher(text);
+            if (matcher.find()) text = matcher.group(1) + " " + text;
             return text.replaceAll("\\D+", "");
         } catch (Exception e) {
             return "";
