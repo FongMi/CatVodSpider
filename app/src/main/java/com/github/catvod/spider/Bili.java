@@ -58,7 +58,7 @@ public class Bili extends Spider {
     private JsonObject extend;
     private String cookie;
     private boolean login;
-    private static boolean AskOnlyOnce = false;
+    private boolean ask;
 
     private Map<String, String> getHeader(String cookie) {
         Map<String, String> headers = new HashMap<>();
@@ -146,7 +146,7 @@ public class Bili extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        if (!login && !AskOnlyOnce) checkLogin();
+        if (!login && !ask) checkLogin();
 
         String[] split = ids.get(0).split("@");
         String id = split[0];
@@ -264,7 +264,7 @@ public class Bili extends Spider {
 
     private void getQRCode() {
         if (login) return;
-        AskOnlyOnce = true;
+        ask = true;
         String json = OkHttp.string("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-mini");
         Data data = Resp.objectFrom(json).getData();
         Init.run(() -> openApp(data));
