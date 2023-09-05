@@ -61,7 +61,7 @@ public class Utils {
     }
 
     public static boolean isSub(String ext) {
-        return ext.equals("srt") || ext.equals("ass") || ext.equals("ssa");
+        return ext.equals("srt") || ext.equals("ass") || ext.equals("ssa") || ext.equals("vtt");
     }
 
     public static String getExt(String name) {
@@ -195,6 +195,8 @@ public class Utils {
     public static String getDigit(String text) {
         try {
             Matcher matcher = Pattern.compile(".*(1080|720|2160|4k|4K).*").matcher(text);
+            if (matcher.find()) text = matcher.group(1) + " " + text;
+            matcher = Pattern.compile("^([0-9]+)").matcher(text);
             if (matcher.find()) text = matcher.group(1) + " " + text;
             return text.replaceAll("\\D+", "");
         } catch (Exception e) {
