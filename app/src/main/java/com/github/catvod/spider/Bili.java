@@ -58,7 +58,7 @@ public class Bili extends Spider {
     private JsonObject extend;
     private String cookie;
     private boolean login;
-    private static boolean AskOnlyOne = false;
+    private static boolean AskOnlyOnce = false;
 
     private Map<String, String> getHeader(String cookie) {
         Map<String, String> headers = new HashMap<>();
