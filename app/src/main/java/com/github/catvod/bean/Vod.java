@@ -1,5 +1,6 @@
 package com.github.catvod.bean;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 public class Vod {
@@ -32,6 +33,11 @@ public class Vod {
     private String vodTag;
     @SerializedName("style")
     private Style style;
+
+    public static Vod objectFrom(String str) {
+        Vod item = new Gson().fromJson(str, Vod.class);
+        return item == null ? new Vod() : item;
+    }
 
     public Vod() {
     }
@@ -116,11 +122,11 @@ public class Vod {
     public void setVodPlayUrl(String vodPlayUrl) {
         this.vodPlayUrl = vodPlayUrl;
     }
-    
+
     public String getVodPlayUrl() {
         return vodPlayUrl;
     }
-    
+
     public void setVodTag(String vodTag) {
         this.vodTag = vodTag;
     }
