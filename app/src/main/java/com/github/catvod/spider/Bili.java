@@ -262,7 +262,7 @@ public class Bili extends Spider {
     }
 
     private void getQRCode() {
-        if (login || getUserCache().exists() && COOKIE.equals(cookie)) return;
+        if (login) return;
         String json = OkHttp.string("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-mini");
         Data data = Resp.objectFrom(json).getData();
         Init.run(() -> openApp(data));
