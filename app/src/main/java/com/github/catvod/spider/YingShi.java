@@ -102,7 +102,8 @@ public class YingShi extends Spider {
     @Override
     public String detailContent(List<String> ids) throws Exception {
         Document doc = Jsoup.parse(OkHttp.string(siteUrl + "/vod/play/id/" + ids.get(0) + "/sid/1/nid/1.html"));
-        String json = doc.html().split("let data = ")[1].split(";")[0];
+        String json = doc.html().split("let data = ")[1].split("let obj = ")[0].trim();
+        json = json.substring(0, json.length() - 1).replace("&amp;", " ");
         Vod vod = Vod.objectFrom(json);
         return Result.string(vod);
     }
