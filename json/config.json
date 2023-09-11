@@ -278,16 +278,6 @@
   ],
   "rules": [
     {
-      "name": "海外看",
-      "hosts": [
-        "m3u.haiwaikan"
-      ],
-      "regex": [
-        "#EXTINF:[0-3]\\W(?!000000)\\d{6}[\\s\\S]+?.ts\\r*\\n*",
-        "#EXTINF:8\\W(?!000000)\\d{6}[\\s\\S]+?.ts\\r*\\n*"
-      ]
-    },
-    {
       "name": "暴風",
       "hosts": [
         "bfzy"
