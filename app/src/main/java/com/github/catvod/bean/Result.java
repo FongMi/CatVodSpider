@@ -26,6 +26,8 @@ public class Result {
     private String header;
     @SerializedName("format")
     private String format;
+    @SerializedName("danmaku")
+    private String danmaku;
     @SerializedName("url")
     private Object url;
     @SerializedName("subs")
@@ -145,6 +147,11 @@ public class Result {
 
     public Result url(List<String> url) {
         this.url = url;
+        return this;
+    }
+
+    public Result danmaku(String danmaku) {
+        this.danmaku = danmaku;
         return this;
     }
 
