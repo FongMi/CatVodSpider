@@ -149,7 +149,7 @@ public class Bili extends Spider {
         if (!login && !ask) checkLogin();
 
         String[] split = ids.get(0).split("@");
-        String id = split[0];
+        String bvid = split[0];
         String aid = split[1];
 
         String api = "https://api.bilibili.com/x/web-interface/view?aid=" + aid;
@@ -169,7 +169,7 @@ public class Bili extends Spider {
         flag.put("B站", TextUtils.join("#", episode));
 
         episode = new ArrayList<>();
-        api = "https://api.bilibili.com/x/web-interface/archive/related?bvid=" + id;
+        api = "https://api.bilibili.com/x/web-interface/archive/related?bvid=" + bvid;
         JSONArray array = new JSONObject(OkHttp.string(api, getMember())).optJSONArray("data");
         for (int i = 0; i < array.length(); i++) {
             JSONObject object = array.getJSONObject(i);
@@ -212,8 +212,9 @@ public class Bili extends Spider {
         if (empty) findVideo(dash, video, dash.getVideo().get(0).getId());
 
         String mpd = getMpd(dash, video.toString(), audio.toString());
+        String dan = "https://api.bilibili.com/x/v1/dm/list.so?oid=".concat(cid);
         String url = "data:application/dash+xml;base64," + Base64.encodeToString(mpd.getBytes(), 0);
-        return Result.get().url(url).dash().header(getMember()).string();
+        return Result.get().url(url).danmaku(dan).dash().header(getMember()).string();
     }
 
     private void findAudio(Dash dash, StringBuilder sb) {
