@@ -17,7 +17,7 @@ public class Data {
     @SerializedName("isLogin")
     private Boolean isLogin;
     @SerializedName("vipStatus")
-    private Boolean vipStatus;
+    private Integer vipStatus;
     @SerializedName("qrcode_key")
     private String qrcodeKey;
     @SerializedName("url")
@@ -57,8 +57,12 @@ public class Data {
         return isLogin != null && isLogin;
     }
 
-    public boolean getVipStatus() {
-        return vipStatus != null && vipStatus;
+    public Integer getVipStatus() {
+        return vipStatus;
+    }
+
+    public boolean isVip() {
+        return vipStatus != null && vipStatus != 0;
     }
 
     public String getQrcodeKey() {
