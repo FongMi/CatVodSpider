@@ -16,8 +16,8 @@ public class Data {
     private JsonElement list;
     @SerializedName("isLogin")
     private Boolean isLogin;
-    @SerializedName("vipType")
-    private Integer vipType;
+    @SerializedName("vipStatus")
+    private Boolean vipStatus;
     @SerializedName("qrcode_key")
     private String qrcodeKey;
     @SerializedName("url")
@@ -57,8 +57,8 @@ public class Data {
         return isLogin != null && isLogin;
     }
 
-    public int getVipType() {
-        return vipType == null ? 0 : vipType;
+    public boolean getVipStatus() {
+        return vipStatus != null && vipStatus;
     }
 
     public String getQrcodeKey() {

@@ -6,7 +6,6 @@ import com.github.catvod.net.OkHttp;
 
 import java.io.ByteArrayInputStream;
 import java.util.Map;
-import java.util.Objects;
 
 public class Proxy extends Spider {
 
@@ -18,6 +17,8 @@ public class Proxy extends Spider {
                 return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
             case "ali":
                 return Ali.proxy(params);
+            case "bili":
+                return Bili.proxy(params);
             case "webdav":
                 return WebDAV.vod(params);
             default:
