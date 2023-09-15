@@ -271,8 +271,8 @@ public class Bili extends Spider {
     private void checkLogin() {
         String json = OkHttp.string("https://api.bilibili.com/x/web-interface/nav", getHeader());
         Data data = Resp.objectFrom(json).getData();
-        isVip = data.getVipStatus();
         login = data.isLogin();
+        isVip = data.isVip();
         //getQRCode();
     }
 
