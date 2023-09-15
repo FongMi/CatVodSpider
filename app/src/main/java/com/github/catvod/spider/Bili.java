@@ -64,8 +64,8 @@ public class Bili extends Spider {
     }
 
     private String getCookie() throws IOException {
-        List<String> cookies = OkHttp.newCall("https://www.bilibili.com", getHeader()).headers("set-cookie");
         StringBuilder sb = new StringBuilder();
+        List<String> cookies = OkHttp.newCall("https://www.bilibili.com", getHeader()).headers("set-cookie");
         for (String cookie : cookies) sb.append(cookie.split(";")[0]).append(";");
         return sb.toString();
     }
