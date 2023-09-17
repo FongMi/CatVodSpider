@@ -20,6 +20,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -114,7 +115,7 @@ public class YingShi extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         String proxyUrl = Proxy.getUrl() + "?do=yingshi&url=" + id;
-        return Result.get().url(proxyUrl).m3u8().string();
+        return Result.get().url(proxyUrl).string();
     }
 
     @Override
@@ -191,7 +192,7 @@ public class YingShi extends Spider {
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
-        result[2] = content;
+        result[2] = new ByteArrayInputStream(content.getBytes());
         return result;
     }
 }
