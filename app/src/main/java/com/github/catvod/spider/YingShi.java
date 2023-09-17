@@ -7,26 +7,29 @@ import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.bean.webdav.Drive;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.FileUtil;
 import com.github.catvod.utils.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class YingShi extends Spider {
 
@@ -110,6 +113,7 @@ public class YingShi extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
+        String proxyUrl = Proxy.getUrl() + "?do=yingshi&url=" + id;
         return Result.get().url(id).m3u8().string();
     }
 
@@ -163,5 +167,31 @@ public class YingShi extends Spider {
             }
             return new Filter(key, name, values);
         }
+    }
+
+    public static Object[] vod(Map<String, String> params) throws Exception {
+        String url = params.get("url");
+        List<String> AdBlock = Arrays.asList("10.0099", "8.1748"); // Advertisement ts
+        String content = OkHttp.string(url);
+        Matcher m = Pattern.compile("#EXT-X-DISCONTINUITY[\\s\\S]*?(?=#EXT-X-DISCONTINUITY|$)").matcher(content);
+        while (m.find()) {
+            BigDecimal k = BigDecimal.ZERO;
+            Matcher digit = Pattern.compile("#EXTINF:(\\d+\\.\\d+)").matcher(m.group(0));
+            while (digit.find()) {
+                BigDecimal g = new BigDecimal(digit.group(1));
+                k = k.add(g);
+            }
+            for (String ads : AdBlock) {
+                if (k.toString().contains(ads)) {
+                    content = content.replaceAll(m.group(0), "");
+                    System.out.println("Found ads: " + ads);
+                }
+            }
+        }
+        Object[] result = new Object[3];
+        result[0] = 200;
+        result[1] = "application/octet-stream";
+        result[2] = content;
+        return result;
     }
 }
