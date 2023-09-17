@@ -114,7 +114,7 @@ public class YingShi extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         String proxyUrl = Proxy.getUrl() + "?do=yingshi&url=" + id;
-        return Result.get().url(id).m3u8().string();
+        return Result.get().url(proxyUrl).m3u8().string();
     }
 
     @Override
