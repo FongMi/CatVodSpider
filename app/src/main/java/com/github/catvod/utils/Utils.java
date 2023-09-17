@@ -37,6 +37,12 @@ public class Utils {
         return false;
     }
 
+    public static boolean isBlackVodUrl(String url) {
+        List<String> hosts = Arrays.asList("973973.xyz", ".fit:");
+        for (String host : hosts) if (url.contains(host)) return true;
+        return false;
+    }
+
     public static boolean isVideoFormat(String url) {
         if (url.contains("url=http") || url.contains(".js") || url.contains(".css") || url.contains(".html")) return false;
         return RULE.matcher(url).find();
