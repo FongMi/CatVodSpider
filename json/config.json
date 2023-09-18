@@ -1,5 +1,5 @@
 {
-  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;e99f254a76be4612aaf4f8e6eef5dae1",
+  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;805e97263746889cf1405e74ec9d0824",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -277,6 +277,17 @@
     }
   ],
   "rules": [
+    {
+      "name": "海外看",
+      "hosts": [
+        "haiwaikan"
+      ],
+      "regex": [
+        "10.333332",
+        "10.0099",
+        "8.1748"
+      ]
+    },
     {
       "name": "暴風",
       "hosts": [
