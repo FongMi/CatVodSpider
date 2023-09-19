@@ -48,13 +48,6 @@ public class Utils {
         return RULE.matcher(url).find();
     }
 
-    public static boolean isMobile() {
-        boolean hasCamera = Init.context().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
-        boolean hasPhone = Init.context().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
-        boolean hasBT = Init.context().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
-        return hasCamera && hasPhone && hasBT;
-    }
-
     public static byte[] toUtf8(byte[] bytes) {
         try {
             UniversalDetector detector = new UniversalDetector(null);

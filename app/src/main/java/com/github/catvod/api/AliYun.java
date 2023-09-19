@@ -434,11 +434,7 @@ public class AliYun {
     }
 
     private void startFlow() {
-        if (Utils.isMobile()) {
-            Init.run(this::showInput);
-        } else {
-            getQRCode();
-        }
+        Init.run(this::showInput);
     }
 
     private void showInput() {
