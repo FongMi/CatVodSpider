@@ -1,12 +1,10 @@
 package com.github.catvod.net;
 
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.github.catvod.crawler.Spider;
 
 import java.io.IOException;
-import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.List;
@@ -43,8 +41,12 @@ public class OkHttp {
     }
 
     public static OkHttpClient.Builder getBuilder() {
+        return getBuilder(proxy());
+    }
+
+    public static OkHttpClient.Builder getBuilder(Uri proxy) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder().dns(safeDns()).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).connectTimeout(30, TimeUnit.SECONDS).hostnameVerifier(SSLCompat.VERIFIER).sslSocketFactory(new SSLCompat(), SSLCompat.TM);
-        if (!TextUtils.isEmpty(proxy())) setProxy(builder);
+        if (proxy != null && proxy.getScheme() != null && proxy.getHost() != null && proxy.getPort() > 0) setProxy(builder, proxy);
         return builder;
     }
 
@@ -64,17 +66,9 @@ public class OkHttp {
         }
     }
 
-    public static String proxy() {
+    public static Uri proxy() {
         try {
-            return (String) Spider.class.getMethod("proxy").invoke(null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static Authenticator auth() {
-        try {
-            return (Authenticator) Spider.class.getMethod("auth").invoke(null);
+            return (Uri) Spider.class.getMethod("proxy").invoke(null);
         } catch (Exception e) {
             return null;
         }
@@ -164,14 +158,12 @@ public class OkHttp {
         return null;
     }
 
-    private static void setProxy(OkHttpClient.Builder builder) {
-        Uri uri = Uri.parse(proxy());
-        String userInfo = uri.getUserInfo();
-        if (uri.getScheme() != null && uri.getScheme().startsWith("socks")) {
-            builder.proxy(new Proxy(Proxy.Type.SOCKS, InetSocketAddress.createUnresolved(uri.getHost(), uri.getPort())));
-        }
-        if (uri.getScheme() != null && uri.getScheme().startsWith("http")) {
-            builder.proxy(new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(uri.getHost(), uri.getPort())));
+    private static void setProxy(OkHttpClient.Builder builder, Uri proxy) {
+        String userInfo = proxy.getUserInfo();
+        if (proxy.getScheme() == null || proxy.getScheme().startsWith("socks")) {
+            builder.proxy(new Proxy(Proxy.Type.SOCKS, InetSocketAddress.createUnresolved(proxy.getHost(), proxy.getPort())));
+        } else if (proxy.getScheme().startsWith("http")) {
+            builder.proxy(new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(proxy.getHost(), proxy.getPort())));
             if (userInfo != null && userInfo.contains(":")) builder.proxyAuthenticator((route, response) -> {
                 String credential = Credentials.basic(userInfo.split(":")[0], userInfo.split(":")[1]);
                 return response.request().newBuilder().header("Proxy-Authorization", credential).build();
