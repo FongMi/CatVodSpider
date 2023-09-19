@@ -3,6 +3,7 @@ package com.github.catvod.net;
 import com.github.catvod.crawler.Spider;
 
 import java.io.IOException;
+import java.net.Proxy;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +37,7 @@ public class OkHttp {
     }
 
     public static OkHttpClient.Builder getBuilder() {
-        return new OkHttpClient.Builder().dns(safeDns()).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).connectTimeout(30, TimeUnit.SECONDS).hostnameVerifier(SSLCompat.VERIFIER).sslSocketFactory(new SSLCompat(), SSLCompat.TM);
+        return new OkHttpClient.Builder().dns(safeDns()).proxy(proxy()).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).connectTimeout(30, TimeUnit.SECONDS).hostnameVerifier(SSLCompat.VERIFIER).sslSocketFactory(new SSLCompat(), SSLCompat.TM);
     }
 
     public static OkHttpClient client() {
@@ -52,6 +53,14 @@ public class OkHttp {
             return (Dns) Spider.class.getMethod("safeDns").invoke(null);
         } catch (Exception e) {
             return Dns.SYSTEM;
+        }
+    }
+
+    public static Proxy proxy() {
+        try {
+            return (Proxy) Spider.class.getMethod("proxy").invoke(null);
+        } catch (Exception e) {
+            return Proxy.NO_PROXY;
         }
     }
 
