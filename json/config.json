@@ -80,6 +80,14 @@
       "changeable": 1
     },
     {
+      "key": "索尼",
+      "name": "索尼 ",
+      "type": 1,
+      "api": "https://suoniapi.com/api.php/provide/vod/?ac=list",
+      "searchable": 1,
+      "changeable": 1
+    },
+    {
       "key": "量子",
       "name": "量子",
       "type": 0,
