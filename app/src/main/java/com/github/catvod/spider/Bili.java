@@ -39,6 +39,7 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class Bili extends Spider {
 
+    private static final String COOKIE = "buvid3=84B0395D-C9F2-C490-E92E-A09AB48FE26E71636infoc";
     private static Map<String, String> audios;
     private static String cookie;
 
@@ -74,7 +75,7 @@ public class Bili extends Spider {
         cookie = extend.get("cookie").getAsString();
         if (cookie.startsWith("http")) cookie = OkHttp.string(cookie).trim();
         if (TextUtils.isEmpty(cookie)) cookie = FileUtil.read(getUserCache());
-        if (TextUtils.isEmpty(cookie)) cookie = getCookie();
+        if (TextUtils.isEmpty(cookie)) cookie = COOKIE;
     }
 
     private List<Filter> getFilter() {
