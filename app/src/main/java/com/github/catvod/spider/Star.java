@@ -13,6 +13,7 @@ import com.github.catvod.bean.star.Detail;
 import com.github.catvod.bean.star.Query;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -30,12 +31,20 @@ public class Star extends Spider {
     private static final String apiUrl = "https://aws.ulivetv.net/v3/web/api/filter";
     private static final String siteUrl = "https://www.histar.tv/";
     private static final String detail = siteUrl + "vod/detail/";
-    private static final String data = "/_next/data/";
+    private static final String data = "_next/data/";
     private LinkedHashMap<String, String> map;
     private String ver;
 
+    private Map<String, String> getHeader() {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", Utils.CHROME);
+        headers.put("Cookie", "userIP=127.0.0.1; aws-waf-token=");
+        headers.put("Referer", siteUrl);
+        return headers;
+    }
+
     private String getVer() {
-        for (Element script : Jsoup.parse(OkHttp.string(siteUrl)).select("script")) if (script.attr("src").contains("buildManifest.js")) return script.attr("src").split("/")[3];
+        for (Element script : Jsoup.parse(OkHttp.string(siteUrl, getHeader())).select("script")) if (script.attr("src").contains("buildManifest.js")) return script.attr("src").split("/")[3];
         return "";
     }
 
@@ -56,8 +65,8 @@ public class Star extends Spider {
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : map.entrySet()) classes.add(new Class(entry.getKey(), entry.getValue()));
         for (Class type : classes) {
-            String json = OkHttp.string(siteUrl + data + ver + "/" + type.getTypeId() + "/all/all/all.json");
-            JSONObject obj = new JSONObject(json).getJSONObject("pageProps").getJSONObject("filterCondition");
+            Element script = Jsoup.parse(OkHttp.string(siteUrl + type.getTypeId() + "/all/all/all", getHeader())).select("#__NEXT_DATA__").get(0);
+            JSONObject obj = new JSONObject(script.data()).getJSONObject("props").getJSONObject("pageProps").getJSONObject("filterCondition");
             Condition item = Condition.objectFrom(obj.toString());
             filters.put(type.getTypeId(), item.getFilter());
         }
@@ -94,7 +103,7 @@ public class Star extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Element script = Jsoup.parse(OkHttp.string(detail.concat(ids.get(0)))).select("#__NEXT_DATA__").get(0);
+        Element script = Jsoup.parse(OkHttp.string(detail.concat(ids.get(0)), getHeader())).select("#__NEXT_DATA__").get(0);
         Detail detail = Detail.objectFrom(new JSONObject(script.data()).getJSONObject("props").getJSONObject("pageProps").getJSONObject("pageData").toString());
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
@@ -117,7 +126,7 @@ public class Star extends Spider {
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
         List<Vod> list = new ArrayList<>();
-        String json = OkHttp.string(siteUrl + data + ver + "/search.json?word=" + URLEncoder.encode(key));
+        String json = OkHttp.string(siteUrl + data + ver + "/search.json?word=" + URLEncoder.encode(key), getHeader());
         List<Card> items = Card.arrayFrom(new JSONObject(json).getJSONObject("pageProps").getJSONArray("initList").toString());
         for (Card item : items) list.add(item.vod());
         return Result.string(list);
