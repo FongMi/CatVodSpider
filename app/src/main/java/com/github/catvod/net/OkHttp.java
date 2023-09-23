@@ -84,6 +84,10 @@ public class OkHttp {
         return string(proxy, url, null, header);
     }
 
+    public static String string(String url, Map<String, String> params, Map<String, String> header) {
+        return string(false, url, params, header);
+    }
+
     public static String string(boolean proxy, String url, Map<String, String> params, Map<String, String> header) {
         return string(client(proxy), url, params, header);
     }
@@ -98,6 +102,14 @@ public class OkHttp {
 
     public static String post(boolean proxy, String url, Map<String, String> params) {
         return post(proxy, url, params, null).getBody();
+    }
+
+    public static OkResult post(String url, Map<String, String> params, Map<String, String> header) {
+        return post(false, url, params, header);
+    }
+
+    public static OkResult post(boolean proxy, String url, Map<String, String> params, Map<String, String> header) {
+        return new OkRequest(POST, url, params, header).execute(client(proxy));
     }
 
     public static String post(String url, String json) {
@@ -116,14 +128,6 @@ public class OkHttp {
         return new OkRequest(POST, url, json, header).execute(client(proxy));
     }
 
-    public static OkResult post(String url, Map<String, String> params, Map<String, String> header) {
-        return post(false, url, params, header);
-    }
-
-    public static OkResult post(boolean proxy, String url, Map<String, String> params, Map<String, String> header) {
-        return new OkRequest(POST, url, params, header).execute(client(proxy));
-    }
-
     public static String getLocation(String url, Map<String, String> header) throws IOException {
         return getLocation(noRedirect(false).newCall(new Request.Builder().url(url).headers(Headers.of(header)).build()).execute().headers().toMultimap());
     }
@@ -139,7 +143,7 @@ public class OkHttp {
         return new OkHttpClient.Builder().dns(dns()).connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).hostnameVerifier(SSLCompat.VERIFIER).sslSocketFactory(new SSLCompat(), SSLCompat.TM);
     }
 
-    private static OkHttpClient.Builder getBuilder(String proxy) {
+    public static OkHttpClient.Builder getBuilder(String proxy) {
         Uri uri = Uri.parse(proxy);
         String userInfo = uri.getUserInfo();
         OkHttpClient.Builder builder = client().newBuilder();

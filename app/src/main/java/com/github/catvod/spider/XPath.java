@@ -317,6 +317,11 @@ public class XPath extends Spider {
         return Utils.isVideoFormat(url);
     }
 
+    @Override
+    public void destroy() {
+        OkHttp.get().resetProxy();
+    }
+
     protected String ext = null;
     protected Rule rule = null;
 
