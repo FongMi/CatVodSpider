@@ -44,9 +44,8 @@ public class Zhaozy extends Ali {
         headers.put("User-Agent", Utils.CHROME);
         headers.put("Referer", siteUrl + "stop.html");
         headers.put("Origin", siteUrl);
-        Map<String, List<String>> resp = new HashMap<>();
-        OkHttp.post(siteUrl + "logiu.html", params, headers, resp);
         StringBuilder sb = new StringBuilder();
+        Map<String, List<String>> resp = OkHttp.post(siteUrl + "logiu.html", params, headers).getResp();
         for (String item : resp.get("set-cookie")) sb.append(item.split(";")[0]).append(";");
         return sb.toString();
     }

@@ -3,15 +3,17 @@ package com.github.catvod.net;
 import android.net.Uri;
 
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.utils.Prefers;
 
 import java.io.IOException;
+import java.net.Authenticator;
 import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Call;
 import okhttp3.Credentials;
 import okhttp3.Dns;
 import okhttp3.Headers;
@@ -24,8 +26,8 @@ public class OkHttp {
     public static final String POST = "POST";
     public static final String GET = "GET";
 
-    private final OkHttpClient noRedirect;
-    private final OkHttpClient client;
+    private OkHttpClient proxy;
+    private OkHttpClient client;
 
     private static class Loader {
         static volatile OkHttp INSTANCE = new OkHttp();
@@ -35,139 +37,129 @@ public class OkHttp {
         return Loader.INSTANCE;
     }
 
-    public OkHttp() {
-        client = getBuilder().build();
-        noRedirect = client.newBuilder().followRedirects(false).followSslRedirects(false).build();
+    public static Dns dns() {
+        return Spider.safeDns();
     }
 
-    public static OkHttpClient.Builder getBuilder() {
-        return getBuilder(proxy());
-    }
-
-    public static OkHttpClient.Builder getBuilder(Uri proxy) {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder().dns(safeDns()).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).connectTimeout(30, TimeUnit.SECONDS).hostnameVerifier(SSLCompat.VERIFIER).sslSocketFactory(new SSLCompat(), SSLCompat.TM);
-        if (proxy != null && proxy.getScheme() != null && proxy.getHost() != null && proxy.getPort() > 0) setProxy(builder, proxy);
-        return builder;
+    public void resetProxy() {
+        Authenticator.setDefault(null);
+        proxy = null;
     }
 
     public static OkHttpClient client() {
-        return get().client;
+        if (get().client != null) return get().client;
+        return get().client = getBuilder().build();
     }
 
-    private static OkHttpClient noRedirect() {
-        return get().noRedirect;
+    public static OkHttpClient proxy() {
+        if (get().proxy != null) return get().proxy;
+        return get().proxy = getBuilder(Prefers.getString("proxy")).build();
     }
 
-    public static Dns safeDns() {
-        try {
-            return (Dns) Spider.class.getMethod("safeDns").invoke(null);
-        } catch (Exception e) {
-            return Dns.SYSTEM;
-        }
+    public static OkHttpClient client(boolean proxy) {
+        return proxy ? proxy() : client();
     }
 
-    public static Uri proxy() {
-        try {
-            return (Uri) Spider.class.getMethod("proxy").invoke(null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static Response newCall(String url) throws IOException {
-        return client().newCall(new Request.Builder().url(url).build()).execute();
+    public static OkHttpClient noRedirect(boolean proxy) {
+        return client(proxy).newBuilder().followRedirects(false).followSslRedirects(false).build();
     }
 
     public static Response newCall(String url, Map<String, String> header) throws IOException {
-        return client().newCall(new Request.Builder().url(url).headers(Headers.of(header)).build()).execute();
-    }
-
-    public static void stringNoRedirect(String url, Map<String, String> header, Map<String, List<String>> respHeader) {
-        string(noRedirect(), GET, url, null, null, header, respHeader);
-    }
-
-    public static String string(OkHttpClient client, String method, String url, String tag, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return new OkRequest(method, url, params, header, respHeader).tag(tag).execute(client).getBody();
+        return client(false).newCall(new Request.Builder().url(url).headers(Headers.of(header)).build()).execute();
     }
 
     public static String string(String url) {
-        return string(url, null);
+        return string(false, url);
+    }
+
+    public static String string(boolean proxy, String url) {
+        return string(proxy, url, null);
     }
 
     public static String string(String url, Map<String, String> header) {
-        return string(url, header, null);
+        return string(false, url, header);
     }
 
-    public static String string(String url, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return string(url, null, header, respHeader);
+    public static String string(boolean proxy, String url, Map<String, String> header) {
+        return string(proxy, url, null, header);
     }
 
-    public static String get(String url, Map<String, String> params, Map<String, String> header) {
-        return string(url, params, header, null);
+    public static String string(boolean proxy, String url, Map<String, String> params, Map<String, String> header) {
+        return string(client(proxy), url, params, header);
     }
 
-    public static String string(String url, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return string(url, null, params, header, respHeader);
-    }
-
-    public static String string(String url, String tag, Map<String, String> header) {
-        return string(url, tag, null, header, null);
-    }
-
-    public static String string(String url, String tag, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return string(client(), GET, url, tag, params, header, respHeader);
+    public static String string(OkHttpClient client, String url, Map<String, String> params, Map<String, String> header) {
+        return new OkRequest(GET, url, params, header).execute(client).getBody();
     }
 
     public static String post(String url, Map<String, String> params) {
-        return post(url, params, null);
+        return post(false, url, params);
     }
 
-    public static String post(String url, Map<String, String> params, Map<String, String> header) {
-        return post(url, params, header, null);
+    public static String post(boolean proxy, String url, Map<String, String> params) {
+        return post(proxy, url, params, null).getBody();
     }
 
-    public static String post(String url, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return string(client(), POST, url, null, params, header, respHeader);
+    public static String post(String url, String json) {
+        return post(false, url, json);
     }
 
-    public static OkResult postJson(String url, String json) {
-        return postJson(url, json, null);
+    public static String post(boolean proxy, String url, String json) {
+        return post(proxy, url, json, null).getBody();
     }
 
-    public static OkResult postJson(String url, String json, Map<String, String> header) {
-        return new OkRequest(POST, url, json, header).execute(client());
+    public static OkResult post(String url, String json, Map<String, String> header) {
+        return post(false, url, json, header);
     }
 
-    public static void cancel(Object tag) {
-        for (Call call : client().dispatcher().queuedCalls()) {
-            if (tag.equals(call.request().tag())) {
-                call.cancel();
-            }
-        }
-        for (Call call : client().dispatcher().runningCalls()) {
-            if (tag.equals(call.request().tag())) {
-                call.cancel();
-            }
-        }
+    public static OkResult post(boolean proxy, String url, String json, Map<String, String> header) {
+        return new OkRequest(POST, url, json, header).execute(client(proxy));
     }
 
-    public static String getRedirectLocation(Map<String, List<String>> headers) {
+    public static OkResult post(String url, Map<String, String> params, Map<String, String> header) {
+        return post(false, url, params, header);
+    }
+
+    public static OkResult post(boolean proxy, String url, Map<String, String> params, Map<String, String> header) {
+        return new OkRequest(POST, url, params, header).execute(client(proxy));
+    }
+
+    public static String getLocation(String url, Map<String, String> header) throws IOException {
+        return getLocation(noRedirect(false).newCall(new Request.Builder().url(url).headers(Headers.of(header)).build()).execute().headers().toMultimap());
+    }
+
+    public static String getLocation(Map<String, List<String>> headers) {
         if (headers == null) return null;
         if (headers.containsKey("location")) return headers.get("location").get(0);
         if (headers.containsKey("Location")) return headers.get("Location").get(0);
         return null;
     }
 
-    private static void setProxy(OkHttpClient.Builder builder, Uri proxy) {
-        String userInfo = proxy.getUserInfo();
-        if (proxy.getScheme() == null || proxy.getScheme().startsWith("socks")) {
-            builder.proxy(new Proxy(Proxy.Type.SOCKS, InetSocketAddress.createUnresolved(proxy.getHost(), proxy.getPort())));
-        } else if (proxy.getScheme().startsWith("http")) {
-            builder.proxy(new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(proxy.getHost(), proxy.getPort())));
-            if (userInfo != null && userInfo.contains(":")) builder.proxyAuthenticator((route, response) -> {
-                String credential = Credentials.basic(userInfo.split(":")[0], userInfo.split(":")[1]);
-                return response.request().newBuilder().header("Proxy-Authorization", credential).build();
-            });
-        }
+    public static OkHttpClient.Builder getBuilder() {
+        return new OkHttpClient.Builder().dns(dns()).connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).hostnameVerifier(SSLCompat.VERIFIER).sslSocketFactory(new SSLCompat(), SSLCompat.TM);
+    }
+
+    private static OkHttpClient.Builder getBuilder(String proxy) {
+        Uri uri = Uri.parse(proxy);
+        String userInfo = uri.getUserInfo();
+        OkHttpClient.Builder builder = client().newBuilder();
+        if (userInfo != null && userInfo.contains(":")) setAuthenticator(builder, userInfo);
+        if (uri.getScheme() == null || uri.getHost() == null || uri.getPort() <= 0) return builder;
+        if (uri.getScheme().startsWith("http")) builder.proxy(new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(uri.getHost(), uri.getPort())));
+        if (uri.getScheme().startsWith("socks")) builder.proxy(new Proxy(Proxy.Type.SOCKS, InetSocketAddress.createUnresolved(uri.getHost(), uri.getPort())));
+        return builder;
+    }
+
+    private static void setAuthenticator(OkHttpClient.Builder builder, String userInfo) {
+        builder.proxyAuthenticator((route, response) -> {
+            String credential = Credentials.basic(userInfo.split(":")[0], userInfo.split(":")[1]);
+            return response.request().newBuilder().header("Proxy-Authorization", credential).build();
+        });
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(userInfo.split(":")[0], userInfo.split(":")[1].toCharArray());
+            }
+        });
     }
 }
