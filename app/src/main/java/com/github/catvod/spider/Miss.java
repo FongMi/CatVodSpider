@@ -97,6 +97,11 @@ public class Miss extends Spider {
         return Result.get().parse().url(url + id).string();
     }
 
+    @Override
+    public void destroy() {
+        OkHttp.get().resetProxy();
+    }
+
     private String searchContent(String key, String pg) {
         List<Vod> list = new ArrayList<>();
         Document doc = Jsoup.parse(OkHttp.string(proxy(), url + "search/" + key + "?page=" + pg));

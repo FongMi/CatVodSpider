@@ -94,6 +94,11 @@ public class Eighteen extends Spider {
         return Result.get().url(result.get("url")).string();
     }
 
+    @Override
+    public void destroy() {
+        OkHttp.get().resetProxy();
+    }
+
     private String searchContent(String key, String pg) {
         HashMap<String, String> params = new HashMap<>();
         params.put("search_keyword", key);

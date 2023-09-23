@@ -738,6 +738,11 @@ public class AppYsV2 extends Spider {
         return Utils.isVideoFormat(url);
     }
 
+    @Override
+    public void destroy() {
+        OkHttp.get().resetProxy();
+    }
+
     private String getApiUrl() {
         if (extInfos == null || extInfos.length < 1) return "";
         return extInfos[0].trim();
