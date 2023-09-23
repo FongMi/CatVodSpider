@@ -61,7 +61,7 @@ public class AList extends Spider {
     }
 
     private String post(Drive drive, String url, String param, boolean retry) {
-        String response = OkHttp.postJson(url, param, drive.getHeader()).getBody();
+        String response = OkHttp.post(url, param, drive.getHeader()).getBody();
         SpiderDebug.log(response);
         if (retry && response.contains("Guest user is disabled") && login(drive)) return post(drive, url, param, false);
         return response;
@@ -152,7 +152,7 @@ public class AList extends Spider {
             JSONObject params = new JSONObject();
             params.put("username", drive.getLogin().getUsername());
             params.put("password", drive.getLogin().getPassword());
-            String response = OkHttp.postJson(drive.loginApi(), params.toString()).getBody();
+            String response = OkHttp.post(drive.loginApi(), params.toString());
             drive.setToken(new JSONObject(response).getJSONObject("data").getString("token"));
             return true;
         } catch (Exception e) {

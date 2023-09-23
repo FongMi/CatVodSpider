@@ -125,7 +125,7 @@ public class AliYun {
 
     private boolean alist(String url, JsonObject param) {
         String api = "https://aliapi.ewwe.gq/alist/ali_open/" + url;
-        OkResult result = OkHttp.postJson(api, param.toString(), getHeader());
+        OkResult result = OkHttp.post(api, param.toString(), getHeader());
         SpiderDebug.log(result.getCode() + "," + api + "," + result.getBody());
         if (isManyRequest(result.getBody())) return false;
         oauth = OAuth.objectFrom(result.getBody()).save();
@@ -134,14 +134,14 @@ public class AliYun {
 
     private String post(String url, JsonObject param) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        OkResult result = OkHttp.postJson(url, param.toString(), getHeader());
+        OkResult result = OkHttp.post(url, param.toString(), getHeader());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
         return result.getBody();
     }
 
     private String auth(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        OkResult result = OkHttp.postJson(url, json, getHeaderAuth());
+        OkResult result = OkHttp.post(url, json, getHeaderAuth());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
         if (retry && result.getCode() == 401 && refreshAccessToken()) return auth(url, json, false);
         if (retry && result.getCode() == 429) return auth(url, json, false);
@@ -150,7 +150,7 @@ public class AliYun {
 
     private String oauth(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://open.aliyundrive.com/adrive/v1.0/" + url;
-        OkResult result = OkHttp.postJson(url, json, getHeaderOpen());
+        OkResult result = OkHttp.post(url, json, getHeaderOpen());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
         if (retry && (result.getCode() == 400 || result.getCode() == 401) && refreshOpenToken()) return oauth(url, json, false);
         return result.getBody();

@@ -12,7 +12,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * XiaoZhiTiao
@@ -46,7 +50,7 @@ public class XiaoZhiTiao extends Ali {
         params.put("from", "web");
         params.put("keyword", key);
         params.put("token", getToken());
-        JSONObject object = new JSONObject(OkHttp.post(siteUrl, params, getHeaders()));
+        JSONObject object = new JSONObject(OkHttp.post(siteUrl, params, getHeaders()).getBody());
         if (!object.optBoolean("success")) return "";
         List<Vod> list = new ArrayList<>();
         JSONArray data = object.getJSONArray("data");
@@ -65,9 +69,9 @@ public class XiaoZhiTiao extends Ali {
             Map<String, String> params = new HashMap<>();
             params.put("action", "get_token");
             params.put("from", "web");
-            JSONObject jsonObject = new JSONObject(OkHttp.post(siteUrl, params, getHeaders()));
-            if (jsonObject.getBoolean("success")) {
-                token = jsonObject.getString("data");
+            JSONObject object = new JSONObject(OkHttp.post(siteUrl, params, getHeaders()).getBody());
+            if (object.getBoolean("success")) {
+                token = object.getString("data");
                 date = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
             }
         }

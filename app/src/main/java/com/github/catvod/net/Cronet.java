@@ -5,10 +5,12 @@ import com.google.net.cronet.okhttptransport.CronetInterceptor;
 
 import org.chromium.net.CronetEngine;
 
-import java.util.List;
+import java.io.IOException;
 import java.util.Map;
 
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class Cronet {
 
@@ -53,36 +55,20 @@ public class Cronet {
         return get().noRedirect;
     }
 
-    public static void stringNoRedirect(String url, Map<String, String> header, Map<String, List<String>> respHeader) {
-        string(noRedirect(), GET, url, null, null, header, respHeader);
-    }
-
-    public static String string(OkHttpClient client, String method, String url, String tag, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return new OkRequest(method, url, params, header, respHeader).tag(tag).execute(client).getBody();
-    }
-
     public static String string(String url) {
         return string(url, null);
     }
 
     public static String string(String url, Map<String, String> header) {
-        return string(url, header, null);
+        return string(url, null, header);
     }
 
-    public static String string(String url, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return string(url, null, header, respHeader);
+    public static String string(String url, Map<String, String> params, Map<String, String> header) {
+        return string(client(), GET, url, params, header);
     }
 
-    public static String string(String url, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return string(url, null, params, header, respHeader);
-    }
-
-    public static String string(String url, String tag, Map<String, String> header) {
-        return string(url, tag, null, header, null);
-    }
-
-    public static String string(String url, String tag, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return string(client(), GET, url, tag, params, header, respHeader);
+    public static String string(OkHttpClient client, String method, String url, Map<String, String> params, Map<String, String> header) {
+        return new OkRequest(method, url, params, header).execute(client).getBody();
     }
 
     public static String post(String url, Map<String, String> params) {
@@ -90,11 +76,7 @@ public class Cronet {
     }
 
     public static String post(String url, Map<String, String> params, Map<String, String> header) {
-        return post(url, params, header, null);
-    }
-
-    public static String post(String url, Map<String, String> params, Map<String, String> header, Map<String, List<String>> respHeader) {
-        return string(client(), POST, url, null, params, header, respHeader);
+        return string(client(), POST, url, params, header);
     }
 
     public static OkResult postJson(String url, String json) {
@@ -105,10 +87,7 @@ public class Cronet {
         return new OkRequest(POST, url, json, header).execute(client());
     }
 
-    public static String getRedirectLocation(Map<String, List<String>> headers) {
-        if (headers == null) return null;
-        if (headers.containsKey("location")) return headers.get("location").get(0);
-        if (headers.containsKey("Location")) return headers.get("Location").get(0);
-        return null;
+    public static String getLocation(String url, Map<String, String> header) throws IOException {
+        return OkHttp.getLocation(noRedirect().newCall(new Request.Builder().url(url).headers(Headers.of(header)).build()).execute().headers().toMultimap());
     }
 }
