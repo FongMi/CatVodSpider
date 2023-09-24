@@ -26,6 +26,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
+
 public class Star extends Spider {
 
     private static final String apiUrl = "https://aws.ulivetv.net/v3/web/api/filter";
@@ -46,6 +48,15 @@ public class Star extends Spider {
     private String getVer() {
         for (Element script : Jsoup.parse(OkHttp.string(client(), siteUrl, getHeader())).select("script")) if (script.attr("src").contains("buildManifest.js")) return script.attr("src").split("/")[3];
         return "";
+    }
+
+    @Override
+    public OkHttpClient client() {
+        try {
+            return super.client();
+        } catch (Throwable e) {
+            return OkHttp.client();
+        }
     }
 
     @Override
