@@ -21,7 +21,7 @@ import java.util.List;
 
 public class Miss extends Spider {
 
-    private final String url = "https://missav.com/";
+    private final String url = "https://missav.com/cn/";
 
     @Override
     public String homeContent(boolean filter) throws Exception {
