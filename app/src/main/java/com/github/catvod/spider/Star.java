@@ -44,7 +44,7 @@ public class Star extends Spider {
     }
 
     private String getVer() {
-        for (Element script : Jsoup.parse(OkHttp.string(siteUrl, getHeader())).select("script")) if (script.attr("src").contains("buildManifest.js")) return script.attr("src").split("/")[3];
+        for (Element script : Jsoup.parse(OkHttp.string(client(), siteUrl, getHeader())).select("script")) if (script.attr("src").contains("buildManifest.js")) return script.attr("src").split("/")[3];
         return "";
     }
 
@@ -65,7 +65,7 @@ public class Star extends Spider {
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : map.entrySet()) classes.add(new Class(entry.getKey(), entry.getValue()));
         for (Class type : classes) {
-            Element script = Jsoup.parse(OkHttp.string(siteUrl + type.getTypeId() + "/all/all/all", getHeader())).select("#__NEXT_DATA__").get(0);
+            Element script = Jsoup.parse(OkHttp.string(client(), siteUrl + type.getTypeId() + "/all/all/all", getHeader())).select("#__NEXT_DATA__").get(0);
             JSONObject obj = new JSONObject(script.data()).getJSONObject("props").getJSONObject("pageProps").getJSONObject("filterCondition");
             Condition item = Condition.objectFrom(obj.toString());
             filters.put(type.getTypeId(), item.getFilter());
@@ -76,7 +76,7 @@ public class Star extends Spider {
     @Override
     public String homeVideoContent() throws Exception {
         List<Vod> list = new ArrayList<>();
-        Element script = Jsoup.parse(OkHttp.string(siteUrl)).select("#__NEXT_DATA__").get(0);
+        Element script = Jsoup.parse(OkHttp.string(client(), siteUrl, getHeader())).select("#__NEXT_DATA__").get(0);
         List<Card> cards = Card.arrayFrom(new JSONObject(script.data()).getJSONObject("props").getJSONObject("pageProps").getJSONArray("cards").toString());
         for (Card card : cards) if (!card.getName().equals("电视直播")) for (Card item : card.getCards()) list.add(item.vod());
         return Result.string(list);
@@ -103,7 +103,7 @@ public class Star extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Element script = Jsoup.parse(OkHttp.string(detail.concat(ids.get(0)), getHeader())).select("#__NEXT_DATA__").get(0);
+        Element script = Jsoup.parse(OkHttp.string(client(), detail.concat(ids.get(0)), getHeader())).select("#__NEXT_DATA__").get(0);
         Detail detail = Detail.objectFrom(new JSONObject(script.data()).getJSONObject("props").getJSONObject("pageProps").getJSONObject("pageData").toString());
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
@@ -126,7 +126,7 @@ public class Star extends Spider {
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
         List<Vod> list = new ArrayList<>();
-        String json = OkHttp.string(siteUrl + data + ver + "/search.json?word=" + URLEncoder.encode(key), getHeader());
+        String json = OkHttp.string(client(), siteUrl + data + ver + "/search.json?word=" + URLEncoder.encode(key), getHeader());
         List<Card> items = Card.arrayFrom(new JSONObject(json).getJSONObject("pageProps").getJSONArray("initList").toString());
         for (Card item : items) list.add(item.vod());
         return Result.string(list);
