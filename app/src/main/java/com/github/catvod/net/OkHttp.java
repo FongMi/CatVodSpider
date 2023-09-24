@@ -50,11 +50,15 @@ public class OkHttp {
     }
 
     public static String string(String url, Map<String, String> header) {
-        return string(url, null, header);
+        return string(client(), url, null, header);
     }
 
-    public static String string(String url, Map<String, String> params, Map<String, String> header) {
-        return new OkRequest(GET, url, params, header).execute(client()).getBody();
+    public static String string(OkHttpClient client, String url, Map<String, String> header) {
+        return string(client, url, null, header);
+    }
+
+    public static String string(OkHttpClient client, String url, Map<String, String> params, Map<String, String> header) {
+        return new OkRequest(GET, url, params, header).execute(client).getBody();
     }
 
     public static String post(String url, Map<String, String> params) {
