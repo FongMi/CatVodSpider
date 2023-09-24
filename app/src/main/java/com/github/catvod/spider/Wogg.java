@@ -103,6 +103,9 @@ public class Wogg extends Ali {
         item.setTypeName(String.join(",", doc.select(".video-info-header div.tag-link a").eachText()));
 
         List<String> shareLinks = doc.select(".module-row-text").eachAttr("data-clipboard-text");
+        for (int i = 0; i < shareLinks.size(); i++) {
+            shareLinks.set(i, shareLinks.get(i).trim());
+        }
         item.setVodPlayFrom(super.detailContentVodPlayFrom(shareLinks));
         item.setVodPlayUrl(super.detailContentVodPlayUrl(shareLinks));
 
