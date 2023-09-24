@@ -62,11 +62,15 @@ public class OkHttp {
     }
 
     public static String post(String url, Map<String, String> params) {
-        return post(url, params, null).getBody();
+        return post(client(), url, params, null).getBody();
     }
 
     public static OkResult post(String url, Map<String, String> params, Map<String, String> header) {
-        return new OkRequest(POST, url, params, header).execute(client());
+        return post(client(), url, params, header);
+    }
+
+    public static OkResult post(OkHttpClient client, String url, Map<String, String> params, Map<String, String> header) {
+        return new OkRequest(POST, url, params, header).execute(client);
     }
 
     public static String post(String url, String json) {
@@ -74,7 +78,11 @@ public class OkHttp {
     }
 
     public static OkResult post(String url, String json, Map<String, String> header) {
-        return new OkRequest(POST, url, json, header).execute(client());
+        return post(client(), url, json, header);
+    }
+
+    public static OkResult post(OkHttpClient client, String url, String json, Map<String, String> header) {
+        return new OkRequest(POST, url, json, header).execute(client);
     }
 
     public static String getLocation(String url, Map<String, String> header) throws IOException {
