@@ -317,6 +317,11 @@ public class XPath extends Spider {
         return Utils.isVideoFormat(url);
     }
 
+    @Override
+    public void destroy() {
+        OkHttp.get().resetProxy();
+    }
+
     protected String ext = null;
     protected Rule rule = null;
 
@@ -324,7 +329,7 @@ public class XPath extends Spider {
         if (rule == null) {
             if (ext != null) {
                 if (ext.startsWith("http")) {
-                    String json = OkHttp.string(ext, null);
+                    String json = OkHttp.string(proxy(), ext, null);
                     rule = Rule.fromJson(json);
                     loadRuleExt(json);
                 } else {
@@ -340,6 +345,6 @@ public class XPath extends Spider {
 
     protected String fetch(String webUrl) {
         SpiderDebug.log(webUrl);
-        return OkHttp.string(webUrl, getHeaders());
+        return OkHttp.string(proxy(), webUrl, getHeaders());
     }
 }

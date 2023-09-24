@@ -28,7 +28,7 @@ public class Miss extends Spider {
         List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        Document doc = Jsoup.parse(OkHttp.string(url));
+        Document doc = Jsoup.parse(OkHttp.string(proxy(), url));
         List<String> typeIds = Arrays.asList("chinese-subtitle", "new", "release", "uncensored-leak", "genres/VR", "today-hot", "weekly-hot", "monthly-hot", "siro", "luxu", "gana", "maan", "scute", "ara", "uncensored-leak", "fc2", "heyzo", "tokyohot", "1pondo", "caribbeancom", "caribbeancompr", "10musume", "pacopacomama", "gachinco", "xxxav", "marriedslash", "naughty4610", "naughty0930", "madou", "twav", "furuke");
         for (Element a : doc.select("nav a")) {
             String typeId = a.attr("href").replace(url, "");
@@ -55,7 +55,7 @@ public class Miss extends Spider {
         String filters = extend.get("filters");
         if (TextUtils.isEmpty(filters)) target += "?page=" + pg;
         else target += "?filters=" + extend.get("filters") + "&page=" + pg;
-        Document doc = Jsoup.parse(OkHttp.string(target));
+        Document doc = Jsoup.parse(OkHttp.string(proxy(), target));
         for (Element div : doc.select("div.thumbnail")) {
             String id = div.select("a.text-secondary").attr("href").replace(url, "");
             String name = div.select("a.text-secondary").text();
@@ -70,7 +70,7 @@ public class Miss extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Document doc = Jsoup.parse(OkHttp.string(url + ids.get(0)));
+        Document doc = Jsoup.parse(OkHttp.string(proxy(), url + ids.get(0)));
         String name = doc.select("meta[property=og:title]").attr("content");
         String pic = doc.select("meta[property=og:image]").attr("content");
         Vod vod = new Vod();
@@ -97,9 +97,14 @@ public class Miss extends Spider {
         return Result.get().parse().url(url + id).string();
     }
 
+    @Override
+    public void destroy() {
+        OkHttp.get().resetProxy();
+    }
+
     private String searchContent(String key, String pg) {
         List<Vod> list = new ArrayList<>();
-        Document doc = Jsoup.parse(OkHttp.string(url + "search/" + key + "?page=" + pg));
+        Document doc = Jsoup.parse(OkHttp.string(proxy(), url + "search/" + key + "?page=" + pg));
         for (Element div : doc.select("div.thumbnail")) {
             String id = div.select("a.text-secondary").attr("href").replace(url, "");
             String name = div.select("a.text-secondary").text();

@@ -23,7 +23,6 @@ import com.google.gson.JsonParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,14 +63,7 @@ public class Bili extends Spider {
         audios.put("30216", "64000");
     }
 
-    private String getCookie() throws IOException {
-        StringBuilder sb = new StringBuilder();
-        List<String> cookies = OkHttp.newCall("https://www.bilibili.com", getHeader()).headers("set-cookie");
-        for (String cookie : cookies) sb.append(cookie.split(";")[0]).append(";");
-        return sb.toString();
-    }
-
-    private void setCookie() throws IOException {
+    private void setCookie() {
         cookie = extend.get("cookie").getAsString();
         if (cookie.startsWith("http")) cookie = OkHttp.string(cookie).trim();
         if (TextUtils.isEmpty(cookie)) cookie = FileUtil.read(getUserCache());

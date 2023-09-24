@@ -35,9 +35,7 @@ public class PanSou extends Ali {
     public String detailContent(List<String> ids) throws Exception {
         if (pattern.matcher(ids.get(0)).find()) return super.detailContent(ids);
         String url = siteUrl + ids.get(0).replace("/s/", "/cv/");
-        Map<String, List<String>> respHeaders = new HashMap<>();
-        OkHttp.stringNoRedirect(url, getHeaders(ids.get(0)), respHeaders);
-        url = OkHttp.getRedirectLocation(respHeaders);
+        url = OkHttp.getLocation(url, getHeaders(ids.get(0)));
         return super.detailContent(Arrays.asList(url));
     }
 
