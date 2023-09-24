@@ -135,9 +135,4 @@ public class Hanime extends Spider {
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         return Result.get().url(id).header(getHeaders()).string();
     }
-
-    @Override
-    public void destroy() {
-        OkHttp.get().resetProxy();
-    }
 }
