@@ -34,13 +34,13 @@ public class Jable extends Spider {
     public String homeContent(boolean filter) throws Exception {
         List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
-        Document doc = Jsoup.parse(OkHttp.string(proxy(), cateUrl, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(cateUrl, getHeaders()));
         for (Element element : doc.select("div.img-box > a")) {
             String typeId = element.attr("href").split("/")[4];
             String typeName = element.select("div.absolute-center > h4").text();
             classes.add(new Class(typeId, typeName));
         }
-        doc = Jsoup.parse(OkHttp.string(proxy(), siteUrl, getHeaders()));
+        doc = Jsoup.parse(OkHttp.string(siteUrl, getHeaders()));
         for (Element element : doc.select("div.video-img-box")) {
             String pic = element.select("img").attr("data-src");
             String url = element.select("a").attr("href");
@@ -56,7 +56,7 @@ public class Jable extends Spider {
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
         List<Vod> list = new ArrayList<>();
         String target = cateUrl + tid + "/?mode=async&function=get_block&block_id=list_videos_common_videos_list&sort_by=post_date&from=" + String.format(Locale.getDefault(), "%02d", Integer.parseInt(pg)) + "&_=" + System.currentTimeMillis();
-        Document doc = Jsoup.parse(OkHttp.string(proxy(), target, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(target, getHeaders()));
         for (Element element : doc.select("div.video-img-box")) {
             String pic = element.select("img").attr("data-src");
             String url = element.select("a").attr("href");
@@ -69,7 +69,7 @@ public class Jable extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Document doc = Jsoup.parse(OkHttp.string(proxy(), detailUrl.concat(ids.get(0)).concat("/"), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(detailUrl.concat(ids.get(0)).concat("/"), getHeaders()));
         String name = doc.select("meta[property=og:title]").attr("content");
         String pic = doc.select("meta[property=og:image]").attr("content");
         String year = doc.select("span.inactive-color").get(0).text();
@@ -86,7 +86,7 @@ public class Jable extends Spider {
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
         List<Vod> list = new ArrayList<>();
-        Document doc = Jsoup.parse(OkHttp.string(proxy(), searchUrl.concat(URLEncoder.encode(key)).concat("/"), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(searchUrl.concat(URLEncoder.encode(key)).concat("/"), getHeaders()));
         for (Element element : doc.select("div.video-img-box")) {
             String pic = element.select("img").attr("data-src");
             String url = element.select("a").attr("href");
@@ -100,10 +100,5 @@ public class Jable extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         return Result.get().url(id).header(getHeaders()).string();
-    }
-
-    @Override
-    public void destroy() {
-        OkHttp.get().resetProxy();
     }
 }

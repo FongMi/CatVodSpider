@@ -43,10 +43,10 @@ public class Hanime extends Spider {
         List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        Document doc1 = Jsoup.parse(OkHttp.string(proxy(), siteUrl.concat("/search?genre=裏番"), getHeaders()));
+        Document doc1 = Jsoup.parse(OkHttp.string(siteUrl.concat("/search?genre=裏番"), getHeaders()));
         List<String> sorts = doc1.select("div.hentai-sort-options-wrapper").eachText();
         List<String> years = doc1.getElementById("year").select("option").eachAttr("value");
-        Document doc2 = Jsoup.parse(OkHttp.string(proxy(), siteUrl, getHeaders()));
+        Document doc2 = Jsoup.parse(OkHttp.string(siteUrl, getHeaders()));
         for (Element element : doc2.select("a.nav-item")) {
             String text = element.text();
             if (text.equals("新番預告") || text.equals("H漫畫")) continue;
@@ -75,7 +75,7 @@ public class Hanime extends Spider {
         if (extend.get("by") == null) extend.put("by", "最新上市");
         if (extend.get("year") == null) extend.put("year", "");
         String target = siteUrl.concat("/search?genre=").concat(tid).concat("&page=").concat(pg).concat("&sort=").concat(extend.get("by")).concat("&year=").concat(extend.get("year"));
-        Document doc = Jsoup.parse(OkHttp.string(proxy(), target, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(target, getHeaders()));
         for (Element element : doc.select("div.col-xs-6")) {
             String pic = element.select("img").get(1).attr("src");
             String url = element.select("a.overlay").attr("href");
@@ -100,7 +100,7 @@ public class Hanime extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Document doc = Jsoup.parse(OkHttp.string(proxy(), siteUrl.concat("/watch?v=").concat(ids.get(0)), getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(siteUrl.concat("/watch?v=").concat(ids.get(0)), getHeaders()));
         String name = doc.getElementById("shareBtn-title").text();
         JSONObject json = new JSONObject(doc.select("script[type=application/ld+json]").html().trim());
         String content = json.optString("description");
@@ -120,7 +120,7 @@ public class Hanime extends Spider {
     public String searchContent(String key, boolean quick) throws Exception {
         List<Vod> list = new ArrayList<>();
         String target = siteUrl.concat("/search?query=").concat(key).concat("&genre=&sort=&year=&month=&duration=");
-        Document doc = Jsoup.parse(OkHttp.string(proxy(), target, getHeaders()));
+        Document doc = Jsoup.parse(OkHttp.string(target, getHeaders()));
         for (Element element : doc.select("div.col-xs-6")) {
             String pic = element.select("img").get(1).attr("src");
             String url = element.select("a.overlay").attr("href");
@@ -134,10 +134,5 @@ public class Hanime extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         return Result.get().url(id).header(getHeaders()).string();
-    }
-
-    @Override
-    public void destroy() {
-        OkHttp.get().resetProxy();
     }
 }

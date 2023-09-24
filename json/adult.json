@@ -1,5 +1,5 @@
 {
-  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;e615e21ea55994ac1dbc284463412a3a",
+  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;5931706b319f6cb041b667eeed890608",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "sites": [
     {
@@ -66,7 +66,6 @@
       "type": 3,
       "api": "csp_Eighteen",
       "searchable": 1,
-      "proxy": true,
       "style": {
         "type": "rect",
         "ratio": 1.485
@@ -78,7 +77,6 @@
       "type": 3,
       "api": "csp_Jable",
       "searchable": 1,
-      "proxy": true,
       "style": {
         "type": "rect",
         "ratio": 1.77
@@ -90,7 +88,6 @@
       "type": 3,
       "api": "csp_Miss",
       "searchable": 1,
-      "proxy": true,
       "style": {
         "type": "rect",
         "ratio": 1.777
@@ -102,7 +99,6 @@
       "type": 3,
       "api": "csp_Hanime",
       "searchable": 1,
-      "proxy": true,
       "style": {
         "type": "rect",
         "ratio": 0.68
