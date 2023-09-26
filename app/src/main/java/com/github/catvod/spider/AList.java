@@ -262,16 +262,15 @@ public class AList extends Spider {
             List<Vod> list = new ArrayList<>();
             Document doc = Jsoup.parse(OkHttp.string(drive.searchApi(keyword)));
             for (Element a : doc.select("ul > a")) {
-                String[] splits = a.text().split("#");
-                if (!splits[0].contains("/")) continue;
-                int index = splits[0].lastIndexOf("/");
-                boolean folder = splits.length > 1;
+                String text = a.text();
+                String regex = ".*\\.(dff|dsf|mp3|aac|wav|wma|cda|flac|m4a|mid|mka|mp2|mpa|mpc|ape|ofr|ogg|ra|wv|tta|ac3|dts|tak|webm|wmv|mpeg|mov|ram|swf|mp4|avi|rm|rmvb|flv|mpg|mkv|m3u8|ts|3gp|asf)$";
+                boolean file = text.matches(regex);
                 Item item = new Item();
-                item.setType(folder ? 1 : 0);
-                item.setThumb(splits.length > 3 ? splits[4] : "");
-                item.setPath("/" + splits[0].substring(0, index));
-                item.setName(splits[0].substring(index + 1));
-                list.add(item.getVod(drive, vodPic));
+                int index = text.lastIndexOf("/");
+                if (index == -1) continue;
+                item.setName(text);
+                item.setType(file ? 0 : 1);
+                list.add(item.getVod(drive,drive.getVodPic()));
             }
             return list;
         }
