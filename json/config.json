@@ -66,6 +66,15 @@
       "changeable": 1
     },
     {
+      "key": "haiwaikan",
+      "name": "海外看",
+      "type": 1,
+      "api": "https://haiwaikan.com/api.php/provide/vod",
+      "searchable": 1,
+      "changeable": 1,
+      "proxy": true
+    },
+    {
       "key": "暴風",
       "name": "暴風",
       "type": 1,
