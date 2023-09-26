@@ -1,5 +1,7 @@
 package com.github.catvod.spider;
 
+import android.text.TextUtils;
+import android.util.Base64;
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
@@ -10,9 +12,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Doll extends Spider {
 
@@ -70,6 +75,28 @@ public class Doll extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return Result.get().url(id).parse().string();
+        String voteTag = "";
+        String key = "";
+        StringBuilder code = new StringBuilder();
+        String html = OkHttp.string(id);
+        Document doc = Jsoup.parse(html);
+        Matcher m = Pattern.compile("/video/(\\w+).html").matcher(id);
+        if (m.find()) key = m.group(1);
+        for (Element a : doc.select("script")) {
+            if (a.html().startsWith("var voteTag")) {
+                Pattern pattern = Pattern.compile("voteTag=\"([^&]+)\"");
+                Matcher matcher = pattern.matcher(a.html());
+                if (matcher.find()) voteTag = matcher.group(1);
+                break;
+            }
+        }
+        if (TextUtils.isEmpty(voteTag)) return Result.get().url(id).parse().string();
+        voteTag = new String(Base64.decode(voteTag, 0));
+        for (int i = 0; i < voteTag.length(); i++) {
+            int k = i % key.length();
+            code.append((char) (voteTag.charAt(i) ^ key.charAt(k)));
+        }
+        String playUrl = URLDecoder.decode(new String(Base64.decode(code.toString(), 0)));
+        return Result.get().url(playUrl).parse().string();
     }
 }
