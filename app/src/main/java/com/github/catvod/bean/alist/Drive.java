@@ -136,6 +136,10 @@ public class Drive {
         return getHost() + (isNew() ? "/api/fs/search" : "/api/public/search");
     }
 
+    public String searchApi(String param) {
+        return getHost() + "/search?box=" + param + "&url=&type=video";
+    }
+
     public Drive check() {
         if (path == null) setPath(Uri.parse(getServer()).getPath());
         if (version == 0) setVersion(OkHttp.string(settingsApi()).contains("v2.") ? 2 : 3);
