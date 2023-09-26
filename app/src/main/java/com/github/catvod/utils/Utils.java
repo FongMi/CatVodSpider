@@ -25,10 +25,11 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
+    public static final Pattern RULE = Pattern.compile("http((?!http).){12,}?\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)\\?.*|http((?!http).){12,}\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)|http((?!http).)*?video/tos*");
     public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36";
     public static final String ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
-    public static final List<String> MEDIA = Arrays.asList("mp4", "mkv", "wmv", "flv", "avi", "mp3", "aac", "flac", "m4a", "ape", "ogg");
-    public static final Pattern RULE = Pattern.compile("http((?!http).){12,}?\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)\\?.*|" + "http((?!http).){12,}\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)|" + "http((?!http).)*?video/tos*");
+    public static final List<String> MEDIA = Arrays.asList("mp4", "mkv", "wmv", "flv", "avi", "iso", "mpg", "ts", "mp3", "aac", "flac", "m4a", "ape", "ogg");
+    public static final List<String> SUB = Arrays.asList("srt", "ass", "ssa", "vtt");
 
     public static boolean isVip(String url) {
         List<String> hosts = Arrays.asList("iqiyi.com", "v.qq.com", "youku.com", "le.com", "tudou.com", "mgtv.com", "sohu.com", "acfun.cn", "bilibili.com", "baofeng.com", "pptv.com");
@@ -59,11 +60,15 @@ public class Utils {
     }
 
     public static boolean isSub(String ext) {
-        return ext.equals("srt") || ext.equals("ass") || ext.equals("ssa") || ext.equals("vtt");
+        return SUB.contains(ext);
+    }
+
+    public static boolean isMedia(String text) {
+        return MEDIA.contains(getExt(text));
     }
 
     public static String getExt(String name) {
-        return name.substring(name.lastIndexOf(".") + 1);
+        return name.contains(".") ? name.substring(name.lastIndexOf(".") + 1) : name;
     }
 
     public static String getSize(double size) {

@@ -265,9 +265,9 @@ public class AList extends Spider {
                 String[] splits = a.text().split("#");
                 if (!splits[0].contains("/")) continue;
                 int index = splits[0].lastIndexOf("/");
-                boolean folder = splits.length > 1;
+                boolean file = Utils.isMedia(splits[0]);
                 Item item = new Item();
-                item.setType(folder ? 1 : 0);
+                item.setType(file ? 0 : 1);
                 item.setThumb(splits.length > 3 ? splits[4] : "");
                 item.setPath("/" + splits[0].substring(0, index));
                 item.setName(splits[0].substring(index + 1));

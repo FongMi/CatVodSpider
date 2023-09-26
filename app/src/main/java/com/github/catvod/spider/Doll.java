@@ -2,6 +2,7 @@ package com.github.catvod.spider;
 
 import android.text.TextUtils;
 import android.util.Base64;
+
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
@@ -75,8 +76,8 @@ public class Doll extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        String voteTag = "";
         String key = "";
+        String voteTag = "";
         StringBuilder code = new StringBuilder();
         String html = OkHttp.string(id);
         Document doc = Jsoup.parse(html);
