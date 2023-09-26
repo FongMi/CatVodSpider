@@ -97,6 +97,6 @@ public class Doll extends Spider {
             code.append((char) (voteTag.charAt(i) ^ key.charAt(k)));
         }
         String playUrl = URLDecoder.decode(new String(Base64.decode(code.toString(), 0)));
-        return Result.get().url(playUrl).parse().string();
+        return Result.get().url(playUrl).string();
     }
 }
