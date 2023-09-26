@@ -110,7 +110,7 @@ public class WebDAV extends Spider {
         Sorter.sort("name", "asc", parents);
         List<String> playUrls = new ArrayList<>();
         for (DavResource item : parents) {
-            if (Utils.MEDIA.contains(getExt(item))) {
+            if (Utils.isMedia(item.getName())) {
                 playUrls.add(item.getName() + "$" + drive.getName() + item.getPath() + findSubs(drive, item, subs));
             }
         }

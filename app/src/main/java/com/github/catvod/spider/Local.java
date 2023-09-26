@@ -54,7 +54,7 @@ public class Local extends Spider {
         for (File file : files) {
             if (file.getName().startsWith(".")) continue;
             if (file.isDirectory()) folders.add(create(file));
-            else if (Utils.MEDIA.contains(Utils.getExt(file.getName()))) media.add(create(file));
+            else if (Utils.isMedia(file.getName())) media.add(create(file));
         }
         items.addAll(folders);
         items.addAll(media);
