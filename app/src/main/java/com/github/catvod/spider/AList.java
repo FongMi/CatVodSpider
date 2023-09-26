@@ -250,12 +250,16 @@ public class AList extends Spider {
         }
 
         @Override
-        public List<Vod> call() throws Exception {
-            List<Vod> list = new ArrayList<>();
-            String response = post(drive, drive.searchApi(), drive.params(keyword));
-            List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
-            for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive, vodPic));
-            return list;
+        public List<Vod> call() {
+            try {
+                List<Vod> list = new ArrayList<>();
+                String response = post(drive, drive.searchApi(), drive.params(keyword));
+                List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
+                for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive, vodPic));
+                return list;
+            } catch (Exception e) {
+                return Collections.emptyList();
+            }
         }
     }
 }

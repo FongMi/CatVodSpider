@@ -1,19 +1,15 @@
 package com.github.catvod.spider;
 
-import android.util.Base64;
-
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,24 +57,19 @@ public class Doll extends Spider {
     public String detailContent(List<String> ids) throws Exception {
         String html = OkHttp.string(url + ids.get(0));
         Document doc = Jsoup.parse(html);
-        StringBuilder sb = new StringBuilder();
-        String videoId = ids.get(0).split("/")[1].split("\\.")[0];
         String pic = doc.select("meta[property=og:image]").attr("content");
         String name = doc.select("meta[property=og:title]").attr("content");
-        String voteTag = new String(Base64.decode(Utils.getVar(html, "voteTag").getBytes(), 0));
-        for (int i = 0; i < voteTag.length(); i++) sb.append(Character.toChars(voteTag.charAt(i) ^ videoId.charAt(i % videoId.length())));
-        String playUrl = URLDecoder.decode(new String(Base64.decode(sb.toString().getBytes(), 0)));
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
         vod.setVodPic(pic);
         vod.setVodName(name);
         vod.setVodPlayFrom("玩偶姐姐");
-        vod.setVodPlayUrl("播放$" + playUrl);
+        vod.setVodPlayUrl("播放$" + url + ids.get(0));
         return Result.string(vod);
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return Result.get().url(id).string();
+        return Result.get().url(id).parse().string();
     }
 }
