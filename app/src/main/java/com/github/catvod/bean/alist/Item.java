@@ -72,6 +72,10 @@ public class Item {
         return TextUtils.isEmpty(thumb) ? "" : thumb;
     }
 
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
+    }
+
     public String getUrl() {
         return TextUtils.isEmpty(url) ? "" : url.startsWith("//") ? "http:" + url : url;
     }
