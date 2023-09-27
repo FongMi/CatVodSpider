@@ -24,7 +24,6 @@
       "type": 3,
       "api": "csp_NiNi",
       "searchable": 1,
-      "proxy": true,
       "ext": "1"
     },
     {
