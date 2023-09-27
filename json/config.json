@@ -8,8 +8,7 @@
       "type": 3,
       "api": "csp_NiNi",
       "searchable": 1,
-      "changeable": 1,
-      "proxy": true
+      "changeable": 1
     },
     {
       "key": "星星",
@@ -17,8 +16,7 @@
       "type": 3,
       "api": "csp_Star",
       "searchable": 1,
-      "changeable": 1,
-      "proxy": true
+      "changeable": 1
     },
     {
       "key": "玩偶",
@@ -71,8 +69,7 @@
       "type": 1,
       "api": "https://haiwaikan.com/api.php/provide/vod",
       "searchable": 1,
-      "changeable": 1,
-      "proxy": true
+      "changeable": 1
     },
     {
       "key": "暴風",
@@ -296,6 +293,23 @@
     }
   ],
   "rules": [
+    {
+      "name": "proxy",
+      "hosts": [
+        "raw.githubusercontent.com",
+        "googlevideo.com",
+        "api.nivodz.com",
+        "static.nivod.tv",
+        "c.biggggg.com",
+        "c.olddddd.com",
+        "www.histar.tv",
+        "yc.cdn.media.ulivetv.net",
+        "vip.kuaikan-cdn3.com",
+        "aws.ulivetv.net",
+        "cdn.v82u1l.com",
+        "cdn.iz8qkg.com"
+      ]
+    },
     {
       "name": "海外看",
       "hosts": [
