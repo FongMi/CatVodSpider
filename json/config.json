@@ -1,5 +1,5 @@
 {
-  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;08e60753eb29394b75c088e1f06dfb17",
+  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;af5a163bf0ba899be92c5f44f3dde1d8",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -298,16 +298,18 @@
       "hosts": [
         "raw.githubusercontent.com",
         "googlevideo.com",
-        "api.nivodz.com",
-        "static.nivod.tv",
+        "cdn.v82u1l.com",
+        "cdn.iz8qkg.com",
+        "cdn.kin6c1.com",
         "c.biggggg.com",
         "c.olddddd.com",
+        "haiwaikan.com",
         "www.histar.tv",
-        "yc.cdn.media.ulivetv.net",
-        "vip.kuaikan-cdn3.com",
-        "aws.ulivetv.net",
-        "cdn.v82u1l.com",
-        "cdn.iz8qkg.com"
+        "youtube.com",
+        "uhibo.com",
+        ".*boku.*",
+        ".*nivod.*",
+        ".*ulivetv.*"
       ]
     },
     {
