@@ -298,22 +298,18 @@
       "hosts": [
         "raw.githubusercontent.com",
         "googlevideo.com",
-        "api.nivodz.com",
-        "static.nivod.tv",
-        "c.biggggg.com",
-        "c.olddddd.com",
-        "www.histar.tv",
-        "yc.cdn.media.ulivetv.net",
-        "vip.kuaikan-cdn3.com",
-        "aws.ulivetv.net",
         "cdn.v82u1l.com",
         "cdn.iz8qkg.com",
+        "c.biggggg.com",
+        "c.olddddd.com",
         "haiwaikan.com",
-        "www.duboku.tv",
-        "my.duboku.vip",
-        "bokux.com",
+        "www.histar.tv",
+        "youtube.com",
         "uhibo.com",
-        "boku.com"
+        ".*boku.*",
+        ".*nivod.*",
+        ".*ulivetv.*",
+        ".*vip.kuaikan-.*.com"
       ]
     },
     {
