@@ -3,8 +3,7 @@
   "drives": [
     {
       "name": "小雅",
-      "server": "http://alist.xiaoya.pro",
-      "search": false
+      "server": "http://alist.xiaoya.pro"
     },
     {
       "name": "觸光",
@@ -29,7 +28,8 @@
     {
       "name": "範本",
       "server": "https://one.fongmi.com",
-      "hidden": true,
+      "search": true,
+      "hidden": false,
       "login": {
         "username": "fongmi",
         "password": "fongmi"
