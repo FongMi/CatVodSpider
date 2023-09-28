@@ -100,4 +100,27 @@ public class Doll extends Spider {
         String playUrl = URLDecoder.decode(new String(Base64.decode(code.toString(), 0)));
         return Result.get().url(playUrl).string();
     }
+
+    @Override
+    public String searchContent(String key, boolean quick) throws Exception {
+        return searchContent("search/" + key);
+    }
+
+    @Override
+    public String searchContent(String key, boolean quick, String pg) throws Exception {
+        return searchContent("search/" + key + "/" + pg + ".html");
+    }
+
+    private String searchContent(String query) {
+        List<Vod> list = new ArrayList<>();
+        Document doc = Jsoup.parse(OkHttp.string(url + query));
+        for (Element div : doc.select("div.video-detail")) {
+            String id = div.select("h3.video-title > a").attr("href").replace(url, "");
+            String name = div.select("h3.video-title > a").text();
+            String pic = url + div.select("div.thumb > a > img").attr("data-src");
+            String remark = div.select("div.date").text();
+            list.add(new Vod(id, name, pic, remark));
+        }
+        return Result.string(list);
+    }
 }
