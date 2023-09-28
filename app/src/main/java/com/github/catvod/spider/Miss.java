@@ -9,15 +9,16 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 
+import com.whl.quickjs.android.QuickJSLoader;
+import com.whl.quickjs.wrapper.QuickJSContext;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Miss extends Spider {
 
@@ -94,7 +95,26 @@ public class Miss extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return Result.get().parse().url(url + id).string();
+        QuickJSLoader.init();
+        QuickJSContext ctx = QuickJSContext.create();
+        String content = OkHttp.string(url + id);
+        Pattern pattern = Pattern.compile("(eval\\(.*?\\))\\n", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(content);
+        JSONObject js;
+        if (matcher.find()) {
+            String evalBlock = matcher.group(1);
+            ctx.evaluate(evalBlock);
+            js = new JSONObject(ctx.getGlobalObject().stringify());
+        } else {
+            return Result.get().parse().url(url + id).string();
+        }
+        List<String> url = new ArrayList<>();
+        for (Iterator<String> it = js.keys(); it.hasNext();) {
+            String key = it.next();
+            url.add(key);
+            url.add(js.getString(key));
+        }
+        return Result.get().url(url).string();
     }
 
     private String searchContent(String key, String pg) {
