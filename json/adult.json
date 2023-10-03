@@ -1,5 +1,5 @@
 {
-  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;f5c681312ac1e3ccac064a72d92544e2",
+  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;badfd75846df45e8cf06b53654312ccf",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "sites": [
     {
@@ -64,6 +64,17 @@
       "name": "18AV",
       "type": 3,
       "api": "csp_Eighteen",
+      "searchable": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.485
+      }
+    },
+    {
+      "key": "18A貓",
+      "name": "18A貓",
+      "type": 3,
+      "api": "https://fongmi.cachefly.net/FongMi/CatVodOpen/main/open/18a_open.js",
       "searchable": 1,
       "style": {
         "type": "rect",
