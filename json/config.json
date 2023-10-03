@@ -40,6 +40,14 @@
       "ext": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/duboku.json"
     },
     {
+      "key": "布雷",
+      "name": "布雷",
+      "type": 3,
+      "api": "https://fongmi.cachefly.net/FongMi/CatVodOpen/main/open/bulei_open.js",
+      "searchable": 1,
+      "changeable": 1
+    },
+    {
       "key": "廠長",
       "name": "廠長",
       "type": 3,
