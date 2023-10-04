@@ -64,6 +64,22 @@
       "changeable": 1
     },
     {
+      "key": "伊人",
+      "name": "伊人",
+      "type": 3,
+      "api": "https://fongmi.cachefly.net/FongMi/CatVodOpen/main/open/yrzj_open.js",
+      "searchable": 1,
+      "changeable": 1
+    },
+    {
+      "key": "五五",
+      "name": "五五",
+      "type": 3,
+      "api": "https://fongmi.cachefly.net/FongMi/CatVodOpen/main/open/555dy_open.js",
+      "searchable": 1,
+      "changeable": 1
+    },
+    {
       "key": "haiwaikan",
       "name": "海外看",
       "type": 1,
