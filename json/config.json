@@ -31,6 +31,14 @@
       }
     },
     {
+      "key": "荐片",
+      "name": "荐片",
+      "type": 3,
+      "api": "csp_Jianpian",
+      "searchable": 1,
+      "changeable": 1
+    },
+    {
       "key": "獨播",
       "name": "獨播",
       "type": 3,
