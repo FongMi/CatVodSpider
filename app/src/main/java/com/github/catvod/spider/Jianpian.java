@@ -47,19 +47,18 @@ public class Jianpian extends Spider {
 
     @Override
     public String homeVideoContent() throws Exception {
-        String url = "https://yjpapipxblwdohpakljwg.hxhzs.com/api/tag/hand?code=unknown601193cf375db73d&channel=wandoujia";
+        String url = siteUrl + "/api/slide/list?code=unknown9039b6856c3a3306&pos_id=888&channel=wandoujia";
         String content = OkHttp.string(url, getHeader());
         JSONObject jsonObject = new JSONObject(content);
-        JSONArray videoArray = jsonObject.getJSONArray("data").getJSONObject(0).getJSONArray("video");
+        JSONArray videoArray = jsonObject.getJSONArray("data");
         JSONArray videos = new JSONArray();
         for (int i = 0; i < videoArray.length(); i++) {
             JSONObject blockObj = videoArray.getJSONObject(i);
-            JSONObject playlistObj = blockObj.getJSONObject("playlist");
             videos.put(new JSONObject()
-                    .put("vod_id", blockObj.getInt("id"))
+                    .put("vod_id", blockObj.getInt("jump_id"))
                     .put("vod_name", blockObj.getString("title"))
-                    .put("vod_pic", blockObj.getString("path") + "@Referer=www.jianpianapp.com@User-Agent=jianpian-version362")
-                    .put("vod_remarks", playlistObj.getString("title")));
+                    .put("vod_pic", blockObj.getString("thumbnail") + "@Referer=www.jianpianapp.com@User-Agent=jianpian-version362")
+            );
         }
         JSONObject result = new JSONObject()
                 .put("list", videos);
