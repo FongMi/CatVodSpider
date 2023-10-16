@@ -6,21 +6,22 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.utils.Utils;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Data {
 
     @SerializedName(value = "jump_id", alternate = "id")
-    private String vodId;
+    private String jumpId;
     @SerializedName(value = "thumbnail", alternate = "path")
-    private String vodPic;
-    @SerializedName(value = "title")
-    private String vodName;
-    @SerializedName(value = "mask")
-    private String vodRemark;
+    private String thumbnail;
+    @SerializedName("title")
+    private String title;
+    @SerializedName("mask")
+    private String mask;
     @SerializedName("description")
     private String description;
-    @SerializedName(value = "playlist")
+    @SerializedName("playlist")
     private Value playlist;
     @SerializedName("year")
     private Value year;
@@ -35,20 +36,20 @@ public class Data {
     @SerializedName("btbo_downlist")
     private List<BtboDown> btboDownlist;
 
-    public String getVodId() {
-        return TextUtils.isEmpty(vodId) ? "" : vodId;
+    public String getJumpId() {
+        return TextUtils.isEmpty(jumpId) ? "" : jumpId;
     }
 
-    public String getVodPic() {
-        return TextUtils.isEmpty(vodPic) ? "" : vodPic + "@Referer=www.jianpianapp.com@User-Agent=jianpian-version362";
+    public String getThumbnail() {
+        return TextUtils.isEmpty(thumbnail) ? "" : thumbnail + "@Referer=www.jianpianapp.com@User-Agent=jianpian-version362";
     }
 
-    public String getVodName() {
-        return TextUtils.isEmpty(vodName) ? "" : vodName;
+    public String getTitle() {
+        return TextUtils.isEmpty(title) ? "" : title;
     }
 
-    public String getVodRemark() {
-        return TextUtils.isEmpty(vodRemark) ? getPlaylist() : vodRemark;
+    public String getMask() {
+        return TextUtils.isEmpty(mask) ? getPlaylist() : mask;
     }
 
     public String getDescription() {
@@ -68,35 +69,35 @@ public class Data {
     }
 
     public String getTypes() {
-        if (types == null) return "";
-        StringBuilder sb = new StringBuilder();
-        for (Value value : types) sb.append(value.getTitle()).append(" ");
-        return Utils.substring(sb.toString());
+        return types == null ? "" : getValues(types);
     }
 
     public String getActors() {
-        if (actors == null) return "";
-        StringBuilder sb = new StringBuilder();
-        for (Value value : actors) sb.append(value.getLink()).append(" ");
-        return Utils.substring(sb.toString());
+        return actors == null ? "" : getValues(actors);
     }
 
     public String getDirectors() {
-        if (directors == null) return "";
-        StringBuilder sb = new StringBuilder();
-        for (Value value : directors) sb.append(value.getLink()).append(" ");
-        return Utils.substring(sb.toString());
+        return directors == null ? "" : getValues(directors);
     }
 
-    public String getBtboDownlist() {
-        if (btboDownlist == null) return "";
-        StringBuilder sb = new StringBuilder();
-        for (BtboDown value : btboDownlist) sb.append(value.getVal()).append("#");
-        return Utils.substring(sb.toString());
+    public List<BtboDown> getBtboDownlist() {
+        return btboDownlist == null ? Collections.emptyList() : btboDownlist;
     }
 
     public Vod vod() {
-        return new Vod(getVodId(), getVodName(), getVodPic(), getVodRemark());
+        return new Vod(getJumpId(), getTitle(), getThumbnail(), getMask());
+    }
+
+    public String getPlayUrl() {
+        StringBuilder sb = new StringBuilder();
+        for (BtboDown value : getBtboDownlist()) sb.append(value.getVal()).append("#");
+        return Utils.substring(sb.toString());
+    }
+
+    public String getValues(List<Value> items) {
+        StringBuilder sb = new StringBuilder();
+        for (Value value : items) sb.append(value.getLink()).append(" ");
+        return Utils.substring(sb.toString());
     }
 
     public static class Value {
@@ -109,7 +110,7 @@ public class Data {
         }
 
         public String getLink() {
-            return String.format("[a=cr:{\"id\":\"%s\",\"name\":\"%s\"}]%s[/a]", getTitle() + "/{pg}", getTitle(), getTitle());
+            return String.format("[a=cr:{\"id\":\"%s\",\"name\":\"%s\"}/]%s[/a]", getTitle() + "/{pg}", getTitle(), getTitle());
         }
     }
 

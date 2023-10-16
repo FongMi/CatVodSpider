@@ -59,16 +59,21 @@ public class Jianpian extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        List<Vod> list = new ArrayList<>();
-        HashMap<String, String> ext = new HashMap<>();
-        if (extend != null && extend.size() > 0) ext.putAll(extend);
-        String cateId = ext.get("cateId") == null ? tid : ext.get("cateId");
-        String year = ext.get("year") == null ? "0" : ext.get("year");
-        String by = ext.get("by") == null ? "hot" : ext.get("by");
-        String url = siteUrl + String.format("/api/crumb/list?area=0&category_id=%s&page=%s&type=0&limit=24&sort=%s&year=%s", cateId, pg, by, year);
-        Resp resp = Resp.objectFrom(OkHttp.string(url, getHeader()));
-        for (Data data : resp.getData()) list.add(data.vod());
-        return Result.string(list);
+        if (tid.endsWith("/{pg}")) {
+            String[] splits = tid.split("/");
+            return searchContent(splits[0], pg);
+        } else {
+            List<Vod> list = new ArrayList<>();
+            HashMap<String, String> ext = new HashMap<>();
+            if (extend != null && extend.size() > 0) ext.putAll(extend);
+            String cateId = ext.get("cateId") == null ? tid : ext.get("cateId");
+            String year = ext.get("year") == null ? "0" : ext.get("year");
+            String by = ext.get("by") == null ? "hot" : ext.get("by");
+            String url = siteUrl + String.format("/api/crumb/list?area=0&category_id=%s&page=%s&type=0&limit=24&sort=%s&year=%s", cateId, pg, by, year);
+            Resp resp = Resp.objectFrom(OkHttp.string(url, getHeader()));
+            for (Data data : resp.getData()) list.add(data.vod());
+            return Result.string(list);
+        }
     }
 
     @Override
@@ -76,14 +81,14 @@ public class Jianpian extends Spider {
         String url = siteUrl + "/api/node/detail?channel=wandoujia&token=&id=" + ids.get(0);
         Data data = Detail.objectFrom(OkHttp.string(url, getHeader())).getData();
         Vod vod = data.vod();
+        vod.setVodPlayFrom("Jianpian");
         vod.setVodYear(data.getYear());
         vod.setVodArea(data.getArea());
         vod.setTypeName(data.getTypes());
         vod.setVodActor(data.getActors());
+        vod.setVodPlayUrl(data.getPlayUrl());
         vod.setVodDirector(data.getDirectors());
         vod.setVodContent(data.getDescription());
-        vod.setVodPlayUrl(data.getBtboDownlist());
-        vod.setVodPlayFrom("荐片");
         return Result.string(vod);
     }
 
