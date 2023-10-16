@@ -2,12 +2,11 @@ package com.github.catvod.utils;
 
 import com.github.catvod.spider.Init;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class FileUtil {
 
@@ -56,13 +55,12 @@ public class FileUtil {
 
     public static String read(InputStream is) {
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            StringBuilder sb = new StringBuilder();
-            String text;
-            while ((text = br.readLine()) != null) sb.append(text).append("\n");
-            br.close();
-            return Utils.substring(sb.toString());
-        } catch (Exception e) {
+            byte[] data = new byte[is.available()];
+            is.read(data);
+            is.close();
+            return new String(data, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
             return "";
         }
     }
