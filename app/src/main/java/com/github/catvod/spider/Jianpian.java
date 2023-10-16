@@ -1,12 +1,19 @@
 package com.github.catvod.spider;
 
+import android.content.Context;
+
+import com.github.catvod.bean.Class;
+import com.github.catvod.bean.Result;
+import com.github.catvod.bean.Vod;
+import com.github.catvod.bean.jianpian.Data;
+import com.github.catvod.bean.jianpian.Detail;
+import com.github.catvod.bean.jianpian.Resp;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.JsonParser;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +23,9 @@ import java.util.Map;
  * Qile
  */
 public class Jianpian extends Spider {
+
     private final String siteUrl = "http://api2.rinhome.com";
+    private String extend;
 
     private Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
@@ -26,155 +35,78 @@ public class Jianpian extends Spider {
     }
 
     @Override
-    public String homeContent(boolean filter) throws Exception {
-        JSONArray classes = new JSONArray();
-        List<String> typeIds = Arrays.asList("0", "1", "2", "3", "4");
-        List<String> typeNames = Arrays.asList("全部", "电影", "电视剧", "动漫", "综艺");
-        for (int i = 0; i < typeIds.size(); i++) {
-            JSONObject obj = new JSONObject()
-                    .put("type_id", typeIds.get(i))
-                    .put("type_name", typeNames.get(i));
-            classes.put(obj);
-        }
-        // filter 二级筛选
-        String f = "{\"0\": [{\"key\": \"year\", \"name\": \"年份\", \"value\": [{\"n\": \"全部\", \"v\": \"0\"}, {\"n\": \"2023\", \"v\": \"153\"}, {\"n\": \"2022\", \"v\": \"101\"}, {\"n\": \"2021\", \"v\": \"118\"}, {\"n\": \"2020\", \"v\": \"16\"}, {\"n\": \"2019\", \"v\": \"7\"}, {\"n\": \"2018\", \"v\": \"2\"}, {\"n\": \"2017\", \"v\": \"3\"}, {\"n\": \"2016\", \"v\": \"22\"}]}, {\"key\": \"by\", \"name\": \"排序\", \"value\": [{\"n\": \"热门\", \"v\": \"hot\"}, {\"n\": \"更新\", \"v\": \"updata\"}, {\"n\": \"评分\", \"v\": \"rating\"}]}],\"1\": [{\"key\": \"year\", \"name\": \"年份\", \"value\": [{\"n\": \"全部\", \"v\": \"0\"}, {\"n\": \"2023\", \"v\": \"153\"}, {\"n\": \"2022\", \"v\": \"101\"}, {\"n\": \"2021\", \"v\": \"118\"}, {\"n\": \"2020\", \"v\": \"16\"}, {\"n\": \"2019\", \"v\": \"7\"}, {\"n\": \"2018\", \"v\": \"2\"}, {\"n\": \"2017\", \"v\": \"3\"}, {\"n\": \"2016\", \"v\": \"22\"}]}, {\"key\": \"by\", \"name\": \"排序\", \"value\": [{\"n\": \"热门\", \"v\": \"hot\"}, {\"n\": \"更新\", \"v\": \"updata\"}, {\"n\": \"评分\", \"v\": \"rating\"}]}], \"2\": [{\"key\": \"year\", \"name\": \"年份\", \"value\": [{\"n\": \"全部\", \"v\": \"0\"}, {\"n\": \"2023\", \"v\": \"153\"}, {\"n\": \"2022\", \"v\": \"101\"}, {\"n\": \"2021\", \"v\": \"118\"}, {\"n\": \"2020\", \"v\": \"16\"}, {\"n\": \"2019\", \"v\": \"7\"}, {\"n\": \"2018\", \"v\": \"2\"}, {\"n\": \"2017\", \"v\": \"3\"}, {\"n\": \"2016\", \"v\": \"22\"}]}, {\"key\": \"by\", \"name\": \"排序\", \"value\": [{\"n\": \"热门\", \"v\": \"hot\"}, {\"n\": \"更新\", \"v\": \"updata\"}, {\"n\": \"评分\", \"v\": \"rating\"}]}],\"3\": [{\"key\": \"year\", \"name\": \"年份\", \"value\": [{\"n\": \"全部\", \"v\": \"0\"}, {\"n\": \"2023\", \"v\": \"153\"}, {\"n\": \"2022\", \"v\": \"101\"}, {\"n\": \"2021\", \"v\": \"118\"}, {\"n\": \"2020\", \"v\": \"16\"}, {\"n\": \"2019\", \"v\": \"7\"}, {\"n\": \"2018\", \"v\": \"2\"}, {\"n\": \"2017\", \"v\": \"3\"}, {\"n\": \"2016\", \"v\": \"22\"}]}, {\"key\": \"by\", \"name\": \"排序\", \"value\": [{\"n\": \"热门\", \"v\": \"hot\"}, {\"n\": \"更新\", \"v\": \"updata\"}, {\"n\": \"评分\", \"v\": \"rating\"}]}],\"4\": [{\"key\": \"year\", \"name\": \"年份\", \"value\": [{\"n\": \"全部\", \"v\": \"0\"}, {\"n\": \"2023\", \"v\": \"153\"}, {\"n\": \"2022\", \"v\": \"101\"}, {\"n\": \"2021\", \"v\": \"118\"}, {\"n\": \"2020\", \"v\": \"16\"}, {\"n\": \"2019\", \"v\": \"7\"}, {\"n\": \"2018\", \"v\": \"2\"}, {\"n\": \"2017\", \"v\": \"3\"}, {\"n\": \"2016\", \"v\": \"22\"}]}, {\"key\": \"by\", \"name\": \"排序\", \"value\": [{\"n\": \"热门\", \"v\": \"hot\"}, {\"n\": \"更新\", \"v\": \"updata\"}, {\"n\": \"评分\", \"v\": \"rating\"}]}]}";
-        JSONObject filterConfig = new JSONObject(f);
-        JSONObject result = new JSONObject()
-                .put("class", classes)
-                .put("filters", filterConfig);
-        return result.toString();
+    public void init(Context context, String extend) throws Exception {
+        this.extend = extend;
     }
 
     @Override
-    public String homeVideoContent() throws Exception {
+    public String homeContent(boolean filter) throws Exception {
+        List<Class> classes = new ArrayList<>();
+        List<String> typeIds = Arrays.asList("0", "1", "2", "3", "4");
+        List<String> typeNames = Arrays.asList("全部", "电影", "电视剧", "动漫", "综艺");
+        for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
+        return Result.string(classes, JsonParser.parseString(OkHttp.string(extend)));
+    }
+
+    @Override
+    public String homeVideoContent() {
+        List<Vod> list = new ArrayList<>();
         String url = siteUrl + "/api/slide/list?code=unknown9039b6856c3a3306&pos_id=888&channel=wandoujia";
-        String content = OkHttp.string(url, getHeader());
-        JSONObject jsonObject = new JSONObject(content);
-        JSONArray videoArray = jsonObject.getJSONArray("data");
-        JSONArray videos = new JSONArray();
-        for (int i = 0; i < videoArray.length(); i++) {
-            JSONObject blockObj = videoArray.getJSONObject(i);
-            videos.put(new JSONObject()
-                    .put("vod_id", blockObj.getInt("jump_id"))
-                    .put("vod_name", blockObj.getString("title"))
-                    .put("vod_pic", blockObj.getString("thumbnail") + "@Referer=www.jianpianapp.com@User-Agent=jianpian-version362")
-            );
-        }
-        JSONObject result = new JSONObject()
-                .put("list", videos);
-        return result.toString();
+        Resp resp = Resp.objectFrom(OkHttp.string(url, getHeader()));
+        for (Data data : resp.getData()) list.add(data.vod());
+        return Result.string(list);
     }
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        // 筛选处理
+        List<Vod> list = new ArrayList<>();
         HashMap<String, String> ext = new HashMap<>();
-        if (extend != null && extend.size() > 0) {
-            ext.putAll(extend);
-        }
+        if (extend != null && extend.size() > 0) ext.putAll(extend);
         String cateId = ext.get("cateId") == null ? tid : ext.get("cateId");
         String year = ext.get("year") == null ? "0" : ext.get("year");
         String by = ext.get("by") == null ? "hot" : ext.get("by");
         String url = siteUrl + String.format("/api/crumb/list?area=0&category_id=%s&page=%s&type=0&limit=24&sort=%s&year=%s", cateId, pg, by, year);
-        String content = OkHttp.string(url, getHeader());
-        JSONObject jsonObject = new JSONObject(content);
-        JSONArray dataArray = jsonObject.getJSONArray("data");
-        JSONArray videos = new JSONArray();
-        for (int i = 0; i < dataArray.length(); i++) {
-            JSONObject vObj = dataArray.getJSONObject(i);
-            JSONObject v = new JSONObject();
-            JSONObject playlistObj = vObj.getJSONObject("playlist");
-            v.put("vod_id", vObj.getInt("id"));
-            v.put("vod_name", vObj.getString("title"));
-            v.put("vod_pic", vObj.getString("path") + "@Referer=www.jianpianapp.com@User-Agent=jianpian-version362");
-            v.put("vod_remarks", playlistObj.getString("title"));
-            videos.put(v);
-        }
-        JSONObject result = new JSONObject()
-                .put("page", Integer.parseInt(pg))
-                .put("pagecount", Integer.MAX_VALUE)
-                .put("limit", 24)
-                .put("total", Integer.MAX_VALUE)
-                .put("list", videos);
-        return result.toString();
+        Resp resp = Resp.objectFrom(OkHttp.string(url, getHeader()));
+        for (Data data : resp.getData()) list.add(data.vod());
+        return Result.string(list);
     }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
         String url = siteUrl + "/api/node/detail?channel=wandoujia&token=&id=" + ids.get(0);
-        String content = OkHttp.string(url, getHeader());
-        JSONObject dataObject = new JSONObject(content);
-        JSONObject vObj = dataObject.getJSONObject("data");
-        JSONObject result = new JSONObject();
-        JSONArray list = new JSONArray();
-        JSONObject vodAtom = new JSONObject();
-        vodAtom.put("vod_id", vObj.getInt("id"));
-        vodAtom.put("vod_name", vObj.getString("title"));
-        vodAtom.put("vod_pic", vObj.getString("thumbnail") + "@Referer=www.jianpianapp.com@User-Agent=jianpian-version362");
-        vodAtom.put("type_name", vObj.getJSONArray("types").getJSONObject(0).getString("name"));
-        vodAtom.put("vod_year", vObj.getJSONObject("year").getString("title"));
-        vodAtom.put("vod_area", vObj.getJSONObject("area").getString("title"));
-        vodAtom.put("vod_remarks", vObj.getString("mask"));
-        vodAtom.put("vod_director", vObj.getJSONArray("directors").getJSONObject(0).getString("name"));
-        vodAtom.put("vod_content", vObj.getString("description").trim());
-
-        JSONArray actorsArray = vObj.getJSONArray("actors");
-        StringBuilder vod_actor = new StringBuilder();
-        for (int i = 0; i < actorsArray.length(); i++) {
-            JSONObject actorObj = actorsArray.getJSONObject(i);
-            String actorName = actorObj.getString("name");
-            if (i > 0) {
-                vod_actor.append(" ");
-            }
-            vod_actor.append(actorName);
-        }
-        vodAtom.put("vod_actor", vod_actor.toString());
-
-        JSONArray dataArray = vObj.getJSONArray("btbo_downlist");
-        StringBuilder vod_play_url = new StringBuilder();
-        for (int i = 0; i < dataArray.length(); i++) {
-            JSONObject listObj = dataArray.getJSONObject(i);
-            String vod_play_urls = listObj.getString("val").replaceAll("ftp", "tvbox-xg:ftp");
-            if (i > 0) {
-                vod_play_url.append("#");
-            }
-            vod_play_url.append(vod_play_urls);
-        }
-        vodAtom.put("vod_play_url", vod_play_url.toString());
-        vodAtom.put("vod_play_from", "边下边播");
-        list.put(vodAtom);
-        result.put("list", list);
-        return result.toString();
-    }
-
-    @Override
-    public String searchContent(String key, boolean quick) throws Exception {
-        String url = siteUrl + "/api/video/search?page=1&key=" + URLEncoder.encode(key);
-        String content = OkHttp.string(url, getHeader());
-        JSONObject jsonObject = new JSONObject(content);
-        JSONArray dataArray = jsonObject.getJSONArray("data");
-        JSONArray videos = new JSONArray();
-        for (int i = 0; i < dataArray.length(); i++) {
-            JSONObject vObj = dataArray.getJSONObject(i);
-            JSONObject v = new JSONObject();
-            v.put("vod_id", vObj.getInt("id"));
-            v.put("vod_name", vObj.getString("title"));
-            v.put("vod_pic", vObj.getString("thumbnail") + "@Referer=www.jianpianapp.com@User-Agent=jianpian-version362");
-            v.put("vod_remarks", vObj.getString("mask"));
-            videos.put(v);
-        }
-        JSONObject result = new JSONObject();
-        result.put("list", videos);
-        return result.toString();
+        Data data = Detail.objectFrom(OkHttp.string(url, getHeader())).getData();
+        Vod vod = data.vod();
+        vod.setVodYear(data.getYear());
+        vod.setVodArea(data.getArea());
+        vod.setTypeName(data.getTypes());
+        vod.setVodActor(data.getActors());
+        vod.setVodDirector(data.getDirectors());
+        vod.setVodContent(data.getDescription());
+        vod.setVodPlayUrl(data.getBtboDownlist());
+        vod.setVodPlayFrom("荐片");
+        return Result.string(vod);
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        JSONObject result = new JSONObject()
-                .put("parse", 0)
-                .put("header", getHeader())
-                .put("playUrl", "")
-                .put("url", id);
-        return result.toString();
+        return Result.get().url(id).header(getHeader()).string();
+    }
+
+    @Override
+    public String searchContent(String key, boolean quick) throws Exception {
+        return searchContent(key, "1");
+    }
+
+    @Override
+    public String searchContent(String key, boolean quick, String pg) throws Exception {
+        return searchContent(key, pg);
+    }
+
+    public String searchContent(String key, String pg) throws Exception {
+        List<Vod> list = new ArrayList<>();
+        String url = siteUrl + "/api/video/search?page=" + pg + "&key=" + URLEncoder.encode(key);
+        Resp resp = Resp.objectFrom(OkHttp.string(url, getHeader()));
+        for (Data data : resp.getData()) list.add(data.vod());
+        return Result.string(list);
     }
 }

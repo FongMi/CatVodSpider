@@ -24,7 +24,7 @@ import com.github.catvod.bean.ali.Drive;
 import com.github.catvod.bean.ali.Item;
 import com.github.catvod.bean.ali.OAuth;
 import com.github.catvod.bean.ali.Preview;
-import com.github.catvod.bean.ali.Res;
+import com.github.catvod.bean.ali.Resp;
 import com.github.catvod.bean.ali.Share;
 import com.github.catvod.bean.ali.User;
 import com.github.catvod.crawler.SpiderDebug;
@@ -401,8 +401,8 @@ public class AliYun {
         SpiderDebug.log("Copy..." + fileId);
         String json = "{\"requests\":[{\"body\":{\"file_id\":\"%s\",\"share_id\":\"%s\",\"auto_rename\":true,\"to_parent_file_id\":\"root\",\"to_drive_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"0\",\"method\":\"POST\",\"url\":\"/file/copy\"}],\"resource\":\"file\"}";
         json = String.format(json, fileId, shareId, drive.getDriveId());
-        Res res = Res.objectFrom(auth("adrive/v2/batch", json, true));
-        return res.getResponse().getBody().getFileId();
+        Resp resp = Resp.objectFrom(auth("adrive/v2/batch", json, true));
+        return resp.getResponse().getBody().getFileId();
     }
 
     private void deleteAll() {
@@ -417,8 +417,8 @@ public class AliYun {
         SpiderDebug.log("Delete..." + fileId);
         String json = "{\"requests\":[{\"body\":{\"drive_id\":\"%s\",\"file_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"%s\",\"method\":\"POST\",\"url\":\"/file/delete\"}],\"resource\":\"file\"}";
         json = String.format(json, drive.getDriveId(), fileId, fileId);
-        Res res = Res.objectFrom(auth("adrive/v2/batch", json, true));
-        return res.getResponse().getStatus() == 404;
+        Resp resp = Resp.objectFrom(auth("adrive/v2/batch", json, true));
+        return resp.getResponse().getStatus() == 404;
     }
 
     public Object[] proxySub(Map<String, String> params) throws Exception {
