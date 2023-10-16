@@ -1,5 +1,5 @@
 {
-  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;badfd75846df45e8cf06b53654312ccf",
+  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;3373bc113deec1bad88de323923dbe4f",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -31,12 +31,13 @@
       }
     },
     {
-      "key": "荐片",
-      "name": "荐片",
+      "key": "賤賤",
+      "name": "賤賤",
       "type": 3,
       "api": "csp_Jianpian",
       "searchable": 1,
-      "changeable": 1
+      "changeable": 1,
+      "ext": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/jianpian.json"
     },
     {
       "key": "獨播",
