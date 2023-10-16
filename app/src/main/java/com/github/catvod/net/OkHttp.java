@@ -58,7 +58,7 @@ public class OkHttp {
     }
 
     public static String string(OkHttpClient client, String url, Map<String, String> params, Map<String, String> header) {
-        return new OkRequest(GET, url, params, header).execute(client).getBody();
+        return url.startsWith("http") ? new OkRequest(GET, url, params, header).execute(client).getBody() : "";
     }
 
     public static String post(String url, Map<String, String> params) {
