@@ -67,9 +67,10 @@ public class Jianpian extends Spider {
             HashMap<String, String> ext = new HashMap<>();
             if (extend != null && extend.size() > 0) ext.putAll(extend);
             String cateId = ext.get("cateId") == null ? tid : ext.get("cateId");
+            String area = ext.get("area") == null ? "0" : ext.get("area");
             String year = ext.get("year") == null ? "0" : ext.get("year");
             String by = ext.get("by") == null ? "hot" : ext.get("by");
-            String url = siteUrl + String.format("/api/crumb/list?area=0&category_id=%s&page=%s&type=0&limit=24&sort=%s&year=%s", cateId, pg, by, year);
+            String url = siteUrl + String.format("/api/crumb/list?area=%s&category_id=%s&page=%s&type=0&limit=24&sort=%s&year=%s", area, cateId, pg, by, year);
             Resp resp = Resp.objectFrom(OkHttp.string(url, getHeader()));
             for (Data data : resp.getData()) list.add(data.vod());
             return Result.string(list);
