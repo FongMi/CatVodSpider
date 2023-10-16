@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.List;
 
-public class Res {
+public class Resp {
 
     @SerializedName("responses")
-    private List<Res> responses;
+    private List<Resp> responses;
     @SerializedName("body")
     private Body body;
     @SerializedName("id")
@@ -19,16 +19,16 @@ public class Res {
     @SerializedName("status")
     private int status;
 
-    public static Res objectFrom(String str) {
-        return new Gson().fromJson(str, Res.class);
+    public static Resp objectFrom(String str) {
+        return new Gson().fromJson(str, Resp.class);
     }
 
-    public List<Res> getResponses() {
+    public List<Resp> getResponses() {
         return responses == null ? Collections.emptyList() : responses;
     }
 
-    public Res getResponse() {
-        return getResponses().isEmpty() ? new Res() : getResponses().get(0);
+    public Resp getResponse() {
+        return getResponses().isEmpty() ? new Resp() : getResponses().get(0);
     }
 
     public Body getBody() {
