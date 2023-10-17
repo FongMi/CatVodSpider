@@ -39,9 +39,11 @@ public class Market extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        new Thread(() -> download(ids.get(0))).start();
-        Init.run(this::finish);
-        return "";
+        Init.execute(() -> download(ids.get(0)));
+        Vod vod = new Vod();
+        vod.setVodPlayFrom("FongMi");
+        vod.setVodPlayUrl("FongMi$FongMi");
+        return Result.string(vod);
     }
 
     private void finish() {
@@ -55,27 +57,24 @@ public class Market extends Spider {
 
     private void download(String url) {
         try {
+            Init.run(this::finish);
             Utils.notify("正在下載...");
             Response response = OkHttp.newCall(url);
             File file = FileUtil.getCacheFile(Uri.parse(url).getLastPathSegment());
-            download(file, response.body().byteStream(), Double.parseDouble(response.header("Content-Length", "1")));
+            download(file, response.body().byteStream());
             FileUtil.openFile(FileUtil.chmod(file));
         } catch (Exception e) {
             Utils.notify(e.getMessage());
         }
     }
 
-    private void download(File file, InputStream is, double length) throws Exception {
+    private void download(File file, InputStream is) throws Exception {
         FileOutputStream os = new FileOutputStream(file);
         try (BufferedInputStream input = new BufferedInputStream(is)) {
             byte[] buffer = new byte[4096];
             int readBytes;
-            long totalBytes = 0;
             while ((readBytes = input.read(buffer)) != -1) {
-                totalBytes += readBytes;
                 os.write(buffer, 0, readBytes);
-                int progress = (int) (totalBytes / length * 100.0);
-                if (progress % 20 == 0) Utils.notify("正在下載..." + progress + "%");
             }
         }
     }
