@@ -41,6 +41,10 @@ public class OkHttp {
         return client().newBuilder().followRedirects(false).followSslRedirects(false).build();
     }
 
+    public static Response newCall(String url) throws IOException {
+        return client().newCall(new Request.Builder().url(url).build()).execute();
+    }
+
     public static Response newCall(String url, Map<String, String> header) throws IOException {
         return client().newCall(new Request.Builder().url(url).headers(Headers.of(header)).build()).execute();
     }
