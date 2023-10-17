@@ -8,6 +8,9 @@
 -keep class com.github.catvod.spider.* { public <methods>; }
 -keep class com.github.catvod.parser.* { public <methods>; }
 
+# AndroidX
+-keep class androidx.core.** { *; }
+
 # Gson
 -keepattributes Signature
 -keepattributes *Annotation*

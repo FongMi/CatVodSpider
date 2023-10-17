@@ -1,5 +1,5 @@
 {
-  "spider": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;6aa99ddfd99dd2e5b68615edd29ddb43",
+  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;8a9d215c9f79d7e5ce9e223b40ed81e8",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -27,7 +27,7 @@
       "changeable": 0,
       "ext": {
         "token": "影視天下第一",
-        "filter": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/wogg.json"
+        "filter": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/wogg.json"
       }
     },
     {
@@ -37,7 +37,7 @@
       "api": "csp_Jianpian",
       "searchable": 1,
       "changeable": 1,
-      "ext": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/jianpian.json"
+      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/jianpian.json"
     },
     {
       "key": "獨播",
@@ -46,13 +46,13 @@
       "api": "csp_XPathMacFilter",
       "searchable": 1,
       "changeable": 1,
-      "ext": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/duboku.json"
+      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/duboku.json"
     },
     {
       "key": "五五",
       "name": "五五",
       "type": 3,
-      "api": "https://fongmi.cachefly.net/FongMi/CatVodOpen/main/open/555dy_open.js",
+      "api": "https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/555dy_open.js",
       "searchable": 1,
       "changeable": 1
     },
@@ -166,7 +166,7 @@
         "ratio": 1.433
       },
       "ext": {
-        "json": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/bili.json",
+        "json": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/bili.json",
         "type": "帕梅拉#太极拳#广场舞#演唱会",
         "cookie": ""
       }
@@ -198,7 +198,7 @@
       "api": "csp_AList",
       "searchable": 1,
       "changeable": 0,
-      "ext": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/alist.json"
+      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/alist.json"
     },
     {
       "key": "WebDAV",
@@ -207,7 +207,7 @@
       "api": "csp_WebDAV",
       "searchable": 1,
       "changeable": 0,
-      "ext": "https://fongmi.cachefly.net/FongMi/CatVodSpider/main/json/webdav.json"
+      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/webdav.json"
     },
     {
       "key": "七夜",
@@ -273,6 +273,61 @@
       "api": "csp_Push",
       "searchable": 1,
       "changeable": 0
+    },
+    {
+      "key": "應用商店",
+      "name": "應用商店",
+      "type": 3,
+      "api": "csp_Market",
+      "searchable": 0,
+      "changeable": 0,
+      "ext": [
+        {
+          "name": "電視-java-v7",
+          "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/release/leanback-java-armeabi_v7a.apk",
+          "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png"
+        },
+        {
+          "name": "電視-java-v8",
+          "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/release/leanback-java-arm64_v8a.apk",
+          "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png"
+        },
+        {
+          "name": "電視-py-v7",
+          "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/release/leanback-python-armeabi_v7a.apk",
+          "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png"
+        },
+        {
+          "name": "電視-py-v8",
+          "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/release/leanback-python-arm64_v8a.apk",
+          "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png"
+        },
+        {
+          "name": "Android-4.x",
+          "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/kitkat/leanback.apk",
+          "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png"
+        },
+        {
+          "name": "手機-java-v7",
+          "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/release/mobile-java-armeabi_v7a.apk",
+          "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png"
+        },
+        {
+          "name": "手機-java-v8",
+          "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/release/mobile-java-arm64_v8a.apk",
+          "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png"
+        },
+        {
+          "name": "手機-py-v7",
+          "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/release/mobile-python-armeabi_v7a.apk",
+          "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png"
+        },
+        {
+          "name": "手機-py-v8",
+          "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/release/mobile-python-arm64_v8a.apk",
+          "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png"
+        }
+      ]
     }
   ],
   "doh": [
