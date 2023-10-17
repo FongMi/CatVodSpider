@@ -293,12 +293,12 @@
           "icon": "https://fongmi.cachefly.net/FongMi/TV/main/other/image/icon-2.png"
         },
         {
-          "name": "電視-python-v7",
+          "name": "電視-py-v7",
           "url": "https://fongmi.cachefly.net/FongMi/Release/main/apk/release/leanback-python-armeabi_v7a.apk",
           "icon": "https://fongmi.cachefly.net/FongMi/TV/main/other/image/icon-2.png"
         },
         {
-          "name": "電視-python-v8",
+          "name": "電視-py-v8",
           "url": "https://fongmi.cachefly.net/FongMi/Release/main/apk/release/leanback-python-arm64_v8a.apk",
           "icon": "https://fongmi.cachefly.net/FongMi/TV/main/other/image/icon-2.png"
         },
@@ -318,12 +318,12 @@
           "icon": "https://fongmi.cachefly.net/FongMi/TV/main/other/image/icon-2.png"
         },
         {
-          "name": "手機-python-v7",
+          "name": "手機-py-v7",
           "url": "https://fongmi.cachefly.net/FongMi/Release/main/apk/release/mobile-python-armeabi_v7a.apk",
           "icon": "https://fongmi.cachefly.net/FongMi/TV/main/other/image/icon-2.png"
         },
         {
-          "name": "手機-python-v8",
+          "name": "手機-py-v8",
           "url": "https://fongmi.cachefly.net/FongMi/Release/main/apk/release/mobile-python-arm64_v8a.apk",
           "icon": "https://fongmi.cachefly.net/FongMi/TV/main/other/image/icon-2.png"
         }
