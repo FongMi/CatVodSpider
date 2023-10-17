@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.Response;
 
@@ -78,7 +79,7 @@ public class Market extends Spider {
                 totalBytes += readBytes;
                 os.write(buffer, 0, readBytes);
                 int progress = (int) (totalBytes / length * 100.0);
-                if (progress % 10 < 5) Utils.notify("正在下載..." + progress + "%");
+                if (progress % 10 <= new Random().nextInt(6)) Utils.notify("正在下載..." + progress + "%");
             }
         }
     }
