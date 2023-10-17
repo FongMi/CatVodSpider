@@ -51,7 +51,7 @@ public class Live {
         for (Group group : groups) {
             for (Channel channel : group.getChannel()) {
                 channel.number(String.format(Locale.getDefault(), "%03d", ++number));
-                channel.logo("https://fongmi.cachefly.net/FongMi/TV/release/app/src/main/res/drawable-xxhdpi/ic_img_empty.png");
+                channel.logo("https://raw.githubusercontent.com/FongMi/TV/release/app/src/main/res/drawable-xxhdpi/ic_img_empty.png");
                 combine(channel);
             }
         }
