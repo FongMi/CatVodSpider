@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
-import androidx.core.content.FileProvider;
-
 import com.github.catvod.spider.Init;
 
 import java.io.File;

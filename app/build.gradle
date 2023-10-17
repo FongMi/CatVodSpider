@@ -45,6 +45,5 @@ dependencies {
     implementation 'cn.wanghaomiao:JsoupXpath:2.5.1'
     implementation 'com.google.zxing:core:3.3.0'
     //implementation 'com.orhanobut:logger:2.2.0'
-    implementation 'androidx.core:core:1.8.0'
     implementation 'org.jsoup:jsoup:1.15.3'
 }
