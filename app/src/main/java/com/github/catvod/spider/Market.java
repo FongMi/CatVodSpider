@@ -1,6 +1,7 @@
 package com.github.catvod.spider;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 
@@ -18,32 +19,42 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import okhttp3.Response;
 
 public class Market extends Spider {
 
-    private List<Item> mItems;
+    private ProgressDialog dialog;
+    private List<Item> items;
+    private boolean busy;
+
+    public boolean isBusy() {
+        return busy;
+    }
+
+    public void setBusy(boolean busy) {
+        this.busy = busy;
+    }
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        mItems = Item.arrayFrom(extend);
+        items = Item.arrayFrom(extend);
     }
 
     @Override
     public String homeVideoContent() {
         List<Vod> list = new ArrayList<>();
-        for (Item item : mItems) list.add(item.vod());
+        for (Item item : items) list.add(item.vod());
         return Result.string(list);
     }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Init.execute(() -> download(ids.get(0)));
+        Init.run(this::finish);
         Vod vod = new Vod();
         vod.setVodPlayFrom("FongMi");
         vod.setVodPlayUrl("FongMi$FongMi");
+        Init.execute(() -> download(ids.get(0)));
         return Result.string(vod);
     }
 
@@ -58,14 +69,17 @@ public class Market extends Spider {
 
     private void download(String url) {
         try {
-            Init.run(this::finish);
-            Utils.notify("正在下載...");
+            if (isBusy()) return;
+            setBusy(true);
+            Init.run(this::setDialog, 500);
             Response response = OkHttp.newCall(url);
             File file = FileUtil.getCacheFile(Uri.parse(url).getLastPathSegment());
             download(file, response.body().byteStream(), Double.parseDouble(response.header("Content-Length", "1")));
             FileUtil.openFile(FileUtil.chmod(file));
+            dismiss();
         } catch (Exception e) {
             Utils.notify(e.getMessage());
+            dismiss();
         }
     }
 
@@ -78,9 +92,42 @@ public class Market extends Spider {
             while ((readBytes = input.read(buffer)) != -1) {
                 totalBytes += readBytes;
                 os.write(buffer, 0, readBytes);
-                int progress = (int) (totalBytes / length * 100.0);
-                if (progress % 10 <= new Random().nextInt(6)) Utils.notify("正在下載..." + progress + "%");
+                setProgress((int) (totalBytes / length * 100.0));
             }
         }
+    }
+
+    private void setDialog() {
+        Init.run(() -> {
+            try {
+                dialog = new ProgressDialog(Init.getActivity());
+                dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                dialog.setCancelable(false);
+                dialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void dismiss() {
+        Init.run(() -> {
+            try {
+                setBusy(false);
+                if (dialog != null) dialog.dismiss();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void setProgress(int value) {
+        Init.run(() -> {
+            try {
+                if (dialog != null) dialog.setProgress(value);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
