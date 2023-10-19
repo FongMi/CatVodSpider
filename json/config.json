@@ -281,11 +281,7 @@
       "api": "csp_Market",
       "searchable": 0,
       "changeable": 0,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/market.json",
-      "style": {
-        "type": "rect",
-        "ratio": 1
-      }
+      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/market.json"
     }
   ],
   "doh": [
