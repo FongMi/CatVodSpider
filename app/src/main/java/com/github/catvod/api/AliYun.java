@@ -72,15 +72,15 @@ public class AliYun {
     }
 
     public File getUserCache() {
-        return FileUtil.getCacheFile("aliyundrive_user");
+        return FileUtil.cache("aliyundrive_user");
     }
 
     public File getOAuthCache() {
-        return FileUtil.getCacheFile("aliyundrive_oauth");
+        return FileUtil.cache("aliyundrive_oauth");
     }
 
     public File getDriveCache() {
-        return FileUtil.getCacheFile("aliyundrive_drive");
+        return FileUtil.cache("aliyundrive_drive");
     }
 
     private AliYun() {
