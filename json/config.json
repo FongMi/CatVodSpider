@@ -281,6 +281,10 @@
       "api": "csp_Market",
       "searchable": 0,
       "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1
+      },
       "ext": [
         {
           "name": "電視-java-v7",
