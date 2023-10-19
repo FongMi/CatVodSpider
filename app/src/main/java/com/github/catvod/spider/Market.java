@@ -52,7 +52,7 @@ public class Market extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        for (Data data : datas) if (data.getName().equals(tid)) return Result.string(data.getVod());
+        for (Data data : datas) if (data.getName().equals(tid)) return Result.get().page().vod(data.getVod()).string();
         return super.categoryContent(tid, pg, filter, extend);
     }
 
