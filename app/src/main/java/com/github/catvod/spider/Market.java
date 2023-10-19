@@ -40,6 +40,7 @@ public class Market extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
+        if (extend.startsWith("http")) extend = OkHttp.string(extend);
         datas = Data.arrayFrom(extend);
     }
 
