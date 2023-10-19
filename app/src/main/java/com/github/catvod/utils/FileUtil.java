@@ -3,6 +3,7 @@ package com.github.catvod.utils;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.text.TextUtils;
 
 import com.github.catvod.spider.Init;
@@ -16,12 +17,16 @@ import java.net.URLConnection;
 
 public class FileUtil {
 
-    public static File getCacheDir() {
+    public static File cache() {
         return Init.context().getCacheDir();
     }
 
-    public static File getCacheFile(String fileName) {
-        return new File(getCacheDir(), fileName);
+    public static File cache(String name) {
+        return new File(cache(), name);
+    }
+
+    public static File download() {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     }
 
     public static void write(File file, String data) {

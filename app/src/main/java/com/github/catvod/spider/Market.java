@@ -82,9 +82,10 @@ public class Market extends Spider {
             setBusy(true);
             Init.run(this::setDialog, 500);
             Response response = OkHttp.newCall(url);
-            File file = FileUtil.getCacheFile(Uri.parse(url).getLastPathSegment());
+            File file = new File(FileUtil.download(), Uri.parse(url).getLastPathSegment());
             download(file, response.body().byteStream(), Double.parseDouble(response.header("Content-Length", "1")));
-            FileUtil.openFile(FileUtil.chmod(file));
+            if (file.getName().endsWith(".apk")) FileUtil.openFile(FileUtil.chmod(file));
+            else Utils.notify("下載完成");
             dismiss();
         } catch (Exception e) {
             Utils.notify(e.getMessage());
