@@ -37,6 +37,12 @@
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/so/libxl_thunder_sdk_arm64_v8a.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
         "version": "64"
+      },
+      {
+        "name": "晴天SO",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/so/libmitv.so",
+        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
+        "version": "32"
       }
     ]
   },
