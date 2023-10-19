@@ -34,9 +34,9 @@ public class Data {
     }
 
     public List<Vod> getVod() {
-        List<Vod> list = new ArrayList<>();
-        for (Item item : getList()) list.add(item.vod());
-        return list;
+        List<Vod> vodList = new ArrayList<>();
+        for (Item item : getList()) vodList.add(item.vod());
+        return vodList;
     }
 
     public Class type() {
