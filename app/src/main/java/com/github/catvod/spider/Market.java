@@ -5,9 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 
+import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
-import com.github.catvod.bean.market.Item;
+import com.github.catvod.bean.market.Data;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.FileUtil;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Response;
@@ -25,7 +27,7 @@ import okhttp3.Response;
 public class Market extends Spider {
 
     private ProgressDialog dialog;
-    private List<Item> items;
+    private List<Data> datas;
     private boolean busy;
 
     public boolean isBusy() {
@@ -38,14 +40,21 @@ public class Market extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        items = Item.arrayFrom(extend);
+        if (extend.startsWith("http")) extend = OkHttp.string(extend);
+        datas = Data.arrayFrom(extend);
     }
 
     @Override
-    public String homeVideoContent() {
-        List<Vod> list = new ArrayList<>();
-        for (Item item : items) list.add(item.vod());
-        return Result.string(list);
+    public String homeContent(boolean filter) throws Exception {
+        List<Class> classes = new ArrayList<>();
+        if (datas.size() > 1) for (int i = 1; i < datas.size(); i++) classes.add(datas.get(i).type());
+        return Result.string(classes, datas.get(0).getVod());
+    }
+
+    @Override
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
+        for (Data data : datas) if (data.getName().equals(tid)) return Result.get().page().vod(data.getVod()).string();
+        return super.categoryContent(tid, pg, filter, extend);
     }
 
     @Override
@@ -73,9 +82,10 @@ public class Market extends Spider {
             setBusy(true);
             Init.run(this::setDialog, 500);
             Response response = OkHttp.newCall(url);
-            File file = FileUtil.getCacheFile(Uri.parse(url).getLastPathSegment());
+            File file = new File(FileUtil.download(), Uri.parse(url).getLastPathSegment());
             download(file, response.body().byteStream(), Double.parseDouble(response.header("Content-Length", "1")));
-            FileUtil.openFile(FileUtil.chmod(file));
+            if (file.getName().endsWith(".apk")) FileUtil.openFile(FileUtil.chmod(file));
+            else Utils.notify("下載完成");
             dismiss();
         } catch (Exception e) {
             Utils.notify(e.getMessage());
