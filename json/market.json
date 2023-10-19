@@ -128,50 +128,42 @@
       {
         "name": "電視-java-v7",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/dev/leanback-java-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "2.0.7"
+        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png"
       },
       {
         "name": "電視-java-v8",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/dev/leanback-java-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "2.0.7"
+        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png"
       },
       {
         "name": "電視-py-v7",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/dev/leanback-python-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "2.0.7"
+        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png"
       },
       {
         "name": "電視-py-v8",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/dev/leanback-python-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "2.0.7"
+        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png"
       },
       {
         "name": "手機-java-v7",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/dev/mobile-java-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "2.0.7"
+        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png"
       },
       {
         "name": "手機-java-v8",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/dev/mobile-java-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "2.0.7"
+        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png"
       },
       {
         "name": "手機-py-v7",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/dev/mobile-python-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "2.0.7"
+        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png"
       },
       {
         "name": "手機-py-v8",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/apk/dev/mobile-python-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "2.0.7"
+        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png"
       }
     ]
   }
