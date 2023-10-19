@@ -3,43 +3,43 @@
     "name": "推薦",
     "list": [
       {
-        "name": "荐片SO",
+        "name": "荐片",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/so/libjpa_armeabi_v7a.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
         "version": "32"
       },
       {
-        "name": "荐片SO",
+        "name": "荐片",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/so/libjpa_arm64_v8a.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
         "version": "64"
       },
       {
-        "name": "迅雷SO-1",
+        "name": "迅雷-1",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/so/libxl_stat_armeabi_v7a.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
         "version": "32"
       },
       {
-        "name": "迅雷SO-2",
+        "name": "迅雷-2",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/so/libxl_thunder_sdk_armeabi_v7a.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
         "version": "32"
       },
       {
-        "name": "迅雷SO-1",
+        "name": "迅雷-1",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/so/libxl_stat_arm64_v8a.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
         "version": "64"
       },
       {
-        "name": "迅雷SO-2",
+        "name": "迅雷-2",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/so/libxl_thunder_sdk_arm64_v8a.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
         "version": "64"
       },
       {
-        "name": "晴天SO",
+        "name": "晴天",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/Release/main/so/libmitv.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
         "version": "32"
