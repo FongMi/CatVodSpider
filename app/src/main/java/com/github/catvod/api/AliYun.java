@@ -32,7 +32,7 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.net.OkResult;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
-import com.github.catvod.utils.FileUtil;
+import com.github.catvod.utils.Path;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Utils;
 import com.google.gson.JsonObject;
@@ -72,22 +72,22 @@ public class AliYun {
     }
 
     public File getUserCache() {
-        return FileUtil.cache("aliyundrive_user");
+        return Path.cache("aliyundrive_user");
     }
 
     public File getOAuthCache() {
-        return FileUtil.cache("aliyundrive_oauth");
+        return Path.cache("aliyundrive_oauth");
     }
 
     public File getDriveCache() {
-        return FileUtil.cache("aliyundrive_drive");
+        return Path.cache("aliyundrive_drive");
     }
 
     private AliYun() {
         tempIds = new ArrayList<>();
-        user = User.objectFrom(FileUtil.read(getUserCache()));
-        oauth = OAuth.objectFrom(FileUtil.read(getOAuthCache()));
-        drive = Drive.objectFrom(FileUtil.read(getDriveCache()));
+        user = User.objectFrom(Path.read(getUserCache()));
+        oauth = OAuth.objectFrom(Path.read(getOAuthCache()));
+        drive = Drive.objectFrom(Path.read(getDriveCache()));
     }
 
     public void setRefreshToken(String token) {

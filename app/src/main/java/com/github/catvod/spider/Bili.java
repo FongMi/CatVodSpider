@@ -15,7 +15,7 @@ import com.github.catvod.bean.bili.Page;
 import com.github.catvod.bean.bili.Resp;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.FileUtil;
+import com.github.catvod.utils.Path;
 import com.github.catvod.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -66,7 +66,7 @@ public class Bili extends Spider {
     private void setCookie() {
         cookie = extend.get("cookie").getAsString();
         if (cookie.startsWith("http")) cookie = OkHttp.string(cookie).trim();
-        if (TextUtils.isEmpty(cookie)) cookie = FileUtil.read(getUserCache());
+        if (TextUtils.isEmpty(cookie)) cookie = Path.read(getUserCache());
         if (TextUtils.isEmpty(cookie)) cookie = COOKIE;
     }
 
@@ -78,7 +78,7 @@ public class Bili extends Spider {
     }
 
     private File getUserCache() {
-        return FileUtil.cache("bilibili_user");
+        return Path.cache("bilibili_user");
     }
 
     @Override

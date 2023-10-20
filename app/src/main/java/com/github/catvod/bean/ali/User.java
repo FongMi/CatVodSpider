@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.github.catvod.api.AliYun;
 import com.github.catvod.utils.FileUtil;
+import com.github.catvod.utils.Path;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -64,7 +65,7 @@ public class User {
     }
 
     public User save() {
-        FileUtil.write(AliYun.get().getUserCache(), toString());
+        Path.write(AliYun.get().getUserCache(), toString());
         return this;
     }
 
