@@ -113,7 +113,7 @@ public class Market extends Spider {
                 dialog = new ProgressDialog(Init.getActivity());
                 dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 dialog.setCancelable(false);
-                dialog.show();
+                if (isBusy()) dialog.show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
