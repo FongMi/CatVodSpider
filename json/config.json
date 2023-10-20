@@ -1,5 +1,5 @@
 {
-  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;b2c6912d5489526425cc71c596f4606e",
+  "spider": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;a8f3edaf1afd3ed28413b3ed26fd8fbd",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -27,7 +27,7 @@
       "changeable": 0,
       "ext": {
         "token": "影視天下第一",
-        "filter": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/wogg.json"
+        "filter": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/wogg.json"
       }
     },
     {
@@ -37,7 +37,7 @@
       "api": "csp_Jianpian",
       "searchable": 1,
       "changeable": 1,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/jianpian.json"
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/jianpian.json"
     },
     {
       "key": "獨播",
@@ -46,13 +46,13 @@
       "api": "csp_XPathMacFilter",
       "searchable": 1,
       "changeable": 1,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/duboku.json"
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/duboku.json"
     },
     {
       "key": "五五",
       "name": "五五",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/555dy_open.js",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/555dy_open.js",
       "searchable": 1,
       "changeable": 1
     },
@@ -166,7 +166,7 @@
         "ratio": 1.433
       },
       "ext": {
-        "json": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/bili.json",
+        "json": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/bili.json",
         "type": "帕梅拉#太极拳#广场舞#演唱会",
         "cookie": ""
       }
@@ -175,7 +175,7 @@
       "key": "bili_open",
       "name": "哔哩貓",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/bili_open.js",
+      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/bili_open.js",
       "searchable": 1,
       "changeable": 0,
       "ext": {
@@ -198,7 +198,7 @@
       "api": "csp_AList",
       "searchable": 1,
       "changeable": 0,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/alist.json"
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/alist.json"
     },
     {
       "key": "WebDAV",
@@ -207,7 +207,7 @@
       "api": "csp_WebDAV",
       "searchable": 1,
       "changeable": 0,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/webdav.json"
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/webdav.json"
     },
     {
       "key": "七夜",
@@ -281,7 +281,7 @@
       "api": "csp_Market",
       "searchable": 0,
       "changeable": 0,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/market.json"
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/market.json"
     }
   ],
   "doh": [
