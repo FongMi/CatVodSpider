@@ -12,6 +12,7 @@ import com.github.catvod.bean.market.Data;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.FileUtil;
+import com.github.catvod.utils.Path;
 import com.github.catvod.utils.Utils;
 
 import java.io.BufferedInputStream;
@@ -82,9 +83,9 @@ public class Market extends Spider {
             setBusy(true);
             Init.run(this::setDialog, 500);
             Response response = OkHttp.newCall(url);
-            File file = new File(FileUtil.download(), Uri.parse(url).getLastPathSegment());
+            File file = new File(Path.download(), Uri.parse(url).getLastPathSegment());
             download(file, response.body().byteStream(), Double.parseDouble(response.header("Content-Length", "1")));
-            if (file.getName().endsWith(".apk")) FileUtil.openFile(FileUtil.chmod(file));
+            if (file.getName().endsWith(".apk")) FileUtil.openFile(Path.chmod(file));
             else Utils.notify("下載完成");
             dismiss();
         } catch (Exception e) {
