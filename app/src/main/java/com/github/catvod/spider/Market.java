@@ -74,7 +74,7 @@ public class Market extends Spider {
     private void checkPermission() {
         try {
             Activity activity = Init.getActivity();
-            if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9999);
+            if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9999);
         } catch (Exception e) {
             e.printStackTrace();
         }
