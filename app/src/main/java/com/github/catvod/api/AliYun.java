@@ -124,7 +124,7 @@ public class AliYun {
     }
 
     private boolean alist(String url, JsonObject param) {
-        String api = "https://aliapi.ewwe.gq/alist/ali_open/" + url;
+        String api = "https://api.xhofe.top/alist/ali_open/" + url;
         OkResult result = OkHttp.post(api, param.toString(), getHeader());
         SpiderDebug.log(result.getCode() + "," + api + "," + result.getBody());
         if (isManyRequest(result.getBody())) return false;
