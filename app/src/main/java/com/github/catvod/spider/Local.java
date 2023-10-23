@@ -1,6 +1,7 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Environment;
 
 import com.github.catvod.bean.Class;
@@ -63,20 +64,34 @@ public class Local extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        File file = new File(ids.get(0));
-        Vod vod = new Vod();
-        vod.setTypeName("FongMi");
-        vod.setVodId(file.getAbsolutePath());
-        vod.setVodName(file.getName());
-        vod.setVodPic(Image.VIDEO);
-        vod.setVodPlayFrom("播放");
-        vod.setVodPlayUrl(file.getName() + "$" + file.getAbsolutePath());
-        return Result.string(vod);
+        String url = ids.get(0);
+        if (url.startsWith("http")) {
+            String name = Uri.parse(url).getLastPathSegment();
+            return Result.string(create(name, url));
+        } else {
+            File file = new File(ids.get(0));
+            return Result.string(create(file.getName(), file.getAbsolutePath()));
+        }
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return Result.get().url("file://" + id).subs(getSubs(id)).string();
+        if (id.startsWith("http")) {
+            return Result.get().url(id).string();
+        } else {
+            return Result.get().url("file://" + id).subs(getSubs(id)).string();
+        }
+    }
+
+    private Vod create(String name, String url) {
+        Vod vod = new Vod();
+        vod.setTypeName("FongMi");
+        vod.setVodId(url);
+        vod.setVodName(name);
+        vod.setVodPic(Image.VIDEO);
+        vod.setVodPlayFrom("播放");
+        vod.setVodPlayUrl(name + "$" + url);
+        return vod;
     }
 
     private Vod create(File file) {
