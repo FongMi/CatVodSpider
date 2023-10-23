@@ -21,7 +21,7 @@ import java.util.List;
 
 public class Miss extends Spider {
 
-    private final String url = "https://missav.com/cn/";
+    private final String url = "https://missav.com/";
 
     @Override
     public String homeContent(boolean filter) throws Exception {
@@ -29,12 +29,12 @@ public class Miss extends Spider {
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         Document doc = Jsoup.parse(OkHttp.string(url));
-        List<String> typeIds = Arrays.asList("chinese-subtitle", "new", "release", "uncensored-leak", "genres/VR", "today-hot", "weekly-hot", "monthly-hot", "siro", "luxu", "gana", "maan", "scute", "ara", "uncensored-leak", "fc2", "heyzo", "tokyohot", "1pondo", "caribbeancom", "caribbeancompr", "10musume", "pacopacomama", "gachinco", "xxxav", "marriedslash", "naughty4610", "naughty0930", "madou", "twav", "furuke");
-        for (Element a : doc.select("nav a")) {
+        for (Element a : doc.select("a.block.px-4.py-2.text-sm.leading-5.text-nord5.bg-nord3")) {
             String typeId = a.attr("href").replace(url, "");
-            if (!typeIds.contains(typeId)) continue;
-            classes.add(new Class(typeId, a.text()));
-            filters.put(typeId, Arrays.asList(new Filter("filters", "過濾", Arrays.asList(new Filter.Value("全部", ""), new Filter.Value("單人作品", "individual"), new Filter.Value("中文字幕", "chinese-subtitle")))));
+            if (typeId.startsWith("dm") || typeId.contains("VR")) {
+                classes.add(new Class(typeId, a.text()));
+                filters.put(typeId, Arrays.asList(new Filter("filters", "過濾", Arrays.asList(new Filter.Value("全部", ""), new Filter.Value("單人作品", "individual"), new Filter.Value("中文字幕", "chinese-subtitle")))));
+            }
         }
         for (Element div : doc.select("div.thumbnail")) {
             String id = div.select("a.text-secondary").attr("href").replace(url, "");

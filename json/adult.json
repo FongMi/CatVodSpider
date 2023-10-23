@@ -1,5 +1,5 @@
 {
-  "spider": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;796038950e2224240f96e3ab74f0af96",
+  "spider": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;9cc15b83a755468e6b725667ef362a04",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "sites": [
     {
@@ -100,7 +100,7 @@
       "searchable": 1,
       "style": {
         "type": "rect",
-        "ratio": 1.777
+        "ratio": 1.78
       }
     },
     {
