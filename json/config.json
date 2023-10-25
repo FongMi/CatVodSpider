@@ -99,6 +99,23 @@
       ]
     },
     {
+      "key": "豆瓣",
+      "name": "豆瓣",
+      "type": 3,
+      "api": "csp_Douban",
+      "searchable": 0,
+      "changeable": 1,
+      "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/douban.json"
+    },
+    {
+      "key": "新版6V电影网",
+      "name": "新版6V电影网",
+      "type": 3,
+      "api": "csp_Xb6v",
+      "searchable": 1,
+      "changeable": 1
+    },
+    {
       "key": "暴風",
       "name": "暴風",
       "type": 1,

@@ -97,14 +97,13 @@ public class Xb6v extends Spider {
         if (!pg.equals("1")) cateURL += "index_" + pg + ".html";
         String html = OkHttp.string(cateURL, getHeader());
         Document doc = Jsoup.parse(html);
-        List<Vod> list = parseVodListFromDoc(doc);
         String href = doc.select(".pagination > a").last().attr("href");
         int page = Integer.parseInt(pg);
         int count = Integer.parseInt(getStrByRegex(Pattern.compile("index_(.*?).html"), href));
         int limit = 18;
         Elements items = doc.select("#post_container .post_hover");
         int total = page == count ? (page - 1) * limit + items.size() : count * limit;
-        return Result.get().vod(list).page(page, count, limit, total).string();
+        return Result.get().vod(parseVodListFromDoc(doc)).page(page, count, limit, total).string();
     }
 
     @Override
@@ -137,15 +136,19 @@ public class Xb6v extends Spider {
         String name = doc.select(".article_container > h1").text();
         String pic = doc.select("#post_content img").attr("src");
         String typeName = getStrByRegex(Pattern.compile("◎类　　别　(.*?)<br>"), partHTML);
+        if (typeName.equals("")) typeName = doc.select("[rel=category tag]").text();
         String year = getStrByRegex(Pattern.compile("◎年　　代　(.*?)<br>"), partHTML);
+        if (year.equals("")) year = getStrByRegex(Pattern.compile("首播:(.*?)<br>"), partHTML);
         String area = getStrByRegex(Pattern.compile("◎产　　地　(.*?)<br>"), partHTML);
+        if (area.equals("")) area = getStrByRegex(Pattern.compile("地区:(.*?)<br>"), partHTML);
         String remark = getStrByRegex(Pattern.compile("◎上映日期　(.*?)<br>"), partHTML);
         String actor = getActorOrDirector(Pattern.compile("◎演　　员　(.*?)</p>"), partHTML);
-        if (actor.equals("")) {
-            actor = getActorOrDirector(Pattern.compile("◎主　　演　(.*?)</p>"), partHTML);
-        }
+        if (actor.equals("")) actor = getActorOrDirector(Pattern.compile("◎主　　演　(.*?)</p>"), partHTML);
+        if (actor.equals("")) actor = getActorOrDirector(Pattern.compile("主演:(.*?)<br>"), partHTML);
         String director = getActorOrDirector(Pattern.compile("◎导　　演　(.*?)<br>"), partHTML);
+        if (director.equals("")) director = getActorOrDirector(Pattern.compile("导演:(.*?)<br>"), partHTML);
         String description = getDescription(Pattern.compile("◎简　　介(.*?)<hr>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL), partHTML);
+        if (description.equals("")) description = getDescription(Pattern.compile("简介(.*?)</p>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL), partHTML);
 
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
