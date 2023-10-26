@@ -13,8 +13,14 @@ public class Item {
     private String url;
     @SerializedName("icon")
     private String icon;
+    @SerializedName("copy")
+    private String copy;
     @SerializedName("version")
     private String version;
+
+    public Item(String url) {
+        this.url = url;
+    }
 
     public String getName() {
         return TextUtils.isEmpty(name) ? "" : name;
@@ -28,11 +34,23 @@ public class Item {
         return TextUtils.isEmpty(icon) ? "" : icon;
     }
 
+    public String getCopy() {
+        return TextUtils.isEmpty(copy) ? "" : copy;
+    }
+
     public String getVersion() {
         return TextUtils.isEmpty(version) ? "" : version;
     }
 
     public Vod vod() {
         return new Vod(getUrl(), getName(), getIcon(), getVersion(), Vod.Style.rect(1.0f));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Item)) return false;
+        Item it = (Item) obj;
+        return getUrl().equals(it.getUrl());
     }
 }

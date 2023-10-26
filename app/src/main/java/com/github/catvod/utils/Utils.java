@@ -1,5 +1,8 @@
 package com.github.catvod.utils;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -150,6 +153,12 @@ public class Utils {
 
     public static int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getDisplayMetrics());
+    }
+
+    public static void copy(String text) {
+        ClipboardManager clipboard = (ClipboardManager) Init.context().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("fongmi", text);
+        clipboard.setPrimaryClip(clip);
     }
 
     public static void loadUrl(WebView webView, String script) {
