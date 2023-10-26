@@ -7,12 +7,12 @@ import com.google.gson.annotations.SerializedName;
 public class Owner {
 
     @SerializedName("mid")
-    private int mid;
+    private String mid;
     @SerializedName("name")
     private String name;
 
-    public int getMid() {
-        return mid;
+    public String getMid() {
+        return TextUtils.isEmpty(mid) ? "" : mid;
     }
 
     public String getName() {
