@@ -11,6 +11,7 @@ import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.market.Data;
+import com.github.catvod.bean.market.Item;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.FileUtil;
@@ -100,6 +101,7 @@ public class Market extends Spider {
             if (file.getName().endsWith(".zip")) FileUtil.unzip(file, Path.download());
             if (file.getName().endsWith(".apk")) FileUtil.openFile(Path.chmod(file));
             else Utils.notify("下載完成");
+            checkCopy(url);
             dismiss();
         } catch (Exception e) {
             Utils.notify(e.getMessage());
@@ -117,6 +119,16 @@ public class Market extends Spider {
                 totalBytes += readBytes;
                 os.write(buffer, 0, readBytes);
                 setProgress((int) (totalBytes / length * 100.0));
+            }
+        }
+    }
+
+    private void checkCopy(String url) {
+        for (Data data : datas) {
+            int index = data.getList().indexOf(new Item(url));
+            if (index != -1) {
+                String text = data.getList().get(index).getCopy();
+                if (!text.isEmpty()) Utils.copy(text);
             }
         }
     }
