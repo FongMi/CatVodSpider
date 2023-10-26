@@ -42,6 +42,8 @@ public class Resp {
         private String pic;
         @SerializedName("duration")
         private String duration;
+        @SerializedName("length")
+        private String length;
 
         public static List<Result> arrayFrom(JsonElement str) {
             Type listType = new TypeToken<List<Result>>() {}.getType();
@@ -61,7 +63,11 @@ public class Resp {
         }
 
         public String getDuration() {
-            return TextUtils.isEmpty(duration) ? "" : duration;
+            return TextUtils.isEmpty(duration) ? getLength() : duration.split(":")[0] + "分鐘";
+        }
+
+        public String getLength() {
+            return TextUtils.isEmpty(length) ? "" : length;
         }
 
         public String getPic() {
@@ -72,8 +78,8 @@ public class Resp {
             Vod vod = new Vod();
             vod.setVodId(getBvId() + "@" + getAid());
             vod.setVodName(Jsoup.parse(getTitle()).text());
-            vod.setVodRemarks(getDuration().split(":")[0] + "分鐘");
             vod.setVodPic(getPic().startsWith("//") ? "https:" + getPic() : getPic());
+            vod.setVodRemarks(getDuration());
             return vod;
         }
     }
