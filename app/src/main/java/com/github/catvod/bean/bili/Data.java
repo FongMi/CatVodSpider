@@ -44,6 +44,10 @@ public class Data {
     private List<Page> pages;
     @SerializedName("dash")
     private Dash dash;
+    @SerializedName("owner")
+    private Owner owner;
+    @SerializedName("wbi_img")
+    private Wbi wbi;
 
     public JsonElement getResult() {
         return result;
@@ -115,5 +119,13 @@ public class Data {
 
     public Dash getDash() {
         return dash == null ? new Dash() : dash;
+    }
+
+    public Owner getOwner() {
+        return owner == null ? new Owner() : owner;
+    }
+
+    public Wbi getWbi() {
+        return wbi == null ? new Wbi() : wbi;
     }
 }

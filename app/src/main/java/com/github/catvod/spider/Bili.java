@@ -113,15 +113,23 @@ public class Bili extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        String order = extend.containsKey("order") ? extend.get("order") : "totalrank";
-        String duration = extend.containsKey("duration") ? extend.get("duration") : "0";
-        if (extend.containsKey("tid")) tid = tid + " " + extend.get("tid");
-        String api = "https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=" + URLEncoder.encode(tid) + "&order=" + order + "&duration=" + duration + "&page=" + pg;
-        String json = OkHttp.string(api, getHeader());
-        Resp resp = Resp.objectFrom(json);
-        List<Vod> list = new ArrayList<>();
-        for (Resp.Result item : Resp.Result.arrayFrom(resp.getData().getResult())) list.add(item.getVod());
-        return Result.string(list);
+        if (tid.endsWith("/{pg}")) {
+            String mid = tid.split("/")[0];
+            List<Vod> list = new ArrayList<>();
+            String json = OkHttp.string("https://api.bilibili.com/x/space/wbi/arc/search?mid=" + mid + "&pn=" + pg, getHeader());
+            for (Resp.Result item : Resp.Result.arrayFrom(Resp.objectFrom(json).getData().getList().getAsJsonObject().get("vlist"))) list.add(item.getVod());
+            return Result.string(list);
+        } else {
+            String order = extend.containsKey("order") ? extend.get("order") : "totalrank";
+            String duration = extend.containsKey("duration") ? extend.get("duration") : "0";
+            if (extend.containsKey("tid")) tid = tid + " " + extend.get("tid");
+            String api = "https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=" + URLEncoder.encode(tid) + "&order=" + order + "&duration=" + duration + "&page=" + pg;
+            String json = OkHttp.string(api, getHeader());
+            Resp resp = Resp.objectFrom(json);
+            List<Vod> list = new ArrayList<>();
+            for (Resp.Result item : Resp.Result.arrayFrom(resp.getData().getResult())) list.add(item.getVod());
+            return Result.string(list);
+        }
     }
 
     @Override
@@ -141,6 +149,7 @@ public class Bili extends Spider {
         vod.setVodName(detail.getTitle());
         vod.setTypeName(detail.getType());
         vod.setVodContent(detail.getDesc());
+        vod.setVodDirector(detail.getOwner().getFormat());
         vod.setVodRemarks(detail.getDuration() / 60 + "分鐘");
 
         List<String> acceptDesc = new ArrayList<>();
