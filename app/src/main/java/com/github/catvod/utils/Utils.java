@@ -156,9 +156,9 @@ public class Utils {
     }
 
     public static void copy(String text) {
-        ClipboardManager clipboard = (ClipboardManager) Init.context().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("fongmi", text);
-        clipboard.setPrimaryClip(clip);
+        ClipboardManager manager = (ClipboardManager) Init.context().getSystemService(Context.CLIPBOARD_SERVICE);
+        manager.setPrimaryClip(ClipData.newPlainText("fongmi", text));
+        notify("已複製 " + text);
     }
 
     public static void loadUrl(WebView webView, String script) {
