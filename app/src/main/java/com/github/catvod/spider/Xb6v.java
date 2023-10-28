@@ -186,18 +186,19 @@ public class Xb6v extends Spider {
                 .replaceAll("&amp;", "")
                 .replaceAll("middot;", "・")
                 .replaceAll("　　　　　", ",")
-                .replaceAll("　　　　 　", ",");
+                .replaceAll("　　　　 　", ",")
+                .replaceAll("　", "");
     }
 
     private String getDescription(Pattern pattern, String str) {
         return getStrByRegex(pattern, str)
                 .replaceAll("</?[^>]+>", "")
                 .replaceAll("\n", "")
-                .replaceAll("　　　　", "")
                 .replaceAll("&amp;", "")
                 .replaceAll("middot;", "・")
                 .replaceAll("ldquo;", "【")
-                .replaceAll("rdquo;", "】");
+                .replaceAll("rdquo;", "】")
+                .replaceAll("　", "");
     }
 
     @Override
