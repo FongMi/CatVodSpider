@@ -1,26 +1,32 @@
 package com.github.catvod.spider;
 
 import android.text.TextUtils;
+
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
-import okhttp3.FormBody;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * @author zhixc
@@ -28,14 +34,14 @@ import java.util.regex.Pattern;
  */
 public class Xb6v extends Spider {
 
-    private final String siteURL = "http://www.xb6v.com";
-    private String nextSearchURLPrefix;
-    private String nextSearchURLSuffix;
+    private final String siteUrl = "http://www.xb6v.com";
+    private String nextSearchUrlPrefix;
+    private String nextSearchUrlSuffix;
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
         header.put("User-Agent", Utils.CHROME);
-        header.put("Referer", siteURL + "/");
+        header.put("Referer", siteUrl + "/");
         return header;
     }
 
@@ -48,7 +54,7 @@ public class Xb6v extends Spider {
     @Override
     public String homeContent(boolean filter) throws Exception {
         List<Class> classes = new ArrayList<>();
-        String html = OkHttp.string(siteURL, getHeader());
+        String html = OkHttp.string(siteUrl, getHeader());
         Document doc = Jsoup.parse(html);
         Elements elements = doc.select("#menus > li > a");
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
@@ -72,6 +78,10 @@ public class Xb6v extends Spider {
         return Result.string(classes, parseVodListFromDoc(doc), filters);
     }
 
+    private List<Vod> parseVodListFromDoc(String html) {
+        return parseVodListFromDoc(Jsoup.parse(html));
+    }
+
     private List<Vod> parseVodListFromDoc(Document doc) {
         Elements items = doc.select("#post_container .post_hover");
         List<Vod> list = new ArrayList<>();
@@ -88,14 +98,10 @@ public class Xb6v extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        HashMap<String, String> ext = new HashMap<>();
-        if (extend != null && extend.size() > 0) {
-            ext.putAll(extend);
-        }
-        String cateId = ext.get("cateId") == null ? "" : ext.get("cateId");
-        String cateURL = siteURL + tid + cateId;
-        if (!pg.equals("1")) cateURL += "index_" + pg + ".html";
-        String html = OkHttp.string(cateURL, getHeader());
+        String cateId = extend.get("cateId") == null ? "" : extend.get("cateId");
+        String cateUrl = siteUrl + tid + cateId;
+        if (!pg.equals("1")) cateUrl += "index_" + pg + ".html";
+        String html = OkHttp.string(cateUrl, getHeader());
         Document doc = Jsoup.parse(html);
         String href = doc.select(".pagination > a").last().attr("href");
         int page = Integer.parseInt(pg);
@@ -109,8 +115,8 @@ public class Xb6v extends Spider {
     @Override
     public String detailContent(List<String> ids) throws Exception {
         String vodId = ids.get(0);
-        String detailURL = siteURL + vodId;
-        String html = OkHttp.string(detailURL, getDetailHeader());
+        String detailUrl = siteUrl + vodId;
+        String html = OkHttp.string(detailUrl, getDetailHeader());
         Document doc = Jsoup.parse(html);
         Elements sourceList = doc.select("#post_content");
 
@@ -121,10 +127,10 @@ public class Xb6v extends Spider {
             Elements aList = source.select("table a");
             List<String> vodItems = new ArrayList<>();
             for (Element a : aList) {
-                String episodeURL = a.attr("href");
+                String episodeUrl = a.attr("href");
                 String episodeName = a.text();
-                if (!episodeURL.toLowerCase().startsWith("magnet")) continue;
-                vodItems.add(episodeName + "$" + episodeURL);
+                if (!episodeUrl.toLowerCase().startsWith("magnet")) continue;
+                vodItems.add(episodeName + "$" + episodeUrl);
             }
             if (vodItems.size() > 0) {
                 i++;
@@ -161,22 +167,15 @@ public class Xb6v extends Spider {
         vod.setVodActor(actor);
         vod.setVodDirector(director);
         vod.setVodContent(description);
-        if (playMap.size() > 0) {
-            vod.setVodPlayFrom(TextUtils.join("$$$", playMap.keySet()));
-            vod.setVodPlayUrl(TextUtils.join("$$$", playMap.values()));
-        }
+        vod.setVodPlayFrom(TextUtils.join("$$$", playMap.keySet()));
+        vod.setVodPlayUrl(TextUtils.join("$$$", playMap.values()));
+
         return Result.string(vod);
     }
 
     private String getStrByRegex(Pattern pattern, String str) {
-        try {
-            Matcher matcher = pattern.matcher(str);
-            if (matcher.find()) {
-                return matcher.group(1).trim();
-            }
-        } catch (Exception e) {
-            SpiderDebug.log(e);
-        }
+        Matcher matcher = pattern.matcher(str);
+        if (matcher.find()) return matcher.group(1).trim();
         return "";
     }
 
@@ -187,18 +186,19 @@ public class Xb6v extends Spider {
                 .replaceAll("&amp;", "")
                 .replaceAll("middot;", "・")
                 .replaceAll("　　　　　", ",")
-                .replaceAll("　　　　 　", ",");
+                .replaceAll("　　　　 　", ",")
+                .replaceAll("　", "");
     }
 
     private String getDescription(Pattern pattern, String str) {
         return getStrByRegex(pattern, str)
                 .replaceAll("</?[^>]+>", "")
                 .replaceAll("\n", "")
-                .replaceAll("　　　　", "")
                 .replaceAll("&amp;", "")
                 .replaceAll("middot;", "・")
                 .replaceAll("ldquo;", "【")
-                .replaceAll("rdquo;", "】");
+                .replaceAll("rdquo;", "】")
+                .replaceAll("　", "");
     }
 
     @Override
@@ -208,8 +208,7 @@ public class Xb6v extends Spider {
 
     @Override
     public String searchContent(String key, boolean quick, String pg) throws Exception {
-        String searchURL = siteURL + "/e/search/index.php";
-        String html;
+        String searchUrl = siteUrl + "/e/search/index.php";
         if (pg.equals("1")) {
             RequestBody formBody = new FormBody.Builder()
                     .add("show", "title")
@@ -220,30 +219,22 @@ public class Xb6v extends Spider {
                     .add("submit", "")
                     .addEncoded("keyboard", key)
                     .build();
-            Request request = new Request.Builder()
-                    .url(searchURL)
+            Request request = new Request.Builder().url(searchUrl)
                     .addHeader("User-Agent", Utils.CHROME)
-                    .addHeader("Origin", siteURL)
-                    .addHeader("Referer", siteURL + "/")
+                    .addHeader("Origin", siteUrl)
+                    .addHeader("Referer", siteUrl + "/")
                     .post(formBody)
                     .build();
             Response response = OkHttp.client().newCall(request).execute();
-            if (response.body() == null) return "";
-            initNextSearchURL(response);
-            html = response.body().string();
-            response.close();
+            String[] split = String.valueOf(response.request().url()).split("\\?searchid=");
+            nextSearchUrlPrefix = split[0] + "index.php?page=";
+            nextSearchUrlSuffix = "&searchid=" + split[1];
+            return Result.string(parseVodListFromDoc(response.body().string()));
         } else {
             int page = Integer.parseInt(pg) - 1;
-            searchURL = nextSearchURLPrefix + page + nextSearchURLSuffix;
-            html = OkHttp.string(searchURL, getHeader());
+            searchUrl = nextSearchUrlPrefix + page + nextSearchUrlSuffix;
+            return Result.string(parseVodListFromDoc(OkHttp.string(searchUrl, getHeader())));
         }
-        return Result.string(parseVodListFromDoc(Jsoup.parse(html)));
-    }
-
-    private void initNextSearchURL(Response response) {
-        String[] split = String.valueOf(response.request().url()).split("\\?searchid=");
-        nextSearchURLPrefix = split[0] + "index.php?page=";
-        nextSearchURLSuffix = "&searchid=" + split[1];
     }
 
     @Override

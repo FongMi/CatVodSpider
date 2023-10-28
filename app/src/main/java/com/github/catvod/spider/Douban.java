@@ -1,22 +1,28 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
+
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Utils;
 import com.google.gson.JsonParser;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Douban extends Spider {
-    private final String hostURL = "https://frodo.douban.com/api/v2";
+
+    private final String siteUrl = "https://frodo.douban.com/api/v2";
     private final String apikey = "?apikey=0ac44ae016490db2204ce0a042db2916";
     private String extend;
 
@@ -31,7 +37,6 @@ public class Douban extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        super.init(context, extend);
         this.extend = extend;
     }
 
@@ -41,59 +46,56 @@ public class Douban extends Spider {
         List<String> typeIds = Arrays.asList("hot_gaia", "tv_hot", "show_hot", "movie", "tv", "rank_list_movie", "rank_list_tv");
         List<String> typeNames = Arrays.asList("热门电影", "热播剧集", "热播综艺", "电影筛选", "电视筛选", "电影榜单", "电视剧榜单");
         for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
-        String recommendURL = "http://api.douban.com/api/v2/subject_collection/subject_real_time_hotest/items" + apikey;
-        JSONObject jsonObject = new JSONObject(OkHttp.string(recommendURL, getHeader()));
+        String recommendUrl = "http://api.douban.com/api/v2/subject_collection/subject_real_time_hotest/items" + apikey;
+        JSONObject jsonObject = new JSONObject(OkHttp.string(recommendUrl, getHeader()));
         JSONArray items = jsonObject.optJSONArray("subject_collection_items");
         return Result.string(classes, parseVodListFromJSONArray(items), filter ? JsonParser.parseString(OkHttp.string(extend)) : null);
     }
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        HashMap<String, String> ext = new HashMap<>();
-        if (extend != null && extend.size() > 0) {
-            ext.putAll(extend);
-        }
-        String sort = ext.get("sort") == null ? "T" : ext.get("sort");
-        String tags = URLEncoder.encode(getTags(ext));
+        String sort = extend.get("sort") == null ? "T" : extend.get("sort");
+        String tags = URLEncoder.encode(getTags(extend));
         int start = (Integer.parseInt(pg) - 1) * 20;
-        String cateURL;
+        String cateUrl;
         String itemKey = "items";
         switch (tid) {
             case "hot_gaia":
-                sort = ext.get("sort") == null ? "recommend" : ext.get("sort");
-                String area = ext.get("area") == null ? "全部" : ext.get("area");
+                sort = extend.get("sort") == null ? "recommend" : extend.get("sort");
+                String area = extend.get("area") == null ? "全部" : extend.get("area");
                 sort = sort + "&area=" + URLEncoder.encode(area);
-                cateURL = hostURL + "/movie/hot_gaia" + apikey + "&sort=" + sort + "&start=" + start + "&count=20";
+                cateUrl = siteUrl + "/movie/hot_gaia" + apikey + "&sort=" + sort + "&start=" + start + "&count=20";
                 break;
             case "tv_hot":
-                String type = ext.get("type") == null ? "tv_hot" : ext.get("type");
-                cateURL = hostURL + "/subject_collection/" + type + "/items" + apikey + "&start=" + start + "&count=20";
+                String type = extend.get("type") == null ? "tv_hot" : extend.get("type");
+                cateUrl = siteUrl + "/subject_collection/" + type + "/items" + apikey + "&start=" + start + "&count=20";
                 itemKey = "subject_collection_items";
                 break;
             case "show_hot":
-                String showType = ext.get("type") == null ? "show_hot" : ext.get("type");
-                cateURL = hostURL + "/subject_collection/" + showType + "/items" + apikey + "&start=" + start + "&count=20";
+                String showType = extend.get("type") == null ? "show_hot" : extend.get("type");
+                cateUrl = siteUrl + "/subject_collection/" + showType + "/items" + apikey + "&start=" + start + "&count=20";
                 itemKey = "subject_collection_items";
                 break;
             case "tv":
-                cateURL = hostURL + "/tv/recommend" + apikey + "&sort=" + sort + "&tags=" + tags + "&start=" + start + "&count=20";
+                cateUrl = siteUrl + "/tv/recommend" + apikey + "&sort=" + sort + "&tags=" + tags + "&start=" + start + "&count=20";
                 break;
             case "rank_list_movie":
-                String rankMovieType = ext.get("榜单") == null ? "movie_real_time_hotest" : ext.get("榜单");
-                cateURL = hostURL + "/subject_collection/" + rankMovieType + "/items" + apikey + "&start=" + start + "&count=20";
+                String rankMovieType = extend.get("榜单") == null ? "movie_real_time_hotest" : extend.get("榜单");
+                cateUrl = siteUrl + "/subject_collection/" + rankMovieType + "/items" + apikey + "&start=" + start + "&count=20";
                 itemKey = "subject_collection_items";
                 break;
             case "rank_list_tv":
-                String rankTVType = ext.get("榜单") == null ? "tv_real_time_hotest" : ext.get("榜单");
-                cateURL = hostURL + "/subject_collection/" + rankTVType + "/items" + apikey + "&start=" + start + "&count=20";
+                String rankTVType = extend.get("榜单") == null ? "tv_real_time_hotest" : extend.get("榜单");
+                cateUrl = siteUrl + "/subject_collection/" + rankTVType + "/items" + apikey + "&start=" + start + "&count=20";
                 itemKey = "subject_collection_items";
                 break;
             default:
-                cateURL = hostURL + "/movie/recommend" + apikey + "&sort=" + sort + "&tags=" + tags + "&start=" + start + "&count=20";
+                cateUrl = siteUrl + "/movie/recommend" + apikey + "&sort=" + sort + "&tags=" + tags + "&start=" + start + "&count=20";
+                break;
         }
-        JSONObject jsonObject = new JSONObject(OkHttp.string(cateURL, getHeader()));
-        JSONArray items = jsonObject.getJSONArray(itemKey);
-        List<Vod> list = parseVodListFromJSONArray(items);
+        JSONObject object = new JSONObject(OkHttp.string(cateUrl, getHeader()));
+        JSONArray array = object.getJSONArray(itemKey);
+        List<Vod> list = parseVodListFromJSONArray(array);
         int page = Integer.parseInt(pg), count = Integer.MAX_VALUE, limit = 20, total = Integer.MAX_VALUE;
         return Result.get().vod(list).page(page, count, limit, total).string();
     }
@@ -115,31 +117,25 @@ public class Douban extends Spider {
         try {
             return "评分：" + item.getJSONObject("rating").optString("value");
         } catch (Exception e) {
-            SpiderDebug.log(e);
+            return "";
         }
-        return "";
     }
 
     private String getPic(JSONObject item) {
         try {
             return item.getJSONObject("pic").optString("normal") + "@Referer=https://api.douban.com/@User-Agent=" + Utils.CHROME;
         } catch (Exception e) {
-            SpiderDebug.log(e);
+            return "";
         }
-        return "";
     }
 
-    private String getTags(HashMap<String, String> ext) {
+    private String getTags(HashMap<String, String> extend) {
         try {
             StringBuilder tags = new StringBuilder();
-            for (String key : ext.keySet()) {
-                if (key.equals("sort")) continue;
-                tags.append(ext.get(key)).append(",");
-            }
-            return tags.substring(0, tags.lastIndexOf(","));
+            for (String key : extend.keySet()) if (!key.equals("sort")) tags.append(extend.get(key)).append(",");
+            return Utils.substring(tags.toString());
         } catch (Exception e) {
-//            SpiderDebug.log(e);
+            return "";
         }
-        return "";
     }
 }
