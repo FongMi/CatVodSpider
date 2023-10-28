@@ -1,5 +1,5 @@
 {
-  "spider": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;386aa45681818befd51ff5008f88f4e5",
+  "spider": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;a4a22ad4042d5ff3444ed4b66f41a3a4",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -108,12 +108,12 @@
       "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/douban.json"
     },
     {
-      "key": "新版6V电影网",
-      "name": "新版6V电影网",
+      "key": "新6V",
+      "name": "新6V",
       "type": 3,
       "api": "csp_Xb6v",
       "searchable": 1,
-      "changeable": 1
+      "changeable": 0
     },
     {
       "key": "暴風",
