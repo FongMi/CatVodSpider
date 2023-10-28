@@ -1,7 +1,13 @@
 package com.github.catvod.spider;
 
 import android.text.TextUtils;
+
+import com.github.catvod.bean.Class;
+import com.github.catvod.bean.Result;
+import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,20 +15,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.github.catvod.bean.Result;
-import com.github.catvod.bean.Vod;
-import com.github.catvod.bean.Class;
 
 /**
  * @author Qile
@@ -41,14 +39,12 @@ public class Kugou extends Spider {
         List<Vod> list = new ArrayList<>();
         List<String> typeIds = Arrays.asList("6666|0", "33162|1", "4681|2");
         List<String> typeNames = Arrays.asList("热门榜单", "特色音乐榜", "全球榜");
-        for (int i = 0; i < typeIds.size(); i++)
-            classes.add(new Class(typeIds.get(i), typeNames.get(i)));
+        for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
         return Result.string(classes, list);
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend)
-            throws Exception {
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
         HashMap<String, String> ext = new HashMap<>();
         if (extend != null && extend.size() > 0) ext.putAll(extend);
         String[] item = tid.split("\\|");
@@ -63,15 +59,10 @@ public class Kugou extends Spider {
         for (Element li : lis) {
             String vid = li.attr("href");
             String name = li.attr("title");
-            JSONObject vod = new JSONObject()
-                    .put("vod_id", vid)
-                    .put("vod_name", name);
+            JSONObject vod = new JSONObject().put("vod_id", vid).put("vod_name", name);
             videos.put(vod);
         }
-        JSONObject result = new JSONObject()
-                .put("total", lis.size())
-                .put("pagecount", 1)
-                .put("list", videos);
+        JSONObject result = new JSONObject().put("total", lis.size()).put("pagecount", 1).put("list", videos);
         return result.toString();
     }
 
