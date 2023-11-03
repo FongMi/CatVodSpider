@@ -31,6 +31,12 @@ public class PanSou extends Ali {
         return headers;
     }
 
+    private Map<String, String> getHeader() {
+        HashMap<String, String> header = new HashMap<>();
+        header.put("User-Agent", Utils.CHROME);
+        return header;
+    }
+
     @Override
     public String detailContent(List<String> ids) throws Exception {
         if (pattern.matcher(ids.get(0)).find()) return super.detailContent(ids);
@@ -51,7 +57,7 @@ public class PanSou extends Ali {
 
     private String searchContent(String key, String pg) {
         String url = siteUrl + "/search?k=" + URLEncoder.encode(key) + "&page=" + pg + "&s=0&t=-1";
-        Elements items = Jsoup.parse(OkHttp.string(url)).select("van-row > a");
+        Elements items = Jsoup.parse(OkHttp.string(url, getHeader())).select("van-row > a");
         List<Vod> list = new ArrayList<>();
         for (Element item : items) {
             String title = item.selectFirst("template").text().trim();
