@@ -72,17 +72,20 @@ public class Kanqiu extends Spider {
         }
         Document doc = Jsoup.parse(OkHttp.string(cateUrl, getHeader()));
         List<Vod> list = new ArrayList<>();
+        int Size = 0;
         for (Element li : doc.select(".list-group-item")) {
+            Size = doc.select(".list-group-item").size();
             String vid = siteUrl + li.select(".btn.btn-primary").attr("href");
             String name = li.select(".row.d-none").text();
             if (name.isEmpty()) name = li.text();
             String pic = li.select(".col-xs-1").eq(0).select("img").attr("src");
-            if (pic.isEmpty()) pic = "https://i0.imgs.ovh/2023/11/04/Zb6qm.jpeg";
+            if (pic.isEmpty()) pic = "https://qlql.link/b/日期.jpg";
             if (!pic.startsWith("http")) pic = siteUrl + pic;
             String remark = li.select(".btn.btn-primary").text();
             list.add(new Vod(vid, name, pic, remark));
         }
-        return Result.string(list);
+        Result result = Result.get().page(1, 1, 0, Size).vod(list);
+        return result.string();
     }
 
     @Override
