@@ -116,6 +116,17 @@
       "changeable": 0
     },
     {
+      "key": "88kanqiu",
+      "name": "88看球",
+      "type": 3,
+      "api": "csp_Kanqiu",
+      "searchable": 1,
+      "changeable": 0,
+      "style": {
+        "type": "list"
+      }
+    },
+    {
       "key": "暴風",
       "name": "暴風",
       "type": 1,
