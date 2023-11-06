@@ -3,25 +3,24 @@ package com.github.catvod.spider;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.github.catvod.bean.Class;
+import com.github.catvod.bean.Result;
+import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.github.catvod.bean.Result;
-import com.github.catvod.bean.Vod;
-import com.github.catvod.bean.Class;
 
 /**
  * @author Qile
@@ -57,13 +56,8 @@ public class Kanqiu extends Spider {
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend)
-            throws Exception {
-        HashMap<String, String> ext = new HashMap<>();
-        if (extend != null && extend.size() > 0) {
-            ext.putAll(extend);
-        }
-        String cateId = ext.get("cateId") == null ? tid : ext.get("cateId");
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
+        String cateId = extend.get("cateId") == null ? tid : extend.get("cateId");
         String cateUrl;
         if (cateId == null || cateId.isEmpty()) {
             cateUrl = siteUrl + String.format("%s", tid);
@@ -90,9 +84,8 @@ public class Kanqiu extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Document doc = Jsoup.parse(OkHttp.string(ids.get(0), getHeader()));
-        Document doc1 = Jsoup.parse(OkHttp.string(ids.get(0) + "-url", getHeader()));
-        JSONArray jsonArray = new JSONArray(doc1.text());
+        Document doc = Jsoup.parse(OkHttp.string(ids.get(0) + "-url", getHeader()));
+        JSONArray jsonArray = new JSONArray(doc.text());
         List<String> vodItems = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject dataObject = jsonArray.getJSONObject(i);
@@ -100,15 +93,10 @@ public class Kanqiu extends Spider {
             String href = dataObject.optString("url");
             vodItems.add(text + "$" + href);
         }
-
         String vod_play_from = "Qile";
         String vod_play_url = TextUtils.join("#", vodItems);
-        String title = doc.select(".game-info-container").text();
-        String pic = doc.select(".col-md-4.text-center img").attr("src");
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
-        vod.setVodPic(pic);
-        vod.setVodName(title);
         vod.setVodPlayFrom(vod_play_from.toString());
         vod.setVodPlayUrl(vod_play_url.toString());
         return Result.string(vod);
@@ -118,5 +106,4 @@ public class Kanqiu extends Spider {
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         return Result.get().url(id).parse().header(getHeader()).string();
     }
-
 }

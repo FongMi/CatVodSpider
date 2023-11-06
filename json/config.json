@@ -1,5 +1,5 @@
 {
-  "spider": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;2ea1762a8c802608c2222c7051709afc",
+  "spider": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;18d6103e01c3865caeb7a23e627adb3c",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -116,8 +116,8 @@
       "changeable": 0
     },
     {
-      "key": "88kanqiu",
-      "name": "88看球",
+      "key": "看球",
+      "name": "看球",
       "type": 3,
       "api": "csp_Kanqiu",
       "searchable": 1,
