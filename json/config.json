@@ -49,14 +49,6 @@
       "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/duboku.json"
     },
     {
-      "key": "五五",
-      "name": "五五",
-      "type": 3,
-      "api": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/555dy_open.js",
-      "searchable": 1,
-      "changeable": 1
-    },
-    {
       "key": "haiwaikan",
       "name": "海外看",
       "type": 1,
@@ -445,7 +437,8 @@
       ],
       "regex": [
         "#EXT-X-DISCONTINUITY\\r*\\n*#EXTINF:6.666667,[\\s\\S]*?#EXT-X-DISCONTINUITY",
-        "#EXTINF.*?\\s+.*?1o.*?\\.ts\\s+"
+        "#EXTINF.*?\\s+.*?1o.*?\\.ts\\s+",
+        "25.0666"
       ]
     },
     {
