@@ -14,7 +14,6 @@ public class Data {
 	private String name;
 	@SerializedName("epg")
 	private String epg;
-
 	@SerializedName("logo")
 	private String logo;
 
