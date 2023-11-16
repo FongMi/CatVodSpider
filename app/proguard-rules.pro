@@ -45,6 +45,3 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
-
-# Nano
--keep class fi.iki.elonen.** {*;}
