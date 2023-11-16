@@ -24,6 +24,9 @@
 -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
 
+# Nano
+-keep class fi.iki.elonen.** { *; }
+
 # OkHttp
 -dontwarn okhttp3.**
 -keep class okio.** { *; }
