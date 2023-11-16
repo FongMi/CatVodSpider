@@ -32,6 +32,7 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.net.OkResult;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
+import com.github.catvod.utils.MultiThread;
 import com.github.catvod.utils.Path;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Utils;
@@ -368,7 +369,7 @@ public class AliYun {
     }
 
     public String playerContent(String[] ids, boolean original) {
-        if (original) return Result.get().url(getDownloadUrl(ids[0], ids[1])).octet().subs(getSubs(ids)).header(getHeader()).string();
+        if (original) return Result.get().url(getMultiThreadedDownloadUrl(ids[0], ids[1])).octet().subs(getSubs(ids)).header(getHeader()).string();
         else return getPreviewContent(ids);
     }
 
@@ -419,6 +420,12 @@ public class AliYun {
         json = String.format(json, drive.getDriveId(), fileId, fileId);
         Resp resp = Resp.objectFrom(auth("adrive/v2/batch", json, true));
         return resp.getResponse().getStatus() == 404;
+    }
+
+    public String getMultiThreadedDownloadUrl(String shareId, String fileId) {
+        String url = getDownloadUrl(shareId, fileId);
+        url = MultiThread.proxyUrl(url, 20);
+        return url;
     }
 
     public Object[] proxySub(Map<String, String> params) throws Exception {
