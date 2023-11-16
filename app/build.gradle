@@ -44,4 +44,5 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.0'
     //implementation 'com.orhanobut:logger:2.2.0'
     implementation 'org.jsoup:jsoup:1.15.3'
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
 }

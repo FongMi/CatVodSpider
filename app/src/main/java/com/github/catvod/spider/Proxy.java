@@ -3,6 +3,7 @@ package com.github.catvod.spider;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.MultiThread;
 
 import java.io.ByteArrayInputStream;
 import java.util.Map;
@@ -15,6 +16,8 @@ public class Proxy extends Spider {
         switch (params.get("do")) {
             case "ck":
                 return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
+            case "multi":
+                return MultiThread.proxy(params);
             case "ali":
                 return Ali.proxy(params);
             case "bili":
