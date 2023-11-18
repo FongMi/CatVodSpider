@@ -424,7 +424,8 @@ public class AliYun {
 
     public String getMultiThreadedDownloadUrl(String shareId, String fileId) {
         String url = getDownloadUrl(shareId, fileId);
-        url = MultiThread.proxyUrl(url, 20);
+        int thread = Utils.isTV() ? 5 : 20;
+        url = MultiThread.proxyUrl(url, thread);
         return url;
     }
 

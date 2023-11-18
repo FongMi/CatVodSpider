@@ -1,8 +1,10 @@
 package com.github.catvod.utils;
 
+import android.app.UiModeManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -216,4 +218,10 @@ public class Utils {
             return "";
         }
     }
+
+    public static boolean isTV() {
+        UiModeManager uiModeManager = (UiModeManager) Init.context().getSystemService(Context.UI_MODE_SERVICE);
+        return uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION ? true : false;
+    }
+
 }
