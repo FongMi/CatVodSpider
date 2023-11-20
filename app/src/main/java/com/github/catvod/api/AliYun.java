@@ -73,18 +73,19 @@ public class AliYun {
     }
 
     public File getUserCache() {
-        return Path.cache("aliyundrive_user");
+        return Path.tv("aliyundrive_user");
     }
 
     public File getOAuthCache() {
-        return Path.cache("aliyundrive_oauth");
+        return Path.tv("aliyundrive_oauth");
     }
 
     public File getDriveCache() {
-        return Path.cache("aliyundrive_drive");
+        return Path.tv("aliyundrive_drive");
     }
 
     private AliYun() {
+        Init.checkPermission();
         tempIds = new ArrayList<>();
         user = User.objectFrom(Path.read(getUserCache()));
         oauth = OAuth.objectFrom(Path.read(getOAuthCache()));
@@ -424,7 +425,7 @@ public class AliYun {
 
     public String getMultiThreadedDownloadUrl(String shareId, String fileId) {
         String url = getDownloadUrl(shareId, fileId);
-        url = MultiThread.proxyUrl(url, 20);
+        url = MultiThread.proxyUrl(url, 2);
         return url;
     }
 

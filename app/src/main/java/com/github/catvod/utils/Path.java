@@ -3,8 +3,6 @@ package com.github.catvod.utils;
 import android.os.Environment;
 import android.util.Log;
 
-import com.github.catvod.spider.Init;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,52 +22,21 @@ public class Path {
         return file;
     }
 
-    public static boolean exists(String path) {
-        return new File(path.replace("file://", "")).exists();
+    public static File download() {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     }
 
     public static File root() {
         return Environment.getExternalStorageDirectory();
     }
 
-    public static File cache() {
-        return Init.context().getCacheDir();
+    public static File tv() {
+        return check(new File(root() + File.separator + "TV"));
     }
 
-    public static File files() {
-        return Init.context().getFilesDir();
-    }
-
-    public static File download() {
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-    }
-
-    public static String rootPath() {
-        return root().getAbsolutePath();
-    }
-
-    public static File root(String name) {
-        return new File(root(), name);
-    }
-
-    public static File root(String child, String name) {
-        return new File(check(new File(root(), child)), name);
-    }
-
-    public static File cache(String name) {
-        return new File(cache(), name);
-    }
-
-    public static File files(String name) {
-        return new File(files(), name);
-    }
-
-    public static String asset(String fileName) {
-        try {
-            return read(Init.context().getAssets().open(fileName));
-        } catch (Exception e) {
-            return "";
-        }
+    public static File tv(String name) {
+        if (!name.startsWith(".")) name = "." + name;
+        return new File(tv(), name);
     }
 
     public static String read(File file) {

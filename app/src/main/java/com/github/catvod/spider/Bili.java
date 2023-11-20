@@ -78,7 +78,7 @@ public class Bili extends Spider {
     }
 
     private File getUserCache() {
-        return Path.cache("bilibili_user");
+        return Path.tv("bilibili_user");
     }
 
     @Override

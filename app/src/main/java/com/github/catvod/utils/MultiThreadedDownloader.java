@@ -1,4 +1,4 @@
-package com.github.catvod.downloader;
+package com.github.catvod.utils;
 
 import static java.lang.Thread.sleep;
 import static fi.iki.elonen.NanoHTTPD.newFixedLengthResponse;
@@ -21,7 +21,8 @@ import fi.iki.elonen.NanoHTTPD;
 import okhttp3.Response;
 
 // 多线程内存下载器
-public class MultiThreadedMemoryDownloader {
+public class MultiThreadedDownloader {
+
     private String url; // 资源URL
     private Map<String, String> headers; // HTTP Headers. 主要关注`Range-Bytes`这个字段.
     private int chunkSize = 1024 * 128; // 每个线程每轮下载的字节数.
@@ -36,7 +37,7 @@ public class MultiThreadedMemoryDownloader {
     private BlockingQueue<Chunk> readyChunkQueue = new LinkedBlockingQueue<>(); // 已开始下载的chunk队列（有序）.
     private Lock lock = new ReentrantLock(); // 锁.
 
-    public MultiThreadedMemoryDownloader(String url, Map<String, String> headers, int numThreads) {
+    public MultiThreadedDownloader(String url, Map<String, String> headers, int numThreads) {
         this.url = url;
         this.headers = headers;
         this.numThreads = numThreads;
@@ -115,7 +116,7 @@ public class MultiThreadedMemoryDownloader {
         if (hContentLength == null) {
             throw new Exception("missing response header: Content-Length");
         }
-        Long contentLength = Long.parseLong(hContentLength);
+        long contentLength = Long.parseLong(hContentLength);
 
         // 尝试从Content-Range获取下载结束的偏移量
         if (this.endOffset <= 0) {
@@ -142,9 +143,7 @@ public class MultiThreadedMemoryDownloader {
         // 开启多线程下载
         this.running = true;
         for (int i = 0; i < this.numThreads; ++i) {
-            new Thread(() -> {
-                MultiThreadedMemoryDownloader.this.worker();
-            }).start();
+            new Thread(MultiThreadedDownloader.this::worker).start();
         }
 
         // 构造response
@@ -153,7 +152,7 @@ public class MultiThreadedMemoryDownloader {
         NanoHTTPD.Response mResponse = newFixedLengthResponse(status, contentType, input, contentLength);
         for (String key : response.headers().names()) {
             String value = response.headers().get(key);
-            if (key != null && !key.equalsIgnoreCase("Content-Type") && !key.equalsIgnoreCase("Content-Length")) {
+            if (!key.equalsIgnoreCase("Content-Type") && !key.equalsIgnoreCase("Content-Length")) {
                 mResponse.addHeader(key, value);
             }
         }
@@ -296,11 +295,8 @@ public class MultiThreadedMemoryDownloader {
         }
     }
 
-
     private boolean shouldFilterRequestHeaderKey(String key) {
-        if (key == null) {
-            return true;
-        }
+        if (key == null) return true;
         key = key.toLowerCase();
         return key.equals("host") || key.equals("http-client-ip") || key.equals("remote-addr");
     }
@@ -309,9 +305,10 @@ public class MultiThreadedMemoryDownloader {
         this.running = false;
     }
 
-    private class Chunk {
-        private long startOffset;
-        private long endOffset;
+    private static class Chunk {
+
+        private final long startOffset;
+        private final long endOffset;
         private byte[] buffer;
 
         public Chunk(long startOffset, long endOffset) {
