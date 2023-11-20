@@ -10,7 +10,7 @@ import fi.iki.elonen.NanoHTTPD;
 
 public class MultiThread {
 
-    public static String proxyUrl(String url, int thread) {
+    public static String url(String url, int thread) {
         return String.format(Proxy.getUrl() + "?do=multi&url=%s&thread=%d", URLEncoder.encode(url), thread);
     }
 
