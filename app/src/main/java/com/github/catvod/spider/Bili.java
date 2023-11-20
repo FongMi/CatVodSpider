@@ -66,7 +66,7 @@ public class Bili extends Spider {
     private void setCookie() {
         cookie = extend.get("cookie").getAsString();
         if (cookie.startsWith("http")) cookie = OkHttp.string(cookie).trim();
-        if (TextUtils.isEmpty(cookie)) cookie = Path.read(getUserCache());
+        if (TextUtils.isEmpty(cookie)) cookie = Path.read(getCache());
         if (TextUtils.isEmpty(cookie)) cookie = COOKIE;
     }
 
@@ -77,8 +77,8 @@ public class Bili extends Spider {
         return items;
     }
 
-    private File getUserCache() {
-        return Path.tv("bilibili_user");
+    private File getCache() {
+        return Path.tv("bilibili");
     }
 
     @Override
