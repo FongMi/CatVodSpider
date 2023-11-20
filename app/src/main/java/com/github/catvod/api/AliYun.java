@@ -358,9 +358,16 @@ public class AliYun {
         }
     }
 
-    public String playerContent(String[] ids, boolean original) {
-        if (original) return Result.get().url(getMultiThreadedDownloadUrl(ids[0], ids[1])).octet().subs(getSubs(ids)).header(getHeader()).string();
-        else return getPreviewContent(ids);
+    public String playerContent(String[] ids, String flag) {
+        if (flag.split("#")[0].equals("原畫")) {
+            return getPreviewContent(ids);
+        } else if (flag.split("#")[0].equals("普畫")) {
+            return Result.get().url(getDownloadUrl(ids[0], ids[1])).octet().subs(getSubs(ids)).header(getHeader()).string();
+        } else if (flag.split("#")[0].equals("極速")) {
+            return Result.get().url(MultiThread.url(getDownloadUrl(ids[0], ids[1]), 4)).octet().subs(getSubs(ids)).header(getHeader()).string();
+        } else {
+            return "";
+        }
     }
 
     private String getPreviewContent(String[] ids) {
@@ -410,12 +417,6 @@ public class AliYun {
         json = String.format(json, cache.getDrive().getDriveId(), fileId, fileId);
         Resp resp = Resp.objectFrom(auth("adrive/v2/batch", json, true));
         return resp.getResponse().getStatus() == 404;
-    }
-
-    public String getMultiThreadedDownloadUrl(String shareId, String fileId) {
-        String url = getDownloadUrl(shareId, fileId);
-        url = MultiThread.proxyUrl(url, 2);
-        return url;
     }
 
     public Object[] proxySub(Map<String, String> params) throws Exception {
