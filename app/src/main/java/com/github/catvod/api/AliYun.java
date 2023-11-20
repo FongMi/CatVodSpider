@@ -17,6 +17,7 @@ import com.github.catvod.BuildConfig;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.bean.ali.Cache;
 import com.github.catvod.bean.ali.Code;
 import com.github.catvod.bean.ali.Data;
 import com.github.catvod.bean.ali.Download;
@@ -60,9 +61,7 @@ public class AliYun {
     private AlertDialog dialog;
     private String refreshToken;
     private Share share;
-    private OAuth oauth;
-    private Drive drive;
-    private User user;
+    private Cache cache;
 
     private static class Loader {
         static volatile AliYun INSTANCE = new AliYun();
@@ -72,24 +71,14 @@ public class AliYun {
         return Loader.INSTANCE;
     }
 
-    public File getUserCache() {
-        return Path.tv("aliyundrive_user");
-    }
-
-    public File getOAuthCache() {
-        return Path.tv("aliyundrive_oauth");
-    }
-
-    public File getDriveCache() {
-        return Path.tv("aliyundrive_drive");
+    public File getCache() {
+        return Path.tv("aliyun");
     }
 
     private AliYun() {
         Init.checkPermission();
         tempIds = new ArrayList<>();
-        user = User.objectFrom(Path.read(getUserCache()));
-        oauth = OAuth.objectFrom(Path.read(getOAuthCache()));
-        drive = Drive.objectFrom(Path.read(getDriveCache()));
+        cache = Cache.objectFrom(Path.read(getCache()));
     }
 
     public void setRefreshToken(String token) {
@@ -100,7 +89,7 @@ public class AliYun {
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "text/plain";
-        result[2] = new ByteArrayInputStream(user.getRefreshToken().getBytes());
+        result[2] = new ByteArrayInputStream(cache.getUser().getRefreshToken().getBytes());
         return result;
     }
 
@@ -115,13 +104,13 @@ public class AliYun {
         HashMap<String, String> headers = getHeader();
         headers.put("x-share-token", share.getShareToken());
         headers.put("X-Canary", "client=Android,app=adrive,version=v4.3.1");
-        if (user.isAuthed()) headers.put("authorization", user.getAuthorization());
+        if (cache.getUser().isAuthed()) headers.put("authorization", cache.getUser().getAuthorization());
         return headers;
     }
 
     private HashMap<String, String> getHeaderOpen() {
         HashMap<String, String> headers = getHeader();
-        headers.put("authorization", oauth.getAuthorization());
+        headers.put("authorization", cache.getOAuth().getAuthorization());
         return headers;
     }
 
@@ -130,7 +119,7 @@ public class AliYun {
         OkResult result = OkHttp.post(api, param.toString(), getHeader());
         SpiderDebug.log(result.getCode() + "," + api + "," + result.getBody());
         if (isManyRequest(result.getBody())) return false;
-        oauth = OAuth.objectFrom(result.getBody()).save();
+        cache.setOAuth(OAuth.objectFrom(result.getBody()));
         return true;
     }
 
@@ -161,7 +150,7 @@ public class AliYun {
     private boolean isManyRequest(String result) {
         if (!result.contains("Too Many Requests")) return false;
         Utils.notify("洗洗睡吧，Too Many Requests。");
-        oauth.clean().save();
+        cache.getOAuth().clean();
         return true;
     }
 
@@ -185,31 +174,31 @@ public class AliYun {
         try {
             SpiderDebug.log("refreshAccessToken...");
             JsonObject param = new JsonObject();
-            String token = user.getRefreshToken();
+            String token = cache.getUser().getRefreshToken();
             if (token.isEmpty()) token = refreshToken;
             if (token != null && token.startsWith("http")) token = OkHttp.string(token).trim();
             param.addProperty("refresh_token", token);
             param.addProperty("grant_type", "refresh_token");
             String json = post("https://auth.aliyundrive.com/v2/account/token", param);
-            user = User.objectFrom(json).save();
-            if (user.getAccessToken().isEmpty()) throw new Exception(json);
+            cache.setUser(User.objectFrom(json));
+            if (cache.getUser().getAccessToken().isEmpty()) throw new Exception(json);
             return true;
         } catch (Exception e) {
             if (e instanceof TimeoutException) return onTimeout();
+            cache.getUser().clean();
             e.printStackTrace();
-            user.clean().save();
             stopService();
             startFlow();
             return true;
         } finally {
-            while (user.getAccessToken().isEmpty()) SystemClock.sleep(250);
+            while (cache.getUser().getAccessToken().isEmpty()) SystemClock.sleep(250);
         }
     }
 
     private void getDriveId() {
         SpiderDebug.log("Get Drive Id...");
         String json = auth("https://user.aliyundrive.com/v2/user/get", "{}", true);
-        drive = Drive.objectFrom(json).save();
+        cache.setDrive(Drive.objectFrom(json));
     }
 
     private boolean oauthRequest() {
@@ -231,11 +220,11 @@ public class AliYun {
     }
 
     private boolean refreshOpenToken() {
-        if (oauth.getRefreshToken().isEmpty()) return oauthRequest();
+        if (cache.getOAuth().getRefreshToken().isEmpty()) return oauthRequest();
         SpiderDebug.log("refreshOpenToken...");
         JsonObject param = new JsonObject();
         param.addProperty("grant_type", "refresh_token");
-        param.addProperty("refresh_token", oauth.getRefreshToken());
+        param.addProperty("refresh_token", cache.getOAuth().getRefreshToken());
         return alist("token", param);
     }
 
@@ -338,7 +327,7 @@ public class AliYun {
             tempIds.add(0, copy(shareId, fileId));
             JsonObject param = new JsonObject();
             param.addProperty("file_id", tempIds.get(0));
-            param.addProperty("drive_id", drive.getDriveId());
+            param.addProperty("drive_id", cache.getDrive().getDriveId());
             String json = oauth("openFile/getDownloadUrl", param.toString(), true);
             return Download.objectFrom(json).getUrl();
         } catch (Exception e) {
@@ -356,7 +345,7 @@ public class AliYun {
             tempIds.add(0, copy(shareId, fileId));
             JsonObject param = new JsonObject();
             param.addProperty("file_id", tempIds.get(0));
-            param.addProperty("drive_id", drive.getDriveId());
+            param.addProperty("drive_id", cache.getDrive().getDriveId());
             param.addProperty("category", "live_transcoding");
             param.addProperty("url_expire_sec", "14400");
             String json = oauth("openFile/getVideoPreviewPlayInfo", param.toString(), true);
@@ -399,10 +388,10 @@ public class AliYun {
     }
 
     private String copy(String shareId, String fileId) {
-        if (drive.getDriveId().isEmpty()) getDriveId();
+        if (cache.getDrive().getDriveId().isEmpty()) getDriveId();
         SpiderDebug.log("Copy..." + fileId);
         String json = "{\"requests\":[{\"body\":{\"file_id\":\"%s\",\"share_id\":\"%s\",\"auto_rename\":true,\"to_parent_file_id\":\"root\",\"to_drive_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"0\",\"method\":\"POST\",\"url\":\"/file/copy\"}],\"resource\":\"file\"}";
-        json = String.format(json, fileId, shareId, drive.getDriveId());
+        json = String.format(json, fileId, shareId, cache.getDrive().getDriveId());
         Resp resp = Resp.objectFrom(auth("adrive/v2/batch", json, true));
         return resp.getResponse().getBody().getFileId();
     }
@@ -418,7 +407,7 @@ public class AliYun {
     private boolean delete(String fileId) {
         SpiderDebug.log("Delete..." + fileId);
         String json = "{\"requests\":[{\"body\":{\"drive_id\":\"%s\",\"file_id\":\"%s\"},\"headers\":{\"Content-Type\":\"application/json\"},\"id\":\"%s\",\"method\":\"POST\",\"url\":\"/file/delete\"}],\"resource\":\"file\"}";
-        json = String.format(json, drive.getDriveId(), fileId, fileId);
+        json = String.format(json, cache.getDrive().getDriveId(), fileId, fileId);
         Resp resp = Resp.objectFrom(auth("adrive/v2/batch", json, true));
         return resp.getResponse().getStatus() == 404;
     }
@@ -516,9 +505,9 @@ public class AliYun {
     }
 
     private void setToken(String value) {
+        cache.getUser().setRefreshToken(value);
         SpiderDebug.log("Token:" + value);
         Utils.notify("Token:" + value);
-        user.setRefreshToken(value);
         refreshAccessToken();
         stopService();
     }
