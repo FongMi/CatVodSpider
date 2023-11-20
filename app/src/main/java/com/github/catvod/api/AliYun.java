@@ -237,7 +237,7 @@ public class AliYun {
         List<Item> subs = new ArrayList<>();
         listFiles(shareId, new Item(getParentFileId(fileId, share)), files, subs);
         Collections.sort(files);
-        List<String> playFrom = Arrays.asList("原畫", "普畫");
+        List<String> playFrom = Arrays.asList("原畫", "普畫", "極速");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
         for (Item file : files) episode.add(file.getDisplayName() + "$" + shareId + "+" + file.getFileId() + findSubs(file.getName(), subs));
@@ -359,9 +359,9 @@ public class AliYun {
     }
 
     public String playerContent(String[] ids, String flag) {
-        if (flag.split("#")[0].equals("原畫")) {
+        if (flag.split("#")[0].equals("普畫")) {
             return getPreviewContent(ids);
-        } else if (flag.split("#")[0].equals("普畫")) {
+        } else if (flag.split("#")[0].equals("原畫")) {
             return Result.get().url(getDownloadUrl(ids[0], ids[1])).octet().subs(getSubs(ids)).header(getHeader()).string();
         } else if (flag.split("#")[0].equals("極速")) {
             return Result.get().url(MultiThread.url(getDownloadUrl(ids[0], ids[1]), 4)).octet().subs(getSubs(ids)).header(getHeader()).string();
