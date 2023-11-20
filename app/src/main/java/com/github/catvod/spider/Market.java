@@ -1,11 +1,9 @@
 package com.github.catvod.spider;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
@@ -46,7 +44,7 @@ public class Market extends Spider {
     public void init(Context context, String extend) throws Exception {
         if (extend.startsWith("http")) extend = OkHttp.string(extend);
         datas = Data.arrayFrom(extend);
-        checkPermission();
+        Init.checkPermission();
     }
 
     @Override
@@ -70,15 +68,6 @@ public class Market extends Spider {
         vod.setVodPlayUrl("FongMi$FongMi");
         Init.execute(() -> download(ids.get(0)));
         return Result.string(vod);
-    }
-
-    private void checkPermission() {
-        try {
-            Activity activity = Init.getActivity();
-            if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9999);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void finish() {
