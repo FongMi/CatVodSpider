@@ -364,7 +364,7 @@ public class AliYun {
         } else if (flag.split("#")[0].equals("原畫")) {
             return Result.get().url(getDownloadUrl(ids[0], ids[1])).octet().subs(getSubs(ids)).header(getHeader()).string();
         } else if (flag.split("#")[0].equals("極速")) {
-            return Result.get().url(MultiThread.url(getDownloadUrl(ids[0], ids[1]), 4)).octet().subs(getSubs(ids)).header(getHeader()).string();
+            return Result.get().url(MultiThread.url(getDownloadUrl(ids[0], ids[1]), 5)).octet().subs(getSubs(ids)).header(getHeader()).string();
         } else {
             return "";
         }
