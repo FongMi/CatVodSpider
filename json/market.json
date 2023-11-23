@@ -36,11 +36,6 @@
         "version": "v8a"
       },
       {
-        "name": "Android-4.x",
-        "url": "https://my.t4tv.hz.cz/apk/kitkat/leanback.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png"
-      },
-      {
         "name": "手機-java",
         "url": "https://my.t4tv.hz.cz/apk/release/mobile-java-armeabi_v7a.apk",
         "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
@@ -63,6 +58,18 @@
         "url": "https://my.t4tv.hz.cz/apk/release/mobile-python-arm64_v8a.apk",
         "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
         "version": "v8a"
+      },
+      {
+        "name": "Android-4.x",
+        "url": "https://my.t4tv.hz.cz/apk/kitkat/leanback.apk",
+        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
+        "version": "java"
+      },
+      {
+        "name": "Android-4.x",
+        "url": "https://my.t4tv.hz.cz/apk/kitkat/leanback-python.apk",
+        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
+        "version": "python"
       }
     ]
   },
@@ -133,24 +140,6 @@
         "url": "https://my.t4tv.hz.cz/so/armeabi-v7a/libgav1JNI.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
         "version": "EXO"
-      },
-      {
-        "name": "ffmpeg",
-        "url": "https://my.t4tv.hz.cz/so/armeabi-v7a/libijkffmpeg.so",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "IJK"
-      },
-      {
-        "name": "sdl",
-        "url": "https://my.t4tv.hz.cz/so/armeabi-v7a/libijksdl.so",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "IJK"
-      },
-      {
-        "name": "player",
-        "url": "https://my.t4tv.hz.cz/so/armeabi-v7a/libplayer.so",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "IJK"
       },
       {
         "name": "荐片",
@@ -228,24 +217,6 @@
         "url": "https://my.t4tv.hz.cz/so/arm64-v8a/libgav1JNI.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
         "version": "EXO"
-      },
-      {
-        "name": "ffmpeg",
-        "url": "https://my.t4tv.hz.cz/so/arm64-v8a/libijkffmpeg.so",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "IJK"
-      },
-      {
-        "name": "sdl",
-        "url": "https://my.t4tv.hz.cz/so/arm64-v8a/libijksdl.so",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "IJK"
-      },
-      {
-        "name": "player",
-        "url": "https://my.t4tv.hz.cz/so/arm64-v8a/libplayer.so",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "IJK"
       },
       {
         "name": "荐片",
