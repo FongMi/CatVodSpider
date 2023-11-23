@@ -1,5 +1,5 @@
 {
-  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;1117603a248d03a2fba94c991612970f",
+  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;1117603a248d03a2fba94c991612970f",
   "wallpaper": "https://gao.chuqiuyu.tk",
   "sites": [
     {
@@ -60,7 +60,7 @@
       "key": "18A貓",
       "name": "18A貓",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/18a_open.js",
+      "api": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/18a_open.js",
       "searchable": 1,
       "recordable": 0,
       "style": {

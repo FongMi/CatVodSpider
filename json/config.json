@@ -1,5 +1,5 @@
 {
-  "spider": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/jar/custom_spider.jar;md5;1117603a248d03a2fba94c991612970f",
+  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;1117603a248d03a2fba94c991612970f",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -9,7 +9,7 @@
       "api": "csp_Market",
       "searchable": 0,
       "changeable": 0,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/market.json"
+      "ext": "https://fm.t4tv.hz.cz/json/market.json"
     },
     {
       "key": "泥巴",
@@ -36,7 +36,7 @@
       "changeable": 0,
       "ext": {
         "token": "影視天下第一",
-        "filter": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/wogg.json"
+        "filter": "https://fm.t4tv.hz.cz/json/wogg.json"
       }
     },
     {
@@ -46,7 +46,7 @@
       "api": "csp_Jianpian",
       "searchable": 1,
       "changeable": 1,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/jianpian.json"
+      "ext": "https://fm.t4tv.hz.cz/json/jianpian.json"
     },
     {
       "key": "獨播",
@@ -55,7 +55,7 @@
       "api": "csp_XPathMacFilter",
       "searchable": 1,
       "changeable": 1,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/duboku.json"
+      "ext": "https://fm.t4tv.hz.cz/json/duboku.json"
     },
     {
       "key": "haiwaikan",
@@ -106,7 +106,7 @@
       "api": "csp_Douban",
       "searchable": 0,
       "changeable": 1,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/douban.json"
+      "ext": "https://fm.t4tv.hz.cz/json/douban.json"
     },
     {
       "key": "新6V",
@@ -203,7 +203,7 @@
         "ratio": 1.433
       },
       "ext": {
-        "json": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/bili.json",
+        "json": "https://fm.t4tv.hz.cz/json/bili.json",
         "type": "帕梅拉#太极拳#广场舞#演唱会",
         "cookie": ""
       }
@@ -212,7 +212,7 @@
       "key": "bili_open",
       "name": "哔哩貓",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/bili_open.js",
+      "api": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/FongMi/CatVodOpen/main/open/bili_open.js",
       "searchable": 1,
       "changeable": 0,
       "ext": {
@@ -243,7 +243,7 @@
       "api": "csp_AList",
       "searchable": 1,
       "changeable": 0,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/alist.json"
+      "ext": "https://fm.t4tv.hz.cz/json/alist.json"
     },
     {
       "key": "WebDAV",
@@ -252,7 +252,7 @@
       "api": "csp_WebDAV",
       "searchable": 1,
       "changeable": 0,
-      "ext": "https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/webdav.json"
+      "ext": "https://fm.t4tv.hz.cz/json/webdav.json"
     },
     {
       "key": "七夜",
