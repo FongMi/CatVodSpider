@@ -58,18 +58,6 @@
         "url": "https://my.t4tv.hz.cz/apk/release/mobile-python-arm64_v8a.apk",
         "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
         "version": "v8a"
-      },
-      {
-        "name": "Android-4.x",
-        "url": "https://my.t4tv.hz.cz/apk/kitkat/leanback.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "java"
-      },
-      {
-        "name": "Android-4.x",
-        "url": "https://my.t4tv.hz.cz/apk/kitkat/leanback-python.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "python"
       }
     ]
   },
@@ -123,6 +111,23 @@
         "url": "https://my.t4tv.hz.cz/apk/dev/mobile-python-arm64_v8a.apk",
         "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
         "version": "v8a"
+      }
+    ]
+  },
+  {
+    "name": "4.x版",
+    "list": [
+      {
+        "name": "電視-java",
+        "url": "https://my.t4tv.hz.cz/apk/kitkat/leanback.apk",
+        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
+        "version": "v7a"
+      },
+      {
+        "name": "電視-py",
+        "url": "https://my.t4tv.hz.cz/apk/kitkat/leanback-python.apk",
+        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
+        "version": "v7a"
       }
     ]
   },
