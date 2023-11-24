@@ -135,12 +135,6 @@
     "name": "v7a",
     "list": [
       {
-        "name": "ffmpeg",
-        "url": "https://my.t4tv.hz.cz/so/armeabi-v7a/libffmpegJNI.so",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "EXO"
-      },
-      {
         "name": "av1",
         "url": "https://my.t4tv.hz.cz/so/armeabi-v7a/libgav1JNI.so",
         "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
@@ -211,12 +205,6 @@
   {
     "name": "v8a",
     "list": [
-      {
-        "name": "ffmpeg",
-        "url": "https://my.t4tv.hz.cz/so/arm64-v8a/libffmpegJNI.so",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "EXO"
-      },
       {
         "name": "av1",
         "url": "https://my.t4tv.hz.cz/so/arm64-v8a/libgav1JNI.so",
