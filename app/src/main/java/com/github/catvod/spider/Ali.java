@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  */
 public class Ali extends Spider {
 
-    public static final Pattern pattern = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
+    public static final Pattern pattern = Pattern.compile("(www.aliyundrive.com|www.alipan.com)/s/([^/]+)(/folder/([^/]+))?");
 
     @Override
     public void init(Context context, String extend) {
@@ -41,8 +41,8 @@ public class Ali extends Spider {
     }
 
     private Vod parseVod(Matcher matcher, String id) {
-        String shareId = matcher.group(1);
-        String fileId = matcher.groupCount() == 3 ? matcher.group(3) : "";
+        String shareId = matcher.group(2);
+        String fileId = matcher.groupCount() == 4 ? matcher.group(4) : "";
         return AliYun.get().getVod(id, shareId, fileId);
     }
 
