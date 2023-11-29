@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.UrlQuerySanitizer;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -34,10 +35,13 @@ import com.github.catvod.net.OkResult;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
 import com.github.catvod.utils.MultiThread;
+import com.github.catvod.utils.MultiThreadedDownloader;
 import com.github.catvod.utils.Path;
+import com.github.catvod.utils.ProxyVideo;
 import com.github.catvod.utils.QRCode;
 import com.github.catvod.utils.Utils;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -47,11 +51,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.ReentrantLock;
 
+import fi.iki.elonen.NanoHTTPD;
 import okhttp3.Response;
 
 public class AliYun {
@@ -62,6 +69,10 @@ public class AliYun {
     private String refreshToken;
     private Share share;
     private Cache cache;
+    private Map<String, String> downloadMap;
+    private Map<String, String> shareDownloadMap;
+    private Map<String, Map<String, String>> m3u8MediaMap;
+    private final ReentrantLock rLock;
 
     private static class Loader {
         static volatile AliYun INSTANCE = new AliYun();
@@ -79,6 +90,10 @@ public class AliYun {
         Init.checkPermission();
         tempIds = new ArrayList<>();
         cache = Cache.objectFrom(Path.read(getCache()));
+        downloadMap = new HashMap<>();
+        shareDownloadMap = new HashMap<>();
+        m3u8MediaMap = new HashMap<>();
+        rLock = new ReentrantLock();
     }
 
     public void setRefreshToken(String token) {
@@ -320,8 +335,28 @@ public class AliYun {
         return sub;
     }
 
+    public String getShareDownloadUrl(String shareId, String fileId) {
+        try {
+            if (shareDownloadMap.containsKey(fileId) && shareDownloadMap.get(fileId) != null && !isExpire(shareDownloadMap.get(fileId))) return shareDownloadMap.get(fileId);
+            refreshShareToken(shareId);
+            SpiderDebug.log("getShareDownloadUrl..." + fileId);
+            JsonObject param = new JsonObject();
+            param.addProperty("file_id", fileId);
+            param.addProperty("share_id", shareId);
+            param.addProperty("expire_sec", 600);
+            String json = auth("v2/file/get_share_link_download_url", param.toString(), false);
+            String url = JsonParser.parseString(json).getAsJsonObject().get("download_url").getAsString();
+            shareDownloadMap.put(fileId, url);
+            return url;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     public String getDownloadUrl(String shareId, String fileId) {
         try {
+            if (downloadMap.containsKey(fileId) && downloadMap.get(fileId) != null && !isExpire(downloadMap.get(fileId))) return downloadMap.get(fileId);
             refreshShareToken(shareId);
             SpiderDebug.log("getDownloadUrl..." + fileId);
             tempIds.add(0, copy(shareId, fileId));
@@ -329,7 +364,9 @@ public class AliYun {
             param.addProperty("file_id", tempIds.get(0));
             param.addProperty("drive_id", cache.getDrive().getDriveId());
             String json = oauth("openFile/getDownloadUrl", param.toString(), true);
-            return Download.objectFrom(json).getUrl();
+            String url = Download.objectFrom(json).getUrl();
+            downloadMap.put(fileId, url);
+            return url;
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -362,9 +399,9 @@ public class AliYun {
         if (flag.split("#")[0].equals("普畫")) {
             return getPreviewContent(ids);
         } else if (flag.split("#")[0].equals("原畫")) {
-            return Result.get().url(getDownloadUrl(ids[0], ids[1])).octet().subs(getSubs(ids)).header(getHeader()).string();
-        } else if (flag.split("#")[0].equals("極速")) {
-            return Result.get().url(MultiThread.url(getDownloadUrl(ids[0], ids[1]), 5)).octet().subs(getSubs(ids)).header(getHeader()).string();
+            return Result.get().url(proxyVideoUrl("open", ids[0], ids[1])).octet().subs(getSubs(ids)).header(getHeader()).string();
+        } else if (flag.split("#")[0].equals("分享原畫")) {
+            return Result.get().url(proxyVideoUrl("share", ids[0], ids[1])).octet().subs(getSubs(ids)).header(getHeader()).string();
         } else {
             return "";
         }
@@ -373,6 +410,12 @@ public class AliYun {
     private String getPreviewContent(String[] ids) {
         Preview.Info info = getVideoPreviewPlayInfo(ids[0], ids[1]);
         List<String> url = getPreviewUrl(info);
+        List<String> proxyUrl = new ArrayList<>();
+        for(int i = 0; i < url.size(); i++) {
+            String item = url.get(i);
+            if (item.startsWith("http")) item = proxyVideoUrl("preview", ids[0], ids[1], url.get(i-1));
+            proxyUrl.add(item);
+        }
         List<Sub> subs = getSubs(ids);
         subs.addAll(getSubs(info));
         return Result.get().url(url).m3u8().subs(subs).header(getHeader()).string();
@@ -417,6 +460,120 @@ public class AliYun {
         json = String.format(json, cache.getDrive().getDriveId(), fileId, fileId);
         Resp resp = Resp.objectFrom(auth("adrive/v2/batch", json, true));
         return resp.getResponse().getStatus() == 404;
+    }
+
+    private String proxyVideoUrl(String cate, String shareId, String fileId) {
+        return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s", cate, shareId, fileId);
+    }
+
+    private String proxyVideoUrl(String cate, String shareId, String fileId, String templateId) {
+        return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s&templateId=%s", cate, shareId, fileId, templateId);
+    }
+
+    private String proxyVideoUrl(String cate, String shareId, String fileId, String templateId, String mediaId) {
+        return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s&templateId=%s&mediaId=%s", cate, shareId, fileId, templateId, mediaId);
+    }
+
+    private static boolean isExpire(String url) {
+        String expires = new UrlQuerySanitizer(url).getValue("x-oss-expires");
+        if (TextUtils.isEmpty(expires)) return false;
+        if (new Long(expires) - getTimeStamp() <= 60) return true;
+        return false;
+    }
+
+    private static long getTimeStamp() {
+        return System.currentTimeMillis() / 1000;
+    }
+
+    public Object[] proxyVideo(Map<String, String> params) throws Exception {
+        String fileId = params.get("fileId");
+        String shareId = params.get("shareId");
+        String cate = params.get("cate");
+        String templateId = params.get("templateId");
+        String mediaId = params.get("mediaId");
+        String downloadUrl = "";
+        int thread = 1;
+        switch (cate) {
+            case "preview":
+                return previewProxy(shareId, fileId, templateId);
+            case "m3u8":
+                rLock.lock();
+                String mediaUrl = m3u8MediaMap.get(fileId).get(mediaId);
+                if (isExpire(mediaUrl)) {
+                    getM3u8(shareId, fileId, templateId);
+                    mediaUrl = m3u8MediaMap.get(fileId).get(mediaId);
+                }
+                rLock.unlock();
+                downloadUrl = mediaUrl;
+                break;
+            case "open":
+                downloadUrl = getDownloadUrl(shareId, fileId);
+                thread = 30;
+                break;
+            case "share":
+                downloadUrl = getShareDownloadUrl(shareId, fileId);
+                thread = 30;
+                break;
+            default:
+                break;
+        }
+        Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        for (String key : params.keySet()) headers.put(key, params.get(key));
+        headers.remove("do");
+        headers.remove("type");
+        headers.remove("cate");
+        headers.remove("fileId");
+        headers.remove("shareId");
+        headers.remove("templateId");
+        headers.remove("mediaId");
+        headers.remove("host");
+        headers.remove("remote-addr");
+        headers.remove("http-client-ip");
+        NanoHTTPD.Response mResponse;
+        if (thread == 1) {
+            mResponse = ProxyVideo.proxy(downloadUrl, headers);
+        } else {
+            mResponse = new MultiThreadedDownloader(downloadUrl, headers, thread).start();
+        }
+        return new Object[]{mResponse};
+    }
+
+    private Object[] previewProxy(String shareId, String fileId, String templateId) {
+        String m3u8 = getM3u8(shareId, fileId, templateId);
+        return new Object[]{200, "application/vnd.apple.mpegurl", new ByteArrayInputStream(m3u8.getBytes())};
+    }
+
+    private String getM3u8Url(String shareId, String fileId, String templateId) {
+        Preview.Info info = getVideoPreviewPlayInfo(shareId, fileId);
+        List<String> url = getPreviewUrl(info);
+        Map<String, String> previewMap = new HashMap<>();
+        for(int i = 0; i < url.size(); i=i+2) {
+            previewMap.put(url.get(i), url.get(i+1));
+        }
+        String m3u8Url = previewMap.get(templateId);
+        return m3u8Url;
+    }
+
+    private String getM3u8(String shareId, String fileId, String templateId) {
+        String m3u8Url = getM3u8Url(shareId, fileId, templateId);
+        String m3u8 = OkHttp.string(m3u8Url, getHeader());
+        String[] m3u8Arr = m3u8.split("\\\n");
+        List<String> listM3u8 = new ArrayList<>();
+        Map<String, String> media = new HashMap<>();
+        String site = m3u8Url.substring(0, m3u8Url.lastIndexOf("/")) + "/";
+        int mediaId = 0;
+        for(String oneLine:m3u8Arr) {
+            String thisOne = oneLine;
+            if (oneLine.contains("x-oss-expires")) {
+                media.put("" + mediaId, site + thisOne);
+                thisOne = proxyVideoUrl("m3u8", shareId, fileId, templateId, "" + mediaId);
+                mediaId ++;
+            }
+            listM3u8.add(thisOne);
+        }
+        m3u8MediaMap.put(fileId, media);
+        String content = TextUtils.join("\n", listM3u8);
+        return content;
     }
 
     public Object[] proxySub(Map<String, String> params) throws Exception {
