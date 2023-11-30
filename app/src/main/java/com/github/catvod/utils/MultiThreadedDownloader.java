@@ -113,6 +113,14 @@ public class MultiThreadedDownloader {
                 contentType = "video/mpeg";
             } else if (contentDisposition.endsWith(".3gp")) {
                 contentType = "video/3gpp";
+            } else if (contentDisposition.endsWith(".ts")) {
+                contentType = "video/MP2T";
+            } else if (contentDisposition.endsWith(".mp3")) {
+                contentType = "audio/mp3";
+            } else if (contentDisposition.endsWith(".wav")) {
+                contentType = "audio/wav";
+            } else if (contentDisposition.endsWith(".aac")) {
+                contentType = "audio/aac";
             }
         }
         if (contentType == null) {
