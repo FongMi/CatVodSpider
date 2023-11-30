@@ -216,4 +216,36 @@ public class Utils {
             return "";
         }
     }
+
+    public static String getMimeType(String contentDisposition) {
+        if (contentDisposition.endsWith(".mp4")) {
+            return "video/mp4";
+        } else if (contentDisposition.endsWith(".webm")) {
+            return "video/webm";
+        } else if (contentDisposition.endsWith(".avi")) {
+            return "video/x-msvideo";
+        } else if (contentDisposition.endsWith(".wmv")) {
+            return "video/x-ms-wmv";
+        } else if (contentDisposition.endsWith(".flv")) {
+            return "video/x-flv";
+        } else if (contentDisposition.endsWith(".mov")) {
+            return "video/quicktime";
+        } else if (contentDisposition.endsWith(".mkv")) {
+            return "video/x-matroska";
+        } else if (contentDisposition.endsWith(".mpeg")) {
+            return "video/mpeg";
+        } else if (contentDisposition.endsWith(".3gp")) {
+            return "video/3gpp";
+        } else if (contentDisposition.endsWith(".ts")) {
+            return "video/MP2T";
+        } else if (contentDisposition.endsWith(".mp3")) {
+            return "audio/mp3";
+        } else if (contentDisposition.endsWith(".wav")) {
+            return "audio/wav";
+        } else if (contentDisposition.endsWith(".aac")) {
+            return "audio/aac";
+        } else {
+            return null;
+        }
+    }
 }

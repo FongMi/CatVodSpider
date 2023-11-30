@@ -94,43 +94,10 @@ public class MultiThreadedDownloader {
         //获取header
         String contentType = response.headers().get("Content-Type");
         String contentDisposition = response.headers().get("Content-Disposition");
-        if (contentDisposition != null) {
-            if (contentDisposition.endsWith(".mp4")) {
-                contentType = "video/mp4";
-            } else if (contentDisposition.endsWith(".webm")) {
-                contentType = "video/webm";
-            } else if (contentDisposition.endsWith(".avi")) {
-                contentType = "video/x-msvideo";
-            } else if (contentDisposition.endsWith(".wmv")) {
-                contentType = "video/x-ms-wmv";
-            } else if (contentDisposition.endsWith(".flv")) {
-                contentType = "video/x-flv";
-            } else if (contentDisposition.endsWith(".mov")) {
-                contentType = "video/quicktime";
-            } else if (contentDisposition.endsWith(".mkv")) {
-                contentType = "video/x-matroska";
-            } else if (contentDisposition.endsWith(".mpeg")) {
-                contentType = "video/mpeg";
-            } else if (contentDisposition.endsWith(".3gp")) {
-                contentType = "video/3gpp";
-            } else if (contentDisposition.endsWith(".ts")) {
-                contentType = "video/MP2T";
-            } else if (contentDisposition.endsWith(".mp3")) {
-                contentType = "audio/mp3";
-            } else if (contentDisposition.endsWith(".wav")) {
-                contentType = "audio/wav";
-            } else if (contentDisposition.endsWith(".aac")) {
-                contentType = "audio/aac";
-            }
-        }
-        if (contentType == null) {
-            throw new Exception("missing response header: Content-Type");
-        }
-
+        if (contentDisposition != null) contentType = Utils.getMimeType(contentDisposition);
+        if (contentType == null) throw new Exception("missing response header: Content-Type");
         String hContentLength = response.headers().get("Content-Length");
-        if (hContentLength == null) {
-            throw new Exception("missing response header: Content-Length");
-        }
+        if (hContentLength == null) throw new Exception("missing response header: Content-Length");
         long contentLength = Long.parseLong(hContentLength);
 
         //尝试从Content-Range获取下载结束的偏移量

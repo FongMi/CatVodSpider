@@ -82,7 +82,6 @@ public class Ali extends Spider {
         String type = params.get("type");
         if ("video".equals(type)) return AliYun.get().proxyVideo(params);
         if ("sub".equals(type)) return AliYun.get().proxySub(params);
-        if ("token".equals(type)) return AliYun.get().getToken();
         return null;
     }
 }
