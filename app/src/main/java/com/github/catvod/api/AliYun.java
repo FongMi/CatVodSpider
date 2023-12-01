@@ -328,7 +328,7 @@ public class AliYun {
 
     public String getShareDownloadUrl(String shareId, String fileId) {
         try {
-            if (shareDownloadMap.containsKey(fileId) && shareDownloadMap.get(fileId) != null && !isExpire(shareDownloadMap.get(fileId))) return shareDownloadMap.get(fileId);
+            if (shareDownloadMap.containsKey(fileId) && shareDownloadMap.get(fileId) != null && !isExpire(shareDownloadMap.get(fileId), 600)) return shareDownloadMap.get(fileId);
             refreshShareToken(shareId);
             SpiderDebug.log("getShareDownloadUrl..." + fileId);
             JsonObject param = new JsonObject();
@@ -347,7 +347,7 @@ public class AliYun {
 
     public String getDownloadUrl(String shareId, String fileId) {
         try {
-            if (downloadMap.containsKey(fileId) && downloadMap.get(fileId) != null && !isExpire(downloadMap.get(fileId))) return downloadMap.get(fileId);
+            if (downloadMap.containsKey(fileId) && downloadMap.get(fileId) != null && !isExpire(downloadMap.get(fileId), 900)) return downloadMap.get(fileId);
             refreshShareToken(shareId);
             SpiderDebug.log("getDownloadUrl..." + fileId);
             tempIds.add(0, copy(shareId, fileId));
@@ -460,10 +460,10 @@ public class AliYun {
         return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s&templateId=%s&mediaId=%s", cate, shareId, fileId, templateId, mediaId);
     }
 
-    private static boolean isExpire(String url) {
+    private static boolean isExpire(String url, int time) {
         String expires = new UrlQuerySanitizer(url).getValue("x-oss-expires");
         if (TextUtils.isEmpty(expires)) return false;
-        return Long.parseLong(expires) - getTimeStamp() <= 15;
+        return Long.parseLong(expires) - getTimeStamp() <= time / 60;
     }
 
     private static long getTimeStamp() {
@@ -492,7 +492,7 @@ public class AliYun {
         } else if ("m3u8".equals(cate)) {
             lock.lock();
             String mediaUrl = m3u8MediaMap.get(fileId).get(mediaId);
-            if (isExpire(mediaUrl)) {
+            if (isExpire(mediaUrl, 900)) {
                 getM3u8(shareId, fileId, templateId);
                 mediaUrl = m3u8MediaMap.get(fileId).get(mediaId);
             }
