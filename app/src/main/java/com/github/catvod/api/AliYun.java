@@ -404,7 +404,7 @@ public class AliYun {
         List<String> proxyUrl = new ArrayList<>();
         for (int i = 0; i < url.size(); i++) {
             String item = url.get(i);
-            if (item.startsWith("http")) item = proxyVideoUrl("preview", ids[0], ids[1], url.get(i-1));
+            if (item.startsWith("http")) item = proxyVideoUrl("preview", ids[0], ids[1], url.get(i - 1));
             proxyUrl.add(item);
         }
         List<Sub> subs = getSubs(ids);
