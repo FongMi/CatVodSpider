@@ -243,7 +243,7 @@ public class AliYun {
         List<Item> subs = new ArrayList<>();
         listFiles(shareId, new Item(getParentFileId(fileId, share)), files, subs);
         Collections.sort(files);
-        List<String> playFrom = Arrays.asList("原畫", "普畫", "極速");
+        List<String> playFrom = Arrays.asList("原畫", "普畫");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
         for (Item file : files) episode.add(file.getDisplayName() + "$" + shareId + "+" + file.getFileId() + findSubs(file.getName(), subs));
@@ -409,7 +409,7 @@ public class AliYun {
         }
         List<Sub> subs = getSubs(ids);
         subs.addAll(getSubs(info));
-        return Result.get().url(url).m3u8().subs(subs).header(getHeader()).string();
+        return Result.get().url(proxyUrl).m3u8().subs(subs).header(getHeader()).string();
     }
 
     private List<String> getPreviewUrl(Preview.Info info) {
@@ -489,11 +489,11 @@ public class AliYun {
         }
 
         if ("open".equals(cate)) {
+            thread = 10;
             downloadUrl = getDownloadUrl(shareId, fileId);
-            thread = 30;
         } else if ("share".equals(cate)) {
+            thread = 10;
             downloadUrl = getShareDownloadUrl(shareId, fileId);
-            thread = 30;
         } else if ("m3u8".equals(cate)) {
             lock.lock();
             String mediaUrl = m3u8MediaMap.get(fileId).get(mediaId);
