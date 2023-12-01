@@ -243,7 +243,7 @@ public class AliYun {
         List<Item> subs = new ArrayList<>();
         listFiles(shareId, new Item(getParentFileId(fileId, share)), files, subs);
         Collections.sort(files);
-        List<String> playFrom = Arrays.asList("原畫", "普畫", "極速");
+        List<String> playFrom = Arrays.asList("原畫", "普畫");
         List<String> episode = new ArrayList<>();
         List<String> playUrl = new ArrayList<>();
         for (Item file : files) episode.add(file.getDisplayName() + "$" + shareId + "+" + file.getFileId() + findSubs(file.getName(), subs));
@@ -401,12 +401,6 @@ public class AliYun {
     private String getPreviewContent(String[] ids) {
         Preview.Info info = getVideoPreviewPlayInfo(ids[0], ids[1]);
         List<String> url = getPreviewUrl(info);
-        List<String> proxyUrl = new ArrayList<>();
-        for (int i = 0; i < url.size(); i++) {
-            String item = url.get(i);
-            if (item.startsWith("http")) item = proxyVideoUrl("preview", ids[0], ids[1], url.get(i - 1));
-            proxyUrl.add(item);
-        }
         List<Sub> subs = getSubs(ids);
         subs.addAll(getSubs(info));
         return Result.get().url(url).m3u8().subs(subs).header(getHeader()).string();
@@ -455,10 +449,6 @@ public class AliYun {
 
     private String proxyVideoUrl(String cate, String shareId, String fileId) {
         return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s", cate, shareId, fileId);
-    }
-
-    private String proxyVideoUrl(String cate, String shareId, String fileId, String templateId) {
-        return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s&templateId=%s", cate, shareId, fileId, templateId);
     }
 
     private String proxyVideoUrl(String cate, String shareId, String fileId, String templateId, String mediaId) {
