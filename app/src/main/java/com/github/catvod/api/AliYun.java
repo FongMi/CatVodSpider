@@ -400,18 +400,18 @@ public class AliYun {
 
     private String getPreviewContent(String[] ids) {
         Preview.Info info = getVideoPreviewPlayInfo(ids[0], ids[1]);
-        List<String> url = getPreviewUrl(info, ids[0], ids[1]);
+        List<String> url = getPreviewUrl(info, ids[0], ids[1], true);
         List<Sub> subs = getSubs(ids);
         subs.addAll(getSubs(info));
         return Result.get().url(url).m3u8().subs(subs).header(getHeader()).string();
     }
 
-    private List<String> getPreviewUrl(Preview.Info info, String shareId, String fileId) {
+    private List<String> getPreviewUrl(Preview.Info info, String shareId, String fileId, boolean proxy) {
         List<Preview.LiveTranscodingTask> tasks = info.getLiveTranscodingTaskList();
         List<String> url = new ArrayList<>();
         for (int i = tasks.size() - 1; i >= 0; i--) {
             url.add(tasks.get(i).getTemplateId());
-            url.add(proxyVideoUrl("preview", shareId, fileId, tasks.get(i).getTemplateId()));
+            url.add(proxy ? proxyVideoUrl("preview", shareId, fileId, tasks.get(i).getTemplateId()) : tasks.get(i).getUrl());
         }
         return url;
     }
@@ -525,7 +525,7 @@ public class AliYun {
 
     private String getM3u8Url(String shareId, String fileId, String templateId) {
         Preview.Info info = getVideoPreviewPlayInfo(shareId, fileId);
-        List<String> url = getPreviewUrl(info, shareId, fileId);
+        List<String> url = getPreviewUrl(info, shareId, fileId, false);
         Map<String, String> previewMap = new HashMap<>();
         for (int i = 0; i < url.size(); i = i + 2) {
             previewMap.put(url.get(i), url.get(i + 1));
