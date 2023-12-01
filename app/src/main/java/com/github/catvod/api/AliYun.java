@@ -411,7 +411,7 @@ public class AliYun {
         List<String> url = new ArrayList<>();
         for (int i = tasks.size() - 1; i >= 0; i--) {
             url.add(tasks.get(i).getTemplateId());
-            url.add(proxyVideoUrl("preview", shareId, fileId, tasks.get(i).getUrl()));
+            url.add(proxyVideoUrl("preview", shareId, fileId, tasks.get(i).getTemplateId()));
         }
         return url;
     }
