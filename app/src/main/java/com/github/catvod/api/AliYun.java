@@ -354,6 +354,7 @@ public class AliYun {
             JsonObject param = new JsonObject();
             param.addProperty("file_id", tempIds.get(0));
             param.addProperty("drive_id", cache.getDrive().getDriveId());
+            param.addProperty("expire_sec", 900);
             String json = oauth("openFile/getDownloadUrl", param.toString(), true);
             String url = Download.objectFrom(json).getUrl();
             downloadMap.put(fileId, url);
@@ -375,7 +376,7 @@ public class AliYun {
             param.addProperty("file_id", tempIds.get(0));
             param.addProperty("drive_id", cache.getDrive().getDriveId());
             param.addProperty("category", "live_transcoding");
-            param.addProperty("url_expire_sec", "14400");
+            param.addProperty("url_expire_sec", 900);
             String json = oauth("openFile/getVideoPreviewPlayInfo", param.toString(), true);
             return Preview.objectFrom(json).getVideoPreviewPlayInfo();
         } catch (Exception e) {
@@ -462,7 +463,7 @@ public class AliYun {
     private static boolean isExpire(String url) {
         String expires = new UrlQuerySanitizer(url).getValue("x-oss-expires");
         if (TextUtils.isEmpty(expires)) return false;
-        return Long.parseLong(expires) - getTimeStamp() <= 60;
+        return Long.parseLong(expires) - getTimeStamp() <= 15;
     }
 
     private static long getTimeStamp() {
