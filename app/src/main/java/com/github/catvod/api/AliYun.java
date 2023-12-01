@@ -479,11 +479,11 @@ public class AliYun {
         }
 
         if ("open".equals(cate)) {
+            thread = 10;
             downloadUrl = getDownloadUrl(shareId, fileId);
-            thread = 30;
         } else if ("share".equals(cate)) {
+            thread = 10;
             downloadUrl = getShareDownloadUrl(shareId, fileId);
-            thread = 30;
         } else if ("m3u8".equals(cate)) {
             lock.lock();
             String mediaUrl = m3u8MediaMap.get(fileId).get(mediaId);
