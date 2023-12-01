@@ -486,7 +486,7 @@ public class AliYun {
             thread = 10;
             downloadUrl = getDownloadUrl(shareId, fileId);
         } else if ("share".equals(cate)) {
-            thread = 20;
+            thread = 10;
             downloadUrl = getShareDownloadUrl(shareId, fileId);
         } else if ("m3u8".equals(cate)) {
             lock.lock();
