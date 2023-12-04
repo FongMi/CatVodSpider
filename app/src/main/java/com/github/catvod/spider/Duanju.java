@@ -3,14 +3,18 @@ package com.github.catvod.spider;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.github.catvod.bean.Class;
+import com.github.catvod.bean.Result;
+import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Utils;
+
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -20,10 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.github.catvod.bean.Result;
-import com.github.catvod.bean.Vod;
-import com.github.catvod.bean.Class;
 
 /**
  * @author Qile
@@ -51,8 +51,7 @@ public class Duanju extends Spider {
         List<Class> classes = new ArrayList<>();
         List<String> typeIds = Arrays.asList("1", "2", "3", "26", "25", "27", "28", "32");
         List<String> typeNames = Arrays.asList("抖剧", "快剧", "都市", "穿越", "逆袭", "虐恋", "重生", "其他");
-        for (int i = 0; i < typeIds.size(); i++)
-            classes.add(new Class(typeIds.get(i), typeNames.get(i)));
+        for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
         Document doc = Jsoup.parse(OkHttp.string(siteUrl, getHeader()));
         List<Vod> list = new ArrayList<>();
         for (Element li : doc.select("div.module-items").eq(0).select(".module-item")) {
@@ -66,8 +65,7 @@ public class Duanju extends Spider {
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend)
-            throws Exception {
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
         HashMap<String, String> ext = new HashMap<>();
         if (extend != null && extend.size() > 0) ext.putAll(extend);
         String cateId = ext.get("cateId") == null ? tid : ext.get("cateId");
@@ -103,7 +101,7 @@ public class Duanju extends Spider {
         String area = doc.select("a.tag-link").eq(2).text();
         String remark = doc.select("div.title-info span").text();
         String director = "Qile";
-        String actor = "Fongmi";
+        String actor = "FongMi";
         String brief = "该剧由蜂蜜用爱发电制作，欢迎观看！";
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
@@ -144,5 +142,4 @@ public class Duanju extends Spider {
         String realUrl = player.getString("url");
         return Result.get().url(realUrl).header(getHeader()).string();
     }
-
 }
