@@ -93,7 +93,6 @@ public class Duanju extends Spider {
         for (Element a : sourceList) {
             String episodeUrl = siteUrl + a.attr("href");
             String episodeName = a.text();
-            episodeName = "第" + episodeName + "集";
             vodItems.add(episodeName + "$" + episodeUrl);
         }
         String vod_play_from = "Qile";
