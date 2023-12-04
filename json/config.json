@@ -105,11 +105,7 @@
       "type": 3,
       "api": "csp_Duanju",
       "searchable": 1,
-      "changeable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.433
-      }
+      "changeable": 0
     },
     {
       "key": "豆瓣",
