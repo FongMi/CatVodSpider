@@ -34,7 +34,7 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.net.OkResult;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
-import com.github.catvod.utils.MultiThreadedDownloader;
+import com.github.catvod.utils.MultiThread;
 import com.github.catvod.utils.Path;
 import com.github.catvod.utils.ProxyVideo;
 import com.github.catvod.utils.QRCode;
@@ -67,8 +67,6 @@ public class AliYun {
     private final List<String> tempIds;
     private final ReentrantLock lock;
     private final Cache cache;
-
-    private MultiThreadedDownloader downloader;
     private ScheduledExecutorService service;
     private String refreshToken;
     private AlertDialog dialog;
@@ -516,9 +514,7 @@ public class AliYun {
         if (thread == 1) {
             return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
         } else {
-            if (downloader != null) downloader.destory();
-            downloader = new MultiThreadedDownloader(downloadUrl, headers, thread);
-            return new Object[]{downloader.start()};
+            return new Object[]{ProxyVideo.proxy(MultiThread.go(downloadUrl, thread), headers)};
         }
     }
 
