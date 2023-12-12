@@ -6,8 +6,6 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.TreeMap;
 
-import fi.iki.elonen.NanoHTTPD;
-
 public class MultiThread {
 
     public static String url(String url, int thread) {
@@ -20,8 +18,7 @@ public class MultiThread {
         Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         for (String key : params.keySet()) headers.put(key, params.get(key));
         MultiThreadedDownloader downloader = new MultiThreadedDownloader(url, removeHeaders(headers), thread);
-        NanoHTTPD.Response response = downloader.start();
-        return new Object[]{response};
+        return new Object[]{downloader.start()};
     }
 
     private static Map<String, String> removeHeaders(Map<String, String> headers) {

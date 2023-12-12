@@ -5,6 +5,7 @@ import static fi.iki.elonen.NanoHTTPD.newFixedLengthResponse;
 import android.os.SystemClock;
 
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.spider.Init;
 
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -12,6 +13,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -27,6 +30,7 @@ public class MultiThreadedDownloader {
     //已开始下载的 chunk 队列
     private final BlockingQueue<Chunk> readyChunkQueue;
     private final Map<String, String> headers;
+    private final ExecutorService executor;
     private final String url;
     private final Lock lock;
     //最多缓存多少个未被取走的chunk
@@ -54,6 +58,7 @@ public class MultiThreadedDownloader {
         this.numThreads = numThreads;
         this.lock = new ReentrantLock();
         this.readyChunkQueue = new LinkedBlockingQueue<>();
+        this.executor = Executors.newFixedThreadPool(numThreads);
     }
 
     //开始下载
@@ -125,7 +130,7 @@ public class MultiThreadedDownloader {
         //开启多线程下载
         running = true;
         for (int i = 0; i < numThreads; ++i) {
-            new Thread(MultiThreadedDownloader.this::worker).start();
+            executor.execute(this::worker);
         }
 
         //构造response
@@ -140,7 +145,7 @@ public class MultiThreadedDownloader {
         }
 
         //搬运数据流
-        new Thread(() -> {
+        Init.execute(() -> {
             try {
                 while (true) {
                     byte[] buffer = read();
@@ -159,7 +164,7 @@ public class MultiThreadedDownloader {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
 
         return mResponse;
     }
@@ -194,6 +199,9 @@ public class MultiThreadedDownloader {
 
     private void worker() {
         while (running) {
+            //打斷技能
+            if (Thread.interrupted()) break;
+
             //生成下一个chunk
             Chunk chunk = null;
             lock.lock();
@@ -268,6 +276,11 @@ public class MultiThreadedDownloader {
         running = false;
     }
 
+    public void destory() {
+        running = false;
+        executor.shutdownNow();
+    }
+
     private static class Chunk {
 
         private final long startOffset;
@@ -283,7 +296,7 @@ public class MultiThreadedDownloader {
             return buffer;
         }
 
-        public void put(byte[] buffer) throws InterruptedException {
+        public void put(byte[] buffer) {
             this.buffer = buffer;
         }
     }
