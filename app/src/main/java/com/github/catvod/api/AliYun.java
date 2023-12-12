@@ -68,9 +68,10 @@ public class AliYun {
     private final ReentrantLock lock;
     private final Cache cache;
 
+    private MultiThreadedDownloader downloader;
     private ScheduledExecutorService service;
-    private AlertDialog dialog;
     private String refreshToken;
+    private AlertDialog dialog;
     private Share share;
 
     private static class Loader {
@@ -515,7 +516,9 @@ public class AliYun {
         if (thread == 1) {
             return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
         } else {
-            return new Object[]{new MultiThreadedDownloader(downloadUrl, headers, thread).start()};
+            if (downloader != null) downloader.destory();
+            downloader = new MultiThreadedDownloader(downloadUrl, headers, thread);
+            return new Object[]{downloader.start()};
         }
     }
 
