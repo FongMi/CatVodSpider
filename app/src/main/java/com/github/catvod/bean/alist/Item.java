@@ -3,7 +3,7 @@ package com.github.catvod.bean.alist;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Vod;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -110,7 +110,7 @@ public class Item {
     }
 
     public String getExt() {
-        return Utils.getExt(getName());
+        return Util.getExt(getName());
     }
 
     public String getVodId(String id) {
@@ -122,7 +122,7 @@ public class Item {
     }
 
     public String getRemark() {
-        return Utils.getSize(getSize());
+        return Util.getSize(getSize());
     }
 
     public Vod getVod(String id, String pic) {

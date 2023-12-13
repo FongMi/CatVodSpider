@@ -10,7 +10,7 @@ import com.github.catvod.bean.xpath.Rule;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,7 +27,7 @@ public class XPath extends Spider {
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", rule.getUa().isEmpty() ? Utils.CHROME : rule.getUa());
+        headers.put("User-Agent", rule.getUa().isEmpty() ? Util.CHROME : rule.getUa());
         return headers;
     }
 
@@ -68,7 +68,7 @@ public class XPath extends Spider {
                 id = rule.getHomeVodIdR(id);
                 String pic = vodNodes.get(i).selOne(rule.getHomeVodImg()).asString().trim();
                 pic = rule.getHomeVodImgR(pic);
-                pic = Utils.fixUrl(webUrl, pic);
+                pic = Util.fixUrl(webUrl, pic);
                 String mark = "";
                 if (!rule.getHomeVodMark().isEmpty()) {
                     try {
@@ -102,7 +102,7 @@ public class XPath extends Spider {
             id = rule.getCateVodIdR(id);
             String pic = vodNodes.get(i).selOne(rule.getCateVodImg()).asString().trim();
             pic = rule.getCateVodImgR(pic);
-            pic = Utils.fixUrl(webUrl, pic);
+            pic = Util.fixUrl(webUrl, pic);
             String mark = "";
             if (!rule.getCateVodMark().isEmpty()) {
                 try {
@@ -129,7 +129,7 @@ public class XPath extends Spider {
         title = rule.getDetailNameR(title);
         cover = vodNode.selOne(rule.getDetailImg()).asString().trim();
         cover = rule.getDetailImgR(cover);
-        cover = Utils.fixUrl(webUrl, cover);
+        cover = Util.fixUrl(webUrl, cover);
         if (!rule.getDetailCate().isEmpty()) {
             try {
                 category = vodNode.selOne(rule.getDetailCate()).asString().trim();
@@ -272,7 +272,7 @@ public class XPath extends Spider {
                         id = rule.getSearchVodIdR(id);
                         String pic = vod.optString(rule.getSearchVodImg()).trim();
                         pic = rule.getSearchVodImgR(pic);
-                        pic = Utils.fixUrl(webUrl, pic);
+                        pic = Util.fixUrl(webUrl, pic);
                         String mark = vod.optString(rule.getSearchVodMark()).trim();
                         mark = rule.getSearchVodMarkR(mark);
                         list.add(new Vod(id, name, pic, mark));
@@ -291,7 +291,7 @@ public class XPath extends Spider {
                 id = rule.getSearchVodIdR(id);
                 String pic = vodNodes.get(i).selOne(rule.getSearchVodImg()).asString().trim();
                 pic = rule.getSearchVodImgR(pic);
-                pic = Utils.fixUrl(webUrl, pic);
+                pic = Util.fixUrl(webUrl, pic);
                 String mark = "";
                 if (!rule.getCateVodMark().isEmpty()) {
                     try {
@@ -314,7 +314,7 @@ public class XPath extends Spider {
 
     @Override
     public boolean isVideoFormat(String url) {
-        return Utils.isVideoFormat(url);
+        return Util.isVideoFormat(url);
     }
 
     protected String ext = null;
