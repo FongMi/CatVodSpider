@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -310,7 +310,7 @@ public class AppYsV2 extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        if (flag.contains("fanqie") && Utils.isVideoFormat(id)) {
+        if (flag.contains("fanqie") && Util.isVideoFormat(id)) {
             JSONObject result = new JSONObject();
             result.put("parse", 0);
             result.put("playUrl", "");
@@ -323,7 +323,7 @@ public class AppYsV2 extends Spider {
             JSONObject result = getFinalVideo(flag, parseUrls, id);
             if (result != null) return result.toString();
         }
-        if (Utils.isVideoFormat(id)) {
+        if (Util.isVideoFormat(id)) {
             JSONObject result = new JSONObject();
             result.put("parse", 0);
             result.put("playUrl", "");
@@ -735,7 +735,7 @@ public class AppYsV2 extends Spider {
 
     @Override
     public boolean isVideoFormat(String url) {
-        return Utils.isVideoFormat(url);
+        return Util.isVideoFormat(url);
     }
 
     private String getApiUrl() {
@@ -759,11 +759,11 @@ public class AppYsV2 extends Spider {
             return null;
         }
         if (url.equals(input)) {
-            if (Utils.isVip(url) || !Utils.isVideoFormat(url)) {
+            if (Util.isVip(url) || !Util.isVideoFormat(url)) {
                 return null;
             }
         }
-        if (Utils.isBlackVodUrl(url)) {
+        if (Util.isBlackVodUrl(url)) {
             return null;
         }
         JSONObject headers = new JSONObject();
@@ -813,7 +813,7 @@ public class AppYsV2 extends Spider {
             headers.put("User-Agent", " Mozilla/5.0");
         } else if (input.contains("bilibili")) {
             headers.put("Referer", " https://www.bilibili.com/");
-            headers.put("User-Agent", " " + Utils.CHROME);
+            headers.put("User-Agent", " " + Util.CHROME);
         }
         return headers;
     }

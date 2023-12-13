@@ -3,7 +3,7 @@ package com.github.catvod.bean.bili;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 import com.google.gson.annotations.SerializedName;
 
 import java.net.URLEncoder;
@@ -40,8 +40,8 @@ public class Wbi {
         StringBuilder sb = new StringBuilder();
         params.put("wts", System.currentTimeMillis() / 1000);
         for (String key : params.keySet()) sb.append(key).append("=").append(URLEncoder.encode(params.get(key).toString())).append("&");
-        String param = Utils.substring(sb.toString());
-        String wbiSign = Utils.MD5(param + mixinKey);
+        String param = Util.substring(sb.toString());
+        String wbiSign = Util.MD5(param + mixinKey);
         return param + "&w_rid=" + wbiSign;
     }
 }

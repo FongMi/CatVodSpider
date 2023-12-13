@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +33,7 @@ public class XiaoZhiTiao extends Ali {
     private Map<String, String> getHeaders() {
         Map<String, String> params = new HashMap<>();
         params.put("Host", "gitcafe.net");
-        params.put("User-Agent", Utils.CHROME);
+        params.put("User-Agent", Util.CHROME);
         return params;
     }
 

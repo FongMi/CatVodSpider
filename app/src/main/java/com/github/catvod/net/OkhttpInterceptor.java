@@ -1,6 +1,6 @@
 package com.github.catvod.net;
 
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import java.io.IOException;
 import java.util.zip.Inflater;
@@ -42,7 +42,7 @@ public class OkhttpInterceptor implements Interceptor {
 
     private Request getRequest(Chain chain) {
         Request request = chain.request();
-        if (request.url().host().equals("gitcode.net")) return request.newBuilder().addHeader("User-Agent", Utils.CHROME).build();
+        if (request.url().host().equals("gitcode.net")) return request.newBuilder().addHeader("User-Agent", Util.CHROME).build();
         return request;
     }
 }

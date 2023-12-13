@@ -14,7 +14,7 @@ import com.github.catvod.bean.alist.Sorter;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -225,7 +225,7 @@ public class AList extends Spider {
 
     private String findSubs(String path, List<Item> items) {
         StringBuilder sb = new StringBuilder();
-        for (Item item : items) if (Utils.isSub(item.getExt())) sb.append("~~~").append(item.getName()).append("@@@").append(item.getExt()).append("@@@").append(item.getVodId(path));
+        for (Item item : items) if (Util.isSub(item.getExt())) sb.append("~~~").append(item.getName()).append("@@@").append(item.getExt()).append("@@@").append(item.getVodId(path));
         return sb.toString();
     }
 
@@ -265,7 +265,7 @@ public class AList extends Spider {
                 String[] splits = a.text().split("#");
                 if (!splits[0].contains("/")) continue;
                 int index = splits[0].lastIndexOf("/");
-                boolean file = Utils.isMedia(splits[0]);
+                boolean file = Util.isMedia(splits[0]);
                 Item item = new Item();
                 item.setType(file ? 0 : 1);
                 item.setThumb(splits.length > 3 ? splits[4] : "");

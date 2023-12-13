@@ -35,7 +35,7 @@ public class QRCode {
             Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
             hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
             hints.put(EncodeHintType.MARGIN, margin);
-            return createBitmap(new MultiFormatWriter().encode(contents, BarcodeFormat.QR_CODE, Utils.dp2px(size), Utils.dp2px(size), hints));
+            return createBitmap(new MultiFormatWriter().encode(contents, BarcodeFormat.QR_CODE, size, size, hints));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -1,7 +1,6 @@
 package com.github.catvod.utils;
 
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,8 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class Path {
-
-    private static final String TAG = Path.class.getSimpleName();
 
     private static File check(File file) {
         if (!file.exists()) file.mkdirs();
@@ -42,14 +39,6 @@ public class Path {
     public static String read(File file) {
         try {
             return read(new FileInputStream(file));
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    public static String read(String path) {
-        try {
-            return read(new FileInputStream(path));
         } catch (Exception e) {
             return "";
         }
@@ -84,18 +73,6 @@ public class Path {
         }
     }
 
-    public static void move(File in, File out) {
-        copy(in, out);
-        clear(in);
-    }
-
-    public static void copy(File in, File out) {
-        try {
-            copy(new FileInputStream(in), new FileOutputStream(out));
-        } catch (Exception ignored) {
-        }
-    }
-
     public static void copy(InputStream in, File out) {
         try {
             copy(in, new FileOutputStream(out));
@@ -114,12 +91,6 @@ public class Path {
     public static List<File> list(File dir) {
         File[] files = dir.listFiles();
         return files == null ? Collections.emptyList() : Arrays.asList(files);
-    }
-
-    public static void clear(File dir) {
-        if (dir == null) return;
-        if (dir.isDirectory()) for (File file : list(dir)) clear(file);
-        if (dir.delete()) Log.d(TAG, "Deleted:" + dir.getAbsolutePath());
     }
 
     public static File chmod(File file) {
