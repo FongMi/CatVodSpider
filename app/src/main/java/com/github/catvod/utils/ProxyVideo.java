@@ -21,7 +21,7 @@ public class ProxyVideo {
 
     public static NanoHTTPD.Response multi(String url, Map<String, String> headers, int thread) throws Exception {
         if (OkHttp.string(GO_SERVER).isEmpty()) OkHttp.string("http://127.0.0.1:" + Proxy.getPort() + "/go");
-        while (OkHttp.string(GO_SERVER).isEmpty()) SystemClock.sleep(250);
+        while (OkHttp.string(GO_SERVER).isEmpty()) SystemClock.sleep(20);
         return proxy(String.format(Locale.getDefault(), "%s?url=%s&thread=%d", GO_SERVER, URLEncoder.encode(url), thread), headers);
     }
 
