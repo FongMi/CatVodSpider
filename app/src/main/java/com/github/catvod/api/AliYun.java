@@ -521,8 +521,7 @@ public class AliYun {
     }
 
     private Object[] previewProxy(String shareId, String fileId, String templateId) {
-        String m3u8 = getM3u8(shareId, fileId, templateId);
-        return new Object[]{200, "application/vnd.apple.mpegurl", new ByteArrayInputStream(m3u8.getBytes())};
+        return new Object[]{200, "application/vnd.apple.mpegurl", new ByteArrayInputStream(getM3u8(shareId, fileId, templateId).getBytes())};
     }
 
     private String getM3u8Url(String shareId, String fileId, String templateId) {
@@ -538,7 +537,7 @@ public class AliYun {
     private String getM3u8(String shareId, String fileId, String templateId) {
         String m3u8Url = getM3u8Url(shareId, fileId, templateId);
         String m3u8 = OkHttp.string(m3u8Url, getHeader());
-        String[] m3u8Arr = m3u8.split("\\\n");
+        String[] m3u8Arr = m3u8.split("\n");
         List<String> listM3u8 = new ArrayList<>();
         Map<String, String> media = new HashMap<>();
         String site = m3u8Url.substring(0, m3u8Url.lastIndexOf("/")) + "/";
@@ -546,8 +545,8 @@ public class AliYun {
         for (String oneLine : m3u8Arr) {
             String thisOne = oneLine;
             if (oneLine.contains("x-oss-expires")) {
-                media.put("" + mediaId, site + thisOne);
-                thisOne = proxyVideoUrl("m3u8", shareId, fileId, templateId, "" + mediaId);
+                media.put(String.valueOf(mediaId), site + thisOne);
+                thisOne = proxyVideoUrl("m3u8", shareId, fileId, templateId, String.valueOf(mediaId));
                 mediaId++;
             }
             listM3u8.add(thisOne);
