@@ -93,6 +93,7 @@ public class AliYun {
         m3u8MediaMap = new HashMap<>();
         shareDownloadMap = new HashMap<>();
         cache = Cache.objectFrom(Path.read(getCache()));
+        OkHttp.string("http://127.0.0.1:" + Proxy.getPort() + "/go");
     }
 
     public void setRefreshToken(String token) {
@@ -516,7 +517,6 @@ public class AliYun {
         if (thread == 1) {
             return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
         } else {
-            OkHttp.newCall("http://127.0.0.1:" + Proxy.getPort() + "/go?action=start").close();
             return new Object[]{ProxyVideo.multi(downloadUrl, headers, thread)};
         }
     }
