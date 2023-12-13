@@ -34,7 +34,6 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.net.OkResult;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
-import com.github.catvod.utils.MultiThread;
 import com.github.catvod.utils.Path;
 import com.github.catvod.utils.ProxyVideo;
 import com.github.catvod.utils.QRCode;
@@ -511,10 +510,11 @@ public class AliYun {
         headers.remove("templateId");
         headers.remove("remote-addr");
         headers.remove("http-client-ip");
+
         if (thread == 1) {
             return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
         } else {
-            return new Object[]{ProxyVideo.proxy(MultiThread.go(downloadUrl, thread), headers)};
+            return new Object[]{ProxyVideo.multi(downloadUrl, headers, thread)};
         }
     }
 
