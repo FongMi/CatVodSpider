@@ -23,6 +23,8 @@ public class ProxyVideo {
         String contentDisposition = response.headers().get("Content-Disposition");
         long contentLength = hContentLength != null ? Long.parseLong(hContentLength) : 0;
         if (contentDisposition != null) contentType = Utils.getMimeType(contentDisposition);
-        return newFixedLengthResponse(status, contentType, response.body().byteStream(), contentLength);
+        NanoHTTPD.Response resp = newFixedLengthResponse(status, contentType, response.body().byteStream(), contentLength);
+        for (String key : response.headers().names()) resp.addHeader(key, response.headers().get(key));
+        return resp;
     }
 }

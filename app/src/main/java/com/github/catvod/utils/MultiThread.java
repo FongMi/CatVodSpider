@@ -12,6 +12,10 @@ public class MultiThread {
         return String.format(Proxy.getUrl() + "?do=multi&url=%s&thread=%d", URLEncoder.encode(url), thread);
     }
 
+    public static String go(String url, int thread) {
+        return String.format("http://127.0.0.1:7777/?url=%s&thread=%d", URLEncoder.encode(url), thread);
+    }
+
     public static Object[] proxy(Map<String, String> params) throws Exception {
         String url = params.get("url");
         int thread = Integer.parseInt(params.get("thread"));
