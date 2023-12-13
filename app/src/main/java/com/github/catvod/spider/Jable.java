@@ -5,7 +5,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,7 +26,7 @@ public class Jable extends Spider {
 
     private HashMap<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Utils.CHROME);
+        headers.put("User-Agent", Util.CHROME);
         return headers;
     }
 
@@ -79,7 +79,7 @@ public class Jable extends Spider {
         vod.setVodYear(year.replace("上市於 ", ""));
         vod.setVodName(name);
         vod.setVodPlayFrom("Jable");
-        vod.setVodPlayUrl("播放$" + Utils.getVar(doc.html(), "hlsUrl"));
+        vod.setVodPlayUrl("播放$" + Util.getVar(doc.html(), "hlsUrl"));
         return Result.string(vod);
     }
 

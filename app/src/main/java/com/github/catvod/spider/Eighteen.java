@@ -9,7 +9,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -89,7 +89,7 @@ public class Eighteen extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         HashMap<String, String> result = new HashMap<>();
-        Utils.loadWebView(url + id, getClient(result));
+        Util.loadWebView(url + id, getClient(result));
         while (result.isEmpty()) SystemClock.sleep(10);
         return Result.get().url(result.get("url")).string();
     }

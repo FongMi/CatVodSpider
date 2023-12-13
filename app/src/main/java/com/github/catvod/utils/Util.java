@@ -5,14 +5,11 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import com.github.catvod.spider.Init;
 
@@ -26,9 +23,9 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Utils {
+public class Util {
 
-    public static final Pattern RULE = Pattern.compile("http((?!http).){12,}?\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)\\?.*|http((?!http).){12,}\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)|http((?!http).)*?video/tos*");
+    public static final Pattern RULE = Pattern.compile("http((?!http).){12,}?\\.(m3u8|mp4|mkv|flv|mp3|m4a|aac)\\?.*|http((?!http).){12,}\\.(m3u8|mp4|mkv|flv|mp3|m4a|aac)|http((?!http).)*?video/tos*");
     public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36";
     public static final String ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
     public static final List<String> MEDIA = Arrays.asList("mp4", "mkv", "wmv", "flv", "avi", "iso", "mpg", "ts", "mp3", "aac", "flac", "m4a", "ape", "ogg");
@@ -147,18 +144,10 @@ public class Utils {
         }
     }
 
-    public static DisplayMetrics getDisplayMetrics() {
-        return Init.context().getResources().getDisplayMetrics();
-    }
-
-    public static int dp2px(int dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getDisplayMetrics());
-    }
-
     public static void copy(String text) {
         ClipboardManager manager = (ClipboardManager) Init.context().getSystemService(Context.CLIPBOARD_SERVICE);
         manager.setPrimaryClip(ClipData.newPlainText("fongmi", text));
-        notify("已複製 " + text);
+        Notify.show("已複製 " + text);
     }
 
     public static void loadUrl(WebView webView, String script) {
@@ -168,10 +157,6 @@ public class Utils {
     public static void loadUrl(WebView webView, String script, ValueCallback<String> callback) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) webView.evaluateJavascript(script, callback);
         else webView.loadUrl(script);
-    }
-
-    public static void notify(String msg) {
-        Init.run(() -> Toast.makeText(Init.context(), msg, Toast.LENGTH_LONG).show());
     }
 
     public static void addView(View view, ViewGroup.LayoutParams params) {
@@ -214,38 +199,6 @@ public class Utils {
             return newText.replaceAll("\\D+", "") + " " + newText.replaceAll("\\d+", "");
         } catch (Exception e) {
             return "";
-        }
-    }
-
-    public static String getMimeType(String contentDisposition) {
-        if (contentDisposition.endsWith(".mp4")) {
-            return "video/mp4";
-        } else if (contentDisposition.endsWith(".webm")) {
-            return "video/webm";
-        } else if (contentDisposition.endsWith(".avi")) {
-            return "video/x-msvideo";
-        } else if (contentDisposition.endsWith(".wmv")) {
-            return "video/x-ms-wmv";
-        } else if (contentDisposition.endsWith(".flv")) {
-            return "video/x-flv";
-        } else if (contentDisposition.endsWith(".mov")) {
-            return "video/quicktime";
-        } else if (contentDisposition.endsWith(".mkv")) {
-            return "video/x-matroska";
-        } else if (contentDisposition.endsWith(".mpeg")) {
-            return "video/mpeg";
-        } else if (contentDisposition.endsWith(".3gp")) {
-            return "video/3gpp";
-        } else if (contentDisposition.endsWith(".ts")) {
-            return "video/MP2T";
-        } else if (contentDisposition.endsWith(".mp3")) {
-            return "audio/mp3";
-        } else if (contentDisposition.endsWith(".wav")) {
-            return "audio/wav";
-        } else if (contentDisposition.endsWith(".aac")) {
-            return "audio/aac";
-        } else {
-            return null;
         }
     }
 }

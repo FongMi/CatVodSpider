@@ -10,7 +10,7 @@ import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Image;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -55,7 +55,7 @@ public class Local extends Spider {
         for (File file : files) {
             if (file.getName().startsWith(".")) continue;
             if (file.isDirectory()) folders.add(create(file));
-            else if (Utils.isMedia(file.getName())) media.add(create(file));
+            else if (Util.isMedia(file.getName())) media.add(create(file));
         }
         items.addAll(folders);
         items.addAll(media);
@@ -109,8 +109,8 @@ public class Local extends Spider {
         if (file.getParentFile() == null) return Collections.emptyList();
         List<Sub> subs = new ArrayList<>();
         for (File f : file.getParentFile().listFiles()) {
-            String ext = Utils.getExt(f.getName());
-            if (Utils.isSub(ext)) subs.add(Sub.create().name(Utils.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
+            String ext = Util.getExt(f.getName());
+            if (Util.isSub(ext)) subs.add(Sub.create().name(Util.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
         }
         return subs;
     }

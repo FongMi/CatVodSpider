@@ -10,7 +10,8 @@ import android.widget.FrameLayout;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.ui.ScrollTextView;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.ResUtil;
+import com.github.catvod.utils.Util;
 
 import org.json.JSONObject;
 
@@ -69,7 +70,7 @@ public class Notice extends Spider {
         view.setDuration(duration);
         view.setText(sb.toString());
         view.setTypeface(null, Typeface.BOLD);
-        view.setPadding(0, Utils.dp2px(16), 0, Utils.dp2px(16));
+        view.setPadding(0, ResUtil.dp2px(16), 0, ResUtil.dp2px(16));
         view.setBackgroundColor(Color.argb(200, 255, 255, 255));
         view.startScroll();
     }
@@ -77,11 +78,11 @@ public class Notice extends Spider {
     private void createRoot() {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.TOP;
-        Utils.addView(view, params);
+        Util.addView(view, params);
     }
 
     private void hide() {
-        Init.run(() -> Utils.removeView(view), duration * 1000);
+        Init.run(() -> Util.removeView(view), duration * 1000);
     }
 
     private void setColor() {

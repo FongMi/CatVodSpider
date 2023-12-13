@@ -13,7 +13,7 @@ import com.github.catvod.bean.star.Detail;
 import com.github.catvod.bean.star.Query;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -39,7 +39,7 @@ public class Star extends Spider {
 
     private Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Utils.CHROME);
+        headers.put("User-Agent", Util.CHROME);
         headers.put("Cookie", "userIP=127.0.0.1; aws-waf-token=");
         headers.put("Referer", siteUrl);
         return headers;

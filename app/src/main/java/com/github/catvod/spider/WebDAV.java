@@ -13,7 +13,7 @@ import com.github.catvod.bean.webdav.Sorter;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Image;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 import com.thegrizzlylabs.sardineandroid.DavResource;
 
 import java.io.IOException;
@@ -46,11 +46,11 @@ public class WebDAV extends Spider {
     }
 
     private String getExt(DavResource item) {
-        return Utils.getExt(item.getName());
+        return Util.getExt(item.getName());
     }
 
     private String removeExt(DavResource item) {
-        return Utils.removeExt(item.getName());
+        return Util.removeExt(item.getName());
     }
 
     private static Drive getDrive(String name) {
@@ -60,7 +60,7 @@ public class WebDAV extends Spider {
     @Override
     public void init(Context context, String extend) {
         this.allExt = new ArrayList<>(Arrays.asList("ass", "ssa", "srt"));
-        this.allExt.addAll(Utils.MEDIA);
+        this.allExt.addAll(Util.MEDIA);
         this.extend = extend;
         fetchRule();
     }
@@ -84,7 +84,7 @@ public class WebDAV extends Spider {
         List<DavResource> files = new ArrayList<>();
         List<Vod> list = new ArrayList<>();
         Drive drive = getDrive(key);
-        for (DavResource item : getList(drive, path, Utils.MEDIA)) {
+        for (DavResource item : getList(drive, path, Util.MEDIA)) {
             if (item.isDirectory()) folders.add(item);
             else files.add(item);
         }
@@ -110,7 +110,7 @@ public class WebDAV extends Spider {
         Sorter.sort("name", "asc", parents);
         List<String> playUrls = new ArrayList<>();
         for (DavResource item : parents) {
-            if (Utils.isMedia(item.getName())) {
+            if (Util.isMedia(item.getName())) {
                 playUrls.add(item.getName() + "$" + drive.getName() + item.getPath() + findSubs(drive, item, subs));
             }
         }
@@ -144,7 +144,7 @@ public class WebDAV extends Spider {
 
     private List<DavResource> getSubs(List<DavResource> items) {
         List<DavResource> subs = new ArrayList<>();
-        for (DavResource item : items) if (Utils.isSub(getExt(item))) subs.add(item);
+        for (DavResource item : items) if (Util.isSub(getExt(item))) subs.add(item);
         return subs;
     }
 
