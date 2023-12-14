@@ -19,10 +19,15 @@ public class ProxyVideo {
 
     private static final String GO_SERVER = "http://127.0.0.1:7777/";
 
-    public static NanoHTTPD.Response multi(String url, Map<String, String> headers, int thread) throws Exception {
+    public static boolean go() {
         if (OkHttp.string(GO_SERVER).isEmpty()) OkHttp.string("http://127.0.0.1:" + Proxy.getPort() + "/go");
         while (OkHttp.string(GO_SERVER).isEmpty()) SystemClock.sleep(20);
-        return proxy(String.format(Locale.getDefault(), "%s?url=%s&thread=%d", GO_SERVER, URLEncoder.encode(url), thread), headers);
+        return true;
+    }
+
+    public static String url(String url, int thread) {
+        go();
+        return String.format(Locale.getDefault(), "%s?url=%s&thread=%d", GO_SERVER, URLEncoder.encode(url), thread);
     }
 
     public static NanoHTTPD.Response proxy(String url, Map<String, String> headers) throws Exception {

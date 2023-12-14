@@ -328,7 +328,7 @@ public class AliYun {
 
     public String getShareDownloadUrl(String shareId, String fileId) {
         try {
-            if (shareDownloadMap.containsKey(fileId) && shareDownloadMap.get(fileId) != null && !isExpire(shareDownloadMap.get(fileId), 600)) return shareDownloadMap.get(fileId);
+            if (shareDownloadMap.containsKey(fileId) && shareDownloadMap.get(fileId) != null && !isExpire(shareDownloadMap.get(fileId))) return shareDownloadMap.get(fileId);
             refreshShareToken(shareId);
             SpiderDebug.log("getShareDownloadUrl..." + fileId);
             JsonObject param = new JsonObject();
@@ -347,7 +347,7 @@ public class AliYun {
 
     public String getDownloadUrl(String shareId, String fileId) {
         try {
-            if (downloadMap.containsKey(fileId) && downloadMap.get(fileId) != null && !isExpire(downloadMap.get(fileId), 900)) return downloadMap.get(fileId);
+            if (downloadMap.containsKey(fileId) && downloadMap.get(fileId) != null && !isExpire(downloadMap.get(fileId))) return downloadMap.get(fileId);
             refreshShareToken(shareId);
             SpiderDebug.log("getDownloadUrl..." + fileId);
             tempIds.add(0, copy(shareId, fileId));
@@ -449,7 +449,15 @@ public class AliYun {
     }
 
     private String proxyVideoUrl(String cate, String shareId, String fileId) {
-        return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s", cate, shareId, fileId);
+        String aliUrl = String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s", cate, shareId, fileId);
+        int thread = 1;
+        if ("open".equals(cate)) {
+            thread = 10;
+        } else if ("share".equals(cate)) {
+            thread = 10;
+        }
+        if (thread == 1) return aliUrl;
+        return ProxyVideo.url(aliUrl, thread);
     }
 
     private String proxyVideoUrl(String cate, String shareId, String fileId, String templateId) {
@@ -460,10 +468,10 @@ public class AliYun {
         return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s&templateId=%s&mediaId=%s", cate, shareId, fileId, templateId, mediaId);
     }
 
-    private static boolean isExpire(String url, int time) {
+    private static boolean isExpire(String url) {
         String expires = new UrlQuerySanitizer(url).getValue("x-oss-expires");
         if (TextUtils.isEmpty(expires)) return false;
-        return Long.parseLong(expires) - getTimeStamp() <= time / 60;
+        return Long.parseLong(expires) - getTimeStamp() <= 60;
     }
 
     private static long getTimeStamp() {
@@ -477,22 +485,19 @@ public class AliYun {
         String fileId = params.get("fileId");
         String cate = params.get("cate");
         String downloadUrl = "";
-        int thread = 1;
 
         if ("preview".equals(cate)) {
             return previewProxy(shareId, fileId, templateId);
         }
 
         if ("open".equals(cate)) {
-            thread = 10;
             downloadUrl = getDownloadUrl(shareId, fileId);
         } else if ("share".equals(cate)) {
-            thread = 10;
             downloadUrl = getShareDownloadUrl(shareId, fileId);
         } else if ("m3u8".equals(cate)) {
             lock.lock();
             String mediaUrl = m3u8MediaMap.get(fileId).get(mediaId);
-            if (isExpire(mediaUrl, 900)) {
+            if (isExpire(mediaUrl)) {
                 getM3u8(shareId, fileId, templateId);
                 mediaUrl = m3u8MediaMap.get(fileId).get(mediaId);
             }
@@ -512,12 +517,7 @@ public class AliYun {
         headers.remove("templateId");
         headers.remove("remote-addr");
         headers.remove("http-client-ip");
-
-        if (thread == 1) {
-            return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
-        } else {
-            return new Object[]{ProxyVideo.multi(downloadUrl, headers, thread)};
-        }
+        return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
     }
 
     private Object[] previewProxy(String shareId, String fileId, String templateId) {
