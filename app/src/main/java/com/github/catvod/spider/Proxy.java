@@ -41,11 +41,12 @@ public class Proxy extends Spider {
     }
 
     public static int getPort() {
+        adjustPort();
         return port;
     }
 
     public static String getUrl() {
         adjustPort();
-        return "http://127.0.0.1:" + getPort() + "/proxy";
+        return "http://127.0.0.1:" + port + "/proxy";
     }
 }
