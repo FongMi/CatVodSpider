@@ -449,15 +449,11 @@ public class AliYun {
     }
 
     private String proxyVideoUrl(String cate, String shareId, String fileId) {
-        String aliUrl = String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s", cate, shareId, fileId);
         int thread = 1;
-        if ("open".equals(cate)) {
-            thread = 10;
-        } else if ("share".equals(cate)) {
-            thread = 10;
-        }
-        if (thread == 1) return aliUrl;
-        return ProxyVideo.url(aliUrl, thread);
+        String url = String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s", cate, shareId, fileId);
+        if ("open".equals(cate)) thread = 10;
+        if ("share".equals(cate)) thread = 10;
+        return thread == 1 ? url : ProxyVideo.url(url, thread);
     }
 
     private String proxyVideoUrl(String cate, String shareId, String fileId, String templateId) {

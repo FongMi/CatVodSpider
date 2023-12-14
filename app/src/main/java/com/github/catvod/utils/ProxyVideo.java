@@ -19,10 +19,9 @@ public class ProxyVideo {
 
     private static final String GO_SERVER = "http://127.0.0.1:7777/";
 
-    public static boolean go() {
+    public static void go() {
         if (OkHttp.string(GO_SERVER).isEmpty()) OkHttp.string("http://127.0.0.1:" + Proxy.getPort() + "/go");
         while (OkHttp.string(GO_SERVER).isEmpty()) SystemClock.sleep(20);
-        return true;
     }
 
     public static String url(String url, int thread) {
