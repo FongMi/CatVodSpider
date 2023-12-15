@@ -7,7 +7,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
@@ -123,7 +123,7 @@ public class Douban extends Spider {
 
     private String getPic(JSONObject item) {
         try {
-            return item.getJSONObject("pic").optString("normal") + "@Referer=https://api.douban.com/@User-Agent=" + Utils.CHROME;
+            return item.getJSONObject("pic").optString("normal") + "@Referer=https://api.douban.com/@User-Agent=" + Util.CHROME;
         } catch (Exception e) {
             return "";
         }
@@ -133,7 +133,7 @@ public class Douban extends Spider {
         try {
             StringBuilder tags = new StringBuilder();
             for (String key : extend.keySet()) if (!key.equals("sort")) tags.append(extend.get(key)).append(",");
-            return Utils.substring(tags.toString());
+            return Util.substring(tags.toString());
         } catch (Exception e) {
             return "";
         }

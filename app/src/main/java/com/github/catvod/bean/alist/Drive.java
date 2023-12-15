@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.github.catvod.bean.Class;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Image;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -164,7 +164,7 @@ public class Drive {
 
     public HashMap<String, String> getHeader() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Utils.CHROME);
+        headers.put("User-Agent", Util.CHROME);
         if (!getToken().isEmpty()) headers.put("Authorization", token);
         return headers;
     }

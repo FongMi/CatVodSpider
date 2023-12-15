@@ -9,7 +9,7 @@ import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -64,12 +64,12 @@ public class Push extends Spider {
     private void setHttpSub(String url, List<Sub> subs) {
         List<String> vodTypes = Arrays.asList("mp4", "mkv");
         List<String> subTypes = Arrays.asList("srt", "ass");
-        if (!vodTypes.contains(Utils.getExt(url))) return;
+        if (!vodTypes.contains(Util.getExt(url))) return;
         for (String ext : subTypes) detectSub(url, ext, subs);
     }
 
     private void detectSub(String url, String ext, List<Sub> subs) {
-        url = Utils.removeExt(url).concat(".").concat(ext);
+        url = Util.removeExt(url).concat(".").concat(ext);
         if (OkHttp.string(url).length() < 100) return;
         String name = Uri.parse(url).getLastPathSegment();
         subs.add(Sub.create().name(name).ext(ext).url(url));
@@ -79,8 +79,8 @@ public class Push extends Spider {
         File file = new File(url.replace("file://", ""));
         if (file.getParentFile() == null) return;
         for (File f : file.getParentFile().listFiles()) {
-            String ext = Utils.getExt(f.getName());
-            if (Utils.isSub(ext)) subs.add(Sub.create().name(Utils.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
+            String ext = Util.getExt(f.getName());
+            if (Util.isSub(ext)) subs.add(Sub.create().name(Util.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
         }
     }
 }

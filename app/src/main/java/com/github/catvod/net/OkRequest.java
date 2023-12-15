@@ -2,7 +2,7 @@ package com.github.catvod.net;
 
 import android.text.TextUtils;
 
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import java.io.IOException;
 import java.util.Map;
@@ -65,7 +65,7 @@ class OkRequest {
     private void setParams() {
         url = url + "?";
         for (String key : params.keySet()) url = url.concat(key + "=" + params.get(key) + "&");
-        url = Utils.substring(url);
+        url = Util.substring(url);
     }
 
     public OkResult execute(OkHttpClient client) {

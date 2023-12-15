@@ -34,11 +34,12 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.net.OkResult;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
-import com.github.catvod.utils.MultiThreadedDownloader;
+import com.github.catvod.utils.Notify;
 import com.github.catvod.utils.Path;
 import com.github.catvod.utils.ProxyVideo;
 import com.github.catvod.utils.QRCode;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.ResUtil;
+import com.github.catvod.utils.Util;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -67,10 +68,9 @@ public class AliYun {
     private final List<String> tempIds;
     private final ReentrantLock lock;
     private final Cache cache;
-
     private ScheduledExecutorService service;
-    private AlertDialog dialog;
     private String refreshToken;
+    private AlertDialog dialog;
     private Share share;
 
     private static class Loader {
@@ -101,7 +101,7 @@ public class AliYun {
 
     public HashMap<String, String> getHeader() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Utils.CHROME);
+        headers.put("User-Agent", Util.CHROME);
         headers.put("Referer", "https://www.aliyundrive.com/");
         return headers;
     }
@@ -155,7 +155,7 @@ public class AliYun {
 
     private boolean isManyRequest(String result) {
         if (!result.contains("Too Many Requests")) return false;
-        Utils.notify("洗洗睡吧，Too Many Requests。");
+        Notify.show("洗洗睡吧，Too Many Requests。");
         cache.getOAuth().clean();
         return true;
     }
@@ -173,7 +173,7 @@ public class AliYun {
         param.addProperty("share_pwd", "");
         String json = post("v2/share_link/get_share_token", param);
         share = Share.objectFrom(json).setShareId(shareId).setTime();
-        if (share.getShareToken().isEmpty()) Utils.notify("來晚啦，該分享已失效。");
+        if (share.getShareToken().isEmpty()) Notify.show("來晚啦，該分享已失效。");
     }
 
     private boolean refreshAccessToken() {
@@ -278,7 +278,7 @@ public class AliYun {
                 folders.add(file);
             } else if (file.getCategory().equals("video") || file.getCategory().equals("audio")) {
                 files.add(file.parent(parent.getName()));
-            } else if (Utils.isSub(file.getExt())) {
+            } else if (Util.isSub(file.getExt())) {
                 subs.add(file);
             }
         }
@@ -299,17 +299,17 @@ public class AliYun {
 
     private void pair(String name1, List<Item> items, List<Item> subs) {
         for (Item item : items) {
-            String name2 = Utils.removeExt(item.getName()).toLowerCase();
+            String name2 = Util.removeExt(item.getName()).toLowerCase();
             if (name1.contains(name2) || name2.contains(name1)) subs.add(item);
         }
     }
 
     private String findSubs(String name1, List<Item> items) {
         List<Item> subs = new ArrayList<>();
-        pair(Utils.removeExt(name1).toLowerCase(), items, subs);
+        pair(Util.removeExt(name1).toLowerCase(), items, subs);
         if (subs.isEmpty()) subs.addAll(items);
         StringBuilder sb = new StringBuilder();
-        for (Item sub : subs) sb.append("+").append(Utils.removeExt(sub.getName())).append("@@@").append(sub.getExt()).append("@@@").append(sub.getFileId());
+        for (Item sub : subs) sb.append("+").append(Util.removeExt(sub.getName())).append("@@@").append(sub.getExt()).append("@@@").append(sub.getFileId());
         return sb.toString();
     }
 
@@ -328,7 +328,7 @@ public class AliYun {
 
     public String getShareDownloadUrl(String shareId, String fileId) {
         try {
-            if (shareDownloadMap.containsKey(fileId) && shareDownloadMap.get(fileId) != null && !isExpire(shareDownloadMap.get(fileId), 600)) return shareDownloadMap.get(fileId);
+            if (shareDownloadMap.containsKey(fileId) && shareDownloadMap.get(fileId) != null && !isExpire(shareDownloadMap.get(fileId))) return shareDownloadMap.get(fileId);
             refreshShareToken(shareId);
             SpiderDebug.log("getShareDownloadUrl..." + fileId);
             JsonObject param = new JsonObject();
@@ -347,7 +347,7 @@ public class AliYun {
 
     public String getDownloadUrl(String shareId, String fileId) {
         try {
-            if (downloadMap.containsKey(fileId) && downloadMap.get(fileId) != null && !isExpire(downloadMap.get(fileId), 900)) return downloadMap.get(fileId);
+            if (downloadMap.containsKey(fileId) && downloadMap.get(fileId) != null && !isExpire(downloadMap.get(fileId))) return downloadMap.get(fileId);
             refreshShareToken(shareId);
             SpiderDebug.log("getDownloadUrl..." + fileId);
             tempIds.add(0, copy(shareId, fileId));
@@ -449,7 +449,11 @@ public class AliYun {
     }
 
     private String proxyVideoUrl(String cate, String shareId, String fileId) {
-        return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s", cate, shareId, fileId);
+        int thread = 1;
+        String url = String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s", cate, shareId, fileId);
+        if ("open".equals(cate)) thread = 10;
+        if ("share".equals(cate)) thread = 10;
+        return thread == 1 ? url : ProxyVideo.url(url, thread);
     }
 
     private String proxyVideoUrl(String cate, String shareId, String fileId, String templateId) {
@@ -460,10 +464,10 @@ public class AliYun {
         return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s&templateId=%s&mediaId=%s", cate, shareId, fileId, templateId, mediaId);
     }
 
-    private static boolean isExpire(String url, int time) {
+    private static boolean isExpire(String url) {
         String expires = new UrlQuerySanitizer(url).getValue("x-oss-expires");
         if (TextUtils.isEmpty(expires)) return false;
-        return Long.parseLong(expires) - getTimeStamp() <= time / 60;
+        return Long.parseLong(expires) - getTimeStamp() <= 60;
     }
 
     private static long getTimeStamp() {
@@ -477,22 +481,19 @@ public class AliYun {
         String fileId = params.get("fileId");
         String cate = params.get("cate");
         String downloadUrl = "";
-        int thread = 1;
 
         if ("preview".equals(cate)) {
             return previewProxy(shareId, fileId, templateId);
         }
 
         if ("open".equals(cate)) {
-            thread = 10;
             downloadUrl = getDownloadUrl(shareId, fileId);
         } else if ("share".equals(cate)) {
-            thread = 10;
             downloadUrl = getShareDownloadUrl(shareId, fileId);
         } else if ("m3u8".equals(cate)) {
             lock.lock();
             String mediaUrl = m3u8MediaMap.get(fileId).get(mediaId);
-            if (isExpire(mediaUrl, 900)) {
+            if (isExpire(mediaUrl)) {
                 getM3u8(shareId, fileId, templateId);
                 mediaUrl = m3u8MediaMap.get(fileId).get(mediaId);
             }
@@ -512,16 +513,11 @@ public class AliYun {
         headers.remove("templateId");
         headers.remove("remote-addr");
         headers.remove("http-client-ip");
-        if (thread == 1) {
-            return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
-        } else {
-            return new Object[]{new MultiThreadedDownloader(downloadUrl, headers, thread).start()};
-        }
+        return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
     }
 
     private Object[] previewProxy(String shareId, String fileId, String templateId) {
-        String m3u8 = getM3u8(shareId, fileId, templateId);
-        return new Object[]{200, "application/vnd.apple.mpegurl", new ByteArrayInputStream(m3u8.getBytes())};
+        return new Object[]{200, "application/vnd.apple.mpegurl", new ByteArrayInputStream(getM3u8(shareId, fileId, templateId).getBytes())};
     }
 
     private String getM3u8Url(String shareId, String fileId, String templateId) {
@@ -537,7 +533,7 @@ public class AliYun {
     private String getM3u8(String shareId, String fileId, String templateId) {
         String m3u8Url = getM3u8Url(shareId, fileId, templateId);
         String m3u8 = OkHttp.string(m3u8Url, getHeader());
-        String[] m3u8Arr = m3u8.split("\\\n");
+        String[] m3u8Arr = m3u8.split("\n");
         List<String> listM3u8 = new ArrayList<>();
         Map<String, String> media = new HashMap<>();
         String site = m3u8Url.substring(0, m3u8Url.lastIndexOf("/")) + "/";
@@ -545,8 +541,8 @@ public class AliYun {
         for (String oneLine : m3u8Arr) {
             String thisOne = oneLine;
             if (oneLine.contains("x-oss-expires")) {
-                media.put("" + mediaId, site + thisOne);
-                thisOne = proxyVideoUrl("m3u8", shareId, fileId, templateId, "" + mediaId);
+                media.put(String.valueOf(mediaId), site + thisOne);
+                thisOne = proxyVideoUrl("m3u8", shareId, fileId, templateId, String.valueOf(mediaId));
                 mediaId++;
             }
             listM3u8.add(thisOne);
@@ -559,7 +555,7 @@ public class AliYun {
         String fileId = params.get("fileId");
         String shareId = params.get("shareId");
         Response res = OkHttp.newCall(getDownloadUrl(shareId, fileId), getHeaderAuth());
-        byte[] body = Utils.toUtf8(res.body().bytes());
+        byte[] body = Util.toUtf8(res.body().bytes());
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
@@ -573,9 +569,10 @@ public class AliYun {
 
     private void showInput() {
         try {
+            int margin = ResUtil.dp2px(16);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(Utils.dp2px(16), Utils.dp2px(16), Utils.dp2px(16), Utils.dp2px(16));
             FrameLayout frame = new FrameLayout(Init.context());
+            params.setMargins(margin, margin, margin, margin);
             EditText input = new EditText(Init.context());
             frame.addView(input, params);
             dialog = new AlertDialog.Builder(Init.getActivity()).setTitle("請輸入Token").setView(frame).setNeutralButton("QRCode", (dialog, which) -> onNeutral()).setNegativeButton(android.R.string.cancel, null).setPositiveButton(android.R.string.ok, (dialog, which) -> onPositive(input.getText().toString())).show();
@@ -617,16 +614,17 @@ public class AliYun {
 
     private void showQRCode(Data data) {
         try {
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Utils.dp2px(240), Utils.dp2px(240));
+            int size = ResUtil.dp2px(240);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
             ImageView image = new ImageView(Init.context());
             image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            image.setImageBitmap(QRCode.getBitmap(data.getCodeContent(), 240, 2));
+            image.setImageBitmap(QRCode.getBitmap(data.getCodeContent(), size, 2));
             FrameLayout frame = new FrameLayout(Init.context());
             params.gravity = Gravity.CENTER;
             frame.addView(image, params);
             dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnCancelListener(this::dismiss).setOnDismissListener(this::dismiss).show();
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            Utils.notify("請使用阿里雲盤 App 掃描二維碼");
+            Notify.show("請使用阿里雲盤 App 掃描二維碼");
         } catch (Exception ignored) {
         }
     }
@@ -643,7 +641,7 @@ public class AliYun {
     private void setToken(String value) {
         cache.getUser().setRefreshToken(value);
         SpiderDebug.log("Token:" + value);
-        Utils.notify("Token:" + value);
+        Notify.show("Token:" + value);
         refreshAccessToken();
         stopService();
     }

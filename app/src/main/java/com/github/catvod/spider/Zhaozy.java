@@ -5,7 +5,7 @@ import android.content.Context;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,7 +30,7 @@ public class Zhaozy extends Ali {
 
     private Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Utils.CHROME);
+        headers.put("User-Agent", Util.CHROME);
         headers.put("Referer", siteUrl);
         headers.put("Cookie", getCookie());
         return headers;
@@ -41,7 +41,7 @@ public class Zhaozy extends Ali {
         params.put("username", username);
         params.put("password", password);
         Map<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Utils.CHROME);
+        headers.put("User-Agent", Util.CHROME);
         headers.put("Referer", siteUrl + "stop.html");
         headers.put("Origin", siteUrl);
         StringBuilder sb = new StringBuilder();

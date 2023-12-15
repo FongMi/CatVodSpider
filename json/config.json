@@ -1,5 +1,5 @@
 {
-  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;9060b67dfec8782aca6e79ba17c0979b",
+  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;5d1ab45ff233a49e9bc9b9a1554b38a9",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -263,6 +263,14 @@
       "ext": "https://fm.t4tv.hz.cz/json/webdav.json"
     },
     {
+      "key": "JustLive",
+      "name": "JustLive",
+      "type": 3,
+      "api": "csp_JustLive",
+      "searchable": 1,
+      "changeable": 0
+    },
+    {
       "key": "七夜",
       "name": "七夜",
       "type": 3,
@@ -451,7 +459,8 @@
         "hd.ffzy"
       ],
       "regex": [
-        "25.0666"
+        "25.0666",
+        "25.08"
       ]
     },
     {

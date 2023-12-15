@@ -3,7 +3,7 @@ package com.github.catvod.spider;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Utils;
+import com.github.catvod.utils.Util;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -25,7 +25,7 @@ public class PanSou extends Ali {
 
     private Map<String, String> getHeaders(String id) {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", Utils.CHROME);
+        headers.put("User-Agent", Util.CHROME);
         headers.put("Referer", siteUrl + id);
         headers.put("_bid", "6d14a5dd6c07980d9dc089a693805ad8");
         return headers;
@@ -33,7 +33,7 @@ public class PanSou extends Ali {
 
     private Map<String, String> getHeader() {
         HashMap<String, String> header = new HashMap<>();
-        header.put("User-Agent", Utils.CHROME);
+        header.put("User-Agent", Util.CHROME);
         return header;
     }
 
