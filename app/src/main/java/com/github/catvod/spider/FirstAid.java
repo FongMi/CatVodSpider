@@ -1,13 +1,12 @@
 package com.github.catvod.spider;
 
+import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Util;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,16 +15,17 @@ import org.jsoup.select.Elements;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
-  @author Qile
+ * @author Qile
  */
 public class FirstAid extends Spider {
 
-    private String siteUrl = "https://m.youlai.cn";
+    private final String siteUrl = "https://m.youlai.cn";
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
@@ -35,18 +35,11 @@ public class FirstAid extends Spider {
 
     @Override
     public String homeContent(boolean filter) throws Exception {
-        JSONArray classes = new JSONArray();
+        List<Class> classes = new ArrayList<>();
         List<String> typeIds = Arrays.asList("jijiu|0", "jijiu|1", "jijiu|2", "jijiu|3", "jijiu|4", "jijiu|5", "jijiu|6", "jijiu|7");
         List<String> typeNames = Arrays.asList("急救技能", "家庭生活", "急危重症", "常见损伤", "动物致伤", "海洋急救", "中毒急救", "意外事故");
-        for (int i = 0; i < typeIds.size(); i++) {
-            JSONObject obj = new JSONObject()
-                    .put("type_id", typeIds.get(i))
-                    .put("type_name", typeNames.get(i));
-            classes.put(obj);
-        }
-        JSONObject result = new JSONObject()
-                .put("class", classes);
-        return result.toString();
+        for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
+        return Result.string(classes, Collections.emptyList());
     }
 
     @Override
@@ -110,5 +103,4 @@ public class FirstAid extends Spider {
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         return Result.get().url(id).header(getHeader()).string();
     }
-
 }
