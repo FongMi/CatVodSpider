@@ -1,5 +1,5 @@
 {
-  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;5d1ab45ff233a49e9bc9b9a1554b38a9",
+  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;012dbdf7aebe1c301c6b87be83a213d4",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -98,6 +98,14 @@
         "纪录片",
         "经典片"
       ]
+    },
+    {
+      "key": "996影院",
+      "name": "996影院",
+      "type": 3,
+      "api": "csp_Cs1369",
+      "searchable": 1,
+      "changeable": 1
     },
     {
       "key": "短劇",
