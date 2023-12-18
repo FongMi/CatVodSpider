@@ -475,6 +475,7 @@ public class AliYun {
     }
 
     public Object[] proxyVideo(Map<String, String> params) throws Exception {
+        String response = params.get("response");
         String templateId = params.get("templateId");
         String shareId = params.get("shareId");
         String mediaId = params.get("mediaId");
@@ -500,7 +501,7 @@ public class AliYun {
             lock.unlock();
             downloadUrl = mediaUrl;
         }
-
+        if ("url".equals(response)) return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream(downloadUrl.getBytes("UTF-8"))};
         Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         for (String key : params.keySet()) headers.put(key, params.get(key));
         headers.remove("do");

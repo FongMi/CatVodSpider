@@ -4,9 +4,12 @@ import static fi.iki.elonen.NanoHTTPD.Response.Status;
 import static fi.iki.elonen.NanoHTTPD.newFixedLengthResponse;
 
 import android.os.SystemClock;
+import android.text.TextUtils;
 
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.spider.Proxy;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.net.URLEncoder;
 import java.util.Locale;
@@ -24,8 +27,21 @@ public class ProxyVideo {
         while (OkHttp.string(GO_SERVER).isEmpty()) SystemClock.sleep(20);
     }
 
+    public static String goVersion() {
+        String result = OkHttp.string(GO_SERVER + "version");
+        if (TextUtils.isEmpty(result)) return "";
+        try {
+            JsonObject obj = JsonParser.parseString(result).getAsJsonObject();
+            return obj.get("version").getAsString();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     public static String url(String url, int thread) {
         go();
+        String version = goVersion();
+        if (!TextUtils.isEmpty(version) && url.contains("/proxy?")) url += "&response=url";
         return String.format(Locale.getDefault(), "%s?url=%s&thread=%d", GO_SERVER, URLEncoder.encode(url), thread);
     }
 
