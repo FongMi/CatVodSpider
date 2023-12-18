@@ -4,9 +4,12 @@ import static fi.iki.elonen.NanoHTTPD.Response.Status;
 import static fi.iki.elonen.NanoHTTPD.newFixedLengthResponse;
 
 import android.os.SystemClock;
+import android.text.TextUtils;
 
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.spider.Proxy;
+
+import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.util.Locale;
@@ -20,12 +23,23 @@ public class ProxyVideo {
     private static final String GO_SERVER = "http://127.0.0.1:7777/";
 
     public static void go() {
-        if (OkHttp.string(GO_SERVER).isEmpty()) OkHttp.string("http://127.0.0.1:" + Proxy.getPort() + "/go");
-        while (OkHttp.string(GO_SERVER).isEmpty()) SystemClock.sleep(20);
+        boolean close = OkHttp.string(GO_SERVER).isEmpty();
+        if (close) OkHttp.string("http://127.0.0.1:" + Proxy.getPort() + "/go");
+        if (close) while (OkHttp.string(GO_SERVER).isEmpty()) SystemClock.sleep(20);
+    }
+
+    public static String goVer() {
+        try {
+            go();
+            String result = OkHttp.string(GO_SERVER + "version");
+            return new JSONObject(result).optString("version");
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public static String url(String url, int thread) {
-        go();
+        if (!TextUtils.isEmpty(goVer()) && url.contains("/proxy?")) url += "&response=url";
         return String.format(Locale.getDefault(), "%s?url=%s&thread=%d", GO_SERVER, URLEncoder.encode(url), thread);
     }
 
