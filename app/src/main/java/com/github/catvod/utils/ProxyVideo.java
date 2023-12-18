@@ -8,8 +8,8 @@ import android.text.TextUtils;
 
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.spider.Proxy;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
+import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.util.Locale;
@@ -23,25 +23,23 @@ public class ProxyVideo {
     private static final String GO_SERVER = "http://127.0.0.1:7777/";
 
     public static void go() {
-        if (OkHttp.string(GO_SERVER).isEmpty()) OkHttp.string("http://127.0.0.1:" + Proxy.getPort() + "/go");
-        while (OkHttp.string(GO_SERVER).isEmpty()) SystemClock.sleep(20);
+        boolean close = OkHttp.string(GO_SERVER).isEmpty();
+        if (close) OkHttp.string("http://127.0.0.1:" + Proxy.getPort() + "/go");
+        if (close) while (OkHttp.string(GO_SERVER).isEmpty()) SystemClock.sleep(20);
     }
 
-    public static String goVersion() {
-        String result = OkHttp.string(GO_SERVER + "version");
-        if (TextUtils.isEmpty(result)) return "";
+    public static String goVer() {
         try {
-            JsonObject obj = JsonParser.parseString(result).getAsJsonObject();
-            return obj.get("version").getAsString();
+            go();
+            String result = OkHttp.string(GO_SERVER + "version");
+            return new JSONObject(result).optString("version");
         } catch (Exception e) {
             return "";
         }
     }
 
     public static String url(String url, int thread) {
-        go();
-        String version = goVersion();
-        if (!TextUtils.isEmpty(version) && url.contains("/proxy?")) url += "&response=url";
+        if (!TextUtils.isEmpty(goVer()) && url.contains("/proxy?")) url += "&response=url";
         return String.format(Locale.getDefault(), "%s?url=%s&thread=%d", GO_SERVER, URLEncoder.encode(url), thread);
     }
 
