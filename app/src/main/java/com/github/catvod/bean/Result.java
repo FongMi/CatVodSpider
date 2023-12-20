@@ -28,6 +28,8 @@ public class Result {
     private String format;
     @SerializedName("danmaku")
     private String danmaku;
+    @SerializedName("msg")
+    private String msg;
     @SerializedName("url")
     private Object url;
     @SerializedName("subs")
@@ -83,6 +85,10 @@ public class Result {
 
     public static String string(Vod item) {
         return Result.get().vod(item).string();
+    }
+
+    public static String error(String msg) {
+        return Result.get().vod(Collections.emptyList()).msg(msg).string();
     }
 
     public static Result get() {
@@ -156,6 +162,11 @@ public class Result {
 
     public Result danmaku(String danmaku) {
         this.danmaku = danmaku;
+        return this;
+    }
+
+    public Result msg(String msg) {
+        this.msg = msg;
         return this;
     }
 
