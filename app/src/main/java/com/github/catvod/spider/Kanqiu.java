@@ -84,10 +84,7 @@ public class Kanqiu extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        if (ids.get(0).equals(siteUrl)) {
-            Notify.show("比赛尚未开始");
-            return Result.string(new Vod());
-        }
+        if (ids.get(0).equals(siteUrl)) return Result.error("比賽尚未開始");
         String content = OkHttp.string(ids.get(0) + "-url", getHeader());
         JSONArray linksArray = new JSONObject(content).getJSONArray("links");
         List<String> vodItems = new ArrayList<>();
