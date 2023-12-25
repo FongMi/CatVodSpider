@@ -475,6 +475,7 @@ public class AliYun {
     }
 
     public Object[] proxyVideo(Map<String, String> params) throws Exception {
+        if (dialog != null && dialog.isShowing()) return null;
         String templateId = params.get("templateId");
         String response = params.get("response");
         String shareId = params.get("shareId");

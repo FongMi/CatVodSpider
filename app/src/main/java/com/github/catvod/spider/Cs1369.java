@@ -55,11 +55,11 @@ public class Cs1369 extends Spider {
         JSONObject filterConfig = new JSONObject(f);
         Document doc = Jsoup.parse(OkHttp.string(siteUrl, getHeader()));
         List<Vod> list = new ArrayList<>();
-        for (Element li : doc.select(".stui-vodlist.clearfix").eq(0).select(".stui-vodlist__box a")) {
-            String vid = siteUrl + li.attr("href");
-            String name = li.attr("title");
-            String pic = li.attr("data-original") + "@Referer=https://api.douban.com/@User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36";
-            String remark = li.select(".pic-text.text-right").text();
+        for (Element li : doc.select(".stui-vodlist.clearfix").eq(0).select(".stui-vodlist__box")) {
+            String vid = siteUrl + li.select("a").attr("href");
+            String name = li.select("a").attr("title");
+            String pic = li.select("a").attr("data-original") + "@Referer=https://api.douban.com/@User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36";
+            String remark = li.select("a").select(".pic-text.text-right").text();
             list.add(new Vod(vid, name, pic, remark));
         }
         return Result.string(classes, list, filterConfig);
