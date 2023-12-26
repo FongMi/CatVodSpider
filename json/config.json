@@ -1,5 +1,5 @@
 {
-  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;db8ee47ff1095679871f083b2f5bf388",
+  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;96a99e445d620353890869d95755b890",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -500,12 +500,21 @@
       ]
     },
     {
-      "name": "點擊",
+      "name": "夜市",
       "hosts": [
         "yeslivetv.com"
       ],
       "script": [
-        "document.getElementsByClassName(\"vjs-big-play-button\")[0].click()"
+        "document.getElementsByClassName('vjs-big-play-button')[0].click()"
+      ]
+    },
+    {
+      "name": "毛驢",
+      "hosts": [
+        "www.maolvys.com"
+      ],
+      "script": [
+        "document.getElementsByClassName('swal-button swal-button--confirm')[0].click()"
       ]
     }
   ],
