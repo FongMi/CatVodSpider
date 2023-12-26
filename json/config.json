@@ -500,12 +500,21 @@
       ]
     },
     {
-      "name": "點擊",
+      "name": "夜市",
       "hosts": [
         "yeslivetv.com"
       ],
       "script": [
-        "document.getElementsByClassName(\"vjs-big-play-button\")[0].click()"
+        "document.getElementsByClassName('vjs-big-play-button')[0].click()"
+      ]
+    },
+    {
+      "name": "毛驢",
+      "hosts": [
+        "www.maolvys.com"
+      ],
+      "script": [
+        "document.getElementsByClassName('swal-button swal-button--confirm')[0].click()"
       ]
     }
   ],
