@@ -1,5 +1,5 @@
 {
-  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;55c157414346e3ff571baad0a223bf15",
+  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;96a99e445d620353890869d95755b890",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -130,7 +130,8 @@
       "type": 3,
       "api": "csp_Xb6v",
       "searchable": 1,
-      "changeable": 0
+      "changeable": 0,
+      "timeout": 60
     },
     {
       "key": "看球",
@@ -266,7 +267,7 @@
       "name": "WebDAV",
       "type": 3,
       "api": "csp_WebDAV",
-      "searchable": 1,
+      "searchable": 0,
       "changeable": 0,
       "ext": "https://fm.t4tv.hz.cz/json/webdav.json"
     },
@@ -340,8 +341,9 @@
       "name": "推送",
       "type": 3,
       "api": "csp_Push",
-      "searchable": 1,
-      "changeable": 0
+      "searchable": 0,
+      "changeable": 0,
+      "timeout": 60
     }
   ],
   "doh": [
@@ -497,6 +499,24 @@
       ],
       "regex": [
         "video/tos/cn"
+      ]
+    },
+    {
+      "name": "夜市",
+      "hosts": [
+        "yeslivetv.com"
+      ],
+      "script": [
+        "document.getElementsByClassName('vjs-big-play-button')[0].click()"
+      ]
+    },
+    {
+      "name": "毛驢",
+      "hosts": [
+        "www.maolvys.com"
+      ],
+      "script": [
+        "document.getElementsByClassName('swal-button swal-button--confirm')[0].click()"
       ]
     }
   ],
