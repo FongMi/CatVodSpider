@@ -130,7 +130,8 @@
       "type": 3,
       "api": "csp_Xb6v",
       "searchable": 1,
-      "changeable": 0
+      "changeable": 0,
+      "timeout": 60
     },
     {
       "key": "看球",
@@ -266,7 +267,7 @@
       "name": "WebDAV",
       "type": 3,
       "api": "csp_WebDAV",
-      "searchable": 1,
+      "searchable": 0,
       "changeable": 0,
       "ext": "https://fm.t4tv.hz.cz/json/webdav.json"
     },
@@ -340,8 +341,9 @@
       "name": "推送",
       "type": 3,
       "api": "csp_Push",
-      "searchable": 1,
-      "changeable": 0
+      "searchable": 0,
+      "changeable": 0,
+      "timeout": 60
     }
   ],
   "doh": [
