@@ -2,11 +2,15 @@ package com.github.catvod.spider;
 
 import android.content.Context;
 
+import com.github.catvod.bean.Class;
+import com.github.catvod.bean.Result;
+import com.github.catvod.bean.Vod;
+import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Util;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Util;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -16,10 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.github.catvod.bean.Result;
-import com.github.catvod.bean.Vod;
-import com.github.catvod.bean.Class;
 
 /**
  * @author Qile
@@ -36,12 +36,10 @@ public class Pan99 extends Ali {
     }
 
     @Override
-    public void init(Context context, String extend) throws Exception {
+    public void init(Context context, String extend) {
         String[] split = extend.split("\\$");
+        if (split.length == 2 && split[1].length() > 0) siteUrl = split[1];
         super.init(context, split[0]);
-        if (split.length >= 2 && !split[1].isEmpty()) {
-            siteUrl = split[1];
-        }
     }
 
     @Override
@@ -49,8 +47,7 @@ public class Pan99 extends Ali {
         List<Class> classes = new ArrayList<>();
         List<String> typeIds = Arrays.asList("dy", "tv", "tv/geng", "tv/netflix");
         List<String> typeNames = Arrays.asList("电影", "完结剧集", "追更剧集", "Netflix");
-        for (int i = 0; i < typeIds.size(); i++)
-            classes.add(new Class(typeIds.get(i), typeNames.get(i)));
+        for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
         Document doc = Jsoup.parse(OkHttp.string(siteUrl, getHeader()));
         List<Vod> list = new ArrayList<>();
         for (Element li : doc.select("div.col a.media-img")) {
