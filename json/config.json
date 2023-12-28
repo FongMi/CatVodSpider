@@ -1,5 +1,5 @@
 {
-  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;96a99e445d620353890869d95755b890",
+  "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar;md5;ca7cf8ac2302fa00985a57e4e58124ab",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "sites": [
     {
@@ -38,6 +38,15 @@
         "token": "影視天下第一",
         "filter": "https://fm.t4tv.hz.cz/json/wogg.json"
       }
+    },
+    {
+      "key": "盤99",
+      "name": "盤99",
+      "type": 3,
+      "api": "csp_Pan99",
+      "searchable": 1,
+      "changeable": 0,
+      "ext": "影視天下第一"
     },
     {
       "key": "賤賤",
@@ -499,6 +508,15 @@
       ],
       "regex": [
         "video/tos/cn"
+      ]
+    },
+    {
+      "name": "七新嗅探",
+      "hosts": [
+        "api.52wyb.com"
+      ],
+      "regex": [
+        "m3u8?pt=m3u8"
       ]
     },
     {
