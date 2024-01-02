@@ -87,7 +87,7 @@ public class Duanju extends Spider {
         String detailUrl = ids.get(0);
         Document doc = Jsoup.parse(OkHttp.string(detailUrl, getHeader()));
         List<String> vodItems = new ArrayList<>();
-        Elements sourceList = doc.select(".scroll-content a");
+        Elements sourceList = doc.select("[class=scroll-content] a");
         for (Element a : sourceList) {
             String episodeUrl = siteUrl + a.attr("href");
             String episodeName = a.text();
