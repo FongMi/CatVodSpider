@@ -77,7 +77,7 @@ public class Pan99 extends Ali {
     @Override
     public String detailContent(List<String> ids) throws Exception {
         Document doc = Jsoup.parse(OkHttp.string(ids.get(0), getHeader()));
-        List<String> shareLinks = doc.select("blockquote p a:not([href*=quark])").eachAttr("href");
+        List<String> shareLinks = doc.select(".card p a:not([href*=quark])").eachAttr("href");
         for (int i = 0; i < shareLinks.size(); i++) shareLinks.set(i, shareLinks.get(i).trim());
         String title = doc.select(".post-title.mb-2.mb-lg-3").text();
         String pic = doc.select("img.alignnone.size-medium").attr("src") + douban;
@@ -92,7 +92,7 @@ public class Pan99 extends Ali {
         Matcher matcher4 = Pattern.compile("◎类　　别(.*?)◎").matcher(doc.text());
         String classifyName = matcher4.find() ? matcher4.group(1) : "";
         Matcher matcher5 = Pattern.compile("◎集　　数(.*?)◎").matcher(doc.text());
-        String remark = matcher5.find() ? matcher5.group(1) : "";
+        String remark = matcher5.find() ? "集数：" + matcher5.group(1) : "";
         Matcher matcher6 = Pattern.compile("◎简　　介(.*?)资源失效").matcher(doc.text());
         String brief = matcher6.find() ? matcher6.group(1) : "";
         Vod vod = new Vod();
