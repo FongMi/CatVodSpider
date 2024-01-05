@@ -1,0 +1,2618 @@
+[
+  {
+    "name": "CCTV-1综合,CCTV-1,CCTV1,CCTV1综合",
+    "epg": "CCTV1",
+    "logo": "tb1/CCTV/CCTV1.png"
+  },
+  {
+    "name": "CCTV-2财经,CCTV-2,CCTV2,CCTV2财经",
+    "epg": "CCTV2",
+    "logo": "tb1/CCTV/CCTV2.png"
+  },
+  {
+    "name": "CCTV-3综艺,CCTV-3,CCTV3,CCTV3综艺",
+    "epg": "CCTV3",
+    "logo": "tb1/CCTV/CCTV3.png"
+  },
+  {
+    "name": "CCTV-4国际,CCTV-4,CCTV4,CCTV4国际,CCTV-4中文国际,CCTV4中文国际,CCTV-4国际亚洲",
+    "epg": "CCTV4",
+    "logo": "tb1/CCTV/CCTV4.png"
+  },
+  {
+    "name": "CCTV-5体育,CCTV-5,CCTV5,CCTV5体育,CCTV5plus",
+    "epg": "CCTV5",
+    "logo": "tb1/CCTV/CCTV5.png"
+  },
+  {
+    "name": "CCTV5+,CCTV5⁺体育赛事,CCTV5⁺,CCTV-5⁺,CCTV-5⁺体育赛事,CCTV-体育赛事",
+    "epg": "CCTV5+",
+    "logo": "tb1/CCTV/CCTV5+.png"
+  },
+  {
+    "name": "CCTV-6电影,CCTV-6,CCTV6,CCTV6电影",
+    "epg": "CCTV6",
+    "logo": "tb1/CCTV/CCTV6.png"
+  },
+  {
+    "name": "CCTV-7国防军事,CCTV-7,CCTV7,CCTV7国防军事,CCTV-7国防,CCTV7国防,CCTV7-国防军事",
+    "epg": "CCTV7",
+    "logo": "tb1/CCTV/CCTV7.png"
+  },
+  {
+    "name": "CCTV-8电视剧,CCTV-8,CCTV8,CCTV8电视剧,CCTV-8电视,CCTV8电视,CCTV8-电视剧",
+    "epg": "CCTV8",
+    "logo": "tb1/CCTV/CCTV8.png"
+  },
+  {
+    "name": "CCTV-9纪录,CCTV-9,CCTV9,CCTV9纪录,CCTV9-纪录",
+    "epg": "CCTV9",
+    "logo": "tb1/CCTV/CCTV9.png"
+  },
+  {
+    "name": "CCTV-10科教,CCTV-10,CCTV10,CCTV10科教",
+    "epg": "CCTV10",
+    "logo": "tb1/CCTV/CCTV10.png"
+  },
+  {
+    "name": "CCTV-11戏曲,CCTV-11,CCTV11,CCTV11戏曲",
+    "epg": "CCTV11",
+    "logo": "tb1/CCTV/CCTV11.png"
+  },
+  {
+    "name": "CCTV-12法制,CCTV-12,CCTV12,CCTV12法制,CCTV-12社会与法,CCTV12社会与法",
+    "epg": "CCTV12",
+    "logo": "tb1/CCTV/CCTV12.png"
+  },
+  {
+    "name": "CCTV-13新闻,CCTV-13,CCTV13,CCTV13新闻",
+    "epg": "CCTV13",
+    "logo": "tb1/CCTV/CCTV13.png"
+  },
+  {
+    "name": "CCTV-14少儿,CCTV-14,CCTV14,CCTV14少儿",
+    "epg": "CCTV14",
+    "logo": "tb1/CCTV/CCTV14.png"
+  },
+  {
+    "name": "CCTV-15音乐,CCTV-15,CCTV15,CCTV15音乐",
+    "epg": "CCTV15",
+    "logo": "tb1/CCTV/CCTV15.png"
+  },
+  {
+    "name": "CCTV-17农业,CCTV-17,CCTV17,CCTV17农业,CCTV-17农业农村,CCTV-17农村农业,CCTV17农业农村,CCTV17农村农业",
+    "epg": "CCTV17",
+    "logo": "tb1/CCTV/CCTV17.png"
+  },
+  {
+    "name": "CGTN",
+    "epg": "CGTN",
+    "logo": "tb1/CCTV/cgtn.png"
+  },
+  {
+    "name": "CCTV4K",
+    "epg": "CCTV4K",
+    "logo": "tb1/CCTV/CCTV4k.png"
+  },
+  {
+    "name": "湖南卫视",
+    "epg": "湖南卫视",
+    "logo": "tb1/ws/hunan.png"
+  },
+  {
+    "name": "浙江卫视",
+    "epg": "浙江卫视",
+    "logo": "tb1/ws/zhejiang.png"
+  },
+  {
+    "name": "江苏卫视",
+    "epg": "江苏卫视",
+    "logo": "tb1/ws/jiangsu.png"
+  },
+  {
+    "name": "北京卫视",
+    "epg": "北京卫视",
+    "logo": "tb1/ws/beijing.png"
+  },
+  {
+    "name": "东方卫视",
+    "epg": "东方卫视",
+    "logo": "tb1/ws/dongfang.png"
+  },
+  {
+    "name": "安徽卫视",
+    "epg": "安徽卫视",
+    "logo": "tb1/ws/anhui.png"
+  },
+  {
+    "name": "广东卫视",
+    "epg": "广东卫视",
+    "logo": "tb1/ws/guangdong.png"
+  },
+  {
+    "name": "深圳卫视",
+    "epg": "深圳卫视",
+    "logo": "tb1/ws/shenzhen.png"
+  },
+  {
+    "name": "辽宁卫视",
+    "epg": "辽宁卫视",
+    "logo": "tb1/ws/liaoning.png"
+  },
+  {
+    "name": "海南卫视",
+    "epg": "旅游卫视",
+    "logo": "tb1/ws/lvyou.png"
+  },
+  {
+    "name": "山东卫视",
+    "epg": "山东卫视",
+    "logo": "tb1/ws/shandong.png"
+  },
+  {
+    "name": "天津卫视",
+    "epg": "天津卫视",
+    "logo": "tb1/ws/tianjin.png"
+  },
+  {
+    "name": "重庆卫视",
+    "epg": "重庆卫视",
+    "logo": "tb1/ws/chongqing.png"
+  },
+  {
+    "name": "东南卫视",
+    "epg": "东南卫视",
+    "logo": "tb1/ws/dongnan.png"
+  },
+  {
+    "name": "甘肃卫视",
+    "epg": "甘肃卫视",
+    "logo": "tb1/ws/gansu.png"
+  },
+  {
+    "name": "广西卫视",
+    "epg": "广西卫视",
+    "logo": "tb1/ws/guangxi.png"
+  },
+  {
+    "name": "贵州卫视",
+    "epg": "贵州卫视",
+    "logo": "tb1/ws/guizhou.png"
+  },
+  {
+    "name": "河北卫视",
+    "epg": "河北卫视",
+    "logo": "tb1/ws/hebei.png"
+  },
+  {
+    "name": "黑龙江卫视",
+    "epg": "黑龙江卫视",
+    "logo": "tb1/ws/heilongjiang.png"
+  },
+  {
+    "name": "河南卫视",
+    "epg": "河南卫视",
+    "logo": "tb1/ws/henan.png"
+  },
+  {
+    "name": "湖北卫视",
+    "epg": "湖北卫视",
+    "logo": "tb1/ws/hubei.png"
+  },
+  {
+    "name": "江西卫视",
+    "epg": "江西卫视",
+    "logo": "tb1/ws/jiangxi.png"
+  },
+  {
+    "name": "吉林卫视",
+    "epg": "吉林卫视",
+    "logo": "tb1/ws/jilin.png"
+  },
+  {
+    "name": "内蒙古卫视",
+    "epg": "内蒙古卫视",
+    "logo": "tb1/ws/neimeng.png"
+  },
+  {
+    "name": "宁夏卫视",
+    "epg": "宁夏卫视",
+    "logo": "tb1/ws/ningxia.png"
+  },
+  {
+    "name": "山西卫视",
+    "epg": "山西卫视",
+    "logo": "tb1/ws/shanxi_.png"
+  },
+  {
+    "name": "陕西卫视",
+    "epg": "陕西卫视",
+    "logo": "tb1/ws/shanxi.png"
+  },
+  {
+    "name": "四川卫视",
+    "epg": "四川卫视",
+    "logo": "tb1/ws/sichuan.png"
+  },
+  {
+    "name": "新疆卫视",
+    "epg": "新疆卫视",
+    "logo": "tb1/ws/xinjiang.png"
+  },
+  {
+    "name": "云南卫视",
+    "epg": "云南卫视",
+    "logo": "tb1/ws/yunnan.png"
+  },
+  {
+    "name": "青海卫视",
+    "epg": "青海卫视",
+    "logo": "tb1/ws/qinghai.png"
+  },
+  {
+    "name": "南方卫视,大湾区卫视",
+    "epg": "南方卫视",
+    "logo": "tb1/ws/nanfang.png"
+  },
+  {
+    "name": "兵团卫视",
+    "epg": "兵团卫视",
+    "logo": "tb1/ws/bingtuan.png"
+  },
+  {
+    "name": "延边卫视",
+    "epg": "延边卫视",
+    "logo": "tb1/ws/YANBIAN1.png"
+  },
+  {
+    "name": "黄河卫视",
+    "epg": "黄河卫视",
+    "logo": "tb1/ws/huanghe.png"
+  },
+  {
+    "name": "厦门卫视",
+    "epg": "厦门卫视",
+    "logo": "tb1/ws/xiamen.png"
+  },
+  {
+    "name": "金鹰卡通",
+    "epg": "金鹰卡通",
+    "logo": "tb1/qt/jinyingkatong.png"
+  },
+  {
+    "name": "康巴卫视",
+    "epg": "康巴卫视",
+    "logo": "tb1/ws/kangba.png"
+  },
+  {
+    "name": "西藏卫视",
+    "epg": "西藏卫视",
+    "logo": "tb1/ws/xizang.png"
+  },
+  {
+    "name": "三沙卫视",
+    "epg": "三沙卫视",
+    "logo": "tb1/ws/sansha.png"
+  },
+  {
+    "name": "教育1台",
+    "epg": "中国教育1台",
+    "logo": "tb1/qt/中国教育1台.png"
+  },
+  {
+    "name": "教育2台",
+    "epg": "中国教育2台",
+    "logo": "tb1/qt/中国教育2台.png"
+  },
+  {
+    "name": "教育3台",
+    "epg": "中国教育3台",
+    "logo": "tb1/qt/中国教育3台.png"
+  },
+  {
+    "name": "中国3D电视试验频道",
+    "epg": "3D电视试验频道",
+    "logo": "tb1/CCTV/CCTV3D.png"
+  },
+  {
+    "name": "外汇理财",
+    "epg": "外汇理财",
+    "logo": "tb1/qt/IPTVEFEL.png"
+  },
+  {
+    "name": "电竞天堂",
+    "epg": "电竞天堂",
+    "logo": "tb1/qt/dianjingtiantang.png"
+  },
+  {
+    "name": "IPTV5⁺",
+    "epg": "IPTV5+",
+    "logo": "tb1/qt/IPTV5+.png"
+  },
+  {
+    "name": "IPTV6⁺",
+    "epg": "IPTV6+",
+    "logo": "tb1/qt/IPTV6+.png"
+  },
+  {
+    "name": "IPTV经典电影",
+    "epg": "IPTV经典电影",
+    "logo": "tb1/qt/IPTV经典电影.png"
+  },
+  {
+    "name": "IPTV热播剧场",
+    "epg": "IPTV热播剧场",
+    "logo": "tb1/qt/IPTV热播剧场.png"
+  },
+  {
+    "name": "IPTV少儿动画",
+    "epg": "IPTV少儿动画",
+    "logo": "tb1/qt/IPTV少儿动画.png"
+  },
+  {
+    "name": "IPTV魅力时尚",
+    "epg": "IPTV魅力时尚",
+    "logo": "tb1/qt/IPTV魅力时尚.png"
+  },
+  {
+    "name": "DOX映画",
+    "epg": "DOX映画"
+  },
+  {
+    "name": "中数风云足球",
+    "epg": "风云足球",
+    "logo": "tb1/CCTV/CCTVfengyunzuqiu.png"
+  },
+  {
+    "name": "华数求索科学",
+    "epg": "求索科学",
+    "logo": "tb1/qt/QSKX.png"
+  },
+  {
+    "name": "CHC高清电影",
+    "epg": "CHC高清电影",
+    "logo": "tb1/qt/CHC3.jpg"
+  },
+  {
+    "name": "华数求索动物",
+    "epg": "求索动物",
+    "logo": "tb1/qt/QSDW.png"
+  },
+  {
+    "name": "华数求索生活",
+    "epg": "求索生活"
+  },
+  {
+    "name": "华数求索记录",
+    "epg": "求索记录",
+    "logo": "tb1/qt/QSJL.png"
+  },
+  {
+    "name": "CHC动作电影",
+    "epg": "CHC动作电影",
+    "logo": "tb1/qt/CHC1.jpg"
+  },
+  {
+    "name": "CHC家庭电影",
+    "epg": "CHC家庭电影",
+    "logo": "tb1/qt/CHC2.jpg"
+  },
+  {
+    "name": "中数梨园",
+    "epg": "梨园",
+    "logo": "tb1/qt/CCTVPAYFEE20.jpg"
+  },
+  {
+    "name": "中数风云音乐",
+    "epg": "风云音乐",
+    "logo": "tb1/CCTV/CCTVfengyunyinyue.png"
+  },
+  {
+    "name": "中数第一剧场",
+    "epg": "第一剧场",
+    "logo": "tb1/CCTV/CCTVdiyijuchang.png"
+  },
+  {
+    "name": "中数风云剧场",
+    "epg": "风云剧场",
+    "logo": "tb1/CCTV/CCTBfengyun.png"
+  },
+  {
+    "name": "中数世界地理",
+    "epg": "世界地理",
+    "logo": "tb1/CCTV/CCTVshijiedili.png"
+  },
+  {
+    "name": "中数电视指南",
+    "epg": "电视指南"
+  },
+  {
+    "name": "中数怀旧剧场",
+    "epg": "怀旧剧场",
+    "logo": "tb1/qt/CCTVPAYFEE7.jpg"
+  },
+  {
+    "name": "中数兵器科技",
+    "epg": "兵器科技",
+    "logo": "tb1/qt/CCTVPAYFEE8.jpg"
+  },
+  {
+    "name": "中数女性时尚",
+    "epg": "女性时尚",
+    "logo": "tb1/CCTV/CCTVnvxing.png"
+  },
+  {
+    "name": "中数CCTV-娱乐",
+    "epg": "CCTV-娱乐",
+    "logo": "tb1/CCTV/CCTVyule.png"
+  },
+  {
+    "name": "中数CCTV-戏曲",
+    "epg": "CCTV-戏曲",
+    "logo": "tb1/CCTV/CCTVxiqu.png"
+  },
+  {
+    "name": "中数CCTV-电影",
+    "epg": "CCTV-电影",
+    "logo": "tb1/qt/CCTVPAYFEE12.jpg"
+  },
+  {
+    "name": "中数高尔夫网球",
+    "epg": "高尔夫网球",
+    "logo": "tb1/qt/CCTVPAYFEE13.jpg"
+  },
+  {
+    "name": "中数央视精品",
+    "epg": "央视精品",
+    "logo": "tb1/CCTV/CCTVwenhuajingpin.png"
+  },
+  {
+    "name": "中数彩民在线",
+    "epg": "彩民在线",
+    "logo": "tb1/qt/caiminzaixian.png"
+  },
+  {
+    "name": "中数法律服务",
+    "epg": "法律服务",
+    "logo": "tb1/qt/CCTVPAYFEE17.jpg"
+  },
+  {
+    "name": "中数汽摩",
+    "epg": "汽摩",
+    "logo": "tb1/qt/CCTVPAYFEE22.jpg"
+  },
+  {
+    "name": "中数留学世界",
+    "epg": "留学世界",
+    "logo": "tb1/qt/CCTVPAYFEE24.jpg"
+  },
+  {
+    "name": "中数青年学苑",
+    "epg": "青年学苑",
+    "logo": "tb1/qt/CCTVPAYFEE25.jpg"
+  },
+  {
+    "name": "中数摄影频道",
+    "epg": "摄影频道",
+    "logo": "tb1/qt/PHOTOGRAPHY-CHANNEL.jpg"
+  },
+  {
+    "name": "中数天元围棋",
+    "epg": "天元围棋",
+    "logo": "tb1/qt/TIANYUANWEIQI.jpg"
+  },
+  {
+    "name": "中数现代女性",
+    "epg": "现代女性",
+    "logo": "tb1/qt/CCTVPAYFEE29.png"
+  },
+  {
+    "name": "中数早期教育",
+    "epg": "早期教育",
+    "logo": "tb1/qt/CCTVPAYFEE33.jpg"
+  },
+  {
+    "name": "中数CCTV证券资讯",
+    "epg": "证券资讯",
+    "logo": "tb1/CCTV/CCTVzhengquan.png"
+  },
+  {
+    "name": "中数CCTV中学生频道",
+    "epg": "中学生"
+  },
+  {
+    "name": "中数CCTV央视台球",
+    "epg": "央视台球",
+    "logo": "tb1/CCTV/CCTVtaiqiu.png"
+  },
+  {
+    "name": "中数茶频道",
+    "epg": "茶频道",
+    "logo": "tb1/qt/DOCUMENTARY-CHANNEL.jpg"
+  },
+  {
+    "name": "中数武术世界",
+    "epg": "武术世界",
+    "logo": "tb1/qt/WUSHUSHIJIE.jpg"
+  },
+  {
+    "name": "中数发现之旅",
+    "epg": "发现之旅",
+    "logo": "tb1/CCTV/CCTVfaxianzhilv.png"
+  },
+  {
+    "name": "中数环球奇观",
+    "epg": "环球奇观",
+    "logo": "tb1/qt/HUANQIUQIGUAN.jpg"
+  },
+  {
+    "name": "中数国学",
+    "epg": "国学",
+    "logo": "tb1/qt/SHUOWENJIEZI.jpg"
+  },
+  {
+    "name": "中数文物宝库",
+    "epg": "文物宝库",
+    "logo": "tb1/qt/WENWUBAOKU.jpg"
+  },
+  {
+    "name": "中数新科动漫",
+    "epg": "新科动漫",
+    "logo": "tb1/CCTV/CCTVxinke.png"
+  },
+  {
+    "name": "中数幼儿教育",
+    "epg": "幼儿教育",
+    "logo": "tb1/qt/YOUERJIAOYU.jpg"
+  },
+  {
+    "name": "中数CCTV老故事",
+    "epg": "老故事",
+    "logo": "tb1/CCTV/CCTVlaogushi.png"
+  },
+  {
+    "name": "中数快乐垂钓",
+    "epg": "快乐垂钓",
+    "logo": "tb1/qt/KUAILECHUIDIAO.jpg"
+  },
+  {
+    "name": "中数书画频道",
+    "epg": "书画频道",
+    "logo": "tb1/qt/CCTVPAYFEE37.jpg"
+  },
+  {
+    "name": "中数中华美食",
+    "epg": "中华美食"
+  },
+  {
+    "name": "华诚DOXTV",
+    "epg": "DOXTV",
+    "logo": "tb1/qt/DOXTV.png"
+  },
+  {
+    "name": "华诚先锋乒羽",
+    "epg": "先锋乒羽",
+    "logo": "tb1/qt/XFBY.png"
+  },
+  {
+    "name": "北广车迷频道",
+    "epg": "车迷频道",
+    "logo": "tb1/qt/BAMC1.jpg"
+  },
+  {
+    "name": "北广考试在线",
+    "epg": "考试在线"
+  },
+  {
+    "name": "北广优优宝贝",
+    "epg": "优优宝贝",
+    "logo": "tb1/qt/BAMC3.jpg"
+  },
+  {
+    "name": "北广四海钓鱼",
+    "epg": "四海钓鱼",
+    "logo": "tb1/qt/BAMC4.jpg"
+  },
+  {
+    "name": "北广动感音乐",
+    "epg": "动感音乐",
+    "logo": "tb1/qt/BAMC5.jpg"
+  },
+  {
+    "name": "北广环球旅游",
+    "epg": "环球旅游",
+    "logo": "tb1/qt/BAMC6.jpg"
+  },
+  {
+    "name": "北广新娱乐",
+    "epg": "新娱乐",
+    "logo": "tb1/qt/BAMC7.jpg"
+  },
+  {
+    "name": "北广京视剧场",
+    "epg": "京视剧场",
+    "logo": "tb1/qt/BAMC8.jpg"
+  },
+  {
+    "name": "北广弈坛春秋",
+    "epg": "弈坛春秋",
+    "logo": "tb1/qt/BAMC10.jpg"
+  },
+  {
+    "name": "北广置业频道",
+    "epg": "置业频道"
+  },
+  {
+    "name": "北广央广健康",
+    "epg": "央广健康",
+    "logo": "tb1/qt/BAMC14.jpg"
+  },
+  {
+    "name": "北广休闲指南",
+    "epg": "休闲指南"
+  },
+  {
+    "name": "北广时代家居",
+    "epg": "时代家居",
+    "logo": "tb1/qt/BAMC17.jpg"
+  },
+  {
+    "name": "北广时代出行",
+    "epg": "时代出行",
+    "logo": "tb1/qt/BAMC18.jpg"
+  },
+  {
+    "name": "北广时代风尚",
+    "epg": "时代风尚",
+    "logo": "tb1/qt/BAMC19.jpg"
+  },
+  {
+    "name": "北广时代美食",
+    "epg": "时代美食"
+  },
+  {
+    "name": "北广财富天下",
+    "epg": "财富天下",
+    "logo": "tb1/qt/财富天下.png"
+  },
+  {
+    "name": "北广人物频道",
+    "epg": "人物频道"
+  },
+  {
+    "name": "北广家政频道",
+    "epg": "家政频道"
+  },
+  {
+    "name": "北广百姓健康",
+    "epg": "百姓健康",
+    "logo": "tb1/qt/CHTV.jpg"
+  },
+  {
+    "name": "华数亚洲影院",
+    "epg": "亚洲影院"
+  },
+  {
+    "name": "华数精品剧场",
+    "epg": "精品剧场",
+    "logo": "tb1/qt/HSJPJC.jpg"
+  },
+  {
+    "name": "华数少儿动漫",
+    "epg": "少儿动漫",
+    "logo": "tb1/qt/HSSEDM.jpg"
+  },
+  {
+    "name": "华数欧美影院",
+    "epg": "欧美影院",
+    "logo": "tb1/qt/OMYY.jpg"
+  },
+  {
+    "name": "IPTV3⁺",
+    "epg": "IPTV3+"
+  },
+  {
+    "name": "卡酷动画",
+    "epg": "卡酷动画",
+    "logo": "tb1/qt/kaku.png"
+  },
+  {
+    "name": "北京冬奥纪实",
+    "epg": "北京纪实",
+    "logo": "tb1/ws/beijingjishi.png"
+  },
+  {
+    "name": "BTV文艺",
+    "epg": "BTV文艺",
+    "logo": "tb1/sheng/BTV文艺.png"
+  },
+  {
+    "name": "BTV科教",
+    "epg": "BTV科教",
+    "logo": "tb1/sheng/BTV科教.png"
+  },
+  {
+    "name": "BTV影视",
+    "epg": "BTV影视",
+    "logo": "tb1/sheng/BTV影视.png"
+  },
+  {
+    "name": "BTV财经",
+    "epg": "BTV财经",
+    "logo": "tb1/sheng/BTV财经.png"
+  },
+  {
+    "name": "BTV生活",
+    "epg": "BTV生活",
+    "logo": "tb1/sheng/BTV生活.png"
+  },
+  {
+    "name": "BTV青年",
+    "epg": "BTV青年",
+    "logo": "tb1/sheng/BTV青年.png"
+  },
+  {
+    "name": "BTV新闻",
+    "epg": "BTV新闻",
+    "logo": "tb1/sheng/BTV新闻.png"
+  },
+  {
+    "name": "哈哈炫动",
+    "epg": "哈哈炫动",
+    "logo": "tb1/qt/xuandong.png"
+  },
+  {
+    "name": "DOX雅趣",
+    "epg": "DOX雅趣",
+    "logo": "tb1/qt/DOX_YAQU.png"
+  },
+  {
+    "name": "七彩戏剧",
+    "epg": "七彩戏剧",
+    "logo": "tb1/qt/qicaixiju.png"
+  },
+  {
+    "name": "新视觉",
+    "epg": "新视觉",
+    "logo": "tb1/qt/xinshijue.png"
+  },
+  {
+    "name": "劲爆体育",
+    "epg": "劲爆体育",
+    "logo": "tb1/qt/jinbaotiyu.jpg"
+  },
+  {
+    "name": "DOX英伦",
+    "epg": "DOX英伦",
+    "logo": "tb1/qt/dox_yinglun.png"
+  },
+  {
+    "name": "DOX怡家",
+    "epg": "DOX怡家"
+  },
+  {
+    "name": "DOX院线",
+    "epg": "DOX院线"
+  },
+  {
+    "name": "DOX新知",
+    "epg": "DOX新知"
+  },
+  {
+    "name": "DOX新艺",
+    "epg": "DOX新艺"
+  },
+  {
+    "name": "DOX剧场",
+    "epg": "DOX剧场",
+    "logo": "tb1/qt/dox_juchang.png"
+  },
+  {
+    "name": "MAX极速汽车",
+    "epg": "MAX极速汽车",
+    "logo": "tb1/qt/jisuqiche.png"
+  },
+  {
+    "name": "全纪实",
+    "epg": "全纪实",
+    "logo": "tb1/qt/quanjishi.png"
+  },
+  {
+    "name": "欢笑剧场",
+    "epg": "欢笑剧场",
+    "logo": "tb1/qt/huanxiao.png"
+  },
+  {
+    "name": "魅力音乐",
+    "epg": "魅力音乐"
+  },
+  {
+    "name": "幸福彩",
+    "epg": "幸福彩",
+    "logo": "tb1/qt/xingfucai.png"
+  },
+  {
+    "name": "生活时尚",
+    "epg": "生活时尚",
+    "logo": "tb1/qt/shenghuoshishang.png"
+  },
+  {
+    "name": "游戏风云",
+    "epg": "游戏风云",
+    "logo": "tb1/qt/youxifengyun.png"
+  },
+  {
+    "name": "上视新闻频道",
+    "epg": "上视新闻频道",
+    "logo": "tb1/qt/shangshixinwen.png"
+  },
+  {
+    "name": "第一财经",
+    "epg": "第一财经",
+    "logo": "tb1/qt/diyicaijing.png"
+  },
+  {
+    "name": "东方影视",
+    "epg": "东方影视",
+    "logo": "tb1/qt/shanghaidongfangyingshi.png"
+  },
+  {
+    "name": "五星体育频道",
+    "epg": "五星体育频道",
+    "logo": "tb1/qt/wuxingtiyu.png"
+  },
+  {
+    "name": "上海纪实人文",
+    "epg": "上海纪实",
+    "logo": "tb1/ws/shanghaijishi.png"
+  },
+  {
+    "name": "上海都市频道",
+    "epg": "上海都市频道",
+    "logo": "tb1/qt/shanghaidushi.jpg"
+  },
+  {
+    "name": "上视外语频道",
+    "epg": "上视外语频道",
+    "logo": "tb1/qt/shanghaiwaiyu.png"
+  },
+  {
+    "name": "中国交通频道",
+    "epg": "中国交通频道",
+    "logo": "tb1/CCTV/zgjt.png"
+  },
+  {
+    "name": "四川文化旅游",
+    "epg": "SCTV2",
+    "logo": "tb1/sheng/sctv2.png"
+  },
+  {
+    "name": "四川经济",
+    "epg": "SCTV3",
+    "logo": "tb1/sheng/sctv3.png"
+  },
+  {
+    "name": "四川新闻",
+    "epg": "SCTV4",
+    "logo": "tb1/sheng/sctv4.png"
+  },
+  {
+    "name": "四川影视文艺频道",
+    "epg": "SCTV5",
+    "logo": "tb1/sheng/sctv5.png"
+  },
+  {
+    "name": "四川妇女儿童频道",
+    "epg": "SCTV7",
+    "logo": "tb1/sheng/sctv7.png"
+  },
+  {
+    "name": "峨嵋电影频道",
+    "epg": "峨嵋电影",
+    "logo": "tb1/qt/emeidianying.png"
+  },
+  {
+    "name": "四川公共频道",
+    "epg": "SCTV9",
+    "logo": "tb1/sheng/sctv9.png"
+  },
+  {
+    "name": "四川科教频道",
+    "epg": "SCTV8",
+    "logo": "tb1/sheng/sctv8.png"
+  },
+  {
+    "name": "成都新闻综合频道",
+    "epg": "CDTV1",
+    "logo": "tb1/sheng/cdtv1.png"
+  },
+  {
+    "name": "成都经济资讯频道",
+    "epg": "CDTV2",
+    "logo": "tb1/sheng/cdtv2.png"
+  },
+  {
+    "name": "成都都市生活频道",
+    "epg": "CDTV3",
+    "logo": "tb1/sheng/cdtv3.png"
+  },
+  {
+    "name": "成都影视文艺频道",
+    "epg": "CDTV4",
+    "logo": "tb1/sheng/cdtv4.png"
+  },
+  {
+    "name": "成都公共频道",
+    "epg": "CDTV5",
+    "logo": "tb1/sheng/cdtv5.png"
+  },
+  {
+    "name": "成都少儿频道",
+    "epg": "CDTV6",
+    "logo": "tb1/sheng/cdtv6.png"
+  },
+  {
+    "name": "成都美食天府",
+    "epg": "CDTV7"
+  },
+  {
+    "name": "山东齐鲁",
+    "epg": "山东齐鲁",
+    "logo": "tb1/qt/sd_qilu.png"
+  },
+  {
+    "name": "山东体育",
+    "epg": "山东体育",
+    "logo": "tb1/qt/sd_tiyu.png"
+  },
+  {
+    "name": "山东农科",
+    "epg": "山东农科",
+    "logo": "tb1/qt/sd_nongke.png"
+  },
+  {
+    "name": "山东公共",
+    "epg": "山东公共",
+    "logo": "tb1/qt/sd_gonggong.png"
+  },
+  {
+    "name": "山东少儿",
+    "epg": "山东少儿",
+    "logo": "tb1/qt/sd_shaoer.png"
+  },
+  {
+    "name": "山东影视",
+    "epg": "山东影视",
+    "logo": "tb1/qt/sd_yingshi.png"
+  },
+  {
+    "name": "山东综艺",
+    "epg": "山东综艺",
+    "logo": "tb1/qt/sd_zongyi.png"
+  },
+  {
+    "name": "山东生活",
+    "epg": "山东生活",
+    "logo": "tb1/qt/sd_shenghuo.png"
+  },
+  {
+    "name": "环宇电影",
+    "epg": "环宇电影",
+    "logo": "tb1/qt/sd_huanyudianying.jpg"
+  },
+  {
+    "name": "GTV游戏竞技",
+    "epg": "GTV游戏竞技",
+    "logo": "tb1/qt/gtv_youxi.png"
+  },
+  {
+    "name": "GTV网络棋牌",
+    "epg": "网络棋牌",
+    "logo": "tb1/qt/wangluoqipai.png"
+  },
+  {
+    "name": "新动漫",
+    "epg": "新动漫",
+    "logo": "tb1/qt/xindongman.png"
+  },
+  {
+    "name": "辽宁都市",
+    "epg": "辽宁都市",
+    "logo": "tb1/qt/LNTV2.png"
+  },
+  {
+    "name": "辽宁影视剧",
+    "epg": "辽宁影视剧",
+    "logo": "tb1/qt/LNTV3.png"
+  },
+  {
+    "name": "辽宁青少",
+    "epg": "辽宁青少",
+    "logo": "tb1/qt/LNTV5.png"
+  },
+  {
+    "name": "辽宁生活",
+    "epg": "辽宁生活",
+    "logo": "tb1/qt/LNTV6.png"
+  },
+  {
+    "name": "辽宁公共",
+    "epg": "辽宁公共",
+    "logo": "tb1/qt/LNTV7.png"
+  },
+  {
+    "name": "辽宁北方",
+    "epg": "辽宁北方",
+    "logo": "tb1/qt/LNTV8.png"
+  },
+  {
+    "name": "辽宁体育",
+    "epg": "辽宁体育",
+    "logo": "tb1/qt/LNTV-SPORT.png"
+  },
+  {
+    "name": "辽宁经济",
+    "epg": "辽宁经济",
+    "logo": "tb1/qt/LNTV-FINANCE.png"
+  },
+  {
+    "name": "沈阳新闻",
+    "epg": "沈阳新闻",
+    "logo": "tb1/qt/LNSY1.png"
+  },
+  {
+    "name": "湖北综合频道",
+    "epg": "湖北综合频道",
+    "logo": "tb1/qt/HUBEI2.png"
+  },
+  {
+    "name": "湖北影视频道",
+    "epg": "湖北影视频道",
+    "logo": "tb1/qt/HUBEI3.png"
+  },
+  {
+    "name": "湖北教育频道",
+    "epg": "湖北教育频道",
+    "logo": "tb1/qt/HUBEI4.png"
+  },
+  {
+    "name": "湖北生活频道",
+    "epg": "湖北生活频道",
+    "logo": "tb1/qt/HUBEI5.png"
+  },
+  {
+    "name": "湖北公共·新闻",
+    "epg": "湖北公共·新闻",
+    "logo": "tb1/qt/HUBEI7.png"
+  },
+  {
+    "name": "湖北经济频道",
+    "epg": "湖北经济频道",
+    "logo": "tb1/qt/HUBEI8.png"
+  },
+  {
+    "name": "湖北垄上频道",
+    "epg": "湖北垄上频道",
+    "logo": "tb1/qt/HBLS.png"
+  },
+  {
+    "name": "武汉新闻综合频道",
+    "epg": "武汉新闻综合频道",
+    "logo": "tb1/qt/WHTV1.png"
+  },
+  {
+    "name": "武汉电视剧频道",
+    "epg": "武汉电视剧频道",
+    "logo": "tb1/qt/WHTV2.png"
+  },
+  {
+    "name": "武汉科技生活频道",
+    "epg": "武汉科技生活频道",
+    "logo": "tb1/qt/WHTV3.png"
+  },
+  {
+    "name": "武汉经济频道",
+    "epg": "武汉经济频道",
+    "logo": "tb1/qt/WHTV4.png"
+  },
+  {
+    "name": "武汉文体频道",
+    "epg": "武汉文体频道",
+    "logo": "tb1/qt/WHTV5.png"
+  },
+  {
+    "name": "武汉外语频道",
+    "epg": "武汉外语频道",
+    "logo": "tb1/qt/WHTV6.png"
+  },
+  {
+    "name": "武汉少儿频道,武汉少儿",
+    "epg": "武汉少儿频道",
+    "logo": "tb1/qt/WHTV7.png"
+  },
+  {
+    "name": "武汉教育电视台",
+    "epg": "武汉教育电视台",
+    "logo": "tb1/qt/WETV.png"
+  },
+  {
+    "name": "江苏靓妆频道,靓妆频道",
+    "epg": "靓妆频道"
+  },
+  {
+    "name": "优漫卡通",
+    "epg": "优漫卡通",
+    "logo": "tb1/qt/youman.png"
+  },
+  {
+    "name": "DV生活频道",
+    "epg": "DV生活频道"
+  },
+  {
+    "name": "高尔夫频道",
+    "epg": "高尔夫频道"
+  },
+  {
+    "name": "英语辅导频道",
+    "epg": "英语辅导频道"
+  },
+  {
+    "name": "嘉佳卡通",
+    "epg": "嘉佳卡通",
+    "logo": "tb1/qt/jiajiakt.png"
+  },
+  {
+    "name": "珠江频道",
+    "epg": "珠江频道",
+    "logo": "tb1/gt/zhujiang.png"
+  },
+  {
+    "name": "金鹰纪实",
+    "epg": "金鹰纪实",
+    "logo": "tb1/ws/jinyingjishi.png"
+  },
+  {
+    "name": "翡翠台,翡翠,TVB",
+    "epg": "翡翠台",
+    "logo": "tb1/gt/TVB翡翠台.png"
+  },
+  {
+    "name": "明珠台,明珠,Pearl,TVB Pearl",
+    "epg": "明珠台",
+    "logo": "tb1/gt/TVB明珠台.png"
+  },
+  {
+    "name": "TVB经典台,TVB经典",
+    "epg": "TVB经典台",
+    "logo": "tb1/gt/TVBclassic.png"
+  },
+  {
+    "name": "无线新闻台,无线新闻",
+    "epg": "无线新闻",
+    "logo": "tb1/gt/wxxw.png"
+  },
+  {
+    "name": "无线财经资讯台,无线财经",
+    "epg": "无线财经",
+    "logo": "tb1/gt/tvbfinanceinformationchannel.png"
+  },
+  {
+    "name": "凤凰卫视中文台,凤凰卫视,凤凰中文",
+    "epg": "凤凰中文",
+    "logo": "tb1/gt/fenghuangzhongwen.png"
+  },
+  {
+    "name": "凤凰卫视资讯台,凤凰资讯",
+    "epg": "凤凰资讯",
+    "logo": "tb1/gt/fenghuangzixun.png"
+  },
+  {
+    "name": "凤凰卫视香港台,凤凰香港",
+    "epg": "凤凰香港",
+    "logo": "tb1/gt/fenghuangxianggang.png"
+  },
+  {
+    "name": "阳光卫视",
+    "epg": "阳光卫视",
+    "logo": "tb1/gt/yangguangweishi.png"
+  },
+  {
+    "name": "美亚高清电影台(香港)",
+    "epg": "美亚高清电影台",
+    "logo": "tb1/gt/meiyamovie.png"
+  },
+  {
+    "name": "香港有线Hollywood Movie Channel",
+    "epg": "HMC"
+  },
+  {
+    "name": "国家地理悠人频道",
+    "epg": "国家地理悠人频道"
+  },
+  {
+    "name": "FOX LIFE",
+    "epg": "FOXLIFE"
+  },
+  {
+    "name": "Viu TV",
+    "epg": "ViuTV",
+    "logo": "tb1/gt/viutv.png"
+  },
+  {
+    "name": "香港卫视",
+    "epg": "HKS",
+    "logo": "tb1/gt/hks.png"
+  },
+  {
+    "name": "J2",
+    "epg": "J2",
+    "logo": "tb1/gt/TVBJ2.png"
+  },
+  {
+    "name": "香港国际财经台,香港国际财经",
+    "epg": "香港国际财经台",
+    "logo": "tb1/gt/hkguojicaijing.png"
+  },
+  {
+    "name": "香港开电视",
+    "epg": "香港开电视",
+    "logo": "tb1/gt/hongkongkai.png"
+  },
+  {
+    "name": "有线财经资讯台,有线财经,有线财经资讯",
+    "epg": "有线财经资讯台",
+    "logo": "tb1/gt/youxiancaijingzixun.png"
+  },
+  {
+    "name": "有线新闻台,有线新闻",
+    "epg": "有线新闻台",
+    "logo": "tb1/gt/youxianxinwen.png"
+  },
+  {
+    "name": "香港有线603",
+    "epg": "香港603",
+    "logo": "tb1/gt/hongkong603.png"
+  },
+  {
+    "name": "TVB星河频道,TVB星河",
+    "epg": "TVB星河频道",
+    "logo": "tb1/gt/TVB星河.png"
+  },
+  {
+    "name": "星卫HD电影台",
+    "epg": "星卫HD电影",
+    "logo": "tb1/gt/starmov.png"
+  },
+  {
+    "name": "卫视卡式台",
+    "epg": "卫视卡式台"
+  },
+  {
+    "name": "CHANNEL [V]国际频道",
+    "epg": "CHANNEL[V]"
+  },
+  {
+    "name": "东森亚洲新闻台,东森亚洲新闻",
+    "epg": "东森亚洲新闻台",
+    "logo": "tb1/gt/EbcAsiaNews.png"
+  },
+  {
+    "name": "东森亚洲卫视",
+    "epg": "东森亚洲卫视",
+    "logo": "tb1/gt/EbcAsiaWeishi.png"
+  },
+  {
+    "name": "公视台语台(公视2)",
+    "epg": "公视2",
+    "logo": "tb1/gt/PublicTV2.png"
+  },
+  {
+    "name": "好消息二台",
+    "epg": "GoodTV2",
+    "logo": "tb1/gt/GoodTV2.png"
+  },
+  {
+    "name": "创世电视",
+    "epg": "创世电视"
+  },
+  {
+    "name": "壹电视综合台,壹电视综合",
+    "epg": "壹电视综合台",
+    "logo": "tb1/gt/NEXTTVZonghe.png"
+  },
+  {
+    "name": "壹电视电影台,壹电视电影",
+    "epg": "壹电视电影台",
+    "logo": "tb1/gt/NEXTTVMovie.png"
+  },
+  {
+    "name": "Baby TV(台湾)",
+    "epg": "BabyTV",
+    "logo": "tb1/gt/BabyTV.png"
+  },
+  {
+    "name": "公视三台",
+    "epg": "公视三台",
+    "logo": "tb1/gt/PublicTV3HD.png"
+  },
+  {
+    "name": "民视无线台,民视无线",
+    "epg": "民视无线台",
+    "logo": "tb1/gt/FTV.png"
+  },
+  {
+    "name": "台视",
+    "epg": "台视",
+    "logo": "tb1/gt/台视.png"
+  },
+  {
+    "name": "大爱电视台",
+    "epg": "大爱一台",
+    "logo": "tb1/gt/daai.png"
+  },
+  {
+    "name": "中视",
+    "epg": "中视",
+    "logo": "tb1/gt/中视.png"
+  },
+  {
+    "name": "人间卫视",
+    "epg": "人间卫视",
+    "logo": "tb1/gt/BeautifulLife.png"
+  },
+  {
+    "name": "华视",
+    "epg": "华视",
+    "logo": "tb1/gt/CTS.png"
+  },
+  {
+    "name": "公视",
+    "epg": "公视",
+    "logo": "tb1/gt/PublicTV.png"
+  },
+  {
+    "name": "好消息频道",
+    "epg": "GoodTV",
+    "logo": "tb1/gt/GoodTV.png"
+  },
+  {
+    "name": "原住民频道",
+    "epg": "原住民频道",
+    "logo": "tb1/gt/yuanzhumin.png"
+  },
+  {
+    "name": "客家电视台",
+    "epg": "客家电视台",
+    "logo": "tb1/gt/HakkaTV.png"
+  },
+  {
+    "name": "MOMO亲子台",
+    "epg": "MOMO亲子台",
+    "logo": "tb1/gt/MOMOkids.png"
+  },
+  {
+    "name": "东森幼幼台,东森幼幼",
+    "epg": "东森幼幼台",
+    "logo": "tb1/gt/EBCYoYoTV.png"
+  },
+  {
+    "name": "纬来综合台,纬来综合",
+    "epg": "纬来综合台",
+    "logo": "tb1/gt/VideolandOnTV.png"
+  },
+  {
+    "name": "八大第一台,八大第一",
+    "epg": "八大第一台",
+    "logo": "tb1/gt/GTVOneHD.png"
+  },
+  {
+    "name": "八大综合台,八大综合",
+    "epg": "八大综合台",
+    "logo": "tb1/gt/GTVVarietyHD.png"
+  },
+  {
+    "name": "三立台湾台,三立台湾",
+    "epg": "三立台湾台",
+    "logo": "tb1/gt/SETTaiwan.png"
+  },
+  {
+    "name": "三立都会台,三立都会",
+    "epg": "三立都会台",
+    "logo": "tb1/gt/SETCity.png"
+  },
+  {
+    "name": "卫视中文台,卫视中文",
+    "epg": "卫视中文台",
+    "logo": "tb1/gt/卫视中文.png"
+  },
+  {
+    "name": "东森综合台,东森综合",
+    "epg": "东森综合台",
+    "logo": "tb1/gt/EBCVariety.png"
+  },
+  {
+    "name": "东森超视",
+    "epg": "东森超视",
+    "logo": "tb1/gt/EBCSuper.png"
+  },
+  {
+    "name": "中天综合台,中天综合",
+    "epg": "中天综合台",
+    "logo": "tb1/gt/CtiVariety.png"
+  },
+  {
+    "name": "东风卫视",
+    "epg": "东风卫视",
+    "logo": "tb1/gt/东风卫视.png"
+  },
+  {
+    "name": "年代MUCH TV",
+    "epg": "年代MUCH",
+    "logo": "tb1/gt/年代MUCH.png"
+  },
+  {
+    "name": "中天娱乐台",
+    "epg": "中天娱乐台",
+    "logo": "tb1/gt/CtiEntertainment.png"
+  },
+  {
+    "name": "东森戏剧台,东森戏剧",
+    "epg": "东森戏剧台",
+    "logo": "tb1/gt/EBCDrama.png"
+  },
+  {
+    "name": "八大戏剧台,八大戏剧",
+    "epg": "八大戏剧台",
+    "logo": "tb1/gt/GTVDramaHD.png"
+  },
+  {
+    "name": "TVBS欢乐台,TVBS欢乐",
+    "epg": "TVBS欢乐台",
+    "logo": "tb1/gt/TVBS欢乐.png"
+  },
+  {
+    "name": "纬来戏剧台,纬来戏剧",
+    "epg": "纬来戏剧台",
+    "logo": "tb1/gt/VideolandDrama.png"
+  },
+  {
+    "name": "高点电视台",
+    "epg": "高点综合台",
+    "logo": "tb1/gt/TOPTVHD.png"
+  },
+  {
+    "name": "JET综合台",
+    "epg": "JET综合台",
+    "logo": "tb1/gt/JETVariety.png"
+  },
+  {
+    "name": "壹电视新闻台",
+    "epg": "壹电视新闻台",
+    "logo": "tb1/gt/NextTVNews.png"
+  },
+  {
+    "name": "年代新闻台,年代新闻",
+    "epg": "年代新闻台",
+    "logo": "tb1/gt/年代ERANewsHD.png"
+  },
+  {
+    "name": "东森新闻台,东森新闻",
+    "epg": "东森新闻台",
+    "logo": "tb1/gt/EBCNews.png"
+  },
+  {
+    "name": "中天新闻台,中天新闻",
+    "epg": "中天新闻台"
+  },
+  {
+    "name": "民视新闻台,民视新闻",
+    "epg": "民视新闻台",
+    "logo": "tb1/gt/FTVNews.png"
+  },
+  {
+    "name": "三立新闻台,三立新闻",
+    "epg": "三立新闻台",
+    "logo": "tb1/gt/SETNews.png"
+  },
+  {
+    "name": "TVBS 新闻台,TVBS新闻台,TVBS新闻",
+    "epg": "TVBS新闻台",
+    "logo": "tb1/gt/TVBS新闻.png"
+  },
+  {
+    "name": "TVBS",
+    "epg": "TVBS",
+    "logo": "tb1/gt/TVBS.png"
+  },
+  {
+    "name": "东森财经新闻台,东森财经新闻",
+    "epg": "东森财经新闻台",
+    "logo": "tb1/gt/EBCFinancialNews.png"
+  },
+  {
+    "name": "非凡新闻台",
+    "epg": "非凡新闻台",
+    "logo": "tb1/gt/UniqueNews.png"
+  },
+  {
+    "name": "卫视电影台",
+    "epg": "卫视电影台",
+    "logo": "tb1/gt/StarChineseMovies.png"
+  },
+  {
+    "name": "东森电影台,东森电影",
+    "epg": "东森电影台",
+    "logo": "tb1/gt/EBCMovies.png"
+  },
+  {
+    "name": "纬来电影台,纬来电影",
+    "epg": "纬来电影台",
+    "logo": "tb1/gt/VideolandMovies.png"
+  },
+  {
+    "name": "LS Time龙祥時代电影台",
+    "epg": "LSTime电影台",
+    "logo": "tb1/gt/LSTIME.png"
+  },
+  {
+    "name": "东森洋片台,东森洋片",
+    "epg": "东森洋片台",
+    "logo": "tb1/gt/EBCWesternMovies.png"
+  },
+  {
+    "name": "好莱坞电影台,好莱坞电影",
+    "epg": "好莱坞电影台",
+    "logo": "tb1/gt/HMC.png"
+  },
+  {
+    "name": "纬来育乐台,纬来育乐",
+    "epg": "纬来育乐台",
+    "logo": "tb1/gt/VideolandMaxTV.png"
+  },
+  {
+    "name": "纬来体育台,纬来体育",
+    "epg": "纬来体育台",
+    "logo": "tb1/gt/VideolandSportsHD.png"
+  },
+  {
+    "name": "纬来日本台,纬来日本",
+    "epg": "纬来日本台",
+    "logo": "tb1/gt/VideolandJapanese.png"
+  },
+  {
+    "name": "国兴卫视",
+    "epg": "国兴卫视",
+    "logo": "tb1/gt/GoldSunTV.png"
+  },
+  {
+    "name": "靖天综合台,靖天综合",
+    "epg": "靖天综合台",
+    "logo": "tb1/gt/靖天综合.png"
+  },
+  {
+    "name": "靖天资讯台,靖天资讯",
+    "epg": "靖天资讯台",
+    "logo": "tb1/gt/靖天资讯.png"
+  },
+  {
+    "name": "信吉电视台",
+    "epg": "信吉电视台",
+    "logo": "tb1/gt/SinJiTVHD.png"
+  },
+  {
+    "name": "靖洋戏剧台",
+    "epg": "靖洋戏剧台",
+    "logo": "tb1/gt/靖洋戏剧.png"
+  },
+  {
+    "name": "华艺台湾台",
+    "epg": "华艺台湾台"
+  },
+  {
+    "name": "凯亚综合台",
+    "epg": "凯亚综合台"
+  },
+  {
+    "name": "冠军电视台",
+    "epg": "冠军电视台",
+    "logo": "tb1/gt/ChampionTV1.png"
+  },
+  {
+    "name": "台湾艺术台,台湾艺术",
+    "epg": "台湾艺术台",
+    "logo": "tb1/gt/TACT.png"
+  },
+  {
+    "name": "全大电视台",
+    "epg": "全大电视台",
+    "logo": "tb1/gt/CostarTV.png"
+  },
+  {
+    "name": "非凡商业台,非凡商业",
+    "epg": "非凡商业台",
+    "logo": "tb1/gt/UniqueUSTVHDUSTVHD.png"
+  },
+  {
+    "name": "三立财经新闻台inews,三立财经新闻",
+    "epg": "三立财经新闻台",
+    "logo": "tb1/gt/SETInews.png"
+  },
+  {
+    "name": "中华财经",
+    "epg": "中华财经"
+  },
+  {
+    "name": "运通财经",
+    "epg": "运通财经",
+    "logo": "tb1/gt/EFTV.png"
+  },
+  {
+    "name": "SBN全球财经台",
+    "epg": "SBN全球财经台",
+    "logo": "tb1/gt/SBN.png"
+  },
+  {
+    "name": "诚心电视台",
+    "epg": "诚心电视台",
+    "logo": "tb1/gt/ChengSinTV.png"
+  },
+  {
+    "name": "MTV Live HD 音乐频道",
+    "epg": "MTV",
+    "logo": "tb1/gt/mtvlivehd.png"
+  },
+  {
+    "name": "靖天映画",
+    "epg": "靖天映画",
+    "logo": "tb1/gt/靖天映画.png"
+  },
+  {
+    "name": "海豚综合台",
+    "epg": "海豚综合台",
+    "logo": "tb1/gt/海豚综合.png"
+  },
+  {
+    "name": "霹雳台湾台",
+    "epg": "霹雳台湾台",
+    "logo": "tb1/gt/PiliPuppet.png"
+  },
+  {
+    "name": "十方法界",
+    "epg": "十方法界",
+    "logo": "tb1/gt/CosmosBuddhistMissionaryTV.png"
+  },
+  {
+    "name": "信大频道",
+    "epg": "信大频道",
+    "logo": "tb1/gt/SinDaTV.png"
+  },
+  {
+    "name": "华藏卫视",
+    "epg": "华藏卫视",
+    "logo": "tb1/gt/HwaZanTV.png"
+  },
+  {
+    "name": "Z频道",
+    "epg": "Z频道",
+    "logo": "tb1/gt/ZChannel.png"
+  },
+  {
+    "name": "佛卫慈悲台,佛卫慈悲",
+    "epg": "佛卫慈悲台",
+    "logo": "tb1/gt/BudddhaCompassionTV.png"
+  },
+  {
+    "name": "生命频道",
+    "epg": "生命频道",
+    "logo": "tb1/gt/shengming.png"
+  },
+  {
+    "name": "天良综合台",
+    "epg": "天良综合台",
+    "logo": "tb1/gt/TienLiangTVHD.png"
+  },
+  {
+    "name": "正德电视台",
+    "epg": "正德电视台",
+    "logo": "tb1/gt/ChengTeTV.png"
+  },
+  {
+    "name": "高点育乐台",
+    "epg": "高点育乐台",
+    "logo": "tb1/gt/TOPTV2.png"
+  },
+  {
+    "name": "冠军梦想台",
+    "epg": "冠军梦想台",
+    "logo": "tb1/gt/ChampionTV2.png"
+  },
+  {
+    "name": "八大娱乐台,八大娱乐",
+    "epg": "八大娱乐台",
+    "logo": "tb1/gt/GTVEntertainment.png"
+  },
+  {
+    "name": "大立电视台,大立电视",
+    "epg": "大立电视台",
+    "logo": "tb1/gt/DaliTV.png"
+  },
+  {
+    "name": "幸福空间居家台",
+    "epg": "幸福空间居家台",
+    "logo": "tb1/gt/gstv.png"
+  },
+  {
+    "name": "大爱二台",
+    "epg": "大爱二台",
+    "logo": "tb1/gt/daai2.png"
+  },
+  {
+    "name": "台视新闻台,台视新闻",
+    "epg": "台视新闻台",
+    "logo": "tb1/gt/台视新闻.png"
+  },
+  {
+    "name": "台视财经台,台视财经",
+    "epg": "台视财经台",
+    "logo": "tb1/gt/台视财经.png"
+  },
+  {
+    "name": "台视综合台,台视综合",
+    "epg": "台视综合台",
+    "logo": "tb1/gt/台视综合.png"
+  },
+  {
+    "name": "靖天欢乐台,靖天欢乐",
+    "epg": "靖天欢乐台",
+    "logo": "tb1/gt/靖天欢乐.png"
+  },
+  {
+    "name": "靖天育乐台,靖天育乐",
+    "epg": "靖天育乐台",
+    "logo": "tb1/gt/靖天育乐.png"
+  },
+  {
+    "name": "靖天日本台,靖天日本",
+    "epg": "靖天日本台",
+    "logo": "tb1/gt/靖天日本.png"
+  },
+  {
+    "name": "Food Network美食台",
+    "epg": "FoodNetwork美食台",
+    "logo": "tb1/gt/FoodNetwork.png"
+  },
+  {
+    "name": "HGTV居家乐活",
+    "epg": "HGTV居家乐活",
+    "logo": "tb1/gt/HGTV.png"
+  },
+  {
+    "name": "Travel Channel",
+    "epg": "TravelChannel",
+    "logo": "tb1/gt/travelchannel.png"
+  },
+  {
+    "name": "亚洲美食频道",
+    "epg": "亚洲美食频道",
+    "logo": "tb1/gt/afc.png"
+  },
+  {
+    "name": "寰宇新闻",
+    "epg": "寰宇新闻",
+    "logo": "tb1/gt/GlobalNews.png"
+  },
+  {
+    "name": "亚洲旅游台",
+    "epg": "亚洲旅游台",
+    "logo": "tb1/gt/asiatravel.png"
+  },
+  {
+    "name": "博斯运动二台",
+    "epg": "博斯运动二台",
+    "logo": "tb1/gt/sports_net_2.png"
+  },
+  {
+    "name": "博斯网球台",
+    "epg": "博斯网球台",
+    "logo": "tb1/gt/sport_tennis.png"
+  },
+  {
+    "name": "博斯无限台",
+    "epg": "博斯无限台",
+    "logo": "tb1/gt/sport_unlimited.png"
+  },
+  {
+    "name": "博斯高球1台",
+    "epg": "博斯高球1台",
+    "logo": "tb1/gt/sports-golfch.png"
+  },
+  {
+    "name": "博斯高球2台",
+    "epg": "博斯高球2台",
+    "logo": "tb1/gt/sport-golfplus.png"
+  },
+  {
+    "name": "博斯魅力网",
+    "epg": "博斯魅力网",
+    "logo": "tb1/gt/sport-trendsport.png"
+  },
+  {
+    "name": "博斯运动一台",
+    "epg": "博斯运动一台",
+    "logo": "tb1/gt/sport-sports_net.png"
+  },
+  {
+    "name": "博斯无限二台",
+    "epg": "博斯无限二台",
+    "logo": "tb1/gt/sport_unlimited2.png"
+  },
+  {
+    "name": "达文西频道",
+    "epg": "达文西频道",
+    "logo": "tb1/gt/davinci.png"
+  },
+  {
+    "name": "MOMO追剧台",
+    "epg": "MOMO追剧"
+  },
+  {
+    "name": "靖洋卡通台,靖洋卡通",
+    "epg": "靖洋卡通台",
+    "logo": "tb1/gt/靖洋卡通.png"
+  },
+  {
+    "name": "靖天卡通台,靖天卡通",
+    "epg": "靖天卡通台",
+    "logo": "tb1/gt/靖天卡通.png"
+  },
+  {
+    "name": "三立综合台,三立综合",
+    "epg": "三立综合台",
+    "logo": "tb1/gt/SETZonghe.png"
+  },
+  {
+    "name": "龙华偶像",
+    "epg": "龙华偶像",
+    "logo": "tb1/gt/龙华偶像.png"
+  },
+  {
+    "name": "龙华戏剧",
+    "epg": "龙华戏剧",
+    "logo": "tb1/gt/龙华戏剧.png"
+  },
+  {
+    "name": "龙华电影",
+    "epg": "龙华电影",
+    "logo": "tb1/gt/龙华电影.png"
+  },
+  {
+    "name": "龙华卡通台",
+    "epg": "龙华卡通台"
+  },
+  {
+    "name": "龙华经典",
+    "epg": "龙华经典",
+    "logo": "tb1/gt/龙华经典.png"
+  },
+  {
+    "name": "龙华影剧",
+    "epg": "龙华影剧",
+    "logo": "tb1/gt/龙华影剧.png"
+  },
+  {
+    "name": "龙华洋片",
+    "epg": "龙华洋片",
+    "logo": "tb1/gt/龙华洋片.png"
+  },
+  {
+    "name": "民视第一台",
+    "epg": "民视第一台",
+    "logo": "tb1/gt/ftv-1.png"
+  },
+  {
+    "name": "民视台湾台,民视台湾",
+    "epg": "民视台湾台",
+    "logo": "tb1/gt/ftv-taiwan.png"
+  },
+  {
+    "name": "民视",
+    "epg": "民视",
+    "logo": "tb1/gt/民视.png"
+  },
+  {
+    "name": "中视菁采台",
+    "epg": "中视菁采台",
+    "logo": "tb1/gt/中视菁采.png"
+  },
+  {
+    "name": "TVBS精采台",
+    "epg": "TVBS精采台",
+    "logo": "tb1/gt/TVBS精采.png"
+  },
+  {
+    "name": "Baby First宝宝世界",
+    "epg": "BabyFirst",
+    "logo": "tb1/gt/BabyFirst.png"
+  },
+  {
+    "name": "民视综艺台,民视综艺",
+    "epg": "民视综艺台",
+    "logo": "tb1/gt/ftv-zongyi.png"
+  },
+  {
+    "name": "华艺MBC综合台",
+    "epg": "华艺MBC",
+    "logo": "tb1/gt/huayimbc.png"
+  },
+  {
+    "name": "TRACE Urban",
+    "epg": "TRACEUrban",
+    "logo": "tb1/gt/traceurban.png"
+  },
+  {
+    "name": "Fashion One",
+    "epg": "FashionOne",
+    "logo": "tb1/gt/fashionone.png"
+  },
+  {
+    "name": "龙华日韩台,龙华日韩",
+    "epg": "龙华日韩台",
+    "logo": "tb1/gt/龙华日韩.png"
+  },
+  {
+    "name": "靖天戏剧台,靖天戏剧",
+    "epg": "靖天戏剧台",
+    "logo": "tb1/gt/靖天戏剧.png"
+  },
+  {
+    "name": "靖天电影台,靖天电影",
+    "epg": "靖天电影台",
+    "logo": "tb1/gt/靖天电影.png"
+  },
+  {
+    "name": "WAKUWAKU JAPANE",
+    "epg": "wakuwaku"
+  },
+  {
+    "name": "中视经典台,中视经典",
+    "epg": "中视经典",
+    "logo": "tb1/gt/中视经典.png"
+  },
+  {
+    "name": "i-Fun动漫台",
+    "epg": "iFun1",
+    "logo": "tb1/gt/ifun1.png"
+  },
+  {
+    "name": "i-Fun动漫2台",
+    "epg": "iFun2"
+  },
+  {
+    "name": "i-Fun动漫2台",
+    "epg": "iFun3",
+    "logo": "tb1/gt/ifun3.png"
+  },
+  {
+    "name": "中视新闻台,中视新闻",
+    "epg": "中视新闻",
+    "logo": "tb1/gt/中视新闻.png"
+  },
+  {
+    "name": "寰宇新闻二台,寰宇新闻2",
+    "epg": "寰宇新闻2"
+  },
+  {
+    "name": "CI 罪案侦查频道",
+    "epg": "CI",
+    "logo": "tb1/gt/CrimeInvestigation.png"
+  },
+  {
+    "name": "视纳华仁纪实频道",
+    "epg": "cnex",
+    "logo": "tb1/gt/cnex.png"
+  },
+  {
+    "name": "采昌影剧台",
+    "epg": "采昌影剧",
+    "logo": "tb1/gt/采昌影剧.png"
+  },
+  {
+    "name": "智林体育台",
+    "epg": "智林体育",
+    "logo": "tb1/gt/智林体育台.png"
+  },
+  {
+    "name": "影迷数位纪实台",
+    "epg": "影迷数位纪实",
+    "logo": "tb1/gt/影迷纪实.png"
+  },
+  {
+    "name": "影迷数位电影台",
+    "epg": "影迷数位电影",
+    "logo": "tb1/gt/影迷电影.png"
+  },
+  {
+    "name": "ELTV生活英语台",
+    "epg": "ELTV",
+    "logo": "tb1/gt/eltv.png"
+  },
+  {
+    "name": "KLT靖天国际,靖天国际",
+    "epg": "靖天国际",
+    "logo": "tb1/gt/靖天国际.png"
+  },
+  {
+    "name": "龙华动画",
+    "epg": "龙华动画",
+    "logo": "tb1/gt/longhuadonghua.png"
+  },
+  {
+    "name": "MTV综合电视台",
+    "epg": "MTV综合",
+    "logo": "tb1/gt/MTV.png"
+  },
+  {
+    "name": "CMusic",
+    "epg": "CMusic"
+  },
+  {
+    "name": "爱尔达体育2台",
+    "epg": "爱尔达体育2",
+    "logo": "tb1/gt/elta_sports2.png"
+  },
+  {
+    "name": "LUXE TV Channel",
+    "epg": "LUXETV",
+    "logo": "tb1/gt/luxetv.png"
+  },
+  {
+    "name": "滚动力 rollor",
+    "epg": "rollor",
+    "logo": "tb1/gt/roller.png"
+  },
+  {
+    "name": "亚洲综合台,亚洲综合",
+    "epg": "亚洲综合",
+    "logo": "tb1/gt/asiazonghe.png"
+  },
+  {
+    "name": "寰宇HD综合台,寰宇,寰宇HD综合",
+    "epg": "寰宇HD综合",
+    "logo": "tb1/gt/huanyuzonghe.png"
+  },
+  {
+    "name": "纬来精采台,纬来精采",
+    "epg": "纬来精采",
+    "logo": "tb1/gt/weilaojingcai.png"
+  },
+  {
+    "name": "ETtoday综合台",
+    "epg": "Ettoday",
+    "logo": "tb1/gt/etoday.png"
+  },
+  {
+    "name": "八大优频道,八大优",
+    "epg": "八大优",
+    "logo": "tb1/gt/badayou.png"
+  },
+  {
+    "name": "台湾戏剧台",
+    "epg": "台湾戏剧",
+    "logo": "tb1/gt/taiwanxiju.png"
+  },
+  {
+    "name": "爱尔达影剧台",
+    "epg": "爱尔达影剧",
+    "logo": "tb1/gt/elta_yingju.png"
+  },
+  {
+    "name": "MY101综合台",
+    "epg": "MY101综合",
+    "logo": "tb1/gt/my101.png"
+  },
+  {
+    "name": "星卫娱乐台,星卫娱乐",
+    "epg": "星卫娱乐",
+    "logo": "tb1/gt/starmovieyule.png"
+  },
+  {
+    "name": "寰宇财经台,寰宇财经",
+    "epg": "寰宇财经",
+    "logo": "tb1/gt/huanyucaijing.png"
+  },
+  {
+    "name": "CatchPlay电影台",
+    "epg": "CatchPlay电影",
+    "logo": "tb1/gt/catchplay.png"
+  },
+  {
+    "name": "我的欧洲电影",
+    "epg": "MyCinemaEurope",
+    "logo": "tb1/gt/MyCinemaEurope.png"
+  },
+  {
+    "name": "TFC(ABS-CBN)",
+    "epg": "TFC",
+    "logo": "tb1/gt/tfc.png"
+  },
+  {
+    "name": "MY-KIDS TV",
+    "epg": "MY-KIDS",
+    "logo": "tb1/gt/mykids.png"
+  },
+  {
+    "name": "爱尔达体育1台",
+    "epg": "爱尔达体育1",
+    "logo": "tb1/gt/eata_sports1.png"
+  },
+  {
+    "name": "爱尔达体育3台",
+    "epg": "爱尔达体育3",
+    "logo": "tb1/gt/eata_sports3.png"
+  },
+  {
+    "name": "狼谷竞技台",
+    "epg": "狼谷竞技",
+    "logo": "tb1/gt/wolvesvalley.png"
+  },
+  {
+    "name": "美食星球频道",
+    "epg": "美食星球",
+    "logo": "tb1/gt/fooldplanet.png"
+  },
+  {
+    "name": "EYE TV旅游台",
+    "epg": "EYE旅游",
+    "logo": "tb1/gt/eyelvyou.png"
+  },
+  {
+    "name": "爱尔达综合台",
+    "epg": "爱尔达综合",
+    "logo": "tb1/gt/elta_zonghehd.png"
+  },
+  {
+    "name": "天天电视台,天天电视",
+    "epg": "天天电视",
+    "logo": "tb1/gt/tiantian.png"
+  },
+  {
+    "name": "三立戏剧台,三立戏剧",
+    "epg": "三立戏剧",
+    "logo": "tb1/gt/setxiju.png"
+  },
+  {
+    "name": "EYE TV戏剧台",
+    "epg": "EYE戏剧",
+    "logo": "tb1/gt/eyexiju.png"
+  },
+  {
+    "name": "曼迪日本台,曼迪日本",
+    "epg": "曼迪日本",
+    "logo": "tb1/gt/mandi_japan.png"
+  },
+  {
+    "name": "Star Movies HD(MOD)",
+    "epg": "StarMoviesHD",
+    "logo": "tb1/gt/StarMoviesHD.png"
+  },
+  {
+    "name": "华艺影剧台,华艺影剧",
+    "epg": "华艺影剧",
+    "logo": "tb1/gt/huayi_yingju.png"
+  },
+  {
+    "name": "唯心电视台,唯心电视",
+    "epg": "唯心电视",
+    "logo": "tb1/gt/weixin.png"
+  },
+  {
+    "name": "卫视电影台（港）,卫视电影",
+    "epg": "卫视电影台",
+    "logo": "tb1/gt/StarChineseMovies.png"
+  },
+  {
+    "name": "澳亚卫视",
+    "epg": "澳亚卫视"
+  },
+  {
+    "name": "NHK World TV",
+    "epg": "NHKWorld",
+    "logo": "tb1/gt/NHKWorld.png"
+  },
+  {
+    "name": "FOXCRIME",
+    "epg": "FOXCRIME"
+  },
+  {
+    "name": "国家地理野生频道",
+    "epg": "国家地理野生频道",
+    "logo": "tb1/gt/natgeowild.png"
+  },
+  {
+    "name": "MEZZO LIVE HD",
+    "epg": "MEZZOLIVEHD",
+    "logo": "tb1/gt/mezzo.png"
+  },
+  {
+    "name": "Fox Sports 3",
+    "epg": "FoxSports3"
+  },
+  {
+    "name": "Lifetime 娱乐频道",
+    "epg": "Lifetime",
+    "logo": "tb1/gt/Lifetime.png"
+  },
+  {
+    "name": "BBC World News",
+    "epg": "BBCWorldNews",
+    "logo": "tb1/gt/BBCWORLDNEWSASIA.png"
+  },
+  {
+    "name": "CN卡通频道,CN卡通",
+    "epg": "CN卡通频道",
+    "logo": "tb1/gt/CNCartoon.png"
+  },
+  {
+    "name": "Disney Junior",
+    "epg": "DisneyJunior"
+  },
+  {
+    "name": "CNBC亚太财经",
+    "epg": "CNBCHongKong",
+    "logo": "tb1/gt/CNBC.png"
+  },
+  {
+    "name": "国家地理频道,国家地理",
+    "epg": "国家地理频道",
+    "logo": "tb1/gt/natgeo.png"
+  },
+  {
+    "name": "法国时尚台",
+    "epg": "FashionTV",
+    "logo": "tb1/gt/faguoshishang.png"
+  },
+  {
+    "name": "Fox Family Movies",
+    "epg": "FoxFamilyMovies"
+  },
+  {
+    "name": "FX HD",
+    "epg": "FXHD",
+    "logo": "tb1/gt/FXHD.png"
+  },
+  {
+    "name": "Fox News Channel",
+    "epg": "FoxNews"
+  },
+  {
+    "name": "DW德国之声",
+    "epg": "DW",
+    "logo": "tb1/gt/DW.png"
+  },
+  {
+    "name": "法国TV5Monde",
+    "epg": "TV5Monde",
+    "logo": "tb1/gt/tv5monde.png"
+  },
+  {
+    "name": "法国24台",
+    "epg": "france24",
+    "logo": "tb1/gt/france24.png"
+  },
+  {
+    "name": "Sky News",
+    "epg": "SkyNews",
+    "logo": "tb1/gt/SkyNews.png"
+  },
+  {
+    "name": "天映经典频道,天映经典",
+    "epg": "天映经典"
+  },
+  {
+    "name": "FOX Action Movies",
+    "epg": "FOXActionMovies"
+  },
+  {
+    "name": "cinemaworld",
+    "epg": "cinemaworld",
+    "logo": "tb1/gt/cinemaworld.png"
+  },
+  {
+    "name": "Comedy Central Asia爆笑台",
+    "epg": "ComedyCentralAsia"
+  },
+  {
+    "name": "CGTN 纪录(英),CGTN纪录(英),CGTN 纪录,CGTN纪录",
+    "epg": "CGTNDocumentary",
+    "logo": "tb1/CCTV/CGTNDoc.png"
+  },
+  {
+    "name": "Trace Sports",
+    "epg": "TraceSports",
+    "logo": "tb1/gt/TRACESportStars.png"
+  },
+  {
+    "name": "Outdoor Channel",
+    "epg": "Outdoor",
+    "logo": "tb1/gt/outdoor.png"
+  },
+  {
+    "name": "HITS",
+    "epg": "HITS",
+    "logo": "tb1/gt/HITS.png"
+  },
+  {
+    "name": "CNN国际新闻频道",
+    "epg": "CNN",
+    "logo": "tb1/gt/CNNNews.png"
+  },
+  {
+    "name": "国家地理频道(台湾)",
+    "epg": "国家地理频道(台湾)",
+    "logo": "tb1/gt/NationalGeographic_taiwan.png"
+  },
+  {
+    "name": "探索发现频道,探索发现",
+    "epg": "Discovery",
+    "logo": "tb1/gt/DiscoveryHD.png"
+  },
+  {
+    "name": "TLC旅游生活频道",
+    "epg": "TLC旅游生活频道",
+    "logo": "tb1/gt/tlc.png"
+  },
+  {
+    "name": "动物星球",
+    "epg": "动物星球",
+    "logo": "tb1/gt/AnimalPlanet.png"
+  },
+  {
+    "name": "迪士尼频道",
+    "epg": "Disney",
+    "logo": "tb1/gt/Disney.png"
+  },
+  {
+    "name": "HBO",
+    "epg": "HBO",
+    "logo": "tb1/gt/HBO.png"
+  },
+  {
+    "name": "AXN",
+    "epg": "AXN",
+    "logo": "tb1/gt/AXN.png"
+  },
+  {
+    "name": "FOX MOVIES",
+    "epg": "FOXMOVIES",
+    "logo": "tb1/gt/FOXMOVIES.png"
+  },
+  {
+    "name": "CINEMAX",
+    "epg": "CINEMAX",
+    "logo": "tb1/gt/CinemaxHD.png"
+  },
+  {
+    "name": "FOX Sports",
+    "epg": "FOXSports",
+    "logo": "tb1/gt/FOXSports.png"
+  },
+  {
+    "name": "FOX Sports 2",
+    "epg": "FOXSports2"
+  },
+  {
+    "name": "ELEVEN体育一台",
+    "epg": "ELEVEN体育一台",
+    "logo": "tb1/gt/ELEVENsports1.png"
+  },
+  {
+    "name": "FOX",
+    "epg": "FOX",
+    "logo": "tb1/gt/FOXHD.png"
+  },
+  {
+    "name": "NHK",
+    "epg": "NHK",
+    "logo": "tb1/gt/NHK.png"
+  },
+  {
+    "name": "Animax HD",
+    "epg": "AnimaxHD"
+  },
+  {
+    "name": "亚洲新闻台,亚洲新闻",
+    "epg": "ChannelNewsAsia",
+    "logo": "tb1/gt/channelnewsasia.png"
+  },
+  {
+    "name": "彭博财经台,彭博财经",
+    "epg": "BloombergTV",
+    "logo": "tb1/gt/BloombergTV.png"
+  },
+  {
+    "name": "韩国阿里郎",
+    "epg": "ArirangTV",
+    "logo": "tb1/gt/ArirangTV.png"
+  },
+  {
+    "name": "BBC Lifestyle",
+    "epg": "BBCLifestyle",
+    "logo": "tb1/gt/BBCLifestyle.png"
+  },
+  {
+    "name": "梦工厂",
+    "epg": "DREAMWORKS",
+    "logo": "tb1/gt/dreamworks.png"
+  },
+  {
+    "name": "Warner TV",
+    "epg": "WarnerTV",
+    "logo": "tb1/gt/WarnerTV.png"
+  },
+  {
+    "name": "HBO HD",
+    "epg": "HBOHD",
+    "logo": "tb1/gt/HBOHD.png"
+  },
+  {
+    "name": "HBO 强档钜献",
+    "epg": "HBOHits",
+    "logo": "tb1/gt/HBOHits.png"
+  },
+  {
+    "name": "HBO 原创钜献",
+    "epg": "HBOSignature",
+    "logo": "tb1/gt/HBOSignature.png"
+  },
+  {
+    "name": "HBO 温馨家庭",
+    "epg": "HBOFamily",
+    "logo": "tb1/gt/HBOFamily.png"
+  },
+  {
+    "name": "BlueAnt综艺娱乐",
+    "epg": "BlueAntEntertainment",
+    "logo": "tb1/gt/BlueAntEntertainment.png"
+  },
+  {
+    "name": "tvN",
+    "epg": "tvN",
+    "logo": "tb1/gt/tvN.png"
+  },
+  {
+    "name": "E!好莱坞娱乐频道",
+    "epg": "E-ENTERTAINMENT"
+  },
+  {
+    "name": "韩国娱乐台KMTV",
+    "epg": "韩国娱乐台KMTV",
+    "logo": "tb1/gt/KMTV.png"
+  },
+  {
+    "name": "DIVA",
+    "epg": "DIVA"
+  },
+  {
+    "name": "EVE",
+    "epg": "EVE",
+    "logo": "tb1/gt/EVE.png"
+  },
+  {
+    "name": "Discovery 科学频道",
+    "epg": "Discovery科学",
+    "logo": "tb1/gt/Discovery科学.png"
+  },
+  {
+    "name": "Discovery Asia",
+    "epg": "DiscoveryAsia",
+    "logo": "tb1/gt/Discovery-Asia.png"
+  },
+  {
+    "name": "DMAX",
+    "epg": "DMAX",
+    "logo": "tb1/gt/DMAX.png"
+  },
+  {
+    "name": "梅迪奇艺术",
+    "epg": "梅迪奇艺术",
+    "logo": "tb1/gt/medici-arts.png"
+  },
+  {
+    "name": "BlueAnt超极娱乐",
+    "epg": "BlueAntExtreme",
+    "logo": "tb1/gt/BLUEAntExtreme.png"
+  },
+  {
+    "name": "欧洲新闻",
+    "epg": "Euronews",
+    "logo": "tb1/gt/euronews.png"
+  },
+  {
+    "name": "尼克儿童频道",
+    "epg": "Nickelodeon",
+    "logo": "tb1/gt/Nickelodeon.png"
+  },
+  {
+    "name": "小尼克频道",
+    "epg": "NickJr.",
+    "logo": "tb1/gt/NickJr.png"
+  },
+  {
+    "name": "CBeebies",
+    "epg": "CBeebies",
+    "logo": "tb1/gt/CBeebies.png"
+  },
+  {
+    "name": "Boomerang",
+    "epg": "Boomerang",
+    "logo": "tb1/gt/BOOMERANG.png"
+  },
+  {
+    "name": "BBC Earth",
+    "epg": "BBCEarth",
+    "logo": "tb1/gt/BBCEarth.png"
+  },
+  {
+    "name": "ABCAustralia",
+    "epg": "ABCAustralia",
+    "logo": "tb1/gt/abcaus.png"
+  },
+  {
+    "name": "CNN头条新闻台",
+    "epg": "CNNHeadlineNews",
+    "logo": "tb1/gt/CNN.png"
+  },
+  {
+    "name": "NHKWorldPremium",
+    "epg": "NHKWorldPremium",
+    "logo": "tb1/gt/nhkworldp.png"
+  },
+  {
+    "name": "爱尔达娱乐台",
+    "epg": "爱尔达娱乐台",
+    "logo": "tb1/gt/ELTA_Ent.png"
+  },
+  {
+    "name": "ELEVEN体育二台",
+    "epg": "ELEVEN体育二台",
+    "logo": "tb1/gt/elevensports2.png"
+  },
+  {
+    "name": "History 历史频道",
+    "epg": "History",
+    "logo": "tb1/gt/HistoryChannel.png"
+  },
+  {
+    "name": "HISTORY 2 频道",
+    "epg": "HISTORY2"
+  },
+  {
+    "name": "SMART 知识频道",
+    "epg": "SMART知识频道",
+    "logo": "tb1/gt/Smart知识台.png"
+  },
+  {
+    "name": "AMC",
+    "epg": "AMC",
+    "logo": "tb1/gt/AMC.png"
+  },
+  {
+    "name": "Eleven Sport Plus",
+    "epg": "ElevenSportPlus"
+  },
+  {
+    "name": "半岛国际新闻台",
+    "epg": "aljazeera",
+    "logo": "tb1/gt/aljazeera.png"
+  },
+  {
+    "name": "EUROSPORT",
+    "epg": "EUROSPORT",
+    "logo": "tb1/gt/eurosport.png"
+  },
+  {
+    "name": "Animax",
+    "epg": "Animax",
+    "logo": "tb1/gt/ANIMAX.png"
+  }
+]
