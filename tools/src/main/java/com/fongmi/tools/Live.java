@@ -30,7 +30,7 @@ public class Live {
     }
 
     private void start(String text) throws IOException {
-        //parseTxt(Util.getFile(getClass(), "live.txt"));
+        //parseTxt(Util.getFile(getClass(), "test.txt"));
         parse(Utils.call(text));
         writeFile();
     }
