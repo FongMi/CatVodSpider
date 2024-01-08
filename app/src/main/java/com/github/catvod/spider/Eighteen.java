@@ -1,15 +1,10 @@
 package com.github.catvod.spider;
 
-import android.os.SystemClock;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Util;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -88,10 +83,7 @@ public class Eighteen extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        HashMap<String, String> result = new HashMap<>();
-        Util.loadWebView(url + id, getClient(result));
-        while (result.isEmpty()) SystemClock.sleep(10);
-        return Result.get().url(result.get("url")).string();
+        return Result.get().parse().url(url + id).string();
     }
 
     private String searchContent(String key, String pg) {
@@ -109,17 +101,5 @@ public class Eighteen extends Spider {
             list.add(new Vod(id, name, pic, remark));
         }
         return Result.string(list);
-    }
-
-    private WebViewClient getClient(HashMap<String, String> result) {
-        return new WebViewClient() {
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                if (url.endsWith(".m3u8")) {
-                    result.put("url", url);
-                    view.destroy();
-                }
-            }
-        };
     }
 }

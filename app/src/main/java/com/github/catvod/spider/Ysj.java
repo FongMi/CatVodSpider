@@ -23,11 +23,11 @@ import java.util.Map;
 
 public class Ysj extends Spider {
 
-    private static final String siteUrl = "https://ysjdm.net";
-    private static final String cateUrl = "https://ysjdm.net/index.php/vod/show";
-    private static final String homeUrl = "https://ysjdm.net/index.php/vod/show/id/20.html";
-    private static final String detailUrl = "https://ysjdm.net/index.php/vod/detail/id/";
-    private static final String searchUrl = "https://ysjdm.net/index.php/vod/search.html";
+    private static final String siteUrl = "https://www.lldm.net";
+    private static final String cateUrl = "https://www.lldm.net/index.php/vod/show";
+    private static final String homeUrl = "https://www.lldm.net/index.php/vod/show/id/20.html";
+    private static final String detailUrl = "https://www.lldm.net/index.php/vod/detail/id/";
+    private static final String searchUrl = "https://www.lldm.net/index.php/vod/search.html";
     private static final String playUrl = "/index.php/vod/play/id/";
 
     private HashMap<String, String> getHeaders() {
