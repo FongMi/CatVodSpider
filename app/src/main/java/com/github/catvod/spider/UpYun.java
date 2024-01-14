@@ -1,20 +1,34 @@
 package com.github.catvod.spider;
 
+import android.content.Context;
+import android.util.Base64;
+
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
-import com.github.catvod.bean.upyun.Data;
-import com.github.catvod.bean.upyun.Item;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Util;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.Map;
 
 public class UpYun extends Ali {
+    private Map<String, String> getHeader() {
+        Map<String, String> header = new HashMap<>();
+        header.put("User-Agent", Util.CHROME);
+        return header;
+    }
+
+    @Override
+    public void init(Context context, String extend) throws Exception {
+        JSONObject extendJson = new JSONObject(extend.startsWith("http") ? OkHttp.string(extend) : extend);
+        super.init(context, extendJson.getString("aliCookie"));
+    }
 
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
@@ -27,29 +41,22 @@ public class UpYun extends Ali {
     }
 
     private String searchContent(String key, String pg) throws Exception {
-        String res = decode(OkHttp.string("https://zyb.upyunso.com/v15/search?keyword=" + URLEncoder.encode(key) + "&page=" + pg + "&s_type=2"));
+        String searchUrl = "https://upapi.juapp9.com/search?keyword=" + URLEncoder.encode(key) + "&page=" + pg + "&s_type=2";
+        String content = OkHttp.string(searchUrl, getHeader());
+        String decodedContent = new String(Base64.decode(content, Base64.DEFAULT));
+        JSONArray jsonArray = new JSONObject(decodedContent).getJSONObject("result").getJSONArray("items");
         List<Vod> list = new ArrayList<>();
-        for (Item item : Data.objectFrom(res).getResult().getItems()) {
-            String url = decode(item.getPageUrl());
-            if (!url.contains("www.aliyundrive.com")) continue;
-            if (item.getTitle().contains(key)) list.add(item.url(url).getVod());
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObj = jsonArray.getJSONObject(i);
+            String id = jsonObj.optString("page_url");
+            String name = jsonObj.optString("title");
+            String pic = "https://pic.imgdb.cn/item/65767399c458853aeff8a6a0.webp";
+            String remark = jsonObj.optString("insert_time");
+            if (name.contains(key))
+                list.add(new Vod(id, name, pic, remark));
         }
         return Result.string(list);
     }
 
-    private String decode(String data) throws Exception {
-        SecretKeySpec keySpec = new SecretKeySpec("qq1920520460qqzz".getBytes(), "AES");
-        IvParameterSpec ivSpec = new IvParameterSpec("qq1920520460qqzz".getBytes());
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-        byte[] encryptDataBytes = decodeHex(data.toUpperCase());
-        byte[] decryptData = cipher.doFinal(encryptDataBytes);
-        return new String(decryptData, "UTF-8");
-    }
 
-    private static byte[] decodeHex(String s) {
-        byte[] bytes = new byte[s.length() / 2];
-        for (int i = 0; i < bytes.length; i++) bytes[i] = Integer.valueOf(s.substring(i * 2, i * 2 + 2), 16).byteValue();
-        return bytes;
-    }
 }
