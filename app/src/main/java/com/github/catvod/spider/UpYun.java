@@ -1,6 +1,5 @@
 package com.github.catvod.spider;
 
-import android.content.Context;
 import android.util.Base64;
 
 import com.github.catvod.bean.Result;
@@ -22,12 +21,6 @@ public class UpYun extends Ali {
         Map<String, String> header = new HashMap<>();
         header.put("User-Agent", Util.CHROME);
         return header;
-    }
-
-    @Override
-    public void init(Context context, String extend) throws Exception {
-        JSONObject extendJson = new JSONObject(extend.startsWith("http") ? OkHttp.string(extend) : extend);
-        super.init(context, extendJson.getString("aliCookie"));
     }
 
     @Override
