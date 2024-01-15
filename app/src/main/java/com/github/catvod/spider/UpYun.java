@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UpYun extends Ali {
+
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
         header.put("User-Agent", Util.CHROME);
@@ -45,11 +46,8 @@ public class UpYun extends Ali {
             String name = jsonObj.optString("title");
             String pic = "https://pic.imgdb.cn/item/65767399c458853aeff8a6a0.webp";
             String remark = jsonObj.optString("insert_time");
-            if (name.contains(key))
-                list.add(new Vod(id, name, pic, remark));
+            if (name.contains(key)) list.add(new Vod(id, name, pic, remark));
         }
         return Result.string(list);
     }
-
-
 }
