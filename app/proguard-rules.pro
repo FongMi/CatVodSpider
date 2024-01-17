@@ -32,6 +32,9 @@
 -keep class okio.** { *; }
 -keep class okhttp3.** { *; }
 
+# QuickJS
+-keep class com.whl.quickjs.** { *; }
+
 # Sardine
 -keep class com.thegrizzlylabs.sardineandroid.** { *; }
 

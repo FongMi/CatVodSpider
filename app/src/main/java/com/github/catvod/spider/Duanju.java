@@ -39,10 +39,7 @@ public class Duanju extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        super.init(context, extend);
-        if (!extend.isEmpty()) {
-            siteUrl = extend;
-        }
+        if (!extend.isEmpty()) siteUrl = extend;
     }
 
     @Override
@@ -85,7 +82,7 @@ public class Duanju extends Spider {
     public String detailContent(List<String> ids) throws Exception {
         Document doc = Jsoup.parse(OkHttp.string(ids.get(0), getHeader()));
         Elements circuits = doc.select(".module-tab-item.tab-item");
-        Elements sources = doc.select("[class=scroll-content]"); 
+        Elements sources = doc.select("[class=scroll-content]");
         StringBuilder vod_play_url = new StringBuilder();
         StringBuilder vod_play_from = new StringBuilder();
         for (int i = 0; i < sources.size(); i++) {

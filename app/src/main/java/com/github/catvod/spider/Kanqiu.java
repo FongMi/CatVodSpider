@@ -37,10 +37,7 @@ public class Kanqiu extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        super.init(context, extend);
-        if (!extend.isEmpty()) {
-            siteUrl = extend;
-        }
+        if (!extend.isEmpty()) siteUrl = extend;
     }
 
     @Override

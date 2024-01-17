@@ -11,7 +11,6 @@ android {
         minSdk 17
         targetSdk 28
         buildConfigField("String", "CLIENT_ID", "\"${clientId}\"")
-        multiDexEnabled true
     }
 
     buildTypes {
@@ -31,11 +30,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    configurations.configureEach {
+        resolutionStrategy {
+            force 'com.squareup.okhttp3:okhttp:3.12.13'
+        }
+    }
 }
 
 dependencies {
-    implementation('com.github.thegrizzlylabs:sardine-android:0.8') { exclude group: 'com.squareup.okhttp3', module: 'okhttp' }
     implementation 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
+    implementation 'com.github.thegrizzlylabs:sardine-android:0.8'
     implementation 'wang.harlon.quickjs:wrapper-android:0.21.1'
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
     implementation 'com.google.code.gson:gson:2.8.6'

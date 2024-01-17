@@ -32,7 +32,7 @@ public class Wogg extends Ali {
     private final Pattern regexCategory = Pattern.compile("/vodtype/(\\w+).html");
     private final Pattern regexPageTotal = Pattern.compile("\\$\\(\"\\.mac_total\"\\)\\.text\\('(\\d+)'\\);");
 
-    private JsonObject extend;
+    private JsonObject ext;
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
@@ -42,14 +42,14 @@ public class Wogg extends Ali {
 
     @Override
     public void init(Context context, String extend) {
-        this.extend = JsonParser.parseString(extend).getAsJsonObject();
-        super.init(context, this.extend.get("token").getAsString());
+        ext = JsonParser.parseString(extend).getAsJsonObject();
+        super.init(context, ext.has("token") ? ext.get("token").getAsString() : "");
     }
 
     @Override
     public String homeContent(boolean filter) {
         List<Class> classes = new ArrayList<>();
-        String url = extend.has("filter") ? extend.get("filter").getAsString() : "";
+        String url = ext.has("filter") ? ext.get("filter").getAsString() : "";
         Document doc = Jsoup.parse(OkHttp.string(client(), siteUrl, getHeader()));
         Elements elements = doc.select(".nav-link");
         for (Element e : elements) {
@@ -105,8 +105,8 @@ public class Wogg extends Ali {
         List<String> shareLinks = doc.select(".module-row-text").eachAttr("data-clipboard-text");
         for (int i = 0; i < shareLinks.size(); i++) shareLinks.set(i, shareLinks.get(i).trim());
 
-        item.setVodPlayFrom(super.detailContentVodPlayFrom(shareLinks));
-        item.setVodPlayUrl(super.detailContentVodPlayUrl(shareLinks));
+        item.setVodPlayFrom(detailContentVodPlayFrom(shareLinks));
+        item.setVodPlayUrl(detailContentVodPlayUrl(shareLinks));
 
         Elements elements = doc.select(".video-info-item");
         for (Element e : elements) {
