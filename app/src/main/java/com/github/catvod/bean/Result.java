@@ -57,6 +57,10 @@ public class Result {
         return Result.get().classes(classes).vod(list).filters(filters).string();
     }
 
+    public static String string(List<Vod> list, int pagecount) {
+        return Result.get().vod(list).pagecount(pagecount).string();
+    }
+
     public static String string(List<Class> classes, List<Vod> list, JSONObject filters) {
         return Result.get().classes(classes).vod(list).filters(filters).string();
     }
@@ -83,6 +87,11 @@ public class Result {
 
     public static String string(List<Vod> list) {
         return Result.get().vod(list).string();
+    }
+
+    public Result pagecount(int pagecount) {
+        this.pagecount = pagecount;
+        return this;
     }
 
     public static String string(Vod item) {

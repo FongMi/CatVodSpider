@@ -75,7 +75,7 @@ public class Ys23 extends Spider {
                 pic = siteURL + pic;
             list.add(new Vod(vid, name, pic));
         }
-        return Result.string(list);
+        return Result.string(list, 99999);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class Ys23 extends Spider {
             String remark = li.select(".figure_info").text();
             list.add(new Vod(vid, name, pic, remark));
         }
-        return Result.string(list);
+        return Result.string(list, 9999);
     }
 
     @Override
