@@ -54,8 +54,8 @@ public class Kanqiu extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        String cateId = extend.get("cateId") == null ? tid : extend.get("cateId");
-        String cateUrl = siteUrl + (TextUtils.isEmpty(cateId) ? String.format("%s", tid) : String.format("/match/%s/live", cateId));
+        String cateId = extend.containsKey("cateId") ? extend.get("cateId") : tid;
+        String cateUrl = siteUrl + String.format("/match/%s/live", cateId);
         Document doc = Jsoup.parse(OkHttp.string(cateUrl, getHeader()));
         List<Vod> list = new ArrayList<>();
         int size = 0;
