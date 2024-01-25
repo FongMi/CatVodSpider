@@ -58,9 +58,9 @@ public class Kanqiu extends Spider {
         String cateUrl = siteUrl + (TextUtils.isEmpty(cateId) ? String.format("%s", tid) : String.format("/match/%s/live", cateId));
         Document doc = Jsoup.parse(OkHttp.string(cateUrl, getHeader()));
         List<Vod> list = new ArrayList<>();
-        int Size = 0;
+        int size = 0;
         for (Element li : doc.select(".list-group-item")) {
-            Size = doc.select(".list-group-item").size();
+            size = doc.select(".list-group-item").size();
             String vid = siteUrl + li.select(".btn.btn-primary").attr("href");
             String name = li.select(".row.d-none").text();
             if (name.isEmpty()) name = li.text();
@@ -70,7 +70,7 @@ public class Kanqiu extends Spider {
             String remark = li.select(".btn.btn-primary").text();
             list.add(new Vod(vid, name, pic, remark));
         }
-        Result result = Result.get().page(1, 1, 0, Size).vod(list);
+        Result result = Result.get().page(1, 1, 0, size).vod(list);
         return result.string();
     }
 
@@ -90,12 +90,10 @@ public class Kanqiu extends Spider {
             String href = linkObject.optString("url");
             vodItems.add(text + "$" + href);
         }
-        String vod_play_from = "Qile";
-        String vod_play_url = TextUtils.join("#", vodItems);
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
-        vod.setVodPlayFrom(vod_play_from);
-        vod.setVodPlayUrl(vod_play_url);
+        vod.setVodPlayFrom("Qile");
+        vod.setVodPlayUrl(TextUtils.join("#", vodItems));
         return Result.string(vod);
     }
 
