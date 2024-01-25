@@ -2,6 +2,7 @@ package com.github.catvod.spider;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Base64;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
@@ -82,8 +83,12 @@ public class Kanqiu extends Spider {
     @Override
     public String detailContent(List<String> ids) throws Exception {
         if (ids.get(0).equals(siteUrl)) return Result.error("比賽尚未開始");
-        String content = OkHttp.string(ids.get(0) + "-url", getHeader());
-        JSONArray linksArray = new JSONObject(content).getJSONArray("links");
+        Document doc = Jsoup.parse(OkHttp.string(ids.get(0), getHeader()));
+        String t = doc.select("#t").attr("value");
+        String result = t.substring(2);
+        result = result.substring(0, result.length() - 3);
+        String json = new String(Base64.decode(result, Base64.DEFAULT));
+        JSONArray linksArray = new JSONObject(json).getJSONArray("links");
         List<String> vodItems = new ArrayList<>();
         for (int i = 0; i < linksArray.length(); i++) {
             JSONObject linkObject = linksArray.getJSONObject(i);
@@ -95,8 +100,8 @@ public class Kanqiu extends Spider {
         String vod_play_url = TextUtils.join("#", vodItems);
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
-        vod.setVodPlayFrom(vod_play_from.toString());
-        vod.setVodPlayUrl(vod_play_url.toString());
+        vod.setVodPlayFrom(vod_play_from);
+        vod.setVodPlayUrl(vod_play_url);
         return Result.string(vod);
     }
 
