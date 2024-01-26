@@ -15,11 +15,11 @@ import com.github.catvod.bean.bili.Page;
 import com.github.catvod.bean.bili.Resp;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Path;
 import com.github.catvod.utils.Util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -83,7 +83,7 @@ public class Bili extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        this.extend = JsonParser.parseString(extend).getAsJsonObject();
+        this.extend = Json.parse(extend).getAsJsonObject();
         setCookie();
         setAudio();
     }
@@ -173,7 +173,7 @@ public class Bili extends Spider {
         episode = new ArrayList<>();
         api = "https://api.bilibili.com/x/web-interface/archive/related?bvid=" + bvid;
         json = OkHttp.string(api, getHeader());
-        JsonArray array = JsonParser.parseString(json).getAsJsonObject().getAsJsonArray("data");
+        JsonArray array = Json.parse(json).getAsJsonObject().getAsJsonArray("data");
         for (int i = 0; i < array.size(); i++) {
             JsonObject object = array.get(i).getAsJsonObject();
             episode.add(object.get("title").getAsString() + "$" + object.get("aid").getAsInt() + "+" + object.get("cid").getAsInt() + "+" + TextUtils.join(":", acceptQuality) + "+" + TextUtils.join(":", acceptDesc));

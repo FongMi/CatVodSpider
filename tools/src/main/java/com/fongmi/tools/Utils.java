@@ -1,8 +1,5 @@
 package com.fongmi.tools;
 
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -16,36 +13,27 @@ import okhttp3.Request;
 
 public class Utils {
 
-	public static boolean isJson(String text) {
-		try {
-			JsonParser.parseString(text);
-			return true;
-		} catch (JsonSyntaxException e) {
-			return false;
-		}
-	}
+    public static String call(String url) throws IOException {
+        return new OkHttpClient().newCall(new Request.Builder().url(url).build()).execute().body().string();
+    }
 
-	public static String call(String url) throws IOException {
-		return new OkHttpClient().newCall(new Request.Builder().url(url).build()).execute().body().string();
-	}
+    public static String getFile(Class<?> clz, String fileName) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            URI uri = clz.getClassLoader().getResource(fileName).toURI();
+            Stream<String> stream = Files.lines(Paths.get(uri), StandardCharsets.UTF_8);
+            stream.forEach(s -> sb.append(s).append("\n"));
+            return sb.toString();
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
-	public static String getFile(Class<?> clz, String fileName) {
-		try {
-			StringBuilder sb = new StringBuilder();
-			URI uri = clz.getClassLoader().getResource(fileName).toURI();
-			Stream<String> stream = Files.lines(Paths.get(uri), StandardCharsets.UTF_8);
-			stream.forEach(s -> sb.append(s).append("\n"));
-			return sb.toString();
-		} catch (Exception e) {
-			return "";
-		}
-	}
-
-	public static String getFile(String fileName) {
-		try {
-			return Files.readString(Path.of(fileName));
-		} catch (Exception e) {
-			return "";
-		}
-	}
+    public static String getFile(String fileName) {
+        try {
+            return Files.readString(Path.of(fileName));
+        } catch (Exception e) {
+            return "";
+        }
+    }
 }

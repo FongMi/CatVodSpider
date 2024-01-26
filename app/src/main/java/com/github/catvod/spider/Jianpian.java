@@ -10,7 +10,7 @@ import com.github.catvod.bean.jianpian.Detail;
 import com.github.catvod.bean.jianpian.Resp;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.google.gson.JsonParser;
+import com.github.catvod.utils.Json;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class Jianpian extends Spider {
         List<String> typeIds = Arrays.asList("0", "1", "2", "3", "4");
         List<String> typeNames = Arrays.asList("全部", "电影", "电视剧", "动漫", "综艺");
         for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
-        return Result.string(classes, JsonParser.parseString(OkHttp.string(extend)));
+        return Result.string(classes, Json.parse(OkHttp.string(extend)));
     }
 
     @Override

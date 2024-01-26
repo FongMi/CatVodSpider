@@ -6,9 +6,9 @@ import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Util;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -42,7 +42,7 @@ public class Wogg extends Ali {
 
     @Override
     public void init(Context context, String extend) {
-        ext = JsonParser.parseString(extend).getAsJsonObject();
+        ext = Json.parse(extend).getAsJsonObject();
         super.init(context, ext.has("token") ? ext.get("token").getAsString() : "");
     }
 
@@ -58,7 +58,7 @@ public class Wogg extends Ali {
                 classes.add(new Class(mather.group(1), e.text().trim()));
             }
         }
-        return Result.string(classes, parseVodListFromDoc(doc), url.isEmpty() ? null : JsonParser.parseString(OkHttp.string(url)));
+        return Result.string(classes, parseVodListFromDoc(doc), url.isEmpty() ? null : Json.parse(OkHttp.string(url)));
     }
 
     @Override
