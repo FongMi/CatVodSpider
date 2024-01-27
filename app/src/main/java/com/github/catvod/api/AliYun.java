@@ -106,6 +106,13 @@ public class AliYun {
         return headers;
     }
 
+    private HashMap<String, String> getHeaders() {
+        HashMap<String, String> headers = getHeader();
+        headers.put("x-share-token", share.getShareToken());
+        headers.put("X-Canary", "client=Android,app=adrive,version=v4.3.1");
+        return headers;
+    }
+
     private HashMap<String, String> getHeaderAuth() {
         HashMap<String, String> headers = getHeader();
         headers.put("x-share-token", share.getShareToken());
@@ -138,7 +145,12 @@ public class AliYun {
 
     private String auth(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        OkResult result = OkHttp.post(url, json, getHeaderAuth());
+        OkResult result;
+        if (url.contains("file/list")) {
+            result = OkHttp.post(url, json, getHeaders());
+        } else {
+            result = OkHttp.post(url, json, getHeaderAuth());
+        }
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
         if (retry && result.getCode() == 401 && refreshAccessToken()) return auth(url, json, false);
         if (retry && result.getCode() == 429) return auth(url, json, false);
