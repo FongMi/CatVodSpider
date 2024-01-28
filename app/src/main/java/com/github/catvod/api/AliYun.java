@@ -145,12 +145,7 @@ public class AliYun {
 
     private String auth(String url, String json, boolean retry) {
         url = url.startsWith("https") ? url : "https://api.aliyundrive.com/" + url;
-        OkResult result;
-        if (url.contains("file/list")) {
-            result = OkHttp.post(url, json, getHeaders());
-        } else {
-            result = OkHttp.post(url, json, getHeaderAuth());
-        }
+        OkResult result = OkHttp.post(url, json, url.contains("file/list") ? getHeaders() : getHeaderAuth());
         SpiderDebug.log(result.getCode() + "," + url + "," + result.getBody());
         if (retry && result.getCode() == 401 && refreshAccessToken()) return auth(url, json, false);
         if (retry && result.getCode() == 429) return auth(url, json, false);
