@@ -85,7 +85,7 @@ public class Kanqiu extends Spider {
         for (int i = 0; i < linksArray.length(); i++) {
             JSONObject linkObject = linksArray.getJSONObject(i);
             String text = linkObject.optString("name");
-            String href = linkObject.optString("url");
+            String href = linkObject.optString("url").replace("#", "***");
             vodItems.add(text + "$" + href);
         }
         Vod vod = new Vod();
@@ -97,6 +97,6 @@ public class Kanqiu extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return Result.get().url(id).parse().header(getHeader()).string();
+        return Result.get().url(id.replace("***", "#")).parse().header(getHeader()).string();
     }
 }
