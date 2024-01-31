@@ -32,7 +32,7 @@ import com.google.gson.JsonParser;
  */
 public class Yingshiche extends Ali {
 
-    private final String siteUrl = "https://www.weixine.net";
+    private final String siteUrl = "https://www.weixine.link";
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
