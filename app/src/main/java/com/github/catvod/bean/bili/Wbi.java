@@ -33,15 +33,15 @@ public class Wbi {
         return key.toString();
     }
 
-    public String getParam(LinkedHashMap<String, Object> params) {
+    public String getQuery(LinkedHashMap<String, Object> params) {
         String imgKey = Uri.parse(getImgUrl()).getLastPathSegment().split("\\.")[0];
         String subKey = Uri.parse(getSubUrl()).getLastPathSegment().split("\\.")[0];
         String mixinKey = getMixinKey(imgKey, subKey);
         StringBuilder sb = new StringBuilder();
         params.put("wts", System.currentTimeMillis() / 1000);
         for (String key : params.keySet()) sb.append(key).append("=").append(URLEncoder.encode(params.get(key).toString())).append("&");
-        String param = Util.substring(sb.toString());
-        String wbiSign = Util.MD5(param + mixinKey);
-        return param + "&w_rid=" + wbiSign;
+        String query = Util.substring(sb.toString());
+        String w_rid = Util.MD5(query + mixinKey);
+        return query + "&w_rid=" + w_rid;
     }
 }

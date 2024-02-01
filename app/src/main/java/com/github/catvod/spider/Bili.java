@@ -13,6 +13,7 @@ import com.github.catvod.bean.bili.Data;
 import com.github.catvod.bean.bili.Media;
 import com.github.catvod.bean.bili.Page;
 import com.github.catvod.bean.bili.Resp;
+import com.github.catvod.bean.bili.Wbi;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
@@ -47,6 +48,7 @@ public class Bili extends Spider {
     private JsonObject extend;
     private boolean login;
     private boolean isVip;
+    private Wbi wbi;
 
     private static Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
@@ -114,9 +116,11 @@ public class Bili extends Spider {
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
         if (tid.endsWith("/{pg}")) {
-            String mid = tid.split("/")[0];
+            LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+            params.put("mid", tid.split("/")[0]);
+            params.put("pn", pg);
             List<Vod> list = new ArrayList<>();
-            String json = OkHttp.string("https://api.bilibili.com/x/space/wbi/arc/search?mid=" + mid + "&pn=" + pg, getHeader());
+            String json = OkHttp.string("https://api.bilibili.com/x/space/wbi/arc/search?" + wbi.getQuery(params), getHeader());
             for (Resp.Result item : Resp.Result.arrayFrom(Resp.objectFrom(json).getData().getList().getAsJsonObject().get("vlist"))) list.add(item.getVod());
             return Result.string(list);
         } else {
@@ -275,6 +279,7 @@ public class Bili extends Spider {
         Data data = Resp.objectFrom(json).getData();
         login = data.isLogin();
         isVip = data.isVip();
+        wbi = data.getWbi();
         //getQRCode();
     }
 
