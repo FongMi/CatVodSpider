@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
         try {
             Init.init(getApplicationContext());
             spider = new Yingshiche();
-            spider.init(this, "{}");
+            spider.init(this, "");
         } catch (Throwable e) {
             e.printStackTrace();
         }
