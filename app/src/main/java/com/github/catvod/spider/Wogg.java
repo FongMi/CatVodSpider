@@ -42,7 +42,7 @@ public class Wogg extends Ali {
 
     @Override
     public void init(Context context, String extend) {
-        ext = Json.parse(extend).getAsJsonObject();
+        ext = Json.safeObject(extend);
         super.init(context, ext.has("token") ? ext.get("token").getAsString() : "");
     }
 

@@ -85,7 +85,7 @@ public class Bili extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        this.extend = Json.parse(extend).getAsJsonObject();
+        this.extend = Json.safeObject(extend);
         setCookie();
         setAudio();
     }
