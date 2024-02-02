@@ -11,8 +11,6 @@ rd /s/q "%~dp0\spider.jar\smali\com\github\catvod\js"
 
 if not exist "%~dp0\spider.jar\smali\com\github\catvod\" md "%~dp0\spider.jar\smali\com\github\catvod\"
 
-java -Dfile.encoding=utf-8 -jar "%~dp0\3rd\oss.jar" "%~dp0\Smali_classes"
-
 move "%~dp0\Smali_classes\com\github\catvod\spider" "%~dp0\spider.jar\smali\com\github\catvod\"
 move "%~dp0\Smali_classes\com\github\catvod\parser" "%~dp0\spider.jar\smali\com\github\catvod\"
 move "%~dp0\Smali_classes\com\github\catvod\js" "%~dp0\spider.jar\smali\com\github\catvod\"

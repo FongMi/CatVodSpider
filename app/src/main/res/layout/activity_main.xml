@@ -1,7 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:fillViewport="true">
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/homeContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="homeContent"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/homeVideoContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="homeVideoContent"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/categoryContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="categoryContent"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/detailContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="detailContent"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/playerContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="playerContent"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/searchContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="searchContent"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+</ScrollView>

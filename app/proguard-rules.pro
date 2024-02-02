@@ -32,6 +32,9 @@
 -keep class okio.** { *; }
 -keep class okhttp3.** { *; }
 
+# Logger
+-keep class com.orhanobut.logger.** { *; }
+
 # QuickJS
 -keep class com.whl.quickjs.** { *; }
 
