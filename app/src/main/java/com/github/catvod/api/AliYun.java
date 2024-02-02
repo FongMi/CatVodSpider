@@ -456,7 +456,7 @@ public class AliYun {
     }
 
     private String proxyVideoUrl(String cate, String shareId, String fileId) {
-        return ProxyVideo.url(String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s", cate, shareId, fileId), 20);
+        return String.format(Proxy.getUrl() + "?do=ali&type=video&cate=%s&shareId=%s&fileId=%s", cate, shareId, fileId);
     }
 
     private String proxyVideoUrl(String cate, String shareId, String fileId, String templateId) {
@@ -480,7 +480,6 @@ public class AliYun {
     public Object[] proxyVideo(Map<String, String> params) throws Exception {
         if (dialog != null && dialog.isShowing()) return null;
         String templateId = params.get("templateId");
-        String response = params.get("response");
         String shareId = params.get("shareId");
         String mediaId = params.get("mediaId");
         String fileId = params.get("fileId");
@@ -488,7 +487,7 @@ public class AliYun {
         String downloadUrl = "";
 
         if ("preview".equals(cate)) {
-            return previewProxy(shareId, fileId, templateId);
+            return new Object[]{200, "application/vnd.apple.mpegurl", new ByteArrayInputStream(getM3u8(shareId, fileId, templateId).getBytes())};
         }
 
         if ("open".equals(cate)) {
@@ -506,24 +505,14 @@ public class AliYun {
             downloadUrl = mediaUrl;
         }
 
-        if ("url".equals(response)) return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream(downloadUrl.getBytes("UTF-8"))};
         Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        for (String key : params.keySet()) headers.put(key, params.get(key));
-        headers.remove("do");
-        headers.remove("host");
-        headers.remove("type");
-        headers.remove("cate");
-        headers.remove("fileId");
-        headers.remove("shareId");
-        headers.remove("mediaId");
-        headers.remove("templateId");
-        headers.remove("remote-addr");
-        headers.remove("http-client-ip");
-        return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
-    }
+        for (String key : params.keySet()) {
+            if (key.equals("referer") || key.equals("icy-metadata") || key.equals("range") || key.equals("connection") || key.equals("accept-encoding") || key.equals("user-agent")) {
+                headers.put(key, params.get(key));
+            }
+        }
 
-    private Object[] previewProxy(String shareId, String fileId, String templateId) {
-        return new Object[]{200, "application/vnd.apple.mpegurl", new ByteArrayInputStream(getM3u8(shareId, fileId, templateId).getBytes())};
+        return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
     }
 
     private String getM3u8Url(String shareId, String fileId, String templateId) {

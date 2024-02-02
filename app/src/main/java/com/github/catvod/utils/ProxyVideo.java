@@ -44,15 +44,13 @@ public class ProxyVideo {
     }
 
     public static NanoHTTPD.Response proxy(String url, Map<String, String> headers) throws Exception {
-        Status status = headers.containsKey("Range") ? Status.PARTIAL_CONTENT : Status.OK;
-        if (!headers.containsKey("Range")) headers.put("Range", "bytes=0-");
         Response response = OkHttp.newCall(url, headers);
         String contentType = response.headers().get("Content-Type");
         String hContentLength = response.headers().get("Content-Length");
         String contentDisposition = response.headers().get("Content-Disposition");
         long contentLength = hContentLength != null ? Long.parseLong(hContentLength) : 0;
         if (contentDisposition != null) contentType = getMimeType(contentDisposition);
-        NanoHTTPD.Response resp = newFixedLengthResponse(status, contentType, response.body().byteStream(), contentLength);
+        NanoHTTPD.Response resp = newFixedLengthResponse(Status.PARTIAL_CONTENT, contentType, response.body().byteStream(), contentLength);
         for (String key : response.headers().names()) resp.addHeader(key, response.headers().get(key));
         return resp;
     }
