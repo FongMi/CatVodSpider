@@ -155,8 +155,11 @@ public class Util {
     }
 
     public static void loadUrl(WebView webView, String script, ValueCallback<String> callback) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) webView.evaluateJavascript(script, callback);
-        else webView.loadUrl(script);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            webView.evaluateJavascript(script, callback);
+        } else {
+            webView.loadUrl("javascript:" + script);
+        }
     }
 
     public static void addView(View view, ViewGroup.LayoutParams params) {
