@@ -25,20 +25,19 @@ import java.util.Map;
 /**
  * @author Qile
  */
-
 public class JavDb extends Spider {
 
     private static String siteUrl = "https://javdb523.com";
+
     @Override
     public void init(Context context, String extend) throws Exception {
-        if(!extend.isEmpty())
-            siteUrl = extend;
+        if (!extend.isEmpty()) siteUrl = extend;
     }
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
         header.put("User-Agent", Util.CHROME);
-        header.put("Referer", siteUrl+"/");
+        header.put("Referer", siteUrl + "/");
         return header;
     }
 
@@ -47,8 +46,7 @@ public class JavDb extends Spider {
         List<Class> classes = new ArrayList<>();
         List<String> typeIds = Arrays.asList("", "censored", "uncensored", "western");
         List<String> typeNames = Arrays.asList("全部", "有码", "无码", "欧美");
-        for (int i = 0; i < typeIds.size(); i++)
-            classes.add(new Class(typeIds.get(i), typeNames.get(i)));
+        for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
         Document doc = Jsoup.parse(OkHttp.string(siteUrl, getHeader()));
         List<Vod> list = new ArrayList<>();
         for (Element li : doc.select(".item")) {
@@ -61,8 +59,7 @@ public class JavDb extends Spider {
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend)
-            throws Exception {
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
         String cateUrl = siteUrl + String.format("/%s?page=%s", tid, pg);
         Document doc = Jsoup.parse(OkHttp.string(cateUrl, getHeader()));
         List<Vod> list = new ArrayList<>();
@@ -78,7 +75,7 @@ public class JavDb extends Spider {
     @Override
     public String detailContent(List<String> ids) throws Exception {
         Document doc = Jsoup.parse(OkHttp.string(ids.get(0), getHeader()));
-        if(doc.text().contains("歡迎登入")) return Result.error("该资源需要登入");;
+        if (doc.text().contains("歡迎登入")) return Result.error("该资源需要登入");
         List<String> vodItems = new ArrayList<>();
         Elements sourceList = doc.select(".item.columns");
         for (Element a : sourceList) {
