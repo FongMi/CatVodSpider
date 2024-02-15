@@ -101,6 +101,6 @@ public class OkHttp {
     }
 
     public static OkHttpClient.Builder getBuilder() {
-        return new OkHttpClient.Builder().addInterceptor(new OkhttpInterceptor()).dns(dns()).connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).hostnameVerifier((hostname, session) -> true).sslSocketFactory(new SSLCompat(), SSLCompat.TM);
+        return new OkHttpClient.Builder().dns(dns()).connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).hostnameVerifier((hostname, session) -> true).sslSocketFactory(new SSLCompat(), SSLCompat.TM);
     }
 }
