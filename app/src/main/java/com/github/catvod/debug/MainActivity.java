@@ -7,7 +7,7 @@ import android.widget.Button;
 import com.github.catvod.R;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.spider.Init;
-import com.github.catvod.spider.Yingshiche;
+import com.github.catvod.spider.Star;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
     private void initSpider() {
         try {
             Init.init(getApplicationContext());
-            spider = new Yingshiche();
+            spider = new Star();
             spider.init(this, "");
         } catch (Throwable e) {
             e.printStackTrace();
@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
 
     public void categoryContent() {
         try {
-            Logger.t("categoryContent").d(spider.categoryContent("tid", "1", true, new HashMap<>()));
+            Logger.t("categoryContent").d(spider.categoryContent("movie", "1", true, new HashMap<>()));
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
 
     public void detailContent() {
         try {
-            Logger.t("detailContent").d(spider.detailContent(Arrays.asList("/voddetail/5553.html")));
+            Logger.t("detailContent").d(spider.detailContent(Arrays.asList("2121173431")));
         } catch (Throwable e) {
             e.printStackTrace();
         }
