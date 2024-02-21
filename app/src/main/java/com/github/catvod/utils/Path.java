@@ -7,14 +7,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class Path {
 
-    private static File check(File file) {
+    private static File mkdir(File file) {
         if (!file.exists()) file.mkdirs();
         return file;
     }
@@ -28,7 +27,7 @@ public class Path {
     }
 
     public static File tv() {
-        return check(new File(root() + File.separator + "TV"));
+        return mkdir(new File(root() + File.separator + "TV"));
     }
 
     public static File tv(String name) {
@@ -62,11 +61,10 @@ public class Path {
 
     public static File write(File file, byte[] data) {
         try {
-            FileOutputStream fos = new FileOutputStream(file);
+            FileOutputStream fos = new FileOutputStream(create(file));
             fos.write(data);
             fos.flush();
             fos.close();
-            chmod(file);
             return file;
         } catch (Exception ignored) {
             return file;
@@ -75,16 +73,13 @@ public class Path {
 
     public static void copy(InputStream in, File out) {
         try {
-            copy(in, new FileOutputStream(out));
+            int read;
+            byte[] buffer = new byte[8192];
+            FileOutputStream fos = new FileOutputStream(create(out));
+            while ((read = in.read(buffer)) != -1) fos.write(buffer, 0, read);
+            fos.close();
+            in.close();
         } catch (Exception ignored) {
-        }
-    }
-
-    public static void copy(InputStream inputStream, OutputStream outputStream) throws IOException {
-        byte[] buffer = new byte[8192];
-        int amountRead;
-        while ((amountRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, amountRead);
         }
     }
 
@@ -93,10 +88,11 @@ public class Path {
         return files == null ? Collections.emptyList() : Arrays.asList(files);
     }
 
-    public static File chmod(File file) {
+    public static File create(File file) throws Exception {
         try {
-            Process process = Runtime.getRuntime().exec("chmod 777 " + file);
-            process.waitFor();
+            if (!file.canWrite()) file.setWritable(true);
+            if (!file.exists()) file.createNewFile();
+            Shell.exec("chmod 777 " + file);
             return file;
         } catch (Exception e) {
             e.printStackTrace();
