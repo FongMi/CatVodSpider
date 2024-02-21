@@ -1,7 +1,6 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
-import android.webkit.CookieManager;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
@@ -26,7 +25,6 @@ public class Eighteen extends Spider {
     private void getCookie() {
         try {
             cookie = OkHttp.newCall("https://mjv002.com/zh/chinese_IamOverEighteenYearsOld/19/index.html").headers("set-cookie").get(0).split(";")[0];
-            CookieManager.getInstance().setCookie(url, cookie);
         } catch (Exception e) {
             e.printStackTrace();
         }
