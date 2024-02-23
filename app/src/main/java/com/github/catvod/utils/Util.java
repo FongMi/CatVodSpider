@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 public class Util {
 
     public static final Pattern RULE = Pattern.compile("http((?!http).){12,}?\\.(m3u8|mp4|mkv|flv|mp3|m4a|aac)\\?.*|http((?!http).){12,}\\.(m3u8|mp4|mkv|flv|mp3|m4a|aac)|http((?!http).)*?video/tos*");
+    public static final Pattern THUNDER = Pattern.compile("(magnet|thunder|ed2k):.*");
     public static final String CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36";
     public static final String ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
     public static final List<String> MEDIA = Arrays.asList("mp4", "mkv", "wmv", "flv", "avi", "iso", "mpg", "ts", "mp3", "aac", "flac", "m4a", "ape", "ogg");
@@ -41,6 +42,14 @@ public class Util {
         List<String> hosts = Arrays.asList("973973.xyz", ".fit:");
         for (String host : hosts) if (url.contains(host)) return true;
         return false;
+    }
+
+    public static boolean isThunder(String url) {
+        return THUNDER.matcher(url).find() || isTorrent(url);
+    }
+
+    public static boolean isTorrent(String url) {
+        return !url.startsWith("magnet") && url.split(";")[0].endsWith(".torrent");
     }
 
     public static boolean isVideoFormat(String url) {
