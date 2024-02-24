@@ -27,20 +27,19 @@ import java.util.Map;
 /**
  * @author Qile
  */
-
 public class JavDb extends Spider {
 
-    private static String siteUrl = "https://javdb524.com";
+    private static String siteUrl = "https://javdb523.com";
+
     @Override
     public void init(Context context, String extend) throws Exception {
-        if(!extend.isEmpty())
-            siteUrl = extend;
+        if (!extend.isEmpty()) siteUrl = extend;
     }
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
         header.put("User-Agent", Util.CHROME);
-        header.put("Referer", siteUrl+"/");
+        header.put("Referer", siteUrl + "/");
         return header;
     }
 
@@ -88,7 +87,7 @@ public class JavDb extends Spider {
     @Override
     public String detailContent(List<String> ids) throws Exception {
         Document doc = Jsoup.parse(OkHttp.string(ids.get(0), getHeader()));
-        if(doc.text().contains("歡迎登入")) return Result.error("该资源需要登入");
+        if (doc.text().contains("歡迎登入")) return Result.error("该资源需要登入");
         List<String> vodItems = new ArrayList<>();
         Elements sourceList = doc.select(".item.columns");
         for (Element a : sourceList) {

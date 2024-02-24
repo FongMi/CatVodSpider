@@ -41,6 +41,7 @@ public class Push extends Spider {
         if (flag.equals("直連")) return Result.get().url(id).subs(getSubs(id)).string();
         if (flag.equals("解析")) return Result.get().parse().jx().url(id).string();
         if (flag.equals("嗅探")) return Result.get().parse().url(id).string();
+        if (flag.equals("迅雷")) return Result.get().url(id).string();
         return ali.playerContent(flag, id, vipFlags);
     }
 
@@ -51,8 +52,10 @@ public class Push extends Spider {
         vod.setVodName(url.startsWith("file://") ? new File(url).getName() : url);
         if (url.startsWith("http") && url.contains("#")) url = url.replace("#", "***");
         vod.setVodPic("https://pic.rmb.bdstatic.com/bjh/1d0b02d0f57f0a42201f92caba5107ed.jpeg");
-        vod.setVodPlayFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
-        vod.setVodPlayUrl(TextUtils.join("$$$", Arrays.asList("播放$" + url, "播放$" + url, "播放$" + url)));
+        String play = "播放$" + url;
+        boolean thunder = Util.isThunder(url);
+        vod.setVodPlayUrl(thunder ? play : TextUtils.join("$$$", Arrays.asList(play, play, play)));
+        vod.setVodPlayFrom(thunder ? "迅雷" : TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
         return vod;
     }
 
