@@ -6,9 +6,9 @@ import android.widget.Button;
 
 import com.github.catvod.R;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.spider.A18av;
 import com.github.catvod.spider.Hsck;
 import com.github.catvod.spider.Init;
-import com.github.catvod.spider.Yingshiche;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends Activity {
+public class Test18AVActivity extends Activity {
 
     private ExecutorService executor;
     private Spider spider;
@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
     private void initSpider() {
         try {
             Init.init(getApplicationContext());
-            spider = new Hsck();
+            spider = new A18av();
             spider.init(this, "");
         } catch (Throwable e) {
             e.printStackTrace();
@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
 
     public void categoryContent() {
         try {
-            Logger.t("categoryContent").d(spider.categoryContent("8", "1", true, new HashMap<>()));
+            Logger.t("categoryContent").d(spider.categoryContent("zh/chinese_list/all", "1", true, new HashMap<>()));
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
 
     public void detailContent() {
         try {
-            Logger.t("detailContent").d(spider.detailContent(Arrays.asList("http://hsck770.cc/vodplay/42872-1-1.html")));
+            Logger.t("detailContent").d(spider.detailContent(Arrays.asList("https://mjv002.com/zh/chinese_content/49105/SNIS-815.html")));
         } catch (Throwable e) {
             e.printStackTrace();
         }

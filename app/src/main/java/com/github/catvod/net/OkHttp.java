@@ -3,6 +3,7 @@ package com.github.catvod.net;
 import com.github.catvod.crawler.Spider;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -63,6 +64,10 @@ public class OkHttp {
 
     public static String string(OkHttpClient client, String url, Map<String, String> params, Map<String, String> header) {
         return url.startsWith("http") ? new OkRequest(GET, url, params, header).execute(client).getBody() : "";
+    }
+
+    public static OkResult get(String url, Map<String, String> header) {
+        return new OkRequest(GET, url, new HashMap<>(), header).execute(client());
     }
 
     public static String post(String url, Map<String, String> params) {

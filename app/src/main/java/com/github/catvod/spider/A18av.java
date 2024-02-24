@@ -11,13 +11,11 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Util;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,11 +26,14 @@ import java.util.Map;
  * @author Qile
  */
 
-public class JavDb extends Spider {
+public class A18av extends Spider {
 
-    private static String siteUrl = "https://javdb524.com";
+    private String siteUrl = "https://mjv002.com";
+    //private String siteUrl = "https://18av.mm-cg.com";
+    private String cookie = "";
     @Override
     public void init(Context context, String extend) throws Exception {
+        cookie = getCookie();
         if(!extend.isEmpty())
             siteUrl = extend;
     }
@@ -41,18 +42,15 @@ public class JavDb extends Spider {
         Map<String, String> header = new HashMap<>();
         header.put("User-Agent", Util.CHROME);
         header.put("Referer", siteUrl+"/");
+        header.put("Cookie", cookie);
         return header;
     }
 
     @Override
     public String homeContent(boolean filter) throws Exception {
         List<Class> classes = new ArrayList<>();
-        List<String> typeIds = Arrays.asList("censored", "uncensored", "western",
-                "rankings/movies?p=daily&t=censored",
-                "rankings/movies?p=weekly&t=censored",
-                "rankings/movies?p=daily&t=uncensored",
-                "rankings/movies?p=weekly&t=uncensored");
-        List<String> typeNames = Arrays.asList("有码", "无码", "欧美", "有码日榜", "有码周榜", "无码日榜", "无码周榜");
+        List<String> typeIds = Arrays.asList("/zh/chinese_list/all");
+        List<String> typeNames = Arrays.asList("中文");
         for (int i = 0; i < typeIds.size(); i++)
             classes.add(new Class(typeIds.get(i), typeNames.get(i)));
         return Result.string(classes, fetchVodList(siteUrl));
@@ -61,25 +59,18 @@ public class JavDb extends Spider {
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend)
             throws Exception {
-        // 排行榜没有分页
-        if (tid.contains("rankings") && Integer.parseInt(pg) > 1) {
-            return Result.get().vod(new ArrayList<Vod>()).page().string();
-        }
-
-        Map<String, String> params = new HashMap<>();
-        params.put("page", pg);
-        String cateUrl = urlAddParam(siteUrl + String.format("/%s", tid) , params);
+        String cateUrl = getPageUrl(siteUrl + tid, pg);
         return Result.string(fetchVodList(cateUrl));
     }
 
     private List<Vod> fetchVodList(String url) {
         Document doc = Jsoup.parse(OkHttp.string(url, getHeader()));
         List<Vod> list = new ArrayList<>();
-        for (Element li : doc.select(".item")) {
-            String vid = siteUrl + li.select("a").attr("href");
-            String name = li.select(".video-title").text();
+        for (Element li : doc.select("div.post")) {
+            String vid = li.select("h3 a").attr("href");
+            String name = li.select("h3").text();
             String pic = li.select("img").attr("src");
-            String remarks = String.format("%s %s", li.select(".meta").text(), li.select(".score").text());
+            String remarks = String.format("%s", li.select(".meta").text());
             list.add(new Vod(vid, name, pic, remarks));
         }
         return list;
@@ -147,17 +138,17 @@ public class JavDb extends Spider {
         return Result.get().url(id).header(getHeader()).string();
     }
 
-    private String urlAddParam(String url, Map<String, String> params) {
-        if (params == null) {
-            return url;
-        }
+    private String getPageUrl(String urlPrefix, String pg) {
+        return String.format("%s/%s.html", urlPrefix, pg);
+    }
 
-        Uri uri = Uri.parse(url);
-        Uri.Builder builder = uri.buildUpon();
-        for (String key : params.keySet()) {
-            String val = params.get(key);
-            builder.appendQueryParameter(key, val);
-        }
-        return builder.build().toString();
+    private String getCookie() {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", Util.CHROME);
+        headers.put("Referer", siteUrl);
+        StringBuilder sb = new StringBuilder();
+        Map<String, List<String>> resp = OkHttp.get(siteUrl + "/zh/chinese_IamOverEighteenYearsOld/19/index.html", headers).getResp();
+        for (String item : resp.get("set-cookie")) sb.append(item.split(";")[0]).append(";");
+        return sb.toString();
     }
 }
