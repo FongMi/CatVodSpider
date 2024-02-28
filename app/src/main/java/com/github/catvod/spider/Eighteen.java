@@ -15,37 +15,21 @@ import org.jsoup.nodes.Element;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Eighteen extends Spider {
 
     private final String url = "https://mjv002.com/zh/";
-    private String cookie;
-
-    private void getCookie() {
-        try {
-            cookie = OkHttp.newCall("https://mjv002.com/zh/chinese_IamOverEighteenYearsOld/19/index.html").headers("set-cookie").get(0).split(";")[0];
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Map<String, String> getHeader() {
-        Map<String, String> header = new HashMap<>();
-        header.put("Cookie", cookie);
-        return header;
-    }
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        getCookie();
+        OkHttp.newCall("https://mjv002.com/zh/chinese_IamOverEighteenYearsOld/19/index.html").close();
     }
 
     @Override
     public String homeContent(boolean filter) throws Exception {
         List<Class> classes = new ArrayList<>();
         List<Vod> list = new ArrayList<>();
-        Document doc = Jsoup.parse(OkHttp.string(url, getHeader()));
+        Document doc = Jsoup.parse(OkHttp.string(url));
         for (Element a : doc.select("ul.animenu__nav > li > a")) {
             String typeName = a.text();
             String typeId = a.attr("href").replace(url, "");
@@ -68,7 +52,7 @@ public class Eighteen extends Spider {
         List<Vod> list = new ArrayList<>();
         tid = tid.replace("random", "list");
         tid = tid.replace("index", pg);
-        Document doc = Jsoup.parse(OkHttp.string(url + tid, getHeader()));
+        Document doc = Jsoup.parse(OkHttp.string(url + tid));
         for (Element div : doc.select("div.post")) {
             String id = div.select("a").attr("href").replace(url, "");
             String name = div.select("h3").text();
@@ -81,7 +65,7 @@ public class Eighteen extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Document doc = Jsoup.parse(OkHttp.string(url + ids.get(0), getHeader()));
+        Document doc = Jsoup.parse(OkHttp.string(url + ids.get(0)));
         Element wrap = doc.select("div.video-wrap").get(0);
         String name = wrap.select("div.archive-title > h1").text();
         String pic = wrap.select("div.player-wrap > img").attr("src");
@@ -106,7 +90,7 @@ public class Eighteen extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        return Result.get().parse().url(url + id).header(getHeader()).string();
+        return Result.get().parse().url(url + id).string();
     }
 
     private String searchContent(String key, String pg) {
@@ -114,7 +98,7 @@ public class Eighteen extends Spider {
         params.put("search_keyword", key);
         params.put("search_type", "fc");
         params.put("op", "search");
-        String res = OkHttp.post(url + "searchform_search/all/" + pg + ".html", params, getHeader()).getBody();
+        String res = OkHttp.post(url + "searchform_search/all/" + pg + ".html", params);
         List<Vod> list = new ArrayList<>();
         for (Element div : Jsoup.parse(res).select("div.post")) {
             String id = div.select("a").attr("href").replace(url, "");

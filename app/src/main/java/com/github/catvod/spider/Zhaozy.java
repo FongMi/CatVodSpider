@@ -32,11 +32,10 @@ public class Zhaozy extends Ali {
         Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Util.CHROME);
         headers.put("Referer", siteUrl);
-        headers.put("Cookie", getCookie());
         return headers;
     }
 
-    private String getCookie() {
+    private void getCookie() {
         Map<String, String> params = new HashMap<>();
         params.put("username", username);
         params.put("password", password);
@@ -44,10 +43,7 @@ public class Zhaozy extends Ali {
         headers.put("User-Agent", Util.CHROME);
         headers.put("Referer", siteUrl + "stop.html");
         headers.put("Origin", siteUrl);
-        StringBuilder sb = new StringBuilder();
-        Map<String, List<String>> resp = OkHttp.post(siteUrl + "logiu.html", params, headers).getResp();
-        for (String item : resp.get("set-cookie")) sb.append(item.split(";")[0]).append(";");
-        return sb.toString();
+        OkHttp.post(siteUrl + "logiu.html", params, headers);
     }
 
     @Override
@@ -56,6 +52,7 @@ public class Zhaozy extends Ali {
         super.init(context, split[0]);
         username = split[1];
         password = split[2];
+        getCookie();
     }
 
     @Override

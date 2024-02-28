@@ -22,17 +22,16 @@ class OkRequest {
     private final String json;
     private Request request;
     private String url;
-    private Object tag;
 
     OkRequest(String method, String url, Map<String, String> params, Map<String, String> header) {
-        this(method, url, null, params, header);
+        this(method, url, params, null, header);
     }
 
     OkRequest(String method, String url, String json, Map<String, String> header) {
-        this(method, url, json, null, header);
+        this(method, url, null, json, header);
     }
 
-    private OkRequest(String method, String url, String json, Map<String, String> params, Map<String, String> header) {
+    private OkRequest(String method, String url, Map<String, String> params, String json, Map<String, String> header) {
         this.url = url;
         this.json = json;
         this.method = method;
@@ -41,17 +40,11 @@ class OkRequest {
         getInstance();
     }
 
-    public OkRequest tag(Object tag) {
-        this.tag = tag;
-        return this;
-    }
-
     private void getInstance() {
         Request.Builder builder = new Request.Builder();
         if (method.equals(OkHttp.GET) && params != null) setParams();
         if (method.equals(OkHttp.POST)) builder.post(getRequestBody());
         if (header != null) for (String key : header.keySet()) builder.addHeader(key, header.get(key));
-        if (tag != null) builder.tag(tag);
         request = builder.url(url).build();
     }
 

@@ -324,7 +324,7 @@ public class XPath extends Spider {
         if (rule == null) {
             if (ext != null) {
                 if (ext.startsWith("http")) {
-                    String json = OkHttp.string(client(), ext, null);
+                    String json = OkHttp.string(ext, null);
                     rule = Rule.fromJson(json);
                     loadRuleExt(json);
                 } else {
@@ -340,6 +340,6 @@ public class XPath extends Spider {
 
     protected String fetch(String webUrl) {
         SpiderDebug.log(webUrl);
-        return OkHttp.string(client(), webUrl, getHeaders());
+        return OkHttp.string(webUrl, getHeaders());
     }
 }

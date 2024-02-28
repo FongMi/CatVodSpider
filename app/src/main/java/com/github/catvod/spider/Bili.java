@@ -1,6 +1,5 @@
 package com.github.catvod.spider;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -32,7 +31,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author ColaMint & FongMi & 唐三
@@ -43,8 +41,6 @@ public class Bili extends Spider {
     private static Map<String, String> audios;
     private static String cookie;
 
-    private ScheduledExecutorService service;
-    private AlertDialog dialog;
     private JsonObject extend;
     private boolean login;
     private boolean isVip;
@@ -53,8 +49,8 @@ public class Bili extends Spider {
     private static Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Util.CHROME);
-        if (cookie != null) headers.put("cookie", cookie);
         headers.put("Referer", "https://www.bilibili.com");
+        if (cookie != null) headers.put("cookie", cookie);
         return headers;
     }
 
@@ -280,88 +276,5 @@ public class Bili extends Spider {
         login = data.isLogin();
         isVip = data.isVip();
         wbi = data.getWbi();
-        //getQRCode();
     }
-
-    /*
-    private void getQRCode() {
-        if (login) return;
-        String json = OkHttp.string("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-mini");
-        Data data = Resp.objectFrom(json).getData();
-        Init.run(() -> openApp(data));
-    }
-
-    private Intent getIntent(String pkgName, Data data) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setClassName(pkgName, "tv.danmaku.bili.ui.intent.IntentHandlerActivity");
-        intent.setData(Uri.parse(data.getUrl()));
-        return intent;
-    }
-
-    private void openApp(Data data) {
-        try {
-            Init.getActivity().startActivity(getIntent("com.bilibili.app.in", data));
-        } catch (Exception e) {
-            showQRCode(data);
-        } finally {
-            Init.execute(() -> startService(data));
-        }
-    }
-
-    private void showQRCode(Data data) {
-        try {
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Utils.dp2px(240), Utils.dp2px(240));
-            ImageView image = new ImageView(Init.context());
-            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            image.setImageBitmap(QRCode.getBitmap(data.getUrl(), 240, 2));
-            FrameLayout frame = new FrameLayout(Init.context());
-            params.gravity = Gravity.CENTER;
-            frame.addView(image, params);
-            dialog = new AlertDialog.Builder(Init.getActivity()).setView(frame).setOnCancelListener(this::cancel).setOnDismissListener(this::dismiss).show();
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            Utils.notify("請使用 BiliBili App 掃描二維碼");
-        } catch (Exception ignored) {
-        }
-    }
-
-    private void startService(Data data) {
-        service = Executors.newScheduledThreadPool(1);
-        service.scheduleAtFixedRate(() -> {
-            String url = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key=" + data.getQrcodeKey() + "&source=main_mini";
-            String json = OkHttp.string(url, getHeader());
-            url = Resp.objectFrom(json).getData().getUrl();
-            if (url.length() > 0) setCookie(url);
-        }, 1, 1, TimeUnit.SECONDS);
-    }
-
-    private void stopService() {
-        if (service != null) service.shutdownNow();
-        Init.run(this::dismiss);
-    }
-
-    private void setCookie(String url) {
-        StringBuilder sb = new StringBuilder();
-        String[] splits = Uri.parse(url).getQuery().split("&");
-        for (String split : splits) sb.append(split).append(";");
-        FileUtil.write(getUserCache(), cookie = sb.toString());
-        Utils.notify("請重新進入播放頁");
-        stopService();
-    }
-
-    private void cancel(DialogInterface dialog) {
-        FileUtil.write(getUserCache(), cookie = "");
-        stopService();
-    }
-
-    private void dismiss(DialogInterface dialog) {
-        stopService();
-    }
-
-    private void dismiss() {
-        try {
-            if (dialog != null) dialog.dismiss();
-        } catch (Exception ignored) {
-        }
-    }
-    */
 }

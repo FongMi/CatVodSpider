@@ -30,8 +30,6 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-import okhttp3.OkHttpClient;
-
 public class NiNi extends Spider {
 
     private static final String desktopUrl = "https://api.nivodz.com/index/desktop/WEB/3.4";
@@ -60,15 +58,6 @@ public class NiNi extends Spider {
 
     private void checkExtend(HashMap<String, String> extend, String key, String value) {
         if (extend.get(key) == null || extend.get(key).equals("")) extend.put(key, value);
-    }
-
-    @Override
-    public OkHttpClient client() {
-        try {
-            return super.client();
-        } catch (Throwable e) {
-            return OkHttp.client();
-        }
     }
 
     @Override
@@ -290,11 +279,11 @@ public class NiNi extends Spider {
     }
 
     private String get(String url) {
-        return decode(OkHttp.string(client(), genUrl(url, new HashMap<>()), getHeaders()));
+        return decode(OkHttp.string(genUrl(url, new HashMap<>()), getHeaders()));
     }
 
     private String post(String url, Map<String, String> params) {
-        return decode(OkHttp.post(client(), genUrl(url, params), params, getHeaders()).getBody());
+        return decode(OkHttp.post(genUrl(url, params), params, getHeaders()).getBody());
     }
 
     @SuppressLint("GetInstance")

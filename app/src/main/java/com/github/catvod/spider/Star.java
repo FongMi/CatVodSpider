@@ -29,8 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.OkHttpClient;
-
 public class Star extends Spider {
 
     private static final String apiUrl = "https://aws.ulivetv.net/v3/web/api/filter";
@@ -43,23 +41,13 @@ public class Star extends Spider {
     private Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Util.CHROME);
-        headers.put("Cookie", "userIP=64.252.112.99;");
         headers.put("Referer", siteUrl);
         return headers;
     }
 
     private String getVer() {
-        for (Element script : Jsoup.parse(OkHttp.string(client(), siteUrl, getHeader())).select("script")) if (script.attr("src").contains("buildManifest.js")) return script.attr("src").split("/")[3];
+        for (Element script : Jsoup.parse(OkHttp.string(siteUrl, getHeader())).select("script")) if (script.attr("src").contains("buildManifest.js")) return script.attr("src").split("/")[3];
         return "";
-    }
-
-    @Override
-    public OkHttpClient client() {
-        try {
-            return super.client();
-        } catch (Throwable e) {
-            return OkHttp.client();
-        }
     }
 
     @Override
@@ -78,7 +66,7 @@ public class Star extends Spider {
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : map.entrySet()) classes.add(new Class(entry.getKey(), entry.getValue()));
         for (Class type : classes) {
-            Element script = Jsoup.parse(OkHttp.string(client(), siteUrl + type.getTypeId() + "/all/all/all", getHeader())).select("#__NEXT_DATA__").get(0);
+            Element script = Jsoup.parse(OkHttp.string(siteUrl + type.getTypeId() + "/all/all/all", getHeader())).select("#__NEXT_DATA__").get(0);
             JSONObject obj = new JSONObject(script.data()).getJSONObject("props").getJSONObject("pageProps").getJSONObject("filterCondition");
             Condition item = Condition.objectFrom(obj.toString());
             filters.put(type.getTypeId(), item.getFilter());
@@ -89,7 +77,7 @@ public class Star extends Spider {
     @Override
     public String homeVideoContent() throws Exception {
         List<Vod> list = new ArrayList<>();
-        Element script = Jsoup.parse(OkHttp.string(client(), siteUrl, getHeader())).select("#__NEXT_DATA__").get(0);
+        Element script = Jsoup.parse(OkHttp.string(siteUrl, getHeader())).select("#__NEXT_DATA__").get(0);
         List<Card> cards = Card.arrayFrom(new JSONObject(script.data()).getJSONObject("props").getJSONObject("pageProps").getJSONArray("cards").toString());
         for (Card card : cards) if (!card.getName().equals("电视直播")) for (Card item : card.getCards()) list.add(item.vod());
         return Result.string(list);
@@ -117,7 +105,7 @@ public class Star extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Element script = Jsoup.parse(OkHttp.string(client(), detail.concat(ids.get(0)), getHeader())).select("#__NEXT_DATA__").get(0);
+        Element script = Jsoup.parse(OkHttp.string(detail.concat(ids.get(0)), getHeader())).select("#__NEXT_DATA__").get(0);
         Info detail = Info.objectFrom(new JSONObject(script.data()).getJSONObject("props").getJSONObject("pageProps").getJSONObject("collectionInfo").toString());
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
@@ -145,7 +133,7 @@ public class Star extends Spider {
     @Override
     public String searchContent(String key, boolean quick) throws Exception {
         List<Vod> list = new ArrayList<>();
-        String json = OkHttp.string(client(), siteUrl + data + ver + "/search.json?word=" + URLEncoder.encode(key), getHeader());
+        String json = OkHttp.string(siteUrl + data + ver + "/search.json?word=" + URLEncoder.encode(key), getHeader());
         List<Card> items = Card.arrayFrom(new JSONObject(json).getJSONObject("pageProps").getJSONArray("initList").toString());
         for (Card item : items) list.add(item.vod());
         return Result.get().vod(list).page().string();
