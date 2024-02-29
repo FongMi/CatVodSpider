@@ -40,7 +40,7 @@ android {
 
 dependencies {
     implementation 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
-    implementation 'com.github.thegrizzlylabs:sardine-android:0.8'
+    implementation 'com.github.thegrizzlylabs:sardine-android:0.9'
     implementation 'wang.harlon.quickjs:wrapper-android:0.21.1'
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
     implementation 'com.google.code.gson:gson:2.8.6'
