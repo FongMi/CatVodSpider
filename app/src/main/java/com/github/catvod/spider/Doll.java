@@ -37,7 +37,7 @@ public class Doll extends Spider {
         for (Element div : doc.select("div.video-detail")) {
             String id = div.select("h3.video-title > a").attr("href").replace(url, "");
             String name = div.select("h3.video-title > a").text();
-            String pic = url + div.select("div.thumb > a > img").attr("data-src");
+            String pic = div.select("div.thumb > a > img").attr("data-src");
             String remark = div.select("div.date").text();
             list.add(new Vod(id, name, pic, remark));
         }
@@ -52,7 +52,7 @@ public class Doll extends Spider {
         for (Element div : doc.select("div.video-detail")) {
             String id = div.select("h3.video-title > a").attr("href").replace(url, "");
             String name = div.select("h3.video-title > a").text();
-            String pic = url + div.select("div.thumb > a > img").attr("data-src");
+            String pic = div.select("div.thumb > a > img").attr("data-src");
             String remark = div.select("div.date").text();
             list.add(new Vod(id, name, pic, remark));
         }
@@ -117,7 +117,7 @@ public class Doll extends Spider {
         for (Element div : doc.select("div.video-detail")) {
             String id = div.select("h3.video-title > a").attr("href").replace(url, "");
             String name = div.select("h3.video-title > a").text();
-            String pic = url + div.select("div.thumb > a > img").attr("data-src");
+            String pic = div.select("div.thumb > a > img").attr("data-src");
             String remark = div.select("div.date").text();
             list.add(new Vod(id, name, pic, remark));
         }
