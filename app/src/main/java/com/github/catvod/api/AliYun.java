@@ -506,12 +506,8 @@ public class AliYun {
         }
 
         Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        for (String key : params.keySet()) {
-            if (key.equals("referer") || key.equals("icy-metadata") || key.equals("range") || key.equals("connection") || key.equals("accept-encoding") || key.equals("user-agent")) {
-                headers.put(key, params.get(key));
-            }
-        }
-
+        List<String> keys = Arrays.asList("referer", "icy-metadata", "range", "connection", "accept-encoding", "user-agent");
+        for (String key : params.keySet()) if (keys.contains(key)) headers.put(key, params.get(key));
         return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
     }
 

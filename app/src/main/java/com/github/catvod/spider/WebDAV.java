@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class WebDAV extends Spider {
 
@@ -185,7 +186,14 @@ public class WebDAV extends Spider {
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
-        result[2] = drive.getWebdav().get(drive.getHost() + url);
+        result[2] = drive.getWebdav().get(drive.getHost() + url, getHeaders(params));
         return result;
+    }
+
+    private static Map<String, String> getHeaders(Map<String, String> params) {
+        Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        List<String> keys = Arrays.asList("referer", "icy-metadata", "range", "connection", "accept-encoding", "user-agent");
+        for (String key : params.keySet()) if (keys.contains(key)) headers.put(key, params.get(key));
+        return headers;
     }
 }
