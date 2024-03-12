@@ -24,7 +24,7 @@ public class Zhaozy extends Ali {
 
     private final Pattern regexAli = Pattern.compile("(https://www.aliyundrive.com/s/[^\"]+)");
     private final Pattern regexVid = Pattern.compile("(\\S+)");
-    private final String siteUrl = "https://zhaoziyuan.pw/";
+    private final String siteUrl = "https://zhaoziyuan1.cc/";
     private String username;
     private String password;
 
