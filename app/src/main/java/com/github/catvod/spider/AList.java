@@ -1,6 +1,7 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -147,7 +149,20 @@ public class AList extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         String[] ids = id.split("~~~");
-        return Result.get().url(getDetail(ids[0]).getUrl()).subs(getSub(ids)).string();
+        String url = getDetail(ids[0]).getUrl();
+        return Result.get().url(url).header(getPlayHeader(url)).subs(getSub(ids)).string();
+    }
+
+    private Map<String, String> getPlayHeader(String url) {
+        try {
+            Uri uri = Uri.parse(url);
+            Map<String, String> header = new HashMap<>();
+            if (uri.getHost().contains("115.com")) header.put("User-Agent", Util.CHROME);
+            else if (uri.getHost().contains("baidupcs.com")) header.put("User-Agent", "pan.baidu.com");
+            return header;
+        } catch (Exception e) {
+            return new HashMap<>();
+        }
     }
 
     private boolean login(Drive drive) {
