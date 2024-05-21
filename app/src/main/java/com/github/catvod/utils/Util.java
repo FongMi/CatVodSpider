@@ -73,7 +73,7 @@ public class Util {
     }
 
     public static boolean isMedia(String text) {
-        return MEDIA.contains(getExt(text));
+        return MEDIA.contains(getExt(text).toLowerCase());
     }
 
     public static String getExt(String name) {
