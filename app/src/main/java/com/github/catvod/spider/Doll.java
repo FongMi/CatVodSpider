@@ -1,8 +1,5 @@
 package com.github.catvod.spider;
 
-import android.text.TextUtils;
-import android.util.Base64;
-
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
@@ -13,12 +10,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Doll extends Spider {
 
@@ -29,14 +23,14 @@ public class Doll extends Spider {
         List<Class> classes = new ArrayList<>();
         List<Vod> list = new ArrayList<>();
         Document doc = Jsoup.parse(OkHttp.string(url));
-        for (Element a : doc.select("ul#side-menu").get(0).select("li > a")) {
+        for (Element a : doc.select("ul.menu").get(0).select("li > a")) {
             String typeName = a.text();
-            String typeId = a.attr("href").replace(url, "");
-            classes.add(new Class(typeId, typeName));
+            String typeId = a.attr("href");
+            if (typeId.contains(url)) classes.add(new Class(typeId.replace(url, ""), typeName));
         }
-        for (Element div : doc.select("div.video-detail")) {
-            String id = div.select("h3.video-title > a").attr("href").replace(url, "");
-            String name = div.select("h3.video-title > a").text();
+        for (Element div : doc.select("div.video-item")) {
+            String id = div.select("a.video-title").attr("href").replace(url, "");
+            String name = div.select("a.video-title").text();
             String pic = div.select("div.thumb > a > img").attr("data-src");
             String remark = div.select("div.date").text();
             list.add(new Vod(id, name, pic, remark));
@@ -49,9 +43,9 @@ public class Doll extends Spider {
         List<Vod> list = new ArrayList<>();
         String target = pg.equals("1") ? url + tid : url + tid + "/" + pg + ".html";
         Document doc = Jsoup.parse(OkHttp.string(target));
-        for (Element div : doc.select("div.video-detail")) {
-            String id = div.select("h3.video-title > a").attr("href").replace(url, "");
-            String name = div.select("h3.video-title > a").text();
+        for (Element div : doc.select("div.video-item")) {
+            String id = div.select("a.video-title").attr("href").replace(url, "");
+            String name = div.select("a.video-title").text();
             String pic = div.select("div.thumb > a > img").attr("data-src");
             String remark = div.select("div.date").text();
             list.add(new Vod(id, name, pic, remark));
@@ -76,29 +70,17 @@ public class Doll extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        String key = "";
-        String voteTag = "";
-        StringBuilder code = new StringBuilder();
-        String html = OkHttp.string(id);
-        Document doc = Jsoup.parse(html);
-        Matcher m = Pattern.compile("/video/(\\w+).html").matcher(id);
-        if (m.find()) key = m.group(1);
-        for (Element a : doc.select("script")) {
-            if (a.html().startsWith("var voteTag")) {
-                Pattern pattern = Pattern.compile("voteTag=\"([^&]+)\"");
-                Matcher matcher = pattern.matcher(a.html());
-                if (matcher.find()) voteTag = matcher.group(1);
-                break;
-            }
-        }
-        if (TextUtils.isEmpty(voteTag)) return Result.get().url(id).parse().string();
-        voteTag = new String(Base64.decode(voteTag, 0));
-        for (int i = 0; i < voteTag.length(); i++) {
-            int k = i % key.length();
-            code.append((char) (voteTag.charAt(i) ^ key.charAt(k)));
-        }
-        String playUrl = URLDecoder.decode(new String(Base64.decode(code.toString(), 0)));
-        return Result.get().url(playUrl).string();
+        return Result.get().url(id).parse().click("document.getElementById('player-wrapper').click()").string();
+    }
+
+    @Override
+    public boolean manualVideoCheck() throws Exception {
+        return true;
+    }
+
+    @Override
+    public boolean isVideoFormat(String url) throws Exception {
+        return !url.contains("afcdn.net") && url.contains(".m3u8");
     }
 
     @Override
@@ -114,9 +96,9 @@ public class Doll extends Spider {
     private String searchContent(String query) {
         List<Vod> list = new ArrayList<>();
         Document doc = Jsoup.parse(OkHttp.string(url + query));
-        for (Element div : doc.select("div.video-detail")) {
-            String id = div.select("h3.video-title > a").attr("href").replace(url, "");
-            String name = div.select("h3.video-title > a").text();
+        for (Element div : doc.select("div.video-item")) {
+            String id = div.select("a.video-title").attr("href").replace(url, "");
+            String name = div.select("a.video-title").text();
             String pic = div.select("div.thumb > a > img").attr("data-src");
             String remark = div.select("div.date").text();
             list.add(new Vod(id, name, pic, remark));

@@ -6,8 +6,8 @@ import android.widget.Button;
 
 import com.github.catvod.R;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.spider.Doll;
 import com.github.catvod.spider.Init;
-import com.github.catvod.spider.Wogg;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
     private void initSpider() {
         try {
             Init.init(getApplicationContext());
-            spider = new Wogg();
+            spider = new Doll();
             spider.init(this, "");
         } catch (Throwable e) {
             e.printStackTrace();
