@@ -14,7 +14,6 @@ import com.github.catvod.utils.Util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -29,7 +28,7 @@ import java.util.Map;
  */
 public class Kanqiu extends Spider {
 
-    private static String siteUrl = "http://www.88kanqiu.one";
+    private static String siteUrl = "http://www.88kanqiu.tw";
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
@@ -74,10 +73,10 @@ public class Kanqiu extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        if (ids.get(0).equals(siteUrl)) return Result.error("比賽尚未開始");
-        Document doc = Jsoup.parse(OkHttp.string(ids.get(0), getHeader()));
-        String t = doc.select("#t").attr("value");
-        String result = t.substring(6);
+        if (ids.get(0).equals(siteUrl)) return Result.error("比赛尚未开始");
+        String content = OkHttp.string(ids.get(0) + "-url", getHeader());
+        String result = new JSONObject(content).optString("data");
+        result = result.substring(6);
         result = result.substring(0, result.length() - 2);
         String json = new String(Base64.decode(result, Base64.DEFAULT));
         JSONArray linksArray = new JSONObject(json).getJSONArray("links");
