@@ -274,7 +274,7 @@ public class NiNi extends Spider {
 
     private String convert(String text) {
         StringBuilder sb = new StringBuilder();
-        for (String s : text.split(",")) sb.append(String.format("[a=cr:{\"id\":\"%s\",\"name\":\"%s\"}/]%s[/a]", s + "/{pg}", s, s)).append(",");
+        for (String s : text.split(",")) if (!TextUtils.isEmpty(s)) sb.append(String.format("[a=cr:{\"id\":\"%s\",\"name\":\"%s\"}/]%s[/a]", s + "/{pg}", s, s)).append(",");
         return Util.substring(sb.toString());
     }
 
