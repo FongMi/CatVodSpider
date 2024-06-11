@@ -93,6 +93,16 @@ public class Eighteen extends Spider {
         return Result.get().parse().url(url + id).string();
     }
 
+    @Override
+    public boolean manualVideoCheck() throws Exception {
+        return true;
+    }
+
+    @Override
+    public boolean isVideoFormat(String url) throws Exception {
+        return !url.contains("afcdn.net") && url.contains(".mp4");
+    }
+
     private String searchContent(String key, String pg) {
         HashMap<String, String> params = new HashMap<>();
         params.put("search_keyword", key);
