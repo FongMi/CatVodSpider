@@ -100,7 +100,7 @@ public class Eighteen extends Spider {
 
     @Override
     public boolean isVideoFormat(String url) throws Exception {
-        return !url.contains("afcdn.net") && url.contains(".mp4");
+        return !url.contains("afcdn.net") && (url.contains(".m3u8") || url.contains(".mp4"));
     }
 
     private String searchContent(String key, String pg) {
