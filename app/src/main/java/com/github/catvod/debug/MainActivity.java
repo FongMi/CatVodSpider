@@ -6,8 +6,8 @@ import android.widget.Button;
 
 import com.github.catvod.R;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.spider.Doll;
 import com.github.catvod.spider.Init;
+import com.github.catvod.spider.NiNi;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
     private void initSpider() {
         try {
             Init.init(getApplicationContext());
-            spider = new Doll();
+            spider = new NiNi();
             spider.init(this, "");
         } catch (Throwable e) {
             e.printStackTrace();
@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
 
     public void detailContent() {
         try {
-            Logger.t("detailContent").d(spider.detailContent(Arrays.asList("2121173431")));
+            Logger.t("detailContent").d(spider.detailContent(Arrays.asList("ulNJ1TWJXFPn0GQGCuSKjZMmP28PTq2U")));
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
 
     public void playerContent() {
         try {
-            Logger.t("playerContent").d(spider.playerContent("轉存原畫", "kahf2rw5Uuk+652f55f6943ee2f75d8e4fa590b4ec65fd007f8c", new ArrayList<>()));
+            Logger.t("playerContent").d(spider.playerContent("", "ulNJ1TWJXFPn0GQGCuSKjZMmP28PTq2U_J52h83OSgHvZXbaecUtirP1qzfVouxIk_1", new ArrayList<>()));
         } catch (Throwable e) {
             e.printStackTrace();
         }

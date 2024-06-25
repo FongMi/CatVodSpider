@@ -38,7 +38,7 @@ public class NiNi extends Spider {
     private static final String searchUrl = "https://api.nivodz.com/show/search/WEB/3.2";
     private static final String categoryUrl = "https://api.nivodz.com/show/filter/WEB/3.2";
     private static final String detailUrl = "https://api.nivodz.com/show/detail/WEB/3.2";
-    private static final String playUrl = "https://api.nivodz.com/show/play/info/WEB/3.2";
+    private static final String playUrl = "https://api.nivodz.com/show/play/info/WEB/3.3";
     private static final String des_key = "diao.com";
     private boolean adult;
 
@@ -174,7 +174,7 @@ public class NiNi extends Spider {
             JSONObject item = plays.getJSONObject(j);
             String episodeName = item.getString("episodeName");
             episodeName = TextUtils.isEmpty(episodeName) ? "播放" : episodeName;
-            vodItems.add(episodeName + "$" + id + "_" + item.getString("playIdCode"));
+            vodItems.add(episodeName + "$" + id + "_" + item.getString("playIdCode") + "_" + episodeName);
         }
         Vod vod = new Vod();
         vod.setVodId(id);
@@ -198,10 +198,10 @@ public class NiNi extends Spider {
         Map<String, String> params = new TreeMap<>();
         params.put("show_id_code", ids[0]);
         params.put("play_id_code", ids[1]);
-        params.put("oid", "1");
+        params.put("episode_id", ids[2]);
         JSONObject object = new JSONObject(post(playUrl, params));
-        String playUrl = object.getJSONObject("entity").optString("playUrl");
-        return Result.get().url(playUrl).header(getHeaders()).string();
+        String url = object.getJSONObject("entity").getJSONArray("plays").getJSONObject(0).optString("playUrl");
+        return Result.get().url(url).header(getHeaders()).string();
     }
 
     @Override
