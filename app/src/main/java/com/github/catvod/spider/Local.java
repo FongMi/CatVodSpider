@@ -106,9 +106,10 @@ public class Local extends Spider {
 
     private List<Sub> getSubs(String path) {
         File file = new File(path);
-        if (file.getParentFile() == null) return Collections.emptyList();
+        File[] files = file.getParentFile() == null ? null : file.getParentFile().listFiles();
+        if (files == null || files.length == 0) return Collections.emptyList();
         List<Sub> subs = new ArrayList<>();
-        for (File f : file.getParentFile().listFiles()) {
+        for (File f : files) {
             String ext = Util.getExt(f.getName());
             if (Util.isSub(ext)) subs.add(Sub.create().name(Util.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
         }
