@@ -10,6 +10,8 @@ public class Filter {
     private String key;
     @SerializedName("name")
     private String name;
+    @SerializedName("init")
+    private String init;
     @SerializedName("value")
     private List<Value> value;
 
