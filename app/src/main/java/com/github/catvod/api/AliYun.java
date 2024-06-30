@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.github.catvod.BuildConfig;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
@@ -219,7 +218,7 @@ public class AliYun {
         JsonObject param = new JsonObject();
         param.addProperty("authorize", 1);
         param.addProperty("scope", "user:base,file:all:read,file:all:write");
-        String url = "https://open.aliyundrive.com/oauth/users/authorize?client_id=" + BuildConfig.CLIENT_ID + "&redirect_uri=https://alist.nn.ci/tool/aliyundrive/callback&scope=user:base,file:all:read,file:all:write&state=";
+        String url = "https://open.aliyundrive.com/oauth/users/authorize?client_id=76917ccccd4441c39457a04f6084fb2f&redirect_uri=https://alist.nn.ci/tool/aliyundrive/callback&scope=user:base,file:all:read,file:all:write&state=";
         String json = auth(url, param.toString(), true);
         return oauthRedirect(Code.objectFrom(json).getCode());
     }

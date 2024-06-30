@@ -4,13 +4,14 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    namespace 'com.github.catvod'
+
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.github.catvod.demo"
-        minSdk 17
-        targetSdk 28
-        buildConfigField("String", "CLIENT_ID", "\"${clientId}\"")
+        minSdk 16
+        targetSdk 34
     }
 
     buildTypes {
@@ -43,7 +44,7 @@ dependencies {
     implementation 'com.github.thegrizzlylabs:sardine-android:0.9'
     implementation 'wang.harlon.quickjs:wrapper-android:0.21.1'
     implementation 'com.squareup.okhttp3:okhttp:3.12.13'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'cn.wanghaomiao:JsoupXpath:2.5.1'
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'com.google.zxing:core:3.3.0'
