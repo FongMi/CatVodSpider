@@ -1,8 +1,12 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
@@ -12,6 +16,7 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Image;
 import com.github.catvod.utils.Util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,10 +103,18 @@ public class Local extends Spider {
         Vod vod = new Vod();
         vod.setVodId(file.getAbsolutePath());
         vod.setVodName(file.getName());
-        vod.setVodPic(Image.getIcon(file.isDirectory()));
+        vod.setVodPic(file.isFile() ? getBase64(file) : Image.FOLDER);
         vod.setVodRemarks(format.format(file.lastModified()));
         vod.setVodTag(file.isDirectory() ? "folder" : "file");
         return vod;
+    }
+
+    private String getBase64(File file) {
+        Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(file.getAbsolutePath(), MediaStore.Images.Thumbnails.MINI_KIND);
+        if (bitmap == null) return Image.VIDEO;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return "data:image/jpg;base64," + Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
     }
 
     private List<Sub> getSubs(String path) {
