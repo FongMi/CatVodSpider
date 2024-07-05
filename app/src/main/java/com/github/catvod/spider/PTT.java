@@ -15,6 +15,7 @@ import com.github.catvod.utils.Util;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,14 +75,14 @@ public class PTT extends Spider {
         Document doc = Jsoup.parse(OkHttp.string(url + ids.get(0), getHeader()));
         LinkedHashMap<String, String> flags = new LinkedHashMap<>();
         List<String> playUrls = new ArrayList<>();
-        for (Element f : doc.select("ul#w1 > li > a")) {
-            flags.put(f.attr("href").split("/")[3], f.attr("title"));
+        for (Element a : doc.select("ul#w1 > li > a")) {
+            flags.put(a.attr("href").split("/")[3], a.attr("title"));
         }
+        Elements items = doc.select("div > a.seq.border");
         for (String flag : flags.keySet()) {
             List<String> urls = new ArrayList<>();
-            for (Element e : doc.select("div > a.seq.border")) {
-                urls.add(e.text() + "$" + ids.get(0) + "/" + e.attr("href").split("/")[2] + "/" + flag);
-            }
+            for (Element e : items) urls.add(e.text() + "$" + ids.get(0) + "/" + e.attr("href").split("/")[2] + "/" + flag);
+            if (urls.isEmpty()) urls.add("1$" + ids.get(0) + "/1/" + flag);
             playUrls.add(TextUtils.join("#", urls));
         }
         Vod vod = new Vod();
