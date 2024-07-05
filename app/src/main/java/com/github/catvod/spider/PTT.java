@@ -56,13 +56,15 @@ public class PTT extends Spider {
         if (!TextUtils.isEmpty(extend.get("area"))) builder.appendQueryParameter("area_id", extend.get("area"));
         if (!TextUtils.isEmpty(extend.get("year"))) builder.appendQueryParameter("year", extend.get("year"));
         if (!TextUtils.isEmpty(extend.get("sort"))) builder.appendQueryParameter("sort", extend.get("sort"));
+        builder.appendQueryParameter("page", pg);
         Document doc = Jsoup.parse(OkHttp.string(builder.toString(), getHeader()));
         List<Vod> list = new ArrayList<>();
         for (Element div : doc.select("div.card > div.embed-responsive")) {
             Element a = div.select("a").get(0);
             Element img = a.select("img").get(0);
-            Element remark = div.select("span.badge.badge-success").get(0);
-            list.add(new Vod(a.attr("href").substring(1), img.attr("alt"), url + img.attr("src"), remark.text()));
+            String remark = div.select("span.badge.badge-success").get(0).text();
+            String vodPic = img.attr("src").startsWith("http") ? img.attr("src") : url + img.attr("src");
+            list.add(new Vod(a.attr("href").substring(1), img.attr("alt"), vodPic, remark));
         }
         return Result.string(list);
     }
@@ -107,8 +109,9 @@ public class PTT extends Spider {
         for (Element div : doc.select("div.card > div.embed-responsive")) {
             Element a = div.select("a").get(0);
             Element img = a.select("img").get(0);
-            Element remark = div.select("span.badge.badge-success").get(0);
-            list.add(new Vod(a.attr("href").substring(1), img.attr("alt"), url + img.attr("src"), remark.text()));
+            String remark = div.select("span.badge.badge-success").get(0).text();
+            String vodPic = img.attr("src").startsWith("http") ? img.attr("src") : url + img.attr("src");
+            list.add(new Vod(a.attr("href").substring(1), img.attr("alt"), vodPic, remark));
         }
         return Result.string(list);
     }
