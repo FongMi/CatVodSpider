@@ -65,7 +65,8 @@ public class PTT extends Spider {
             Element img = a.select("img").get(0);
             String remark = div.select("span.badge.badge-success").get(0).text();
             String vodPic = img.attr("src").startsWith("http") ? img.attr("src") : url + img.attr("src");
-            list.add(new Vod(a.attr("href").substring(1), img.attr("alt"), vodPic, remark));
+            String name = img.attr("alt");
+            if (!TextUtils.isEmpty(name)) list.add(new Vod(a.attr("href").substring(1), name, vodPic, remark));
         }
         return Result.string(list);
     }
@@ -112,7 +113,8 @@ public class PTT extends Spider {
             Element img = a.select("img").get(0);
             String remark = div.select("span.badge.badge-success").get(0).text();
             String vodPic = img.attr("src").startsWith("http") ? img.attr("src") : url + img.attr("src");
-            list.add(new Vod(a.attr("href").substring(1), img.attr("alt"), vodPic, remark));
+            String name = img.attr("alt");
+            if (!TextUtils.isEmpty(name)) list.add(new Vod(a.attr("href").substring(1), name, vodPic, remark));
         }
         return Result.string(list);
     }
