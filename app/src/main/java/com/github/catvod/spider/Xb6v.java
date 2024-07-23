@@ -34,7 +34,7 @@ import okhttp3.Response;
  */
 public class Xb6v extends Spider {
 
-    private final String siteUrl = "http://www.xb6v.com";
+    private final String siteUrl = "https://www.xb6v.com";
     private String nextSearchUrlPrefix;
     private String nextSearchUrlSuffix;
 

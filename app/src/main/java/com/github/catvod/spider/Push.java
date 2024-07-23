@@ -53,10 +53,16 @@ public class Push extends Spider {
         vod.setTypeName("FongMi");
         vod.setVodName(url.startsWith("file://") ? new File(url).getName() : url);
         if (url.startsWith("http") && url.contains("#")) url = url.replace("#", "***");
-        String play = "播放$" + url;
-        boolean thunder = Util.isThunder(url);
-        vod.setVodPlayUrl(thunder ? play : TextUtils.join("$$$", Arrays.asList(play, play, play)));
-        vod.setVodPlayFrom(thunder ? "迅雷" : TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
+        if (Util.isThunder(url)) {
+            vod.setVodPlayUrl(url);
+            vod.setVodPlayFrom("迅雷");
+        } else if (url.contains("$")) {
+            vod.setVodPlayFrom("直連");
+            vod.setVodPlayUrl(TextUtils.join("#", url.split("\n")));
+        } else {
+            vod.setVodPlayUrl(TextUtils.join("$$$", Arrays.asList(url, url, url)));
+            vod.setVodPlayFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
+        }
         return vod;
     }
 
