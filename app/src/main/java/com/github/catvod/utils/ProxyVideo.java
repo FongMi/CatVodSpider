@@ -1,8 +1,5 @@
 package com.github.catvod.utils;
 
-import static fi.iki.elonen.NanoHTTPD.Response.Status;
-import static fi.iki.elonen.NanoHTTPD.newFixedLengthResponse;
-
 import android.os.SystemClock;
 import android.text.TextUtils;
 
@@ -12,10 +9,10 @@ import com.github.catvod.spider.Proxy;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import fi.iki.elonen.NanoHTTPD;
 import okhttp3.Response;
 
 public class ProxyVideo {
@@ -43,16 +40,14 @@ public class ProxyVideo {
         return String.format(Locale.getDefault(), "%s?url=%s&thread=%d", GO_SERVER, URLEncoder.encode(url), thread);
     }
 
-    public static NanoHTTPD.Response proxy(String url, Map<String, String> headers) throws Exception {
+    public static Object[] proxy(String url, Map<String, String> headers) throws Exception {
         Response response = OkHttp.newCall(url, headers);
         String contentType = response.headers().get("Content-Type");
-        String hContentLength = response.headers().get("Content-Length");
         String contentDisposition = response.headers().get("Content-Disposition");
-        long contentLength = hContentLength != null ? Long.parseLong(hContentLength) : 0;
         if (contentDisposition != null) contentType = getMimeType(contentDisposition);
-        NanoHTTPD.Response resp = newFixedLengthResponse(Status.PARTIAL_CONTENT, contentType, response.body().byteStream(), contentLength);
-        for (String key : response.headers().names()) resp.addHeader(key, response.headers().get(key));
-        return resp;
+        Map<String, String> respHeaders = new HashMap<>();
+        for (String key : response.headers().names()) respHeaders.put(key, response.headers().get(key));
+        return new Object[]{206, contentType, response.body().byteStream(), respHeaders};
     }
 
     private static String getMimeType(String contentDisposition) {

@@ -14,9 +14,6 @@
 # Gson
 -keep class com.google.gson.** { *; }
 
-# Nano
--keep class fi.iki.elonen.** { *; }
-
 # OkHttp
 -dontwarn okhttp3.**
 -keep class okio.** { *; }

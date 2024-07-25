@@ -507,7 +507,7 @@ public class AliYun {
         Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         List<String> keys = Arrays.asList("referer", "icy-metadata", "range", "connection", "accept-encoding", "user-agent");
         for (String key : params.keySet()) if (keys.contains(key)) headers.put(key, params.get(key));
-        return new Object[]{ProxyVideo.proxy(downloadUrl, headers)};
+        return ProxyVideo.proxy(downloadUrl, headers);
     }
 
     private String getM3u8Url(String shareId, String fileId, String templateId) {
