@@ -16,6 +16,7 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Image;
 import com.github.catvod.utils.Util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -25,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class Local extends Spider {
 
@@ -103,18 +105,18 @@ public class Local extends Spider {
         Vod vod = new Vod();
         vod.setVodId(file.getAbsolutePath());
         vod.setVodName(file.getName());
-        vod.setVodPic(file.isFile() ? getBase64(file) : Image.FOLDER);
+        vod.setVodPic(file.isFile() ? Proxy.getUrl() + "?do=local&path=" + Base64.encodeToString(file.getAbsolutePath().getBytes(), Base64.DEFAULT | Base64.URL_SAFE) : Image.FOLDER);
         vod.setVodRemarks(format.format(file.lastModified()));
         vod.setVodTag(file.isDirectory() ? "folder" : "file");
         return vod;
     }
 
-    private String getBase64(File file) {
-        Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(file.getAbsolutePath(), MediaStore.Images.Thumbnails.MINI_KIND);
-        if (bitmap == null) return Image.VIDEO;
+    private static byte[] getBase64(String path) {
+        Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
+        if (bitmap == null) return Base64.decode(Image.VIDEO.split("base64,")[1], Base64.DEFAULT);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        return "data:image/jpg;base64," + Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+        return baos.toByteArray();
     }
 
     private List<Sub> getSubs(String path) {
@@ -127,5 +129,14 @@ public class Local extends Spider {
             if (Util.isSub(ext)) subs.add(Sub.create().name(Util.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
         }
         return subs;
+    }
+
+    public static Object[] proxy(Map<String, String> params) {
+        String path = new String(Base64.decode(params.get("path"), Base64.DEFAULT | Base64.URL_SAFE));
+        Object[] result = new Object[3];
+        result[0] = 200;
+        result[1] = "application/octet-stream";
+        result[2] = new ByteArrayInputStream(getBase64(path));
+        return result;
     }
 }
