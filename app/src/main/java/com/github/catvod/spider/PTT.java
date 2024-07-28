@@ -66,14 +66,14 @@ public class PTT extends Spider {
             String remark = div.select("span.badge.badge-success").get(0).text();
             String vodPic = img.attr("src").startsWith("http") ? img.attr("src") : url + img.attr("src");
             String name = img.attr("alt");
-            if (!TextUtils.isEmpty(name)) list.add(new Vod(a.attr("href").substring(1), name, vodPic, remark));
+            if (!TextUtils.isEmpty(name)) list.add(new Vod(a.attr("href").substring(3), name, vodPic, remark));
         }
         return Result.string(list);
     }
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        Document doc = Jsoup.parse(OkHttp.string(url + ids.get(0), getHeader()));
+        Document doc = Jsoup.parse(OkHttp.string(url + ids.get(0) + "/1", getHeader()));
         LinkedHashMap<String, String> flags = new LinkedHashMap<>();
         List<String> playUrls = new ArrayList<>();
         for (Element a : doc.select("ul#w1 > li > a")) {
@@ -114,7 +114,7 @@ public class PTT extends Spider {
             String remark = div.select("span.badge.badge-success").get(0).text();
             String vodPic = img.attr("src").startsWith("http") ? img.attr("src") : url + img.attr("src");
             String name = img.attr("alt");
-            if (!TextUtils.isEmpty(name)) list.add(new Vod(a.attr("href").substring(1), name, vodPic, remark));
+            if (!TextUtils.isEmpty(name)) list.add(new Vod(a.attr("href").substring(3), name, vodPic, remark));
         }
         return Result.string(list);
     }
