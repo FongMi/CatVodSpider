@@ -43,7 +43,7 @@ public class Item {
     }
 
     public Vod vod() {
-        return new Vod(getUrl(), getName(), getIcon(), getVersion(), Vod.Style.rect(1.0f));
+        return new Vod("", getName(), getIcon(), getVersion(), Vod.Style.rect(1.0f), getUrl());
     }
 
     @Override

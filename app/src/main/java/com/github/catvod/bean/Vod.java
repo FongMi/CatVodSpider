@@ -31,12 +31,20 @@ public class Vod {
     private String vodPlayUrl;
     @SerializedName("vod_tag")
     private String vodTag;
+    @SerializedName("action")
+    private String action;
     @SerializedName("style")
     private Style style;
 
     public static Vod objectFrom(String str) {
         Vod item = new Gson().fromJson(str, Vod.class);
         return item == null ? new Vod() : item;
+    }
+
+    public static Vod action(String action) {
+        Vod vod = new Vod();
+        vod.action = action;
+        return vod;
     }
 
     public Vod() {
@@ -55,12 +63,29 @@ public class Vod {
         setVodRemarks(vodRemarks);
     }
 
+    public Vod(String vodId, String vodName, String vodPic, String vodRemarks, String action) {
+        setVodId(vodId);
+        setVodName(vodName);
+        setVodPic(vodPic);
+        setVodRemarks(vodRemarks);
+        setAction(action);
+    }
+
     public Vod(String vodId, String vodName, String vodPic, String vodRemarks, Style style) {
         setVodId(vodId);
         setVodName(vodName);
         setVodPic(vodPic);
         setVodRemarks(vodRemarks);
         setStyle(style);
+    }
+
+    public Vod(String vodId, String vodName, String vodPic, String vodRemarks, Style style, String action) {
+        setVodId(vodId);
+        setVodName(vodName);
+        setVodPic(vodPic);
+        setVodRemarks(vodRemarks);
+        setStyle(style);
+        setAction(action);
     }
 
     public Vod(String vodId, String vodName, String vodPic, String vodRemarks, boolean folder) {
@@ -129,6 +154,10 @@ public class Vod {
 
     public void setVodTag(String vodTag) {
         this.vodTag = vodTag;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public void setStyle(Style style) {

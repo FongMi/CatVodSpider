@@ -58,6 +58,10 @@ public abstract class Spider {
         return null;
     }
 
+    public void action(String action) {
+
+    }
+
     public void destroy() {
     }
 

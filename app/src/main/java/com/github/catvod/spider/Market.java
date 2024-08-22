@@ -1,13 +1,11 @@
 package com.github.catvod.spider;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
-import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.market.Data;
 import com.github.catvod.bean.market.Item;
 import com.github.catvod.crawler.Spider;
@@ -62,22 +60,8 @@ public class Market extends Spider {
     }
 
     @Override
-    public String detailContent(List<String> ids) throws Exception {
-        Init.run(this::finish);
-        Vod vod = new Vod();
-        vod.setVodPlayFrom("FongMi");
-        vod.setVodPlayUrl("FongMi$FongMi");
-        Init.execute(() -> download(ids.get(0)));
-        return Result.string(vod);
-    }
-
-    private void finish() {
-        try {
-            Activity activity = Init.getActivity();
-            if (activity != null) activity.finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void action(String action) {
+        Init.execute(() -> download(action));
     }
 
     private void download(String url) {
