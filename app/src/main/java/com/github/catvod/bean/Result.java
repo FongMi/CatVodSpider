@@ -95,6 +95,10 @@ public class Result {
         return Result.get().vod(Collections.emptyList()).msg(msg).string();
     }
 
+    public static String notify(String msg) {
+        return Result.get().msg(msg).string();
+    }
+
     public static Result get() {
         return new Result();
     }
