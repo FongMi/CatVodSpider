@@ -62,10 +62,18 @@ public class Util {
             UniversalDetector detector = new UniversalDetector(null);
             detector.handleData(bytes, 0, bytes.length);
             detector.dataEnd();
-            return new String(bytes, detector.getDetectedCharset()).getBytes("UTF-8");
+            return removeBOM(new String(bytes, detector.getDetectedCharset()).getBytes("UTF-8"));
         } catch (Exception e) {
             return bytes;
         }
+    }
+
+    public static byte[] removeBOM(byte[] bytes) {
+        byte[] bom = {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
+        if (bytes.length < 3 || !Arrays.equals(Arrays.copyOf(bytes, 3), bom)) return bytes;
+        byte[] newBytes = new byte[bytes.length - 3];
+        System.arraycopy(bytes, 3, newBytes, 0, newBytes.length);
+        return newBytes;
     }
 
     public static boolean isSub(String ext) {

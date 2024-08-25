@@ -22,6 +22,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,6 +36,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Response;
 
 public class AList extends Spider {
 
@@ -150,10 +153,10 @@ public class AList extends Spider {
     public String playerContent(String flag, String id, List<String> vipFlags) {
         String[] ids = id.split("~~~");
         String url = getDetail(ids[0]).getUrl();
-        return Result.get().url(url).header(getPlayHeader(url)).subs(getSub(ids)).string();
+        return Result.get().url(url).header(getPlayHeader(url)).subs(getSubs(ids)).string();
     }
 
-    private Map<String, String> getPlayHeader(String url) {
+    private static Map<String, String> getPlayHeader(String url) {
         try {
             Uri uri = Uri.parse(url);
             Map<String, String> header = new HashMap<>();
@@ -244,17 +247,29 @@ public class AList extends Spider {
         return sb.toString();
     }
 
-    private List<Sub> getSub(String[] ids) {
+    private List<Sub> getSubs(String[] ids) {
         List<Sub> sub = new ArrayList<>();
         for (String text : ids) {
             if (!text.contains("@@@")) continue;
             String[] split = text.split("@@@");
             String name = split[0];
             String ext = split[1];
-            String url = getDetail(split[2]).getUrl();
+            String url = Proxy.getUrl() + "?do=alist&type=sub&url=" + getDetail(split[2]).getUrl();
             sub.add(Sub.create().name(name).ext(ext).url(url));
         }
         return sub;
+    }
+
+    public static Object[] proxy(Map<String, String> params) throws Exception {
+        if (!"sub".equals(params.get("type"))) return null;
+        String url = params.get("url");
+        Response res = OkHttp.newCall(url, getPlayHeader(url));
+        byte[] body = Util.toUtf8(res.body().bytes());
+        Object[] result = new Object[3];
+        result[0] = 200;
+        result[1] = "application/octet-stream";
+        result[2] = new ByteArrayInputStream(body);
+        return result;
     }
 
     class Job implements Callable<List<Vod>> {
