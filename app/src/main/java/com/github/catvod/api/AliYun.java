@@ -545,11 +545,10 @@ public class AliYun {
         String fileId = params.get("fileId");
         String shareId = params.get("shareId");
         Response res = OkHttp.newCall(getDownloadUrl(shareId, fileId), getHeaderAuth());
-        byte[] body = Util.toUtf8(res.body().bytes());
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
-        result[2] = new ByteArrayInputStream(body);
+        result[2] = new ByteArrayInputStream(res.body().bytes());
         return result;
     }
 

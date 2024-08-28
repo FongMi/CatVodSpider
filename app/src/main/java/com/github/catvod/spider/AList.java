@@ -22,7 +22,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,8 +35,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
-import okhttp3.Response;
 
 public class AList extends Spider {
 
@@ -254,22 +251,10 @@ public class AList extends Spider {
             String[] split = text.split("@@@");
             String name = split[0];
             String ext = split[1];
-            String url = Proxy.getUrl() + "?do=alist&type=sub&url=" + getDetail(split[2]).getUrl();
+            String url = getDetail(split[2]).getUrl();
             sub.add(Sub.create().name(name).ext(ext).url(url));
         }
         return sub;
-    }
-
-    public static Object[] proxy(Map<String, String> params) throws Exception {
-        if (!"sub".equals(params.get("type"))) return null;
-        String url = params.get("url");
-        Response res = OkHttp.newCall(url, getPlayHeader(url));
-        byte[] body = Util.toUtf8(res.body().bytes());
-        Object[] result = new Object[3];
-        result[0] = 200;
-        result[1] = "application/octet-stream";
-        result[2] = new ByteArrayInputStream(body);
-        return result;
     }
 
     class Job implements Callable<List<Vod>> {
