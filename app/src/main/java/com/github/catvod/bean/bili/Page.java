@@ -16,6 +16,6 @@ public class Page {
     }
 
     public String getPart() {
-        return TextUtils.isEmpty(part) ? "" : part;
+        return TextUtils.isEmpty(part) ? "" : part.replace("#", "");
     }
 }
