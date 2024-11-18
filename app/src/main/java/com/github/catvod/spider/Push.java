@@ -1,6 +1,5 @@
 package com.github.catvod.spider;
 
-import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -19,20 +18,8 @@ import java.util.List;
 
 public class Push extends Spider {
 
-    private final Ali ali;
-
-    public Push() {
-        ali = new Ali();
-    }
-
-    @Override
-    public void init(Context context, String extend) {
-        ali.init(context, extend);
-    }
-
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        if (Ali.pattern.matcher(ids.get(0)).find()) return ali.detailContent(ids);
         return Result.string(vod(ids.get(0)));
     }
 
@@ -43,7 +30,7 @@ public class Push extends Spider {
         if (flag.equals("解析")) return Result.get().parse().jx().url(id).string();
         if (flag.equals("嗅探")) return Result.get().parse().url(id).string();
         if (flag.equals("迅雷")) return Result.get().url(id).string();
-        return ali.playerContent(flag, id, vipFlags);
+        return "";
     }
 
     private Vod vod(String url) {

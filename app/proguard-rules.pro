@@ -1,12 +1,13 @@
 # Merge
 -flattenpackagehierarchy com.github.catvod.spider.merge
--dontwarn org.slf4j.impl.StaticLoggerBinder
+
+# slf4j
+-dontwarn org.slf4j.impl.**
+-keep class org.slf4j.** { *; }
 
 # Spider
--keep class com.github.catvod.js.* { *; }
 -keep class com.github.catvod.crawler.* { *; }
 -keep class com.github.catvod.spider.* { public <methods>; }
--keep class com.github.catvod.parser.* { public <methods>; }
 
 # AndroidX
 -keep class androidx.core.** { *; }
