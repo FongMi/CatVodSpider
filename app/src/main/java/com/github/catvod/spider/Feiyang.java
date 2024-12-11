@@ -60,6 +60,7 @@ public class Feiyang extends Spider {
     @Override
     public void destroy() {
         try {
+            Shell.exec("killall -9 " + AIO);
             if (thread != null) thread.interrupt();
         } catch (Exception e) {
             e.printStackTrace();
