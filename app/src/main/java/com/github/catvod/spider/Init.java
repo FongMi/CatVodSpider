@@ -42,7 +42,6 @@ public class Init {
     public static void init(Context context) {
         get().app = ((Application) context);
         SpiderDebug.log("自定義爬蟲代碼載入成功！");
-        Feiyang.startAIO();
     }
 
     public static void execute(Runnable runnable) {
