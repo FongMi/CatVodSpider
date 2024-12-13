@@ -52,7 +52,7 @@ public class Feiyang extends Spider {
         String[] texts = extend.split(";md5;");
         String url = texts[0].trim();
         String md5 = texts[1].trim();
-        if (md5.startsWith("http")) md5 = OkHttp.string(md5);
+        if (md5.startsWith("http")) md5 = OkHttp.string(md5).trim();
         if (Util.MD5(f_aio).equals(md5)) return;
         try {
             download(f_aio, OkHttp.newCall(url).body().byteStream());
