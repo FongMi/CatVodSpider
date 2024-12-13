@@ -33,7 +33,7 @@ public class Feiyang extends Spider {
     public String liveContent(String url) {
         int retry = 0;
         while ((OkHttp.string(URL)).isEmpty() && retry++ < 10) SystemClock.sleep(250);
-        return OkHttp.string(!url.isEmpty() ? url : URL + extend);
+        return OkHttp.string(!url.isEmpty() ? url : extend.startsWith("http") ? extend : URL + extend);
     }
 
     private void createShell() {
