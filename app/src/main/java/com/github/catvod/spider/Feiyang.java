@@ -13,6 +13,7 @@ import java.io.File;
 
 public class Feiyang extends Spider {
 
+    private static final String URL = "http://127.0.0.1:35345/";
     private static final String AIO = "allinone-linux-musl";
     private static final String SHELL = "run-allinone.sh";
     private static final File f_shell = new File(Path.files(), SHELL);
@@ -29,11 +30,10 @@ public class Feiyang extends Spider {
     }
 
     @Override
-    public String liveContent() {
-        String content;
+    public String liveContent(String url) {
         int retry = 0;
-        while ((content = OkHttp.string(extend)).isEmpty() && retry++ < 10) SystemClock.sleep(250);
-        return content;
+        while ((OkHttp.string(URL)).isEmpty() && retry++ < 10) SystemClock.sleep(250);
+        return OkHttp.string(!url.isEmpty() ? url : URL + extend);
     }
 
     private void createShell() {
