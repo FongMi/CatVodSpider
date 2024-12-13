@@ -2,6 +2,7 @@ package com.github.catvod.utils;
 
 import android.os.Environment;
 
+import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.spider.Init;
 
 import java.io.File;
@@ -102,6 +103,17 @@ public class Path {
             in.close();
         } catch (Exception ignored) {
         }
+    }
+
+    public static void move(File in, File out) {
+        copy(in, out);
+        clear(in);
+    }
+
+    public static void clear(File dir) {
+        if (dir == null) return;
+        if (dir.isDirectory()) for (File file : list(dir)) clear(file);
+        if (dir.delete()) SpiderDebug.log("Deleted:" + dir.getAbsolutePath());
     }
 
     public static List<File> list(File dir) {

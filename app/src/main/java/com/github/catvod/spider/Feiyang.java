@@ -4,12 +4,15 @@ import android.content.Context;
 import android.os.SystemClock;
 
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
 import com.github.catvod.utils.Shell;
+import com.github.catvod.utils.Util;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 public class Feiyang extends Spider {
 
@@ -19,12 +22,11 @@ public class Feiyang extends Spider {
     private static final File f_shell = new File(Path.files(), SHELL);
     private static final File f_aio = new File(Path.files(), AIO);
     private static Thread thread;
-    private String extend;
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        this.extend = extend;
         createShell();
+        checkExtend(extend);
         findAIO(Path.tv().listFiles());
         findAIO(Path.download().listFiles());
     }
@@ -33,7 +35,7 @@ public class Feiyang extends Spider {
     public String liveContent(String url) {
         int retry = 0;
         while ((OkHttp.string(URL)).isEmpty() && retry++ < 10) SystemClock.sleep(250);
-        return OkHttp.string(!url.isEmpty() ? url : extend.startsWith("http") ? extend : URL + extend);
+        return OkHttp.string(url.startsWith("http") ? url : URL + url);
     }
 
     private void createShell() {
@@ -45,15 +47,41 @@ public class Feiyang extends Spider {
         Path.write(f_shell, script);
     }
 
+    private void checkExtend(String extend) {
+        if (!extend.contains(";md5;")) return;
+        String[] texts = extend.split(";md5;");
+        String url = texts[0].trim();
+        String md5 = texts[1].trim();
+        if (md5.startsWith("http")) md5 = OkHttp.string(md5);
+        if (Util.MD5(f_aio).equals(md5)) return;
+        try {
+            download(f_aio, OkHttp.newCall(url).body().byteStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void download(File file, InputStream is) throws Exception {
+        FileOutputStream os = new FileOutputStream(file);
+        try (BufferedInputStream input = new BufferedInputStream(is)) {
+            byte[] buffer = new byte[4096];
+            int readBytes;
+            while ((readBytes = input.read(buffer)) != -1) {
+                os.write(buffer, 0, readBytes);
+            }
+        }
+    }
+
     private void findAIO(File[] files) {
         if (files == null || thread != null) return;
         for (File f : files) {
             if (f.getName().equals("allinone") || f.getName().startsWith("allinone-linux")) {
-                Path.copy(f, f_aio);
-                SpiderDebug.log("start run " + f.getName());
-                thread = new Thread(() -> Shell.exec("nohup " + f_shell.getAbsolutePath() + " &"));
-                thread.start();
+                Path.move(f, f_aio);
             }
+        }
+        if (f_aio.exists()) {
+            thread = new Thread(() -> Shell.exec("nohup " + f_shell.getAbsolutePath() + " &"));
+            thread.start();
         }
     }
 
