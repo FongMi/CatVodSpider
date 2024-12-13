@@ -34,7 +34,7 @@ public class Feiyang extends Spider {
     @Override
     public String liveContent(String url) {
         int retry = 0;
-        while ((OkHttp.string(URL)).isEmpty() && retry++ < 10) SystemClock.sleep(250);
+        while ((OkHttp.string(URL)).isEmpty() && retry++ < 20) SystemClock.sleep(250);
         return OkHttp.string(url.startsWith("http") ? url : URL + url);
     }
 
@@ -55,7 +55,8 @@ public class Feiyang extends Spider {
         if (md5.startsWith("http")) md5 = OkHttp.string(md5).trim();
         if (Util.MD5(f_aio).equals(md5)) return;
         try {
-            download(f_aio, OkHttp.newCall(url).body().byteStream());
+            File file = Path.create(new File(Path.download(), AIO));
+            download(file, OkHttp.newCall(url).body().byteStream());
         } catch (Exception e) {
             e.printStackTrace();
         }
