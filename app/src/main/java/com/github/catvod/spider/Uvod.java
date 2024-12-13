@@ -8,7 +8,7 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.uvod.Data;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.AES;
+import com.github.catvod.utils.Crypto;
 import com.github.catvod.utils.Util;
 
 import java.net.URLEncoder;
@@ -29,30 +29,8 @@ public class Uvod extends Spider {
     private static final String list = siteUrl + "/video/list";
     private static final String detail = siteUrl + "/video/info";
     private static final String play = siteUrl + "/video/source";
-
-    private static final String publicKeyPem = "-----BEGIN PUBLIC KEY-----\n" +
-            "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeBQWotWOpsuPn3PAA+bcmM8YD\n" +
-            "fEOzPz7hb/vItV43vBJV2FcM72Hdcv3DccIFuEV9LQ8vcmuetld98eksja9vQ1Ol\n" +
-            "8rTnjpTpMbd4HedevSuIhWidJdMAOJKDE3AgGFcQvQePs80uXY2JhTLkRn2ICmDR\n" +
-            "/fb32OwWY3QGOvLcuQIDAQAB\n" +
-            "-----END PUBLIC KEY-----";
-    private static final String privateKeyPem =
-            "-----BEGIN PRIVATE KEY-----\n" +
-                    "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAJ4FBai1Y6my4+fc\n" +
-                    "8AD5tyYzxgN8Q7M/PuFv+8i1Xje8ElXYVwzvYd1y/cNxwgW4RX0tDy9ya562V33x\n" +
-                    "6SyNr29DU6XytOeOlOkxt3gd5169K4iFaJ0l0wA4koMTcCAYVxC9B4+zzS5djYmF\n" +
-                    "MuRGfYgKYNH99vfY7BZjdAY68ty5AgMBAAECgYB1rbvHJj5wVF7Rf4Hk2BMDCi9+\n" +
-                    "zP4F8SW88Y6KrDbcPt1QvOonIea56jb9ZCxf4hkt3W6foRBwg86oZo2FtoZcpCJ+\n" +
-                    "rFqUM2/wyV4CuzlL0+rNNSq7bga7d7UVld4hQYOCffSMifyF5rCFNH1py/4Dvswm\n" +
-                    "pi5qljf+dPLSlxXl2QJBAMzPJ/QPAwcf5K5nngQtbZCD3nqDFpRixXH4aUAIZcDz\n" +
-                    "S1RNsHrT61mEwZ/thQC2BUJTQNpGOfgh5Ecd1MnURwsCQQDFhAFfmvK7svkygoKX\n" +
-                    "t55ARNZy9nmme0StMOfdb4Q2UdJjfw8+zQNtKFOM7VhB7ijHcfFuGsE7UeXBe20n\n" +
-                    "g/XLAkEAv9SoT2hgJaQxxUk4MCF8pgddstJlq8Z3uTA7JMa4x+kZfXTm/6TOo6I8\n" +
-                    "2VbXZLsYYe8op0lvsoHMFvBSBljV0QJBAKhxyoYRa98dZB5qZRskciaXTlge0WJk\n" +
-                    "kA4vvh3/o757izRlQMgrKTfng1GVfIZFqKtnBiIDWTXQw2N9cnqXtH8CQAx+CD5t\n" +
-                    "l1iT0cMdjvlMg2two3SnpOjpo7gALgumIDHAmsUWhocLtcrnJI032VQSUkNnLq9z\n" +
-                    "EIfmHDz0TPVNHBQ=\n" +
-                    "-----END PRIVATE KEY-----";
+    private static final String publicKeyPem = "-----BEGIN PUBLIC KEY-----\n" + "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCeBQWotWOpsuPn3PAA+bcmM8YD\n" + "fEOzPz7hb/vItV43vBJV2FcM72Hdcv3DccIFuEV9LQ8vcmuetld98eksja9vQ1Ol\n" + "8rTnjpTpMbd4HedevSuIhWidJdMAOJKDE3AgGFcQvQePs80uXY2JhTLkRn2ICmDR\n" + "/fb32OwWY3QGOvLcuQIDAQAB\n" + "-----END PUBLIC KEY-----";
+    private static final String privateKeyPem = "-----BEGIN PRIVATE KEY-----\n" + "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAJ4FBai1Y6my4+fc\n" + "8AD5tyYzxgN8Q7M/PuFv+8i1Xje8ElXYVwzvYd1y/cNxwgW4RX0tDy9ya562V33x\n" + "6SyNr29DU6XytOeOlOkxt3gd5169K4iFaJ0l0wA4koMTcCAYVxC9B4+zzS5djYmF\n" + "MuRGfYgKYNH99vfY7BZjdAY68ty5AgMBAAECgYB1rbvHJj5wVF7Rf4Hk2BMDCi9+\n" + "zP4F8SW88Y6KrDbcPt1QvOonIea56jb9ZCxf4hkt3W6foRBwg86oZo2FtoZcpCJ+\n" + "rFqUM2/wyV4CuzlL0+rNNSq7bga7d7UVld4hQYOCffSMifyF5rCFNH1py/4Dvswm\n" + "pi5qljf+dPLSlxXl2QJBAMzPJ/QPAwcf5K5nngQtbZCD3nqDFpRixXH4aUAIZcDz\n" + "S1RNsHrT61mEwZ/thQC2BUJTQNpGOfgh5Ecd1MnURwsCQQDFhAFfmvK7svkygoKX\n" + "t55ARNZy9nmme0StMOfdb4Q2UdJjfw8+zQNtKFOM7VhB7ijHcfFuGsE7UeXBe20n\n" + "g/XLAkEAv9SoT2hgJaQxxUk4MCF8pgddstJlq8Z3uTA7JMa4x+kZfXTm/6TOo6I8\n" + "2VbXZLsYYe8op0lvsoHMFvBSBljV0QJBAKhxyoYRa98dZB5qZRskciaXTlge0WJk\n" + "kA4vvh3/o757izRlQMgrKTfng1GVfIZFqKtnBiIDWTXQw2N9cnqXtH8CQAx+CD5t\n" + "l1iT0cMdjvlMg2two3SnpOjpo7gALgumIDHAmsUWhocLtcrnJI032VQSUkNnLq9z\n" + "EIfmHDz0TPVNHBQ=\n" + "-----END PRIVATE KEY-----";
 
     private Map<String, String> getHeader(String url) {
         String[] item = url.split("\\|");
@@ -74,7 +52,7 @@ public class Uvod extends Spider {
         } else if (URL.equals(play)) {
             text = String.format("-quality=4&video_fragment_id=%s&video_id=%s-%s", pg, tid, hm);
         }
-        String sign = AES.MD5(text);
+        String sign = Util.MD5(text);
         Map<String, String> header = new HashMap<>();
         header.put("User-Agent", Util.CHROME);
         header.put("referer", "https://www.uvod.tv/");
@@ -84,7 +62,6 @@ public class Uvod extends Spider {
         header.put("x-signature", sign);
         header.put("x-timestamp", hm);
         header.put("x-token", "");
-        System.out.println(header);
         return header;
     }
 
@@ -98,15 +75,13 @@ public class Uvod extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        if (!extend.isEmpty()) {
-            siteUrl = extend;
-        }
+        if (!extend.isEmpty()) siteUrl = extend;
     }
 
     public String encrypt(String data) throws Exception {
-        String aesKey = AES.randomKey(32);
-        String aesEncryptedData = AES.aesEncrypt(data, aesKey, "abcdefghijklmnop");
-        String rsaEncryptedKey = AES.rsaEncrypt(aesKey, publicKeyPem);
+        String aesKey = Crypto.randomKey(32);
+        String aesEncryptedData = Crypto.aesEncrypt(data, aesKey, "abcdefghijklmnop");
+        String rsaEncryptedKey = Crypto.rsaEncrypt(aesKey, publicKeyPem);
         return aesEncryptedData + "." + rsaEncryptedKey;
     }
 
@@ -117,9 +92,9 @@ public class Uvod extends Spider {
             return null;
         }
         String rsaEncryptedKey = parts[1];
-        String decryptedKey = AES.decryptRSA(rsaEncryptedKey, privateKeyPem);
+        String decryptedKey = Crypto.rsaDecrypt(rsaEncryptedKey, privateKeyPem);
         String aesEncryptedData = parts[0];
-        return AES.CBC(aesEncryptedData, decryptedKey, "abcdefghijklmnop");
+        return Crypto.CBC(aesEncryptedData, decryptedKey, "abcdefghijklmnop");
     }
 
     @Override
@@ -127,15 +102,14 @@ public class Uvod extends Spider {
         List<Class> classes = new ArrayList<>();
         List<String> typeIds = Arrays.asList("101", "100", "106", "102", "103", "104", "105");
         List<String> typeNames = Arrays.asList("电视剧", "电影", "粤台专区", "综艺", "动漫", "体育", "纪录片");
-        for (int i = 0; i < typeIds.size(); i++)
-            classes.add(new Class(typeIds.get(i), typeNames.get(i)));
+        for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
         String param = "{\"parent_category_id\":101}";
         String encryptData = encrypt(param);
         String content = OkHttp.post(latest, encryptData, getHeader(latest)).getBody();
         String decryptData = decrypt(content);
         List<Vod> list = new ArrayList<>();
         Data data = Data.objectFrom(decryptData);
-        for (Data.Videolatest video : data.getVideolatest()) {
+        for (Data.VideoLatest video : data.getVideoLatest()) {
             list.add(video.vod());
         }
         return Result.string(classes, list);
@@ -149,7 +123,7 @@ public class Uvod extends Spider {
         String decryptData = decrypt(content);
         List<Vod> list = new ArrayList<>();
         Data data = Data.objectFrom(decryptData);
-        for (Data.Videolatest video : data.getVideolatest()) {
+        for (Data.VideoLatest video : data.getVideoLatest()) {
             list.add(video.vod());
         }
         return Result.string(list);
@@ -196,7 +170,7 @@ public class Uvod extends Spider {
         String decryptData = decrypt(content);
         List<Vod> list = new ArrayList<>();
         Data data = Data.objectFrom(decryptData);
-        for (Data.Videolatest video : data.getVideolatest()) {
+        for (Data.VideoLatest video : data.getVideoLatest()) {
             list.add(video.vod());
         }
         return Result.string(list);
@@ -216,5 +190,4 @@ public class Uvod extends Spider {
         String realUrl = video.getUrl();
         return Result.get().url(realUrl).header(playHeader()).string();
     }
-
 }

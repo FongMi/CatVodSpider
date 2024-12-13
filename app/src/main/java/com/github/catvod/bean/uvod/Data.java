@@ -14,7 +14,7 @@ import java.util.List;
 public class Data {
 
     @SerializedName(value = "video_latest_list", alternate = {"video_list"})
-    private List<Videolatest> videolatestlist;
+    private List<VideoLatest> videolatestlist;
     @SerializedName(value = "video", alternate = {"video_soruce"})
     private Video video;
     @SerializedName("video_fragment_list")
@@ -22,13 +22,11 @@ public class Data {
 
     public static Data objectFrom(String str) {
         JsonObject jsonObject = JsonParser.parseString(str).getAsJsonObject();
-        if (jsonObject.has("data")) {
-            return new Gson().fromJson(jsonObject.get("data"), Data.class);
-        }
+        if (jsonObject.has("data")) return new Gson().fromJson(jsonObject.get("data"), Data.class);
         return new Data();
     }
 
-    public List<Videolatest> getVideolatest() {
+    public List<VideoLatest> getVideoLatest() {
         return videolatestlist == null ? Collections.emptyList() : videolatestlist;
     }
 
@@ -40,8 +38,8 @@ public class Data {
         return videoFragmentList == null ? Collections.emptyList() : videoFragmentList;
     }
 
+    public static class VideoLatest {
 
-    public static class Videolatest {
         @SerializedName("id")
         private String id;
         @SerializedName("title")
@@ -85,6 +83,7 @@ public class Data {
     }
 
     public static class Video {
+
         @SerializedName("year")
         private String year;
         @SerializedName("region")
@@ -136,6 +135,7 @@ public class Data {
     }
 
     public static class VideoFragmentList {
+
         @SerializedName("id")
         private String id;
         @SerializedName("symbol")
@@ -148,8 +148,5 @@ public class Data {
         public String getSymbol() {
             return TextUtils.isEmpty(symbol) ? "" : symbol;
         }
-
     }
-
-
 }
