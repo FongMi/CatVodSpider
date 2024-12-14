@@ -139,12 +139,14 @@ public class Uvod extends Spider {
         Data data = Data.objectFrom(decryptData);
         StringBuilder vod_play_url = new StringBuilder();
         List<Data.VideoFragmentList> videoFragmentList = data.getVideoFragmentList();
+        List<Integer> acceptQuality = new ArrayList<>();
         for (int j = 0; j < videoFragmentList.size(); j++) {
             Data.VideoFragmentList videolist = videoFragmentList.get(j);
             String name = videolist.getSymbol();
             String nid = videolist.getId();
-            String quality = String.valueOf(videolist.getMaxQuality());
-            nid = ids.get(0) + "|" + nid + "|" + quality;
+            List<Integer> Qualities = videolist.getQualities();
+            nid = ids.get(0) + "|" + nid + "|" + Qualities;
+
             vod_play_url.append(name).append("$").append(nid);
             boolean notLastEpisode = j < videoFragmentList.size() - 1;
             vod_play_url.append(notLastEpisode ? "#" : "$$$");
@@ -183,14 +185,32 @@ public class Uvod extends Spider {
         String[] item = id.split("\\|");
         String tid = item[0];
         String nid = item[1];
-        String quality = item[2];
-        String param = String.format("{\"video_id\":\"%s\",\"video_fragment_id\":%s,\"quality\":%s,\"seek\":null}", tid, nid, quality);
-        String encryptData = encrypt(param);
-        String content = OkHttp.post(play, encryptData, getHeader(play + "|" + tid + "|" + nid + "|" + quality)).getBody();
-        String decryptData = decrypt(content);
-        Data data = Data.objectFrom(decryptData);
-        Data.Video video = data.getVideo();
-        String realUrl = video.getUrl();
-        return Result.get().url(realUrl).header(playHeader()).string();
+        String[] quality = item[2].replaceAll("[\\[\\]]", "").split(",");
+        List<String> url = new ArrayList<>();
+        for (int i = 0; i < quality.length; i++) {
+            String qualityValue = quality[i].trim();
+            switch (qualityValue) {
+                case "4":
+                    url.add("1080p");
+                    break;
+                case "3":
+                    url.add("720p");
+                    break;
+                case "1":
+                    url.add("360p");
+                    break;
+                default:
+                    url.add(qualityValue);
+                    break;
+            }
+            String param = String.format("{\"video_id\":\"%s\",\"video_fragment_id\":%s,\"quality\":%s,\"seek\":null}", tid, nid, quality[i].trim());
+            String encryptData = encrypt(param);
+            String content = OkHttp.post(play, encryptData, getHeader(play + "|" + tid + "|" + nid + "|" + quality[i].trim())).getBody();
+            String decryptData = decrypt(content);
+            Data data = Data.objectFrom(decryptData);
+            Data.Video video = data.getVideo();
+            url.add(video.getUrl());
+        }
+        return Result.get().url(url).header(playHeader()).string();
     }
 }

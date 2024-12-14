@@ -152,17 +152,12 @@ public class Data {
             return TextUtils.isEmpty(symbol) ? "" : symbol;
         }
 
-        public int getMaxQuality() {
-            List<Integer> fixedArray = Arrays.asList(4, 3, 2, 1);
-            int maxQuality = -1;
-            for (int quality : qualities) {
-                if (fixedArray.contains(quality)) {
-                    if (quality > maxQuality) {
-                        maxQuality = quality;
-                    }
-                }
+        public List<Integer> getQualities() {
+            if (qualities == null || qualities.isEmpty()) {
+                return Collections.emptyList();
             }
-            return maxQuality;
+            Collections.sort(qualities, Collections.reverseOrder());
+            return qualities;
         }
 
     }
