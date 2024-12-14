@@ -21,6 +21,8 @@ public class Proxy extends Spider {
                 return WebDAV.vod(params);
             case "local":
                 return Local.proxy(params);
+            case "xunlei8":
+                return Xunlei8.loadPic(params);
             default:
                 return null;
         }
