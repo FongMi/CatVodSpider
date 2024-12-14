@@ -79,19 +79,17 @@ public class Uvod extends Spider {
         if (!extend.isEmpty()) siteUrl = extend;
     }
 
-    public String encrypt(String data) throws Exception {
+    private String encrypt(String data) throws Exception {
         String aesKey = Crypto.randomKey(32);
         String aesEncryptedData = Crypto.aesEncrypt(data, aesKey, "abcdefghijklmnop");
         String rsaEncryptedKey = Crypto.rsaEncrypt(aesKey, publicKeyPem);
         return aesEncryptedData + "." + rsaEncryptedKey;
     }
 
-    public String decrypt(String encryptedData) throws Exception {
+    private String decrypt(String encryptedData) throws Exception {
         encryptedData = encryptedData.replaceAll("\\s", "");
         String[] parts = encryptedData.split("\\.");
-        if (parts.length != 2) {
-            return null;
-        }
+        if (parts.length != 2) return null;
         String rsaEncryptedKey = parts[1];
         String decryptedKey = Crypto.rsaDecrypt(rsaEncryptedKey, privateKeyPem);
         String aesEncryptedData = parts[0];
@@ -108,12 +106,8 @@ public class Uvod extends Spider {
         String encryptData = encrypt(param);
         String content = OkHttp.post(latest, encryptData, getHeader(latest)).getBody();
         String decryptData = decrypt(content);
-        List<Vod> list = new ArrayList<>();
         Data data = Data.objectFrom(decryptData);
-        for (Data.VideoLatest video : data.getVideoLatest()) {
-            list.add(video.vod());
-        }
-        return Result.string(classes, list);
+        return Result.string(classes, data.getList());
     }
 
     @Override
@@ -122,12 +116,8 @@ public class Uvod extends Spider {
         String encryptData = encrypt(param);
         String content = OkHttp.post(list, encryptData, getHeader(list + "|" + tid + "|" + pg)).getBody();
         String decryptData = decrypt(content);
-        List<Vod> list = new ArrayList<>();
         Data data = Data.objectFrom(decryptData);
-        for (Data.VideoLatest video : data.getVideoLatest()) {
-            list.add(video.vod());
-        }
-        return Result.string(list);
+        return Result.string(data.getList());
     }
 
     @Override
@@ -139,14 +129,12 @@ public class Uvod extends Spider {
         Data data = Data.objectFrom(decryptData);
         StringBuilder vod_play_url = new StringBuilder();
         List<Data.VideoFragmentList> videoFragmentList = data.getVideoFragmentList();
-        List<Integer> acceptQuality = new ArrayList<>();
         for (int j = 0; j < videoFragmentList.size(); j++) {
-            Data.VideoFragmentList videolist = videoFragmentList.get(j);
-            String name = videolist.getSymbol();
-            String nid = videolist.getId();
-            List<Integer> Qualities = videolist.getQualities();
+            Data.VideoFragmentList videoList = videoFragmentList.get(j);
+            String name = videoList.getSymbol();
+            String nid = videoList.getId();
+            List<Integer> Qualities = videoList.getQualities();
             nid = ids.get(0) + "|" + nid + "|" + Qualities;
-
             vod_play_url.append(name).append("$").append(nid);
             boolean notLastEpisode = j < videoFragmentList.size() - 1;
             vod_play_url.append(notLastEpisode ? "#" : "$$$");
@@ -172,12 +160,8 @@ public class Uvod extends Spider {
         String encryptData = encrypt(param);
         String content = OkHttp.post(list, encryptData, getHeader(list + "|" + key)).getBody();
         String decryptData = decrypt(content);
-        List<Vod> list = new ArrayList<>();
         Data data = Data.objectFrom(decryptData);
-        for (Data.VideoLatest video : data.getVideoLatest()) {
-            list.add(video.vod());
-        }
-        return Result.string(list);
+        return Result.string(data.getList());
     }
 
     @Override
@@ -185,31 +169,20 @@ public class Uvod extends Spider {
         String[] item = id.split("\\|");
         String tid = item[0];
         String nid = item[1];
-        String[] quality = item[2].replaceAll("[\\[\\]]", "").split(",");
+        String[] quality = item[2].replaceAll("[\\[\\]]", "").replace(" ", "").split(",");
         List<String> url = new ArrayList<>();
-        for (int i = 0; i < quality.length; i++) {
-            String qualityValue = quality[i].trim();
-            switch (qualityValue) {
-                case "4":
-                    url.add("1080p");
-                    break;
-                case "3":
-                    url.add("720p");
-                    break;
-                case "1":
-                    url.add("360p");
-                    break;
-                default:
-                    url.add(qualityValue);
-                    break;
-            }
-            String param = String.format("{\"video_id\":\"%s\",\"video_fragment_id\":%s,\"quality\":%s,\"seek\":null}", tid, nid, quality[i].trim());
+        for (String s : quality) {
+            if (s.equals("4")) url.add("1080p");
+            else if (s.equals("3")) url.add("720p");
+            else if (s.equals("2")) url.add("480p");
+            else if (s.equals("1")) url.add("360p");
+            else url.add(s.trim());
+            String param = String.format("{\"video_id\":\"%s\",\"video_fragment_id\":%s,\"quality\":%s,\"seek\":null}", tid, nid, s.trim());
             String encryptData = encrypt(param);
-            String content = OkHttp.post(play, encryptData, getHeader(play + "|" + tid + "|" + nid + "|" + quality[i].trim())).getBody();
+            String content = OkHttp.post(play, encryptData, getHeader(play + "|" + tid + "|" + nid + "|" + s.trim())).getBody();
             String decryptData = decrypt(content);
             Data data = Data.objectFrom(decryptData);
-            Data.Video video = data.getVideo();
-            url.add(video.getUrl());
+            url.add(data.getVideo().getUrl());
         }
         return Result.get().url(url).header(playHeader()).string();
     }

@@ -8,23 +8,27 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Data {
 
+    @SerializedName("video_fragment_list")
+    private List<VideoFragmentList> videoFragmentList;
     @SerializedName(value = "video_latest_list", alternate = {"video_list"})
     private List<VideoLatest> videolatestlist;
     @SerializedName(value = "video", alternate = {"video_soruce"})
     private Video video;
-    @SerializedName("video_fragment_list")
-    private List<VideoFragmentList> videoFragmentList;
 
     public static Data objectFrom(String str) {
         JsonObject jsonObject = JsonParser.parseString(str).getAsJsonObject();
         if (jsonObject.has("data")) return new Gson().fromJson(jsonObject.get("data"), Data.class);
         return new Data();
+    }
+
+    public List<VideoFragmentList> getVideoFragmentList() {
+        return videoFragmentList == null ? Collections.emptyList() : videoFragmentList;
     }
 
     public List<VideoLatest> getVideoLatest() {
@@ -35,8 +39,10 @@ public class Data {
         return video == null ? new Video() : video;
     }
 
-    public List<VideoFragmentList> getVideoFragmentList() {
-        return videoFragmentList == null ? Collections.emptyList() : videoFragmentList;
+    public List<Vod> getList() {
+        List<Vod> list = new ArrayList<>();
+        for (Data.VideoLatest video : getVideoLatest()) list.add(video.vod());
+        return list;
     }
 
     public static class VideoLatest {
@@ -153,9 +159,7 @@ public class Data {
         }
 
         public List<Integer> getQualities() {
-            if (qualities == null || qualities.isEmpty()) {
-                return Collections.emptyList();
-            }
+            if (qualities == null || qualities.isEmpty()) return Collections.emptyList();
             Collections.sort(qualities, Collections.reverseOrder());
             return qualities;
         }
