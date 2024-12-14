@@ -37,6 +37,7 @@ public class Uvod extends Spider {
         String URL = item[0];
         String tid = item.length > 1 ? item[1] : "";
         String pg = item.length > 2 ? item[2] : "";
+        String quality = item.length > 3 ? item[3] : "";
         String hm = String.valueOf(System.currentTimeMillis());
         String text = "";
         if (URL.equals(latest)) {
@@ -50,7 +51,7 @@ public class Uvod extends Spider {
         } else if (URL.equals(detail)) {
             text = String.format("-id=%s-%s", tid, hm);
         } else if (URL.equals(play)) {
-            text = String.format("-quality=4&video_fragment_id=%s&video_id=%s-%s", pg, tid, hm);
+            text = String.format("-quality=%s&video_fragment_id=%s&video_id=%s-%s", quality, pg, tid, hm);
         }
         String sign = Util.MD5(text);
         Map<String, String> header = new HashMap<>();
@@ -142,7 +143,8 @@ public class Uvod extends Spider {
             Data.VideoFragmentList videolist = videoFragmentList.get(j);
             String name = videolist.getSymbol();
             String nid = videolist.getId();
-            nid = ids.get(0) + "|" + nid;
+            String quality = String.valueOf(videolist.getMaxQuality());
+            nid = ids.get(0) + "|" + nid + "|" + quality;
             vod_play_url.append(name).append("$").append(nid);
             boolean notLastEpisode = j < videoFragmentList.size() - 1;
             vod_play_url.append(notLastEpisode ? "#" : "$$$");
@@ -181,9 +183,10 @@ public class Uvod extends Spider {
         String[] item = id.split("\\|");
         String tid = item[0];
         String nid = item[1];
-        String param = String.format("{\"video_id\":\"%s\",\"video_fragment_id\":%s,\"quality\":4,\"seek\":null}", tid, nid);
+        String quality = item[2];
+        String param = String.format("{\"video_id\":\"%s\",\"video_fragment_id\":%s,\"quality\":%s,\"seek\":null}", tid, nid, quality);
         String encryptData = encrypt(param);
-        String content = OkHttp.post(play, encryptData, getHeader(play + "|" + tid + "|" + nid)).getBody();
+        String content = OkHttp.post(play, encryptData, getHeader(play + "|" + tid + "|" + nid + "|" + quality)).getBody();
         String decryptData = decrypt(content);
         Data data = Data.objectFrom(decryptData);
         Data.Video video = data.getVideo();

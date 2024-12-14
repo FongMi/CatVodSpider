@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -140,6 +141,8 @@ public class Data {
         private String id;
         @SerializedName("symbol")
         private String symbol;
+        @SerializedName("qualities")
+        private List<Integer> qualities;
 
         public String getId() {
             return TextUtils.isEmpty(id) ? "" : id;
@@ -148,5 +151,19 @@ public class Data {
         public String getSymbol() {
             return TextUtils.isEmpty(symbol) ? "" : symbol;
         }
+
+        public int getMaxQuality() {
+            List<Integer> fixedArray = Arrays.asList(4, 3, 2, 1);
+            int maxQuality = -1;
+            for (int quality : qualities) {
+                if (fixedArray.contains(quality)) {
+                    if (quality > maxQuality) {
+                        maxQuality = quality;
+                    }
+                }
+            }
+            return maxQuality;
+        }
+
     }
 }
