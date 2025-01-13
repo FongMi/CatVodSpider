@@ -34,14 +34,14 @@ android {
 
     configurations.configureEach {
         resolutionStrategy {
-            force 'com.squareup.okhttp3:okhttp:3.12.13'
+            force 'com.squareup.okhttp3:okhttp:' + okhttpVersion
         }
     }
 }
 
 dependencies {
+    implementation 'com.squareup.okhttp3:okhttp:' + okhttpVersion
     implementation 'com.github.thegrizzlylabs:sardine-android:0.9'
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
     implementation 'wang.harlon.quickjs:wrapper-android:2.4.0'
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'cn.wanghaomiao:JsoupXpath:2.5.1'

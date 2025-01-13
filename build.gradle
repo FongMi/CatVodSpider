@@ -8,3 +8,7 @@ plugins {
 tasks.register('clean', Delete) {
     delete rootProject.layout.buildDirectory
 }
+
+project.ext {
+    okhttpVersion = '5.0.0-alpha.14'
+}

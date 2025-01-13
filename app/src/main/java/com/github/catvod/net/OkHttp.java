@@ -1,12 +1,20 @@
 package com.github.catvod.net;
 
+import android.annotation.SuppressLint;
+
 import com.github.catvod.crawler.Spider;
 
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Dns;
 import okhttp3.Headers;
@@ -86,7 +94,7 @@ public class OkHttp {
     }
 
     private static OkHttpClient.Builder getBuilder() {
-        return new OkHttpClient.Builder().dns(safeDns()).connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).hostnameVerifier((hostname, session) -> true).sslSocketFactory(new SSLCompat(), SSLCompat.TM);
+        return new OkHttpClient.Builder().dns(safeDns()).connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).hostnameVerifier((hostname, session) -> true).sslSocketFactory(getSSLContext().getSocketFactory(), trustAllCertificates());
     }
 
     private static OkHttpClient client() {
@@ -103,5 +111,33 @@ public class OkHttp {
         } catch (Throwable e) {
             return Dns.SYSTEM;
         }
+    }
+
+    private static SSLContext getSSLContext() {
+        try {
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, new TrustManager[]{trustAllCertificates()}, new SecureRandom());
+            return context;
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    @SuppressLint({"TrustAllX509TrustManager", "CustomX509TrustManager"})
+    private static X509TrustManager trustAllCertificates() {
+        return new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[0];
+            }
+        };
     }
 }
