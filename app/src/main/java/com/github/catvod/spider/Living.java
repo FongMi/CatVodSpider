@@ -9,7 +9,6 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.LZString;
 import com.github.catvod.utils.Util;
@@ -30,8 +29,10 @@ import java.util.Map;
  * 聚合直播
  */
 public class Living extends Spider {
+
     private String host = "https://lemonlive.deno.dev";
     private String cookie = "";
+
     @Override
     public void init(Context context, String extend) throws Exception {
         if (!TextUtils.isEmpty(extend)) {
@@ -125,14 +126,14 @@ public class Living extends Spider {
                 if (type.equals(data.optString("id"))) {
                     for (int j = 0; j < data.optJSONArray("list").length(); j++) {
                         JSONObject item = data.optJSONArray("list").optJSONObject(j);
-                        vodList.add(new Vod(tid + "_" + item.optString("cid"), item.optString("name"), item.optString("pic"),data.optString("name"), true));
+                        vodList.add(new Vod(tid + "_" + item.optString("cid"), item.optString("name"), item.optString("pic"), data.optString("name"), true));
                     }
                 }
             }
             return Result.string(vodList);
         } else {
             String[] split = tid.split("_");
-            String url = host + "/api/" + split[0] + "/getCategoryRooms?id=" + split[1] + "&pid=" + (split[0].equals("bilibili") ? "2":"1") + "&page=" + pg;
+            String url = host + "/api/" + split[0] + "/getCategoryRooms?id=" + split[1] + "&pid=" + (split[0].equals("bilibili") ? "2" : "1") + "&page=" + pg;
             if (!TextUtils.isEmpty(cookie)) url = url + "&cookie=" + URLDecoder.decode(cookie, "UTF-8");
             JSONObject json = request(url);
             if (!TextUtils.isEmpty(json.optJSONObject("data").optString("cookie"))) {
@@ -194,27 +195,19 @@ public class Living extends Spider {
     private String getHuyaParam(String name, String code) throws UnsupportedEncodingException {
         String N = "1063681129617";
         long currentTimeMillis = System.currentTimeMillis();
-        String i = String.valueOf(currentTimeMillis % 10000000000L * 1000 + (long)(Math.random() * 4294967295L));
+        String i = String.valueOf(currentTimeMillis % 10000000000L * 1000 + (long) (Math.random() * 4294967295L));
         String r = code.split("fs=")[1].split("&")[0];
         String s = Long.toHexString((currentTimeMillis / 1000) | 21600);
         String f = String.valueOf(currentTimeMillis + Long.parseLong(N));
         String fmPart = code.split("fm=")[1].split("&")[0];
         String c = new String(Base64.decode(URLDecoder.decode(fmPart, "UTF-8"), Base64.NO_WRAP)).split("_")[0];
         String u = Util.MD5(f + "|tars_mp|102");
-        return String.format("&wsSecret=%s&uuid=%s&wsTime=%s&uid=%s&seqid=%s&fs=%s&ctype=tars_mp&t=102&ver=1&sv=2401310321",
-                Util.MD5(c + "_" + N + "_" + name + "_" + u + "_" + s),
-                i,
-                s,
-                N,
-                f,
-                r);
+        return String.format("&wsSecret=%s&uuid=%s&wsTime=%s&uid=%s&seqid=%s&fs=%s&ctype=tars_mp&t=102&ver=1&sv=2401310321", Util.MD5(c + "_" + N + "_" + name + "_" + u + "_" + s), i, s, N, f, r);
     }
-
 
     private JSONObject request(String url) throws JSONException {
         String str = OkHttp.string(url, Map.of("sec-fetch-site", "same-origin"));
         String result = LZString.decompressFromBase64(str.replaceAll(" ", ""));
-        //SpiderDebug.log("result==" + result);
         return new JSONObject(result);
     }
 }
