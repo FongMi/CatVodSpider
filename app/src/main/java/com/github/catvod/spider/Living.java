@@ -141,7 +141,7 @@ public class Living extends Spider {
             List<Vod> vodList = new ArrayList<>();
             for (int i = 0; i < json.optJSONObject("data").optJSONArray("list").length(); i++) {
                 JSONObject data = json.optJSONObject("data").optJSONArray("list").optJSONObject(i);
-                vodList.add(new Vod(split[0] + "_" + data.optString("roomId"), data.optString("title"), data.optString("cover"), data.optString("nickname"), data.optString("online")));
+                vodList.add(new Vod(split[0] + "_" + data.optString("roomId"), data.optString("title"), data.optString("cover"), data.optString("nickname")));
             }
             return Result.string(vodList);
         }
