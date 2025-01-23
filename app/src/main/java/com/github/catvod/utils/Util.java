@@ -218,4 +218,9 @@ public class Util {
             return "";
         }
     }
+
+    public static String Matcher(String content, String pattern) {
+        Matcher matcher = Pattern.compile(pattern).matcher(content);
+        return matcher.find() ? matcher.group(1) : "";
+    }
 }
