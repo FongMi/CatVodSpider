@@ -9,12 +9,9 @@ import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.LZString;
-import com.github.catvod.utils.Strings;
 import com.github.catvod.utils.Util;
-import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,10 +20,10 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -124,8 +121,7 @@ public class Living extends Spider {
             String url = host + "/api/" + tid + "/getCategories";
             JSONObject json = request(url);
             String type = extend.get("type");
-            if (TextUtils.isEmpty(type))
-                type = json.optJSONArray("data").optJSONObject(0).optString("id");
+            if (TextUtils.isEmpty(type)) type = json.optJSONArray("data").optJSONObject(0).optString("id");
             List<Vod> vodList = new ArrayList<>();
             for (int i = 0; i < json.optJSONArray("data").length(); i++) {
                 JSONObject data = json.optJSONArray("data").optJSONObject(i);
@@ -140,8 +136,9 @@ public class Living extends Spider {
         } else {
             String[] split = tid.split("_");
             String url = host + "/api/" + split[0] + "/getCategoryRooms?id=" + split[1] + "&pid=" + (split[0].equals("bilibili") ? "2" : "1") + "&page=" + pg;
-            if (!TextUtils.isEmpty(cookie))
+            if (!TextUtils.isEmpty(cookie)) {
                 url = url + "&cookie=" + URLDecoder.decode(cookie, "UTF-8");
+            }
             JSONObject json = request(url);
             if (!TextUtils.isEmpty(json.optJSONObject("data").optString("cookie"))) {
                 cookie = json.optJSONObject("data").optString("cookie");
@@ -193,6 +190,12 @@ public class Living extends Spider {
     }
 
     @Override
+    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
+        if (!id.startsWith("http")) id = "https:" + id;
+        return Result.get().url(id).toString();
+    }
+
+    @Override
     public String searchContent(String key, boolean quick) throws Exception {
         return searchContent(key, quick, "1");
     }
@@ -200,10 +203,10 @@ public class Living extends Spider {
     @Override
     public String searchContent(String key, boolean quick, String pg) throws Exception {
         List<Vod> vodList = new ArrayList<>();
-        vodList.addAll(searchWithSite("huya", key, quick, pg));
-        vodList.addAll(searchWithSite("douyu", key, quick, pg));
-        vodList.addAll(searchWithSite("douyin", key, quick, pg));
-        vodList.addAll(searchWithSite("bilibili", key, quick, pg));
+        vodList.addAll(searchWithSite("huya", key, pg));
+        vodList.addAll(searchWithSite("douyu", key, pg));
+        vodList.addAll(searchWithSite("douyin", key, pg));
+        vodList.addAll(searchWithSite("bilibili", key, pg));
         return Result.string(vodList);
     }
 
@@ -215,27 +218,19 @@ public class Living extends Spider {
                 : Objects.equals(en, "cc") ? "网易CC" : "";
     }
 
-    private List<Vod> searchWithSite(String site, String key, boolean quick, String pg) {
-        List<Vod> vodList = new ArrayList<>();
+    private List<Vod> searchWithSite(String site, String key, String pg) {
         try {
+            List<Vod> vodList = new ArrayList<>();
             String url = host + "/api/" + site + "/searchRooms?page=" + pg + "&kw=" + key;
             JSONArray jsonArray = request(url).optJSONObject("data").optJSONArray("list");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject item = jsonArray.getJSONObject(i);
-                vodList.add(new Vod(site + "_" + item.optString("roomId"), item.optString("nickname"), item.optString("cover")
-                        , getSiteNameByEn(site) + "/" + item.optString("category") + "/" + item.optString("title"), false));
+                vodList.add(new Vod(site + "_" + item.optString("roomId"), item.optString("nickname"), item.optString("cover"), getSiteNameByEn(site) + "/" + item.optString("category") + "/" + item.optString("title"), false));
             }
-        } catch (Exception e) {
-            //ing
+            return vodList;
+        } catch (Exception ignored) {
+            return Collections.emptyList();
         }
-        return vodList;
-    }
-
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        String url = id;
-        if (!url.startsWith("http")) url = "https:" + url;
-        return Result.get().url(url).toString();
     }
 
     private String getHuyaParam(String name, String code) throws UnsupportedEncodingException {
