@@ -77,7 +77,7 @@ public class AppXY extends Spider {
         vod.setVodId(ids.get(0));
         vod.setVodName(object.optString("title"));
         vod.setVodPic(object.optString("cover_url"));
-        vod.setTypeName(object.optJSONArray("desc_tags").toString());
+        vod.setTypeName(object.optJSONArray("desc_tags").join(",").replace("\"", ""));
         vod.setVodContent(object.optString("introduction"));
         ArrayList<String> playUrls = new ArrayList<>();
         ArrayList<String> playFrom = new ArrayList<>();
