@@ -33,7 +33,6 @@ import java.util.Objects;
 public class Living extends Spider {
 
     private String host = "https://lemonlive.deno.dev";
-    private String cookie = "";
 
     @Override
     public void init(Context context, String extend) throws Exception {
@@ -136,13 +135,7 @@ public class Living extends Spider {
         } else {
             String[] split = tid.split("_");
             String url = host + "/api/" + split[0] + "/getCategoryRooms?id=" + split[1] + "&pid=" + (split[0].equals("bilibili") ? "2" : "1") + "&page=" + pg;
-            if (!TextUtils.isEmpty(cookie)) {
-                url = url + "&cookie=" + URLDecoder.decode(cookie, "UTF-8");
-            }
             JSONObject json = request(url);
-            if (!TextUtils.isEmpty(json.optJSONObject("data").optString("cookie"))) {
-                cookie = json.optJSONObject("data").optString("cookie");
-            }
             List<Vod> vodList = new ArrayList<>();
             for (int i = 0; i < json.optJSONObject("data").optJSONArray("list").length(); i++) {
                 JSONObject data = json.optJSONObject("data").optJSONArray("list").optJSONObject(i);
