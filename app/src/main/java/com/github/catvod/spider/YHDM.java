@@ -62,8 +62,7 @@ public class YHDM extends Spider {
             String pic = li.select("a").attr("data-original");
             if (!pic.startsWith("http")) pic = siteUrl + pic;
             String remark = li.select(".pic-text.text-right").text();
-            String year = li.select(".tag").text();
-            list.add(new Vod(vid, name, pic, remark, year));
+            list.add(new Vod(vid, name, pic, remark));
         }
         return Result.string(classes, list);
     }
@@ -79,8 +78,7 @@ public class YHDM extends Spider {
             String pic = li.select("a").attr("data-original");
             if (!pic.startsWith("http")) pic = siteUrl + pic;
             String remark = li.select(".pic-text.text-right").text();
-            String year = li.select(".tag").text();
-            list.add(new Vod(vid, name, pic, remark, year));
+            list.add(new Vod(vid, name, pic, remark));
         }
         return Result.string(list);
     }
@@ -137,8 +135,7 @@ public class YHDM extends Spider {
             String pic = li.select("a").attr("data-original");
             if (!pic.startsWith("http")) pic = siteUrl + pic;
             String remark = li.select(".pic-text.text-right").text();
-            String year = li.select(".tag").text();
-            list.add(new Vod(vid, name, pic, remark, year));
+            list.add(new Vod(vid, name, pic, remark));
         }
         return Result.string(list);
     }
