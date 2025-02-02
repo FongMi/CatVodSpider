@@ -15,12 +15,10 @@ import com.github.catvod.spider.Init;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Util {
@@ -34,12 +32,6 @@ public class Util {
 
     public static boolean isVip(String url) {
         List<String> hosts = Arrays.asList("iqiyi.com", "v.qq.com", "youku.com", "le.com", "tudou.com", "mgtv.com", "sohu.com", "acfun.cn", "bilibili.com", "baofeng.com", "pptv.com");
-        for (String host : hosts) if (url.contains(host)) return true;
-        return false;
-    }
-
-    public static boolean isBlackVodUrl(String url) {
-        List<String> hosts = Arrays.asList("973973.xyz", ".fit:");
         for (String host : hosts) if (url.contains(host)) return true;
         return false;
     }
@@ -125,39 +117,6 @@ public class Util {
         return "";
     }
 
-    public static String MD5(File file) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            FileInputStream fis = new FileInputStream(file);
-            byte[] bytes = new byte[4096];
-            int count;
-            while ((count = fis.read(bytes)) != -1) digest.update(bytes, 0, count);
-            fis.close();
-            StringBuilder sb = new StringBuilder();
-            for (byte b : digest.digest()) sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
-            return sb.toString();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    public static String MD5(String src) {
-        return MD5(src, "UTF-8");
-    }
-
-    public static String MD5(String src, String charset) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(src.getBytes(charset));
-            BigInteger no = new BigInteger(1, messageDigest);
-            StringBuilder sb = new StringBuilder(no.toString(16));
-            while (sb.length() < 32) sb.insert(0, "0");
-            return sb.toString().toLowerCase();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
     public static void copy(String text) {
         ClipboardManager manager = (ClipboardManager) Init.context().getSystemService(Context.CLIPBOARD_SERVICE);
         manager.setPrimaryClip(ClipData.newPlainText("fongmi", text));
@@ -204,23 +163,5 @@ public class Util {
             webView.setWebViewClient(client);
             webView.loadUrl(url);
         });
-    }
-
-    public static String getDigit(String text) {
-        try {
-            String newText = text;
-            Matcher matcher = Pattern.compile(".*(1080|720|2160|4k|4K).*").matcher(text);
-            if (matcher.find()) newText = matcher.group(1) + " " + text;
-            matcher = Pattern.compile("^([0-9]+)").matcher(text);
-            if (matcher.find()) newText = matcher.group(1) + " " + newText;
-            return newText.replaceAll("\\D+", "") + " " + newText.replaceAll("\\d+", "");
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    public static String Matcher(String content, String pattern) {
-        Matcher matcher = Pattern.compile(pattern).matcher(content);
-        return matcher.find() ? matcher.group(1) : "";
     }
 }

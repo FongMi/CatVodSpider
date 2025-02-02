@@ -53,7 +53,7 @@ public class Uvod extends Spider {
         } else if (URL.equals(play)) {
             text = String.format("-quality=%s&video_fragment_id=%s&video_id=%s-%s", quality, pg, tid, hm);
         }
-        String sign = Util.MD5(text);
+        String sign = Crypto.md5(text);
         Map<String, String> header = new HashMap<>();
         header.put("User-Agent", Util.CHROME);
         header.put("referer", "https://www.uvod.tv/");

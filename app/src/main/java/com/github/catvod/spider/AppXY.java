@@ -8,7 +8,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Util;
+import com.github.catvod.utils.Crypto;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +37,7 @@ public class AppXY extends Spider {
     public void init(Context context, String extend) throws Exception {
         String s = System.currentTimeMillis() + "";
         Map<String, String> map = new HashMap<>();
-        map.put("device", Util.MD5(s));
+        map.put("device", Crypto.md5(s));
         map.put("install_first_open", "true");
         map.put("first_install_time", s);
         map.put("last_update_time", s);

@@ -5,9 +5,9 @@ import android.os.SystemClock;
 
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.FileUtil;
 import com.github.catvod.utils.Path;
 import com.github.catvod.utils.Shell;
-import com.github.catvod.utils.Util;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -53,7 +53,7 @@ public class Feiyang extends Spider {
         String url = texts[0].trim();
         String md5 = texts[1].trim();
         if (md5.startsWith("http")) md5 = OkHttp.string(md5).trim();
-        if (Util.MD5(f_aio).equals(md5)) return;
+        if (FileUtil.md5(f_aio).equals(md5)) return;
         try {
             File file = Path.create(new File(Path.download(), AIO));
             download(file, OkHttp.newCall(url).body().byteStream());

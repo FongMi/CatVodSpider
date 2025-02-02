@@ -3,6 +3,7 @@ package com.github.catvod.bean.bili;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.github.catvod.utils.Crypto;
 import com.github.catvod.utils.Util;
 import com.google.gson.annotations.SerializedName;
 
@@ -41,7 +42,7 @@ public class Wbi {
         params.put("wts", System.currentTimeMillis() / 1000);
         for (String key : params.keySet()) sb.append(key).append("=").append(URLEncoder.encode(params.get(key).toString())).append("&");
         String query = Util.substring(sb.toString());
-        String w_rid = Util.MD5(query + mixinKey);
+        String w_rid = Crypto.md5(query + mixinKey);
         return query + "&w_rid=" + w_rid;
     }
 }

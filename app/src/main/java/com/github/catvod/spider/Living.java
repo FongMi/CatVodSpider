@@ -10,8 +10,8 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Crypto;
 import com.github.catvod.utils.LZString;
-import com.github.catvod.utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -242,8 +242,8 @@ public class Living extends Spider {
         String f = String.valueOf(currentTimeMillis + Long.parseLong(N));
         String fmPart = code.split("fm=")[1].split("&")[0];
         String c = new String(Base64.decode(URLDecoder.decode(fmPart, "UTF-8"), Base64.NO_WRAP)).split("_")[0];
-        String u = Util.MD5(f + "|tars_mp|102");
-        return String.format("&wsSecret=%s&uuid=%s&wsTime=%s&uid=%s&seqid=%s&fs=%s&ctype=tars_mp&t=102&ver=1&sv=2401310321", Util.MD5(c + "_" + N + "_" + name + "_" + u + "_" + s), i, s, N, f, r);
+        String u = Crypto.md5(f + "|tars_mp|102");
+        return String.format("&wsSecret=%s&uuid=%s&wsTime=%s&uid=%s&seqid=%s&fs=%s&ctype=tars_mp&t=102&ver=1&sv=2401310321", Crypto.md5(c + "_" + N + "_" + name + "_" + u + "_" + s), i, s, N, f, r);
     }
 
     private JSONObject request(String url) throws JSONException {
