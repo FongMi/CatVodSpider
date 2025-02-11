@@ -73,27 +73,13 @@
       ]
     }
   ],
+  "proxy": [
+    "raw.githubusercontent.com",
+    "googlevideo.com",
+    "googleapis.com",
+    "youtube.com"
+  ],
   "rules": [
-    {
-      "name": "proxy",
-      "hosts": [
-        "raw.githubusercontent.com",
-        "googlevideo.com",
-        "googleapis.com",
-        "cdn.v82u1l.com",
-        "cdn.iz8qkg.com",
-        "cdn.kin6c1.com",
-        "c.biggggg.com",
-        "c.olddddd.com",
-        "haiwaikan.com",
-        "www.histar.tv",
-        "youtube.com",
-        "uhibo.com",
-        ".*boku.*",
-        ".*nivod.*",
-        ".*ulivetv.*"
-      ]
-    },
     {
       "name": "火山嗅探",
       "hosts": [
