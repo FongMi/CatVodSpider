@@ -123,6 +123,7 @@ public class Path {
 
     public static File create(File file) throws Exception {
         try {
+            if (file.getParentFile() != null) mkdir(file.getParentFile());
             if (!file.canWrite()) file.setWritable(true);
             if (!file.exists()) file.createNewFile();
             Shell.exec("chmod 777 " + file);
