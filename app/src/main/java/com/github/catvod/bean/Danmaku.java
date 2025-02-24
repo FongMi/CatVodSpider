@@ -9,10 +9,10 @@ import java.util.List;
 
 public class Danmaku {
 
-    @SerializedName("url")
-    private String url;
     @SerializedName("name")
     private String name;
+    @SerializedName("url")
+    private String url;
 
     public static List<Danmaku> arrayFrom(String str) {
         Type listType = new TypeToken<List<Danmaku>>() {}.getType();
