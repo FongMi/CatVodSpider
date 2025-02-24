@@ -29,7 +29,7 @@ public class Result {
     @SerializedName("format")
     private String format;
     @SerializedName("danmaku")
-    private String danmaku;
+    private List<Danmaku> danmaku;
     @SerializedName("click")
     private String click;
     @SerializedName("msg")
@@ -175,7 +175,7 @@ public class Result {
         return this;
     }
 
-    public Result danmaku(String danmaku) {
+    public Result danmaku(List<Danmaku> danmaku) {
         this.danmaku = danmaku;
         return this;
     }
