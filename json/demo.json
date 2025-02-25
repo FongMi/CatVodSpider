@@ -1,6 +1,24 @@
 {
   "spider": "https://fm.t4tv.hz.cz/jar/custom_spider.jar",
   "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
+  "lives": [
+    {
+      "name": "XtreamCode",
+      "api": "csp_XtreamCode",
+      "url": "http://iptv.icsnleb.com:25461/",
+      "epg": "http://iptv.icsnleb.com:25461/xmltv.php?username=12&password=12",
+      "type": 3,
+      "ext": {
+        "name": "12",
+        "pass": "12",
+        "vod": false,
+        "formats": [
+          "m3u8",
+          "ts"
+        ]
+      }
+    }
+  ],
   "sites": [
     {
       "key": "本地",
