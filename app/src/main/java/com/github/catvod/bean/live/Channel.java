@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Channel {
 
@@ -82,6 +83,10 @@ public class Channel {
 
     public void setReferer(String referer) {
         this.referer = referer;
+    }
+
+    public void setNumber(int number) {
+        setNumber(String.format(Locale.getDefault(), "%03d", number));
     }
 
     @Override

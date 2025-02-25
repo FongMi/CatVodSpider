@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.github.catvod.bean.live.Channel;
 import com.github.catvod.bean.live.Group;
-import com.github.catvod.bean.xc.Config;
-import com.github.catvod.bean.xc.XCategory;
-import com.github.catvod.bean.xc.XStream;
+import com.github.catvod.bean.xtream.Config;
+import com.github.catvod.bean.xtream.XCategory;
+import com.github.catvod.bean.xtream.XStream;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
 import com.google.gson.Gson;
@@ -45,6 +45,12 @@ public class XtreamCode extends Spider {
             if (!stream.getStreamIcon().isEmpty()) channel.setLogo(stream.getStreamIcon());
             if (!stream.getEpgChannelId().isEmpty()) channel.setTvgName(stream.getEpgChannelId());
             channel.getUrls().addAll(stream.getPlayUrl(config));
+        }
+        int number = 0;
+        for (Group group : groups) {
+            for (Channel channel : group.getChannel()) {
+                if (channel.getNumber().isEmpty()) channel.setNumber(++number);
+            }
         }
         return new Gson().toJson(groups);
     }

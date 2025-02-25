@@ -1,4 +1,4 @@
-package com.github.catvod.bean.xc;
+package com.github.catvod.bean.xtream;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;

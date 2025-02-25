@@ -1,4 +1,4 @@
-package com.github.catvod.bean.xc;
+package com.github.catvod.bean.xtream;
 
 import android.text.TextUtils;
 
