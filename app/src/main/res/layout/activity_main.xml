@@ -57,5 +57,13 @@
             android:text="searchContent"
             android:textAllCaps="false" />
 
+        <Button
+            android:id="@+id/liveContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="liveContent"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 </ScrollView>
