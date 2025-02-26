@@ -5,13 +5,12 @@
     {
       "name": "XtreamCode",
       "api": "csp_XtreamCode",
-      "url": "http://iptv.icsnleb.com:25461/",
+      "url": "http://iptv.icsnleb.com:25461/player_api.php?username=12&password=12",
       "epg": "http://iptv.icsnleb.com:25461/xmltv.php?username=12&password=12",
       "type": 3,
       "ext": {
-        "name": "12",
-        "pass": "12",
-        "vod": false,
+        "live": true,
+        "vod": true,
         "formats": [
           "m3u8",
           "ts"

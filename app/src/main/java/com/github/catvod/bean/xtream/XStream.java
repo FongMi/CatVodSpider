@@ -2,7 +2,6 @@ package com.github.catvod.bean.xtream;
 
 import android.text.TextUtils;
 
-import com.github.catvod.spider.XtreamCode;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -11,6 +10,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import okhttp3.HttpUrl;
 
 public class XStream {
 
@@ -65,8 +66,12 @@ public class XStream {
 
     public List<String> getPlayUrl(Config config) {
         List<String> urls = new ArrayList<>();
-        if (!getContainerExtension().isEmpty()) urls.add(XtreamCode.getBuilder(config).addPathSegment(getStreamType()).addPathSegment(config.getName()).addPathSegment(config.getPass()).addPathSegment(getStreamId() + "." + getContainerExtension()).build().toString());
-        else for (String format : config.getFormats()) urls.add(XtreamCode.getBuilder(config).addPathSegment(getStreamType()).addPathSegment(config.getName()).addPathSegment(config.getPass()).addPathSegment(getStreamId() + "." + format + "$" + format.toUpperCase()).build().toString());
+        if (!getContainerExtension().isEmpty()) urls.add(getBuilder(config).addPathSegment(getStreamType()).addPathSegment(config.getName()).addPathSegment(config.getPass()).addPathSegment(getStreamId() + "." + getContainerExtension()).build().toString());
+        else for (String format : config.getFormats()) urls.add(getBuilder(config).addPathSegment(getStreamType()).addPathSegment(config.getName()).addPathSegment(config.getPass()).addPathSegment(getStreamId() + "." + format + "$" + format.toUpperCase()).build().toString());
         return urls;
+    }
+
+    private HttpUrl.Builder getBuilder(Config config) {
+        return new HttpUrl.Builder().scheme(config.getUrl().scheme()).host(config.getUrl().host()).port(config.getUrl().port());
     }
 }
