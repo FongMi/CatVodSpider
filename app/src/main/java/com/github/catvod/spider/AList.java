@@ -129,9 +129,19 @@ public class AList extends Spider {
         vod.setVodPic(vodPic);
         List<String> playUrls = new ArrayList<>();
         List<Item> parents = getList(path, false);
-        for (Item item : parents) if (item.isMedia(drive.isNew())) playUrls.add(item.getName() + "$" + item.getVodId(path) + findSubs(path, parents));
+        for (Item item : parents) if (item.isMedia(drive.isNew())) playUrls.add(item.getName() + "$" + encodeVodId(item.getVodId(path) + findSubs(path, parents)));
         vod.setVodPlayUrl(TextUtils.join("#", playUrls));
         return Result.string(vod);
+    }
+
+    private String encodeVodId(String vodId) {
+        if (vodId.contains("#")) return vodId.replace("#", "***");
+        return vodId;
+    }
+
+    private String decodeVodId(String vodId) {
+        if (vodId.contains("***")) return vodId.replace("***", "#");
+        return vodId;
     }
 
     @Override
@@ -147,7 +157,7 @@ public class AList extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        String[] ids = id.split("~~~");
+        String[] ids = decodeVodId(id).split("~~~");
         String url = getDetail(ids[0]).getUrl();
         return Result.get().url(url).header(getPlayHeader(url)).subs(getSubs(ids)).string();
     }
@@ -156,8 +166,8 @@ public class AList extends Spider {
         try {
             Uri uri = Uri.parse(url);
             Map<String, String> header = new HashMap<>();
-            if (uri.getHost().contains("115.com")) header.put("User-Agent", Util.CHROME);
-            else if (uri.getHost().contains("baidupcs.com")) header.put("User-Agent", "pan.baidu.com");
+            if (uri.getHost().contains("115")) header.put("User-Agent", Util.CHROME);
+            if (uri.getHost().contains("baidupcs.com")) header.put("User-Agent", "pan.baidu.com");
             return header;
         } catch (Exception e) {
             return new HashMap<>();
