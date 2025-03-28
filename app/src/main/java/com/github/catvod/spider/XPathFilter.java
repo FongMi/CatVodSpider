@@ -1,5 +1,7 @@
 package com.github.catvod.spider;
 
+import android.text.TextUtils;
+
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -15,10 +17,10 @@ public class XPathFilter extends XPath {
     @Override
     protected String categoryUrl(String tid, String pg, boolean filter, HashMap<String, String> extend) {
         String cateUrl = rule.getCateUrl();
-        if (filter && extend != null && extend.size() > 0) {
+        if (filter && extend != null && !extend.isEmpty()) {
             for (String key : extend.keySet()) {
                 String value = extend.get(key);
-                if (value.length() > 0) {
+                if (!TextUtils.isEmpty(value)) {
                     cateUrl = cateUrl.replace("{" + key + "}", URLEncoder.encode(value));
                 }
             }

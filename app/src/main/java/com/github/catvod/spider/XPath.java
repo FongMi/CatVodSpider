@@ -41,7 +41,7 @@ public class XPath extends Spider {
         fetchRule();
         List<Vod> list = new ArrayList<>();
         List<Class> classes = new ArrayList<>();
-        if (rule.getCateManual().size() > 0) {
+        if (!rule.getCateManual().isEmpty()) {
             Set<String> keys = rule.getCateManual().keySet();
             for (String k : keys) {
                 classes.add(new Class(rule.getCateManual().get(k), k));
@@ -49,7 +49,7 @@ public class XPath extends Spider {
         }
         String webUrl = rule.getHomeUrl();
         JXDocument doc = JXDocument.create(fetch(webUrl));
-        if (rule.getCateManual().size() == 0) {
+        if (rule.getCateManual().isEmpty()) {
             List<JXNode> navNodes = doc.selN(rule.getCateNode());
             for (int i = 0; i < navNodes.size(); i++) {
                 String name = navNodes.get(i).selOne(rule.getCateName()).asString().trim();
@@ -220,7 +220,7 @@ public class XPath extends Spider {
                 vodItems.add(name + "$" + id);
             }
             // 排除播放列表為空的播放源
-            if (vodItems.size() == 0 && playFrom.size() > i) {
+            if (vodItems.isEmpty() && playFrom.size() > i) {
                 playFrom.set(i, "");
             }
             playList.add(TextUtils.join("#", vodItems));
@@ -246,8 +246,8 @@ public class XPath extends Spider {
         String webUrl = rule.getPlayUrl().isEmpty() ? id : rule.getPlayUrl().replace("{playUrl}", id);
         SpiderDebug.log(webUrl);
         HashMap<String, String> headers = new HashMap<>();
-        if (rule.getPlayUa().length() > 0) headers.put("User-Agent", rule.getPlayUa());
-        if (rule.getPlayReferer().length() > 0) headers.put("Referer", rule.getPlayReferer());
+        if (!rule.getPlayUa().isEmpty()) headers.put("User-Agent", rule.getPlayUa());
+        if (!rule.getPlayReferer().isEmpty()) headers.put("Referer", rule.getPlayReferer());
         return Result.get().parse().url(webUrl).header(headers).string();
     }
 

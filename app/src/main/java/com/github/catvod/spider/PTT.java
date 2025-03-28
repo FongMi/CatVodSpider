@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class PTT extends Spider {
 
-    private String url = "https://ptt.red/";
+    private final String url = "https://ptt.red/";
     private String extend;
 
     private Map<String, String> getHeader() {

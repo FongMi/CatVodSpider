@@ -68,7 +68,7 @@ public class XPathMac extends XPath {
     @Override
     public String homeContent(boolean filter) {
         String result = super.homeContent(filter);
-        if (result.length() > 0 && playerConfigJs.length() > 0) { // 嘗試通過playerConfigJs獲取展示和flag匹配關系
+        if (!result.isEmpty() && !playerConfigJs.isEmpty()) { // 嘗試通過playerConfigJs獲取展示和flag匹配關系
             String webContent = fetch(playerConfigJs);
             Matcher matcher = Pattern.compile(playerConfigJsRegex).matcher(webContent);
             if (matcher.find()) {
@@ -94,7 +94,7 @@ public class XPathMac extends XPath {
     @Override
     public String detailContent(List<String> ids) {
         String result = super.detailContent(ids);
-        if (decodeVipFlag && result.length() > 0) {
+        if (decodeVipFlag && !result.isEmpty()) {
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 String[] playFrom = jsonObject.optJSONArray("list").getJSONObject(0).optString("vod_play_from").split("\\$\\$\\$");
@@ -181,8 +181,8 @@ public class XPathMac extends XPath {
                     result.put("playUrl", "");
                     result.put("url", videoUrl);
                     HashMap<String, String> headers = new HashMap<>();
-                    if (rule.getPlayUa().length() > 0) headers.put("User-Agent", rule.getPlayUa());
-                    if (rule.getPlayReferer().length() > 0) headers.put("Referer", rule.getPlayReferer());
+                    if (!rule.getPlayUa().isEmpty()) headers.put("User-Agent", rule.getPlayUa());
+                    if (!rule.getPlayReferer().isEmpty()) headers.put("Referer", rule.getPlayReferer());
                     result.put("header", new Gson().toJson(headers));
                     return result.toString();
                 } catch (Exception e) {

@@ -91,7 +91,6 @@ public class YHDM extends Spider {
         Document doc = Jsoup.parse(OkHttp.string(detailUrl, getHeader()));
         Elements sources = doc.select(".myui-content__list.sort-list");
         Elements circuits = doc.select("a[href^=#playlist]");
-
         StringBuilder vod_play_url = new StringBuilder();
         StringBuilder vod_play_from = new StringBuilder();
         for (int i = 0; i < circuits.size(); i++) {
@@ -113,7 +112,6 @@ public class YHDM extends Spider {
         String year = matcher(text, "年份：(.*?)更新");
         String remark = matcher(text, "更新：(.*?)简介");
         String brief = doc.select(".col-pd.text-collapse .data").text();
-
         Vod vod = new Vod();
         vod.setVodId(ids.get(0));
         vod.setVodArea(area);
@@ -164,7 +162,6 @@ public class YHDM extends Spider {
         String key = "57A891D97E332A9D";
         String iv = matcher(content1, "bt_token = \"(.*?)\"");
         String realUrl = Crypto.CBC(playUrl, key, iv);
-        if (realUrl == null) return Result.get().url(siteUrl + id).parse().string();
         return Result.get().url(realUrl).string();
     }
 
