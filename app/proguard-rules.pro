@@ -17,9 +17,6 @@
 -keep class com.github.catvod.spider.* { public <methods>; }
 -keep class com.github.catvod.js.Function { *; }
 
-# Gson
--keep class com.google.gson.** { *; }
-
 # OkHttp
 -dontwarn okhttp3.**
 -keep class okio.** { *; }
