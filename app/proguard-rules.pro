@@ -2,12 +2,12 @@
 -flattenpackagehierarchy com.github.catvod.spider.merge
 
 # dontwarn
--dontwarn org.slf4j.impl.**
+-dontwarn org.slf4j.**
 -dontwarn org.xmlpull.v1.**
 -dontwarn android.content.res.**
 
 # slf4j
--keep class org.slf4j.** { *; }
+-keep class org.slf4j.ILoggerFactory { *; }
 
 # AndroidX
 -keep class androidx.core.** { *; }
@@ -16,6 +16,9 @@
 -keep class com.github.catvod.crawler.* { *; }
 -keep class com.github.catvod.spider.* { public <methods>; }
 -keep class com.github.catvod.js.Function { *; }
+
+# Gson
+-keep class com.google.gson.** { *; }
 
 # OkHttp
 -dontwarn okhttp3.**
