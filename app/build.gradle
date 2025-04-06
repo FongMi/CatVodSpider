@@ -45,6 +45,7 @@ dependencies {
     implementation 'wang.harlon.quickjs:wrapper-android:2.4.5'
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'cn.wanghaomiao:JsoupXpath:2.5.1'
+    implementation 'com.hierynomus:smbj:0.14.0'
     implementation 'com.orhanobut:logger:2.2.0'
     implementation 'org.jsoup:jsoup:1.18.3'
 }

@@ -42,13 +42,13 @@ public class Local extends Spider {
         List<Class> classes = new ArrayList<>();
         classes.add(new Class(Environment.getExternalStorageDirectory().getAbsolutePath(), "本地文件", "1"));
         File[] files = new File("/storage").listFiles();
-        if (files == null) return Result.string(classes, new ArrayList<>());
+        if (files == null) return Result.string(classes);
         List<String> exclude = Arrays.asList("emulated", "sdcard", "self");
         for (File file : files) {
             if (exclude.contains(file.getName())) continue;
             classes.add(new Class(file.getAbsolutePath(), file.getName(), "1"));
         }
-        return Result.string(classes, new ArrayList<>());
+        return Result.string(classes);
     }
 
     @Override
