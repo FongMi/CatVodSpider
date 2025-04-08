@@ -42,8 +42,7 @@ public class WebDAV extends Spider {
     private void fetchRule() {
         if (drives != null && !drives.isEmpty()) return;
         if (extend.startsWith("http")) extend = OkHttp.string(extend);
-        Drive drive = Drive.objectFrom(extend);
-        drives = drive.getDrives();
+        drives = Drive.arrayFrom(extend);
     }
 
     private String getExt(DavResource item) {
