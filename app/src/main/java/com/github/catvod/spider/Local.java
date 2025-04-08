@@ -54,18 +54,17 @@ public class Local extends Spider {
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
         List<Vod> items = new ArrayList<>();
-        List<Vod> media = new ArrayList<>();
-        List<Vod> folders = new ArrayList<>();
         File[] files = new File(tid).listFiles();
         if (files == null) return Result.string(items);
-        Arrays.sort(files, (a, b) -> a.getName().compareTo(b.getName()));
+        Arrays.sort(files, (o1, o2) -> {
+            if (o1.isDirectory() && o2.isFile()) return -1;
+            if (o1.isFile() && o2.isDirectory()) return 1;
+            return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+        });
         for (File file : files) {
             if (file.getName().startsWith(".")) continue;
-            if (file.isDirectory()) folders.add(create(file));
-            else if (Util.isMedia(file.getName())) media.add(create(file));
+            if (file.isDirectory() || Util.isMedia(file.getName())) items.add(create(file));
         }
-        items.addAll(folders);
-        items.addAll(media);
         return Result.get().vod(items).page().string();
     }
 
@@ -97,7 +96,7 @@ public class Local extends Spider {
         vod.setVodName(name);
         vod.setVodPic(Image.VIDEO);
         vod.setVodPlayFrom("播放");
-        vod.setVodPlayUrl(name + "$" + url);
+        vod.setVodPlayUrl(1 + "$" + url);
         return vod;
     }
 

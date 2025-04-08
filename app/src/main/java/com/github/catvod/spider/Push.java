@@ -25,7 +25,7 @@ public class Push extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        if (id.startsWith("http") && id.contains("***")) id = id.replace("***", "#");
+        if (id.contains("://") && id.contains("***")) id = id.replace("***", "#");
         if (flag.equals("直連")) return Result.get().url(id).subs(getSubs(id)).string();
         if (flag.equals("解析")) return Result.get().parse().jx().url(id).string();
         if (flag.equals("嗅探")) return Result.get().parse().url(id).string();
@@ -39,7 +39,7 @@ public class Push extends Spider {
         vod.setVodPic(Image.PUSH);
         vod.setTypeName("FongMi");
         vod.setVodName(url.startsWith("file://") ? new File(url).getName() : url);
-        if (url.startsWith("http") && url.contains("#")) url = url.replace("#", "***");
+        if (url.contains("://") && url.contains("#")) url = url.replace("#", "***");
         if (Util.isThunder(url)) {
             vod.setVodPlayUrl(url);
             vod.setVodPlayFrom("迅雷");
