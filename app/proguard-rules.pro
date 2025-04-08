@@ -28,5 +28,11 @@
 # Sardine
 -keep class com.thegrizzlylabs.sardineandroid.** { *; }
 
+# SMBJ
+-keep class com.hierynomus.** { *; }
+-keep class net.engio.mbassy.** { *; }
+-dontwarn org.ietf.jgss.**
+-dontwarn javax.**
+
 # Logger
 -keep class com.orhanobut.logger.** { *; }

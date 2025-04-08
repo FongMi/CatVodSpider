@@ -71,16 +71,12 @@ public class AList extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        try {
-            ext = extend;
-            fetchRule();
-        } catch (Exception ignored) {
-        }
+        ext = extend;
+        fetchRule();
     }
 
     @Override
     public String homeContent(boolean filter) throws Exception {
-        fetchRule();
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (Drive drive : drives) if (!drive.hidden()) classes.add(drive.toType());
@@ -90,7 +86,6 @@ public class AList extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        fetchRule();
         String type = extend.containsKey("type") ? extend.get("type") : "";
         String order = extend.containsKey("order") ? extend.get("order") : "";
         List<Item> folders = new ArrayList<>();
@@ -113,7 +108,6 @@ public class AList extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        fetchRule();
         String id = ids.get(0);
         String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
         String path = id.substring(0, id.lastIndexOf("/"));
@@ -142,7 +136,6 @@ public class AList extends Spider {
 
     @Override
     public String searchContent(String keyword, boolean quick) throws Exception {
-        fetchRule();
         List<Vod> list = new ArrayList<>();
         List<Job> jobs = new ArrayList<>();
         ExecutorService executor = Executors.newCachedThreadPool();
