@@ -3,6 +3,7 @@ package com.github.catvod.bean.alist;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Vod;
+import com.github.catvod.utils.Image;
 import com.github.catvod.utils.Util;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -117,19 +118,19 @@ public class Item {
         return id + getPath() + "/" + getName();
     }
 
-    public String getPic(String pic) {
-        return getThumb().isEmpty() && isFolder() ? pic : getThumb();
+    public String getPic() {
+        return getThumb().isEmpty() && isFolder() ? Image.FOLDER : getThumb();
     }
 
     public String getRemark() {
         return Util.getSize(getSize());
     }
 
-    public Vod getVod(String id, String pic) {
-        return new Vod(getVodId(id), getName(), getPic(pic), getRemark(), isFolder());
+    public Vod getVod(String id) {
+        return new Vod(getVodId(id), getName(), getPic(), getRemark(), isFolder());
     }
 
-    public Vod getVod(Drive drive, String pic) {
-        return new Vod(getVodId(drive.getName()), getName(), getPic(pic), drive.getName(), isFolder());
+    public Vod getVod(Drive drive) {
+        return new Vod(getVodId(drive.getName()), getName(), getPic(), drive.getName(), isFolder());
     }
 }

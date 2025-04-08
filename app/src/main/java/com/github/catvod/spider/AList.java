@@ -39,7 +39,6 @@ import java.util.concurrent.TimeUnit;
 public class AList extends Spider {
 
     private List<Drive> drives;
-    private String vodPic;
     private String ext;
 
     private List<Filter> getFilter() {
@@ -52,9 +51,7 @@ public class AList extends Spider {
     private void fetchRule() {
         if (drives != null && !drives.isEmpty()) return;
         if (ext.startsWith("http")) ext = OkHttp.string(ext);
-        Drive drive = Drive.objectFrom(ext);
-        drives = drive.getDrives();
-        vodPic = drive.getVodPic();
+        drives = Drive.arrayFrom(ext);
     }
 
     private Drive getDrive(String name) {
@@ -109,8 +106,8 @@ public class AList extends Spider {
             Sorter.sort(type, order, files);
         }
 
-        for (Item item : folders) list.add(item.getVod(tid, vodPic));
-        for (Item item : files) list.add(item.getVod(tid, vodPic));
+        for (Item item : folders) list.add(item.getVod(tid));
+        for (Item item : files) list.add(item.getVod(tid));
         return Result.get().vod(list).page().string();
     }
 
@@ -126,7 +123,6 @@ public class AList extends Spider {
         vod.setVodPlayFrom(key);
         vod.setVodId(id);
         vod.setVodName(name);
-        vod.setVodPic(vodPic);
         List<String> playUrls = new ArrayList<>();
         List<Item> parents = getList(path, false);
         for (Item item : parents) if (item.isMedia(drive.isNew())) playUrls.add(item.getName() + "$" + encodeVodId(item.getVodId(path) + findSubs(path, parents)));
@@ -279,7 +275,7 @@ public class AList extends Spider {
         @Override
         public List<Vod> call() {
             List<Vod> alist = alist();
-            return alist.size() > 0 ? alist : xiaoya();
+            return !alist.isEmpty() ? alist : xiaoya();
         }
 
         private List<Vod> xiaoya() {
@@ -295,7 +291,7 @@ public class AList extends Spider {
                 item.setThumb(splits.length > 3 ? splits[4] : "");
                 item.setPath("/" + splits[0].substring(0, index));
                 item.setName(splits[0].substring(index + 1));
-                list.add(item.getVod(drive, vodPic));
+                list.add(item.getVod(drive));
             }
             return list;
         }
@@ -305,7 +301,7 @@ public class AList extends Spider {
                 List<Vod> list = new ArrayList<>();
                 String response = post(drive, drive.searchApi(), drive.params(keyword));
                 List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
-                for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive, vodPic));
+                for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive));
                 return list;
             } catch (Exception e) {
                 return Collections.emptyList();
