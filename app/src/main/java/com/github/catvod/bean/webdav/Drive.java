@@ -28,7 +28,7 @@ public class Drive {
     private String pass;
     @SerializedName("path")
     private String path;
-    @SerializedName("webdav")
+
     private Sardine webdav;
 
     public static List<Drive> arrayFrom(String str) {
