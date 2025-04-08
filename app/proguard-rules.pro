@@ -7,7 +7,7 @@
 -dontwarn android.content.res.**
 
 # slf4j
--keep class org.slf4j.ILoggerFactory { *; }
+-keep class org.slf4j.** { *; }
 
 # AndroidX
 -keep class androidx.core.** { *; }

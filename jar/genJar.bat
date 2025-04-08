@@ -7,7 +7,7 @@ java -jar "%~dp0\3rd\apktool_2.11.0.jar" d -f --only-main-classes "%~dp0\..\app\
 
 rd /s/q "%~dp0\spider.jar\smali\com\github\catvod\spider"
 rd /s/q "%~dp0\spider.jar\smali\com\github\catvod\js"
-rd /s/q "%~dp0\spider.jar\smali\org\slf4j\"
+rd /s/q "%~dp0\spider.jar\smali\org\slf4j"
 
 if not exist "%~dp0\spider.jar\smali\com\github\catvod\" md "%~dp0\spider.jar\smali\com\github\catvod\"
 if not exist "%~dp0\spider.jar\smali\org\slf4j\" md "%~dp0\spider.jar\smali\org\slf4j\"
