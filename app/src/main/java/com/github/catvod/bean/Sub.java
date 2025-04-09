@@ -12,6 +12,8 @@ public class Sub {
     private String lang;
     @SerializedName("format")
     private String format;
+    @SerializedName("flag")
+    private int flag;
 
     public static Sub create() {
         return new Sub();
@@ -32,8 +34,13 @@ public class Sub {
         return this;
     }
 
-    public Sub format(String format) {
+    private Sub format(String format) {
         this.format = format;
+        return this;
+    }
+
+    public Sub forced() {
+        this.flag = 2;
         return this;
     }
 
