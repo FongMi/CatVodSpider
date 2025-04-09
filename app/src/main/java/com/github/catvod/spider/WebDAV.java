@@ -144,7 +144,7 @@ public class WebDAV extends Spider {
 
     private List<DavResource> getSubs(List<DavResource> items) {
         List<DavResource> subs = new ArrayList<>();
-        for (DavResource item : items) if (Util.isSub(getExt(item))) subs.add(item);
+        for (DavResource item : items) if (Util.isSub(item.getName())) subs.add(item);
         return subs;
     }
 

@@ -45,8 +45,8 @@ public class Util {
         return RULE.matcher(url).find();
     }
 
-    public static boolean isSub(String ext) {
-        return SUB.contains(ext);
+    public static boolean isSub(String text) {
+        return SUB.contains(getExt(text).toLowerCase());
     }
 
     public static boolean isMedia(String text) {
@@ -54,7 +54,7 @@ public class Util {
     }
 
     public static String getExt(String name) {
-        return name.contains(".") ? name.substring(name.lastIndexOf(".") + 1) : name;
+        return name.contains(".") ? name.substring(name.lastIndexOf(".") + 1).toLowerCase() : name.toLowerCase();
     }
 
     public static String getSize(double size) {

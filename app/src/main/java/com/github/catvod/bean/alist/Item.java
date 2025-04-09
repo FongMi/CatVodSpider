@@ -110,10 +110,6 @@ public class Item {
         return getType() == 0 || getType() == 2 || getType() == 5;
     }
 
-    public String getExt() {
-        return Util.getExt(getName());
-    }
-
     public String getVodId(String id) {
         return id + getPath() + "/" + getName();
     }
