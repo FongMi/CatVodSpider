@@ -16,7 +16,6 @@ import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.protocol.commons.EnumWithValue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,7 +64,7 @@ public class Samba extends Spider {
         Drive drive = getDrive(key);
         List<Vod> list = new ArrayList<>();
         for (FileIdBothDirectoryInformation item : getList(drive, path)) {
-            String vodId = TextUtils.join("/", path.isEmpty() ? Arrays.asList(key, item.getFileName()) : Arrays.asList(key, path, item.getFileName()));
+            String vodId = getPath(key, path, item.getFileName());
             if (isFolder(item)) list.add(new Vod(vodId, item.getFileName(), Image.FOLDER, "", true));
             if (isFile(item)) list.add(new Vod(vodId, item.getFileName(), Image.VIDEO, "", false));
         }
@@ -77,13 +76,13 @@ public class Samba extends Spider {
         String tid = ids.get(0);
         String key = tid.contains("/") ? tid.substring(0, tid.indexOf("/")) : tid;
         String path = tid.contains("/") ? tid.substring(tid.indexOf("/") + 1) : "";
-        String parent = path.substring(0, path.lastIndexOf("/"));
-        String name = parent.substring(parent.lastIndexOf("/") + 1);
+        String parent = path.contains("/") ? path.substring(0, path.lastIndexOf("/")) : "";
+        String name = parent.contains("/") ? parent.substring(parent.lastIndexOf("/") + 1) : key;
         Drive drive = getDrive(key);
         List<String> playUrls = new ArrayList<>();
         for (FileIdBothDirectoryInformation item : getList(drive, parent)) {
             if (isFile(item)) {
-                playUrls.add(item.getFileName() + "$" + drive.getServer() + "/" + parent + "/" + item.getFileName());
+                playUrls.add(item.getFileName() + "$" + getPath(drive.getServer(), parent, item.getFileName()));
             }
         }
         Vod vod = new Vod();
@@ -99,8 +98,14 @@ public class Samba extends Spider {
         return Result.get().url(id).string();
     }
 
+    private String getPath(String... texts) {
+        List<String> items = new ArrayList<>();
+        for (String text : texts) if (!TextUtils.isEmpty(text)) items.add(text);
+        return TextUtils.join("/", items);
+    }
+
     private List<FileIdBothDirectoryInformation> getList(Drive drive, String path) {
-        List<FileIdBothDirectoryInformation> items = drive.getShare().list(path);
+        List<FileIdBothDirectoryInformation> items = drive.getShare().list(getPath(drive.getSubPath(), path));
         Iterator<FileIdBothDirectoryInformation> iterator = items.iterator();
         while (iterator.hasNext()) {
             FileIdBothDirectoryInformation item = iterator.next();

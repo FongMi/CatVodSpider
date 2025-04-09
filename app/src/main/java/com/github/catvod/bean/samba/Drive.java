@@ -27,6 +27,7 @@ public class Drive {
     private SMBClient smbClient;
     private DiskShare diskShare;
     private Session session;
+    private String subPath;
 
     public static List<Drive> arrayFrom(String str) {
         Type listType = new TypeToken<List<Drive>>() {}.getType();
@@ -37,12 +38,16 @@ public class Drive {
         this.name = name;
     }
 
-    public String getName() {
+    private String getName() {
         return TextUtils.isEmpty(name) ? "" : name;
     }
 
     public String getServer() {
         return TextUtils.isEmpty(server) ? "" : server;
+    }
+
+    public String getSubPath() {
+        return TextUtils.isEmpty(subPath) ? "" : subPath;
     }
 
     public DiskShare getShare() {
@@ -54,14 +59,15 @@ public class Drive {
         return new Class(getName(), getName(), "1");
     }
 
-    public void init() {
+    private void init() {
         try {
             smbClient = new SMBClient();
             Uri uri = Uri.parse(getServer());
-            String share = uri.getPath().replaceFirst("^/", "").split("/")[0];
+            String[] parts = uri.getPath().substring(1).split("/", 2);
             connection = smbClient.connect(uri.getHost(), uri.getPort() != -1 ? uri.getPort() : SMBClient.DEFAULT_PORT);
             session = connection.authenticate(getAuthentication(uri));
-            diskShare = (DiskShare) session.connectShare(share);
+            diskShare = (DiskShare) session.connectShare(parts[0]);
+            subPath = parts.length > 1 ? parts[1] : "";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,6 +90,11 @@ public class Drive {
             if (smbClient != null) smbClient.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            connection = null;
+            diskShare = null;
+            smbClient = null;
+            session = null;
         }
     }
 
