@@ -5,6 +5,7 @@ import com.github.catvod.net.OkHttp;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class Proxy {
@@ -15,7 +16,7 @@ public class Proxy {
     public static Object[] proxy(Map<String, String> params) throws Exception {
         switch (params.get("do")) {
             case "ck":
-                return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
+                return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes(StandardCharsets.UTF_8))};
             case "bili":
                 return Bili.proxy(params);
             case "webdav":
@@ -29,10 +30,20 @@ public class Proxy {
 
     public static void init() {
         try {
-            method = Class.forName("com.github.catvod.Proxy").getMethod("getUrl", boolean.class);
+            Class<?> clz = Class.forName("com.github.catvod.Proxy");
+            port = (int) clz.getMethod("getPort").invoke(null);
+            method = clz.getMethod("getUrl", boolean.class);
         } catch (Throwable e) {
             findPort();
         }
+    }
+
+    public static int getPort() {
+        return port;
+    }
+
+    public static String getUrl() {
+        return getUrl(true);
     }
 
     public static String getUrl(boolean local) {
@@ -41,10 +52,6 @@ public class Proxy {
         } catch (Throwable e) {
             return "http://127.0.0.1:" + port + "/proxy";
         }
-    }
-
-    public static String getUrl() {
-        return getUrl(true);
     }
 
     private static void findPort() {

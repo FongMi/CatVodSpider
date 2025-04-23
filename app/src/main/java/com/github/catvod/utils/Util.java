@@ -4,18 +4,12 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.ValueCallback;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.github.catvod.spider.Init;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class Util {
@@ -59,19 +53,9 @@ public class Util {
 
     public static String getSize(double size) {
         if (size <= 0) return "";
-        if (size > 1024 * 1024 * 1024 * 1024.0) {
-            size /= (1024 * 1024 * 1024 * 1024.0);
-            return String.format(Locale.getDefault(), "%.2f%s", size, "TB");
-        } else if (size > 1024 * 1024 * 1024.0) {
-            size /= (1024 * 1024 * 1024.0);
-            return String.format(Locale.getDefault(), "%.2f%s", size, "GB");
-        } else if (size > 1024 * 1024.0) {
-            size /= (1024 * 1024.0);
-            return String.format(Locale.getDefault(), "%.2f%s", size, "MB");
-        } else {
-            size /= 1024.0;
-            return String.format(Locale.getDefault(), "%.2f%s", size, "KB");
-        }
+        String[] units = new String[]{"bytes", "KB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
     public static String fixUrl(String base, String src) {
@@ -117,47 +101,5 @@ public class Util {
         ClipboardManager manager = (ClipboardManager) Init.context().getSystemService(Context.CLIPBOARD_SERVICE);
         manager.setPrimaryClip(ClipData.newPlainText("fongmi", text));
         Notify.show("已複製 " + text);
-    }
-
-    public static void loadUrl(WebView webView, String script) {
-        loadUrl(webView, script, null);
-    }
-
-    public static void loadUrl(WebView webView, String script, ValueCallback<String> callback) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            webView.evaluateJavascript(script, callback);
-        } else {
-            webView.loadUrl("javascript:" + script);
-        }
-    }
-
-    public static void addView(View view, ViewGroup.LayoutParams params) {
-        try {
-            ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-            group.addView(view, params);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void removeView(View view) {
-        try {
-            ViewGroup group = Init.getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-            group.removeView(view);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void loadWebView(String url, WebViewClient client) {
-        Init.run(() -> {
-            WebView webView = new WebView(Init.context());
-            webView.getSettings().setDatabaseEnabled(true);
-            webView.getSettings().setDomStorageEnabled(true);
-            webView.getSettings().setJavaScriptEnabled(true);
-            addView(webView, new ViewGroup.LayoutParams(0, 0));
-            webView.setWebViewClient(client);
-            webView.loadUrl(url);
-        });
     }
 }

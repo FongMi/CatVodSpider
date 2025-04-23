@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.github.catvod.crawler.SpiderDebug;
+import com.github.catvod.utils.Notify;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -59,10 +60,9 @@ public class Init {
 
     public static void checkPermission() {
         try {
-            Activity activity = Init.getActivity();
-            if (activity == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
-            if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) return;
-            activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9999);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+            if (context().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) return;
+            Notify.show("請允許儲存權限");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,16 +74,14 @@ public class Init {
         Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
         activitiesField.setAccessible(true);
         Map<?, ?> activities = (Map<?, ?>) activitiesField.get(activityThread);
-        for (Object activityRecord : activities.values()) {
-            Class<?> activityRecordClass = activityRecord.getClass();
-            Field pausedField = activityRecordClass.getDeclaredField("paused");
+        for (Object o : activities.values()) {
+            Class<?> clz = o.getClass();
+            Field pausedField = clz.getDeclaredField("paused");
             pausedField.setAccessible(true);
-            if (!pausedField.getBoolean(activityRecord)) {
-                Field activityField = activityRecordClass.getDeclaredField("activity");
+            if (!pausedField.getBoolean(o)) {
+                Field activityField = clz.getDeclaredField("activity");
                 activityField.setAccessible(true);
-                Activity activity = (Activity) activityField.get(activityRecord);
-                SpiderDebug.log(activity.getComponentName().getClassName());
-                return activity;
+                return (Activity) activityField.get(o);
             }
         }
         return null;

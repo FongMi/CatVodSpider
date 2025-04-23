@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +64,7 @@ public class Path {
             byte[] data = new byte[is.available()];
             is.read(data);
             is.close();
-            return new String(data, "UTF-8");
+            return new String(data, StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
             return "";
