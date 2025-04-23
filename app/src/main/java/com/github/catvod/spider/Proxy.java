@@ -33,6 +33,7 @@ public class Proxy {
             Class<?> clz = Class.forName("com.github.catvod.Proxy");
             port = (int) clz.getMethod("getPort").invoke(null);
             method = clz.getMethod("getUrl", boolean.class);
+            SpiderDebug.log("本地代理端口:" + port);
         } catch (Throwable e) {
             findPort();
         }
