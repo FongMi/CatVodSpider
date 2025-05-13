@@ -1,0 +1,39 @@
+package com.github.catvod.bean.mqtv;
+
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Collections;
+import java.util.List;
+
+public class Data {
+
+    @SerializedName("data")
+    private List<Data> data;
+    @SerializedName("id")
+    private String id;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("stat")
+    private Stat stat;
+
+    public static Data objectFrom(String str) {
+        return new Gson().fromJson(str, Data.class);
+    }
+
+    public List<Data> getData() {
+        return data == null ? Collections.emptyList() : data;
+    }
+
+    public String getId() {
+        return id == null ? "" : id;
+    }
+
+    public String getName() {
+        return name == null ? "" : name;
+    }
+
+    public Stat getStat() {
+        return stat == null ? new Stat() : stat;
+    }
+}

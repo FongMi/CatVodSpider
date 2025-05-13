@@ -7,13 +7,15 @@ import android.widget.Button;
 import com.github.catvod.R;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.spider.Init;
-import com.github.catvod.spider.PTT;
+import com.github.catvod.spider.MQtv;
+import com.github.catvod.spider.Proxy;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,12 +34,16 @@ public class MainActivity extends Activity {
         Button detailContent = findViewById(R.id.detailContent);
         Button playerContent = findViewById(R.id.playerContent);
         Button searchContent = findViewById(R.id.searchContent);
+        Button liveContent = findViewById(R.id.liveContent);
+        Button proxy = findViewById(R.id.proxy);
         homeContent.setOnClickListener(view -> executor.execute(this::homeContent));
         homeVideoContent.setOnClickListener(view -> executor.execute(this::homeVideoContent));
         categoryContent.setOnClickListener(view -> executor.execute(this::categoryContent));
         detailContent.setOnClickListener(view -> executor.execute(this::detailContent));
         playerContent.setOnClickListener(view -> executor.execute(this::playerContent));
         searchContent.setOnClickListener(view -> executor.execute(this::searchContent));
+        liveContent.setOnClickListener(view -> executor.execute(this::liveContent));
+        proxy.setOnClickListener(view -> executor.execute(this::proxy));
         Logger.addLogAdapter(new AndroidLogAdapter());
         executor = Executors.newCachedThreadPool();
         executor.execute(this::initSpider);
@@ -46,7 +52,7 @@ public class MainActivity extends Activity {
     private void initSpider() {
         try {
             Init.init(getApplicationContext());
-            spider = new PTT();
+            spider = new MQtv();
             spider.init(this, "");
         } catch (Throwable e) {
             e.printStackTrace();
@@ -99,6 +105,23 @@ public class MainActivity extends Activity {
     public void searchContent() {
         try {
             Logger.t("searchContent").d(spider.searchContent("我的人间烟火", false));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void liveContent() {
+        try {
+            Logger.t("liveContent").d(spider.liveContent(""));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void proxy() {
+        try {
+            Map<String, String> params = new HashMap<>();
+            Logger.t("liveContent").d(Proxy.proxy(params));
         } catch (Throwable e) {
             e.printStackTrace();
         }

@@ -65,5 +65,13 @@
             android:text="liveContent"
             android:textAllCaps="false" />
 
+        <Button
+            android:id="@+id/proxy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="proxy"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 </ScrollView>
