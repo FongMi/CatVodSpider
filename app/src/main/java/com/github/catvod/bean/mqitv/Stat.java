@@ -1,4 +1,4 @@
-package com.github.catvod.bean.mqtv;
+package com.github.catvod.bean.mqitv;
 
 import com.google.gson.annotations.SerializedName;
 

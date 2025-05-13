@@ -1,4 +1,4 @@
-package com.github.catvod.bean.mqtv;
+package com.github.catvod.bean.mqitv;
 
 public class User {
 

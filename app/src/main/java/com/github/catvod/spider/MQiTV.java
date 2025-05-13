@@ -2,8 +2,8 @@ package com.github.catvod.spider;
 
 import android.content.Context;
 
-import com.github.catvod.bean.mqtv.Data;
-import com.github.catvod.bean.mqtv.User;
+import com.github.catvod.bean.mqitv.Data;
+import com.github.catvod.bean.mqitv.User;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MQtv extends Spider {
+public class MQiTV extends Spider {
 
     private static List<User> users;
     private static String ext;
@@ -33,7 +33,7 @@ public class MQtv extends Spider {
         List<Data> data;
         StringBuilder sb = new StringBuilder();
         loadUser(data = Data.objectFrom(OkHttp.string("http://" + ext + "/api/post?item=itv_traffic")).getData());
-        for (Data item : data) sb.append(item.getName()).append(",").append("proxy://do=mqtv").append("&id=").append(item.getId()).append("&type=m3u8").append("\n");
+        for (Data item : data) sb.append(item.getName()).append(",").append("proxy://do=mqitv").append("&id=").append(item.getId()).append("&type=m3u8").append("\n");
         return sb.toString();
     }
 
