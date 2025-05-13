@@ -11,6 +11,7 @@ import com.github.catvod.net.OkHttp;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class MQiTV extends Spider {
 
-    private static List<User> users;
+    private static Map<String, List<User>> users;
     private static String ext;
 
     private static String getHost() {
@@ -30,7 +31,7 @@ public class MQiTV extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        users = new ArrayList<>();
+        users = new HashMap<>();
         ext = extend;
     }
 
@@ -63,21 +64,23 @@ public class MQiTV extends Spider {
     private static void loadUser(List<Data> data) {
         Pattern userPattern = Pattern.compile(".*?([0-9a-zA-Z]{11,}).*", Pattern.CASE_INSENSITIVE);
         Pattern macPattern = Pattern.compile(".*?(([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}).*", Pattern.CASE_INSENSITIVE);
+        if (!users.containsKey(getHost())) users.put(getHost(), new ArrayList<>());
         for (Data item : data) {
             for (String userIp : item.getStat().getUserIpList()) {
                 Matcher userMatcher = userPattern.matcher(userIp);
                 Matcher macMatcher = macPattern.matcher(userIp);
                 String user = userMatcher.matches() ? userMatcher.group(1) : "";
                 String mac = macMatcher.matches() ? macMatcher.group(1) : "";
-                if (!user.isEmpty() && !mac.isEmpty()) users.add(new User(user, mac));
+                if (!user.isEmpty() && !mac.isEmpty()) users.get(getHost()).add(new User(user, mac));
             }
         }
     }
 
     private static User choose() {
-        if (users == null) users = new ArrayList<>();
-        if (users.isEmpty()) loadUser(Data.objectFrom(OkHttp.string(getHost() + "/api/post?item=itv_traffic")).getData());
-        return users.get(ThreadLocalRandom.current().nextInt(users.size()));
+        if (users == null) users = new HashMap<>();
+        if (!users.containsKey(getHost())) users.put(getHost(), new ArrayList<>());
+        if (users.get(getHost()).isEmpty()) loadUser(Data.objectFrom(OkHttp.string(getHost() + "/api/post?item=itv_traffic")).getData());
+        return users.get(getHost()).get(ThreadLocalRandom.current().nextInt(users.size()));
     }
 
     private static String getToken() {
