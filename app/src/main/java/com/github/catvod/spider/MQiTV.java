@@ -1,6 +1,7 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.github.catvod.bean.mqitv.Data;
 import com.github.catvod.bean.mqitv.User;
@@ -22,6 +23,11 @@ public class MQiTV extends Spider {
     private static List<User> users;
     private static String ext;
 
+    private static String getHost() {
+        if (ext.startsWith("http")) return ext;
+        else return "http://" + ext;
+    }
+
     @Override
     public void init(Context context, String extend) throws Exception {
         users = new ArrayList<>();
@@ -32,14 +38,17 @@ public class MQiTV extends Spider {
     public String liveContent(String url) {
         List<Data> data;
         StringBuilder sb = new StringBuilder();
-        loadUser(data = Data.objectFrom(OkHttp.string("http://" + ext + "/api/post?item=itv_traffic")).getData());
-        for (Data item : data) sb.append(item.getName()).append(",").append("proxy://do=mqitv").append("&id=").append(item.getId()).append("&type=m3u8").append("\n");
+        boolean fixed = ext.startsWith("http");
+        loadUser(data = Data.objectFrom(OkHttp.string(getHost() + "/api/post?item=itv_traffic")).getData());
+        for (Data item : data) sb.append(item.getName()).append(",").append("proxy://do=mqitv").append("&id=").append(item.getId()).append("&port=").append(fixed ? item.getPort() : "5003").append("&type=m3u8").append("\n");
         return sb.toString();
     }
 
     public static Object[] proxy(Map<String, String> params) {
         String id = params.get("id");
         String ip = params.get("ip");
+        String port = params.get("port");
+        if (port == null) port = "5003";
         if (ip != null) ext = ip;
         String token = getToken();
         String auth = authChannel(id, token);
@@ -47,7 +56,7 @@ public class MQiTV extends Spider {
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/vnd.apple.mpegurl";
-        result[2] = new ByteArrayInputStream(getM3u8(id, token).getBytes());
+        result[2] = new ByteArrayInputStream(getM3u8(id, port, token).getBytes());
         return result;
     }
 
@@ -67,13 +76,13 @@ public class MQiTV extends Spider {
 
     private static User choose() {
         if (users == null) users = new ArrayList<>();
-        if (users.isEmpty()) loadUser(Data.objectFrom(OkHttp.string("http://" + ext + "/api/post?item=itv_traffic")).getData());
+        if (users.isEmpty()) loadUser(Data.objectFrom(OkHttp.string(getHost() + "/api/post?item=itv_traffic")).getData());
         return users.get(ThreadLocalRandom.current().nextInt(users.size()));
     }
 
     private static String getToken() {
         User user = choose();
-        String url = String.format(Locale.getDefault(), "http://%s/HSAndroidLogin.ecgi?ty=json&net_account=%s&mac_address1=%s&_=%d", ext, user.getId(), user.getMac(), System.currentTimeMillis());
+        String url = String.format(Locale.getDefault(), "%s/HSAndroidLogin.ecgi?ty=json&net_account=%s&mac_address1=%s&_=%d", getHost(), user.getId(), user.getMac(), System.currentTimeMillis());
         Pattern pattern = Pattern.compile("\"Token\"\\s*:\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(OkHttp.string(url));
         if (matcher.find()) return matcher.group(1);
@@ -81,14 +90,14 @@ public class MQiTV extends Spider {
     }
 
     private static String authChannel(String id, String token) {
-        String data = OkHttp.string("http://" + ext + "/ualive?cid=" + id + "&token=" + token);
+        String data = OkHttp.string(getHost() + "/ualive?cid=" + id + "&token=" + token);
         Matcher matcher = Pattern.compile("\"Reason\":\"(.*?)\"", Pattern.CASE_INSENSITIVE).matcher(data);
         if (matcher.find()) return matcher.group(1);
         return "";
     }
 
-    private static String getM3u8(String id, String token) {
-        String base = "http://" + ext.split(":")[0] + ":" + 5003 + "/";
+    private static String getM3u8(String id, String port, String token) {
+        String base = "http://" + Uri.parse(getHost()).getHost() + ":" + port + "/";
         String m3u8 = base + id + ".m3u8?token=" + token;
         String[] lines = OkHttp.string(m3u8).split("\\r?\\n");
         StringBuilder sb = new StringBuilder();
