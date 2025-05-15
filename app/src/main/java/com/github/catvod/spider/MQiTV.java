@@ -41,24 +41,36 @@ public class MQiTV extends Spider {
         StringBuilder sb = new StringBuilder();
         boolean fixed = ext.startsWith("http");
         loadUser(data = Data.objectFrom(OkHttp.string(getHost() + "/api/post?item=itv_traffic")).getData());
-        for (Data item : data) sb.append(item.getName()).append(",").append("proxy://do=mqitv").append("&id=").append(item.getId()).append("&port=").append(fixed ? item.getPort() : "5003").append("&type=m3u8").append("\n");
+        for (Data item : data) sb.append(item.getName()).append(",").append("proxy://do=mqitv").append("&id=").append(item.getId()).append("&playing=").append(item.getPlaying()).append("&port=").append(fixed ? item.getPort() : "5003").append("&type=m3u8").append("\n");
         return sb.toString();
     }
 
     public static Object[] proxy(Map<String, String> params) {
-        String id = params.get("id");
         String ip = params.get("ip");
         String port = params.get("port");
         if (port == null) port = "5003";
         if (ip != null) ext = ip;
         String token = getToken();
-        String auth = authChannel(id, token);
-        SpiderDebug.log("id=" + id + ", token=" + token + ", auth=" + auth);
-        Object[] result = new Object[3];
-        result[0] = 200;
-        result[1] = "application/vnd.apple.mpegurl";
-        result[2] = new ByteArrayInputStream(getM3u8(id, port, token).getBytes());
-        return result;
+        if (token.isEmpty()) {
+            Map<String, String> header = new HashMap<>();
+            String playing = params.get("playing");
+            header.put("Location", getStaticUrl(port, playing));
+            Object[] result = new Object[4];
+            result[0] = 302;
+            result[1] = "text/plain";
+            result[2] = new ByteArrayInputStream("302 Found".getBytes());
+            result[3] = header;
+            return result;
+        } else {
+            String id = params.get("id");
+            String auth = authChannel(id, token);
+            SpiderDebug.log("id=" + id + ", token=" + token + ", auth=" + auth);
+            Object[] result = new Object[3];
+            result[0] = 200;
+            result[1] = "application/vnd.apple.mpegurl";
+            result[2] = new ByteArrayInputStream(getM3u8(id, port, token).getBytes());
+            return result;
+        }
     }
 
     private static void loadUser(List<Data> data) {
@@ -88,8 +100,7 @@ public class MQiTV extends Spider {
         String url = String.format(Locale.getDefault(), "%s/HSAndroidLogin.ecgi?ty=json&net_account=%s&mac_address1=%s&_=%d", getHost(), user.getId(), user.getMac(), System.currentTimeMillis());
         Pattern pattern = Pattern.compile("\"Token\"\\s*:\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(OkHttp.string(url));
-        if (matcher.find()) return matcher.group(1);
-        return getToken();
+        return matcher.find() ? matcher.group(1) : "";
     }
 
     private static String authChannel(String id, String token) {
@@ -109,5 +120,9 @@ public class MQiTV extends Spider {
             sb.append(line).append("\n");
         }
         return sb.toString();
+    }
+
+    private static String getStaticUrl(String port, String playing) {
+        return "http://" + Uri.parse(getHost()).getHost() + ":" + port + "/" + playing;
     }
 }

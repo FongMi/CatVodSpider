@@ -14,6 +14,8 @@ public class Data {
     private String id;
     @SerializedName("name")
     private String name;
+    @SerializedName("playing")
+    private String playing;
     @SerializedName("port")
     private String port;
     @SerializedName("stat")
@@ -37,6 +39,10 @@ public class Data {
 
     public String getPort() {
         return port == null ? "" : port;
+    }
+
+    public String getPlaying() {
+        return playing == null ? "" : playing;
     }
 
     public Stat getStat() {
