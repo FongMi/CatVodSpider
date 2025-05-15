@@ -39,10 +39,15 @@ public class MQiTV extends Spider {
     public String liveContent(String url) {
         List<Data> data;
         StringBuilder sb = new StringBuilder();
-        boolean fixed = ext.startsWith("http");
         loadUser(data = Data.objectFrom(OkHttp.string(getHost() + "/api/post?item=itv_traffic")).getData());
-        for (Data item : data) sb.append(item.getName()).append(",").append("proxy://do=mqitv").append("&id=").append(item.getId()).append("&playing=").append(item.getPlaying()).append("&port=").append(fixed ? item.getPort() : "5003").append("&type=m3u8").append("\n");
+        for (Data item : data) sb.append(item.getName()).append(",").append(getProxyUrl(item)).append("\n");
         return sb.toString();
+    }
+
+    private String getProxyUrl(Data item) {
+        boolean fixed = ext.startsWith("http");
+        String port = fixed ? item.getPort() : "5003";
+        return "proxy://do=mqitv" + "&id=" + item.getId() + "&ip=" + ext + "&playing=" + item.getPlaying() + "&port=" + port + "&type=m3u8";
     }
 
     public static Object[] proxy(Map<String, String> params) {
@@ -97,9 +102,9 @@ public class MQiTV extends Spider {
 
     private static String getToken() {
         User user = choose();
-        String url = String.format(Locale.getDefault(), "%s/HSAndroidLogin.ecgi?ty=json&net_account=%s&mac_address1=%s&_=%d", getHost(), user.getId(), user.getMac(), System.currentTimeMillis());
+        String result = OkHttp.string(String.format(Locale.getDefault(), "%s/HSAndroidLogin.ecgi?ty=json&net_account=%s&mac_address1=%s&_=%d", getHost(), user.getId(), user.getMac(), System.currentTimeMillis()));
         Pattern pattern = Pattern.compile("\"Token\"\\s*:\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(OkHttp.string(url));
+        Matcher matcher = pattern.matcher(result);
         return matcher.find() ? matcher.group(1) : "";
     }
 
