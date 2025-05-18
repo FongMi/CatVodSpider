@@ -6,14 +6,12 @@ import android.net.Uri;
 import com.github.catvod.bean.mqitv.Data;
 import com.github.catvod.bean.mqitv.User;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
@@ -55,7 +53,7 @@ public class MQiTV extends Spider {
         String port = params.get("port");
         if (port == null) port = "5003";
         if (ip != null) ext = ip;
-        String token = getToken();
+        String token = getUser().getToken();
         if (token.isEmpty()) {
             Map<String, String> header = new HashMap<>();
             String playing = params.get("playing");
@@ -69,7 +67,10 @@ public class MQiTV extends Spider {
         } else {
             String id = params.get("id");
             String auth = authChannel(id, token);
-            SpiderDebug.log("id=" + id + ", token=" + token + ", auth=" + auth);
+            if (!"OK".equals(auth)) {
+                users.get(getHost()).clear();
+                return proxy(params);
+            }
             Object[] result = new Object[3];
             result[0] = 200;
             result[1] = "application/vnd.apple.mpegurl";
@@ -84,28 +85,24 @@ public class MQiTV extends Spider {
         if (!users.containsKey(getHost())) users.put(getHost(), new ArrayList<>());
         for (Data item : data) {
             for (String userIp : item.getStat().getUserIpList()) {
+                if (users.get(getHost()).size() >= 5) continue;
                 Matcher userMatcher = userPattern.matcher(userIp);
                 Matcher macMatcher = macPattern.matcher(userIp);
                 String user = userMatcher.matches() ? userMatcher.group(1) : "";
                 String mac = macMatcher.matches() ? macMatcher.group(1) : "";
-                if (!user.isEmpty() && !mac.isEmpty()) users.get(getHost()).add(new User(user, mac));
+                if (!user.isEmpty() && !mac.isEmpty()) {
+                    User u = new User(user, mac).getToken(getHost());
+                    if (!u.getToken().isEmpty()) users.get(getHost()).add(u);
+                }
             }
         }
     }
 
-    private static User choose() {
+    private static User getUser() {
         if (users == null) users = new HashMap<>();
         if (!users.containsKey(getHost())) users.put(getHost(), new ArrayList<>());
         if (users.get(getHost()).isEmpty()) loadUser(Data.objectFrom(OkHttp.string(getHost() + "/api/post?item=itv_traffic")).getData());
-        return users.get(getHost()).get(ThreadLocalRandom.current().nextInt(users.size()));
-    }
-
-    private static String getToken() {
-        User user = choose();
-        String result = OkHttp.string(String.format(Locale.getDefault(), "%s/HSAndroidLogin.ecgi?ty=json&net_account=%s&mac_address1=%s&_=%d", getHost(), user.getId(), user.getMac(), System.currentTimeMillis()));
-        Pattern pattern = Pattern.compile("\"Token\"\\s*:\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(result);
-        return matcher.find() ? matcher.group(1) : "";
+        return users.get(getHost()).isEmpty() ? new User("", "") : users.get(getHost()).get(ThreadLocalRandom.current().nextInt(users.size()));
     }
 
     private static String authChannel(String id, String token) {
@@ -117,8 +114,9 @@ public class MQiTV extends Spider {
 
     private static String getM3u8(String id, String port, String token) {
         String base = "http://" + Uri.parse(getHost()).getHost() + ":" + port + "/";
-        String m3u8 = base + id + ".m3u8?token=" + token;
-        String[] lines = OkHttp.string(m3u8).split("\\r?\\n");
+        String m3u8 = OkHttp.string(base + id + ".m3u8?token=" + token);
+        if (m3u8.contains("\"Reason\"")) return "";
+        String[] lines = m3u8.split("\\r?\\n");
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
             if (!line.startsWith("#")) line = base + line;
