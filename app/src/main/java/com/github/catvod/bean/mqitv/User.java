@@ -29,8 +29,8 @@ public class User {
         return token == null ? "" : token;
     }
 
-    public User getToken(String host) {
-        String result = OkHttp.string(String.format(Locale.getDefault(), "%s/HSAndroidLogin.ecgi?ty=json&net_account=%s&mac_address1=%s&_=%d", host, getId(), getMac(), System.currentTimeMillis()));
+    public User getToken(String url) {
+        String result = OkHttp.string(String.format(Locale.getDefault(), "%s/HSAndroidLogin.ecgi?ty=json&net_account=%s&mac_address1=%s&_=%d", url, getId(), getMac(), System.currentTimeMillis()));
         Pattern pattern = Pattern.compile("\"Token\"\\s*:\\s*\"(.*?)\"", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(result);
         token = matcher.find() ? matcher.group(1) : "";
