@@ -101,7 +101,7 @@ public class Config {
         String[] lines = m3u8.split("\\r?\\n");
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
-            if (!line.startsWith("#")) line = base + line;
+            if (!line.startsWith("#") && !line.startsWith("http")) line = base + line;
             sb.append(line).append("\n");
         }
         return sb.toString();
