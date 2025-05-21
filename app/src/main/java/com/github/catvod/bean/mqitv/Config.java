@@ -61,7 +61,7 @@ public class Config {
     }
 
     public String getPlayUrl(String port, String playing) {
-        return "http://" + getUri().getHost() + ":" + port + "/" + playing;
+        return "http://" + getUri().getHost() + ":" + port + "/" + playing.replace(":/", "");
     }
 
     public void loadUser() {
@@ -97,7 +97,7 @@ public class Config {
     public String getM3U8(String id, String token, String port) {
         String base = "http://" + getUri().getHost() + ":" + port + "/";
         String m3u8 = OkHttp.string(base + id + ".m3u8?token=" + token);
-        if (m3u8.contains("\"Reason\"")) return "";
+        if (m3u8.isEmpty() || m3u8.contains("\"Reason\"")) return "";
         String[] lines = m3u8.split("\\r?\\n");
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
