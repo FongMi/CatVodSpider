@@ -26,9 +26,10 @@ public class MQiTV extends Spider {
     }
 
     @Override
-    public String liveContent(String url) {
+    public String liveContent(String url) throws Exception {
         StringBuilder sb = new StringBuilder();
         for (Config config : getConfigs()) {
+            if (config.getData().isEmpty()) continue;
             sb.append(config.getName()).append(",#genre#").append("\n");
             boolean hasPort = config.getUri().getPort() != -1;
             for (Data item : config.getData()) {

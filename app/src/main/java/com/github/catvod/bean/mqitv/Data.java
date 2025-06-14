@@ -22,7 +22,12 @@ public class Data {
     private Stat stat;
 
     public static Data objectFrom(String str) {
-        return new Gson().fromJson(str, Data.class);
+        try {
+            Data data = new Gson().fromJson(str, Data.class);
+            return data == null ? new Data() : data;
+        } catch (Exception e) {
+            return new Data();
+        }
     }
 
     public List<Data> getData() {

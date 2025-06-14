@@ -42,10 +42,10 @@ android {
 dependencies {
     implementation 'com.squareup.okhttp3:okhttp:' + okhttpVersion
     implementation 'com.github.thegrizzlylabs:sardine-android:0.9'
-    implementation 'wang.harlon.quickjs:wrapper-android:2.4.5'
+    implementation 'wang.harlon.quickjs:wrapper-android:3.2.0'
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'cn.wanghaomiao:JsoupXpath:2.5.1'
     implementation 'com.hierynomus:smbj:0.14.0'
     implementation 'com.orhanobut:logger:2.2.0'
-    implementation 'org.jsoup:jsoup:1.18.3'
+    implementation 'org.jsoup:jsoup:1.19.1'
 }
