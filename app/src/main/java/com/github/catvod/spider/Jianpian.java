@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class Jianpian extends Spider {
 
-    private final String siteUrl = "http://api2.rinhome.com";
+    private final String siteUrl = "http://4icnx7.qyjzlh.com/";
     private String extend;
 
     private Map<String, String> getHeader() {
@@ -51,7 +51,7 @@ public class Jianpian extends Spider {
     @Override
     public String homeVideoContent() {
         List<Vod> list = new ArrayList<>();
-        String url = siteUrl + "/api/slide/list?code=unknown9039b6856c3a3306&pos_id=888&channel=wandoujia";
+        String url = siteUrl + "/api/slide/list?code=unknown9039b6856c3a3306&pos_id=88&channel=wandoujia";
         Resp resp = Resp.objectFrom(OkHttp.string(url, getHeader()));
         for (Data data : resp.getData()) list.add(data.vod());
         return Result.string(list);
