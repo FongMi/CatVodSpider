@@ -10,9 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class Search {
-    public static Search objectFrom(String str) {
-        return new Gson().fromJson(str, Search.class);
-    }
 
     @SerializedName("data")
     private List<Search> data;
@@ -24,6 +21,10 @@ public class Search {
     private String title;
     @SerializedName("mask")
     private String mask;
+
+    public static Search objectFrom(String str) {
+        return new Gson().fromJson(str, Search.class);
+    }
 
     public String getId() {
         return TextUtils.isEmpty(id) ? "" : id;

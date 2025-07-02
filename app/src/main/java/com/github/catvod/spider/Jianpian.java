@@ -11,11 +11,11 @@ import com.github.catvod.bean.jianpian.Resp;
 import com.github.catvod.bean.jianpian.Search;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
+import com.google.gson.JsonParser;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,9 @@ import java.util.Map;
  * Qile
  */
 public class Jianpian extends Spider {
-    private static String siteUrl = "http://api.ubj83.com";
+
+    private final String siteUrl = "http://api.ubj83.com";
+    private String extend;
 
     private Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
@@ -36,18 +38,16 @@ public class Jianpian extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        if (!extend.isEmpty()) siteUrl = extend;
+        this.extend = extend;
     }
 
     @Override
     public String homeContent(boolean filter) throws Exception {
         List<Class> classes = new ArrayList<>();
         List<String> typeIds = Arrays.asList("1", "2", "3", "4", "50", "99");
-        List<String> typeNames = Arrays.asList("电影", "电视剧", "动漫", "综艺", "纪录片", "Netflix");
-        for (int i = 0; i < typeIds.size(); i++)
-            classes.add(new Class(typeIds.get(i), typeNames.get(i)));
-
-        return Result.string(classes, Collections.emptyList());
+        List<String> typeNames = Arrays.asList("電影", "電視劇", "動漫", "綜藝", "紀錄片", "Netflix");
+        for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
+        return Result.string(classes, JsonParser.parseString(OkHttp.string(extend)));
     }
 
     @Override
@@ -61,21 +61,25 @@ public class Jianpian extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        List<Vod> list = new ArrayList<>();
-        String url;
-        if (tid.equals("50") || tid.equals("99")) {
-            url = siteUrl + String.format("/api/dyTag/list?category_id=%s", tid);
+        if (tid.endsWith("/{pg}")) return searchContent(tid.split("/")[0], pg);
+        if (tid.equals("50") || tid.equals("99") || tid.equals("111")) {
+            List<Vod> list = new ArrayList<>();
+            String url = siteUrl + String.format("/api/dyTag/list?category_id=%s&page=%s", tid, pg);
             Resp resp = Resp.objectFrom(OkHttp.string(url, getHeader()));
-            for (Data data : resp.getData()) {
-                for (Data.DataList dataList : data.getDataList()) list.add(dataList.vod());
-            }
-            return Result.string(list);
+            for (Data data : resp.getData()) for (Data dataList : data.getDataList()) list.add(dataList.vod());
+            return Result.get().page().vod(list).string();
         } else {
-            url = siteUrl + String.format("/api/crumb/list?fcate_pid=%s&category_id=&area=&year=&type=&sort=&page=%s", tid, pg);
+            List<Vod> list = new ArrayList<>();
+            HashMap<String, String> ext = new HashMap<>();
+            if (extend != null && !extend.isEmpty()) ext.putAll(extend);
+            String area = ext.get("area") == null ? "0" : ext.get("area");
+            String year = ext.get("year") == null ? "0" : ext.get("year");
+            String by = ext.get("by") == null ? "updata" : ext.get("by");
+            String url = siteUrl + String.format("/api/crumb/list?fcate_pid=%s&area=%s&year=%s&type=0&sort=%s&page=%s&category_id=", tid, area, year, by, pg);
+            Resp resp = Resp.objectFrom(OkHttp.string(url, getHeader()));
+            for (Data data : resp.getData()) list.add(data.vod());
+            return Result.string(list);
         }
-        Resp resp = Resp.objectFrom(OkHttp.string(url, getHeader()));
-        for (Data data : resp.getData()) list.add(data.vod());
-        return Result.string(list);
     }
 
     @Override
@@ -89,7 +93,7 @@ public class Jianpian extends Spider {
         vod.setTypeName(data.getTypes());
         vod.setVodActor(data.getActors());
         vod.setVodPlayUrl(data.getVodUrl());
-        vod.setVodDirector("Qile");
+        vod.setVodDirector(data.getDirectors());
         vod.setVodContent(data.getDescription());
         return Result.string(vod);
     }

@@ -6,6 +6,7 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.utils.Util;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,9 +37,9 @@ public class Data {
     @SerializedName("directors")
     private List<Value> directors;
     @SerializedName("source_list_source")
-    private List<SourceListSource> source_list_source;
+    private List<SourceListSource> source;
     @SerializedName("dataList")
-    private List<DataList> dataList;
+    private List<Data> dataList;
 
     public String getJumpId() {
         return TextUtils.isEmpty(jumpId) ? "" : jumpId;
@@ -88,11 +89,11 @@ public class Data {
         return directors == null ? "" : getValues(directors, true);
     }
 
-    public List<SourceListSource> getSourcelistsource() {
-        return source_list_source == null ? Collections.emptyList() : source_list_source;
+    public List<SourceListSource> getSource() {
+        return source == null ? Collections.emptyList() : source;
     }
 
-    public List<DataList> getDataList() {
+    public List<Data> getDataList() {
         return dataList == null ? Collections.emptyList() : dataList;
     }
 
@@ -111,6 +112,7 @@ public class Data {
     }
 
     public static class Value {
+
         @SerializedName(value = "title", alternate = "name")
         private String title;
 
@@ -128,28 +130,30 @@ public class Data {
     }
 
     public static class SourceListSource {
+
         @SerializedName("name")
         private String name;
         @SerializedName("source_list")
-        private List<SourceList> source_list;
+        private List<SourceList> list;
 
         public String getName() {
             return TextUtils.isEmpty(name) ? "" : name;
         }
 
-        public List<SourceList> getSourcelist() {
-            return source_list == null ? Collections.emptyList() : source_list;
+        public List<SourceList> getList() {
+            return list == null ? Collections.emptyList() : list;
         }
     }
 
     public static class SourceList {
+
         @SerializedName("source_name")
-        private String source_name;
+        private String name;
         @SerializedName("url")
         private String url;
 
-        public String getSource_name() {
-            return TextUtils.isEmpty(source_name) ? "" : source_name;
+        public String getName() {
+            return TextUtils.isEmpty(name) ? "" : name;
         }
 
         public String getUrl() {
@@ -158,76 +162,18 @@ public class Data {
     }
 
     public String getVodFrom() {
-        StringBuilder result = new StringBuilder();
-        List<SourceListSource> sources = getSourcelistsource();
-
-        if (sources != null && !sources.isEmpty()) {
-            for (int i = 0; i < sources.size(); i++) {
-                if (i > 0) {
-                    result.append("$$$");
-                }
-                result.append(sources.get(i).getName());
-            }
-        }
-        return result.toString();
+        List<String> items = new ArrayList<>();
+        for (SourceListSource source : getSource()) items.add(source.getName());
+        return TextUtils.join("$$$", items);
     }
 
     public String getVodUrl() {
-        StringBuilder result = new StringBuilder();
-        List<SourceListSource> sources = getSourcelistsource();
-
-        if (sources != null && !sources.isEmpty()) {
-            for (SourceListSource source : sources) {
-                List<SourceList> sourceLists = source.getSourcelist();
-                if (sourceLists != null && !sourceLists.isEmpty()) {
-                    for (SourceList item : sourceLists) {
-                        result.append(item.getSource_name())
-                                .append("$")
-                                .append(item.getUrl())
-                                .append("#");
-                    }
-                    if (result.length() > 0) {
-                        result.deleteCharAt(result.length() - 1);
-                    }
-                    result.append("$$$");
-                }
-            }
-            if (result.length() >= 3) {
-                result.delete(result.length() - 3, result.length());
-            }
+        List<String> items = new ArrayList<>();
+        for (SourceListSource source : getSource()) {
+            List<String> urls = new ArrayList<>();
+            for (SourceList item : source.getList()) urls.add(item.getName() + "$" + item.getUrl());
+            items.add(TextUtils.join("#", urls));
         }
-        return result.toString();
-    }
-
-    public static class DataList {
-
-        @SerializedName("id")
-        private String id;
-        @SerializedName(value = "thumbnail", alternate = "path")
-        private String thumbnail;
-        @SerializedName("title")
-        private String title;
-        @SerializedName("mask")
-        private String mask;
-
-        public String getId() {
-            return TextUtils.isEmpty(id) ? "" : id;
-        }
-
-        public String getThumbnail() {
-            return TextUtils.isEmpty(thumbnail) ? "" : "http://img1.vbwus.com" + thumbnail;
-        }
-
-        public String getTitle() {
-            return TextUtils.isEmpty(title) ? "" : title;
-        }
-
-        public String getMask() {
-            return TextUtils.isEmpty(mask) ? "" : mask;
-        }
-
-        public Vod vod() {
-            return new Vod(getId(), getTitle(), getThumbnail(), getMask());
-        }
+        return TextUtils.join("$$$", items);
     }
 }
