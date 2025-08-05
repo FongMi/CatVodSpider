@@ -6,7 +6,6 @@
       "api": "csp_XtreamCode",
       "url": "http://iptv.icsnleb.com:25461/player_api.php?username=12&password=12",
       "epg": "http://iptv.icsnleb.com:25461/xmltv.php?username=12&password=12",
-      "type": 3,
       "ext": {
         "live": true,
         "vod": true,
@@ -15,6 +14,20 @@
           "ts"
         ]
       }
+    },
+    {
+      "name": "MQiTV",
+      "api": "csp_MQiTV",
+      "ext": [
+        {
+          "name": "Hotel A",
+          "url": "https://127.0.0.1:4433"
+        },
+        {
+          "name": "Hotel B",
+          "url": "http://127.0.0.1"
+        }
+      ]
     }
   ],
   "sites": [
