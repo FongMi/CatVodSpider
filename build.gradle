@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     id 'ru.cleverpumpkin.proguard-dictionaries-generator' version '1.0.8' apply false
-    id 'com.android.application' version '8.8.1' apply false
-    id 'com.android.library' version '8.8.1' apply false
+    id 'com.android.application' version '8.12.0' apply false
+    id 'com.android.library' version '8.12.0' apply false
 }
 
 tasks.register('clean', Delete) {
@@ -10,5 +10,5 @@ tasks.register('clean', Delete) {
 }
 
 project.ext {
-    okhttpVersion = '5.0.0-alpha.14'
+    okhttpVersion = '5.1.0'
 }

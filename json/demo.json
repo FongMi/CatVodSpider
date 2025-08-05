@@ -1,6 +1,5 @@
 {
   "spider": "./jar/custom_spider.jar",
-  "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
   "lives": [
     {
       "name": "XtreamCode",
@@ -90,31 +89,7 @@
       ]
     }
   ],
-  "proxy": [
-    "raw.githubusercontent.com",
-    "googlevideo.com",
-    "googleapis.com",
-    "youtube.com"
-  ],
   "rules": [
-    {
-      "name": "火山嗅探",
-      "hosts": [
-        "huoshan.com"
-      ],
-      "regex": [
-        "item_id="
-      ]
-    },
-    {
-      "name": "抖音嗅探",
-      "hosts": [
-        "douyin.com"
-      ],
-      "regex": [
-        "is_play_url="
-      ]
-    },
     {
       "name": "農民嗅探",
       "hosts": [

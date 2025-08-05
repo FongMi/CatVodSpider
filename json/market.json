@@ -1,126 +1,15 @@
 [
   {
-    "name": "推薦",
+    "name": "APP",
     "list": [
       {
-        "url": "https://i.imgs.ovh/2023/10/19/2mfxN.jpeg",
-        "icon": "https://i.imgs.ovh/2023/10/19/2mfxN.jpeg"
-      }
-    ]
-  },
-  {
-    "name": "正式版",
-    "list": [
-      {
-        "name": "電視-java",
-        "url": "https://github.com/FongMi/Release/raw/fongmi/apk/release/leanback-java-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
+        "name": "電視版",
+        "url": "https://github.com/FongMi/Release/raw/fongmi/apk/release/leanback-armeabi_v7a.apk",
         "version": "v7a"
       },
       {
-        "name": "電視-java",
-        "url": "https://github.com/FongMi/Release/raw/fongmi/apk/release/leanback-java-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "v8a"
-      },
-      {
-        "name": "電視-py",
-        "url": "https://github.com/FongMi/Release/raw/fongmi/apk/release/leanback-python-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "v7a"
-      },
-      {
-        "name": "電視-py",
-        "url": "https://github.com/FongMi/Release/raw/fongmi/apk/release/leanback-python-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "v8a"
-      },
-      {
-        "name": "手機-java",
-        "url": "https://github.com/FongMi/Release/raw/fongmi/apk/release/mobile-java-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "v7a"
-      },
-      {
-        "name": "手機-java",
-        "url": "https://github.com/FongMi/Release/raw/fongmi/apk/release/mobile-java-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "v8a"
-      },
-      {
-        "name": "手機-py",
-        "url": "https://github.com/FongMi/Release/raw/fongmi/apk/release/mobile-python-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "v7a"
-      },
-      {
-        "name": "手機-py",
-        "url": "https://github.com/FongMi/Release/raw/fongmi/apk/release/mobile-python-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "v8a"
-      }
-    ]
-  },
-  {
-    "name": "內測版",
-    "list": [
-      {
-        "name": "電視-java",
-        "url": "https://fm.caioa.link/main/apk/dev/leanback-java-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "v7a"
-      },
-      {
-        "name": "電視-java",
-        "url": "https://fm.caioa.link/main/apk/dev/leanback-java-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "v8a"
-      },
-      {
-        "name": "電視-py",
-        "url": "https://fm.caioa.link/main/apk/dev/leanback-python-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "v7a"
-      },
-      {
-        "name": "電視-py",
-        "url": "https://fm.caioa.link/main/apk/dev/leanback-python-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
-        "version": "v8a"
-      },
-      {
-        "name": "手機-java",
-        "url": "https://fm.caioa.link/main/apk/dev/mobile-java-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "v7a"
-      },
-      {
-        "name": "手機-java",
-        "url": "https://fm.caioa.link/main/apk/dev/mobile-java-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "v8a"
-      },
-      {
-        "name": "手機-py",
-        "url": "https://fm.caioa.link/main/apk/dev/mobile-python-armeabi_v7a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "v7a"
-      },
-      {
-        "name": "手機-py",
-        "url": "https://fm.caioa.link/main/apk/dev/mobile-python-arm64_v8a.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8lVK.png",
-        "version": "v8a"
-      }
-    ]
-  },
-  {
-    "name": "4.x版",
-    "list": [
-      {
-        "name": "電視",
-        "url": "https://fm.caioa.link/main/apk/kitkat/leanback.apk",
-        "icon": "https://i.imgs.ovh/2023/10/17/r8nk2.png",
+        "name": "手機版",
+        "url": "https://github.com/FongMi/Release/raw/fongmi/apk/release/mobile-armeabi_v7a.apk",
         "version": "v7a"
       }
     ]
