@@ -71,6 +71,7 @@ public class Market extends Spider {
             if (file.getName().endsWith(".apk")) FileUtil.openFile(file);
             else Result.notify("下載完成");
             checkCopy(action);
+            response.close();
             dismiss();
             return "";
         } catch (Exception e) {

@@ -37,16 +37,8 @@ public class OkHttp {
         return Loader.INSTANCE;
     }
 
-    public static Response newCall(Request request) throws IOException {
-        return client().newCall(request).execute();
-    }
-
     public static Response newCall(String url) throws IOException {
         return client().newCall(new Request.Builder().url(url).build()).execute();
-    }
-
-    public static Response newCall(String url, Map<String, String> header) throws IOException {
-        return client().newCall(new Request.Builder().url(url).headers(Headers.of(header)).build()).execute();
     }
 
     public static String string(String url) {
@@ -58,7 +50,7 @@ public class OkHttp {
     }
 
     public static String string(String url, Map<String, String> params, Map<String, String> header) {
-        return url.startsWith("http") ? new OkRequest(GET, url, params, header).execute(client()).getBody() : "";
+        return new OkRequest(GET, url, params, header).execute(client()).getBody();
     }
 
     public static String post(String url, Map<String, String> params) {
