@@ -49,7 +49,7 @@ public class Config {
     }
 
     public List<Data> getData() {
-        return data = data == null ? Data.objectFrom(OkHttp.string(getApi())).getData() : data;
+        return data = data == null ? Data.objectFrom(OkHttp.string(getApi(), 3000)).getData() : data;
     }
 
     public Uri getUri() {

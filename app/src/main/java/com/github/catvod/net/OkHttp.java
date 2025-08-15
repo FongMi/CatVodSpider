@@ -24,6 +24,8 @@ import okhttp3.Response;
 
 public class OkHttp {
 
+    private static final long TIMEOUT = TimeUnit.SECONDS.toMillis(15);
+
     public static final String POST = "POST";
     public static final String GET = "GET";
 
@@ -45,12 +47,20 @@ public class OkHttp {
         return string(url, null);
     }
 
+    public static String string(String url, long timeout) {
+        return string(url, null, null, timeout);
+    }
+
     public static String string(String url, Map<String, String> header) {
         return string(url, null, header);
     }
 
     public static String string(String url, Map<String, String> params, Map<String, String> header) {
         return new OkRequest(GET, url, params, header).execute(client()).getBody();
+    }
+
+    public static String string(String url, Map<String, String> params, Map<String, String> header, long timeout) {
+        return new OkRequest(GET, url, params, header).execute(client(timeout)).getBody();
     }
 
     public static String post(String url, Map<String, String> params) {
@@ -86,7 +96,11 @@ public class OkHttp {
     }
 
     private static OkHttpClient.Builder getBuilder() {
-        return new OkHttpClient.Builder().dns(safeDns()).connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).hostnameVerifier((hostname, session) -> true).sslSocketFactory(getSSLContext().getSocketFactory(), trustAllCertificates());
+        return new OkHttpClient.Builder().dns(safeDns()).connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS).readTimeout(TIMEOUT, TimeUnit.MILLISECONDS).writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS).hostnameVerifier((hostname, session) -> true).sslSocketFactory(getSSLContext().getSocketFactory(), trustAllCertificates());
+    }
+
+    private static OkHttpClient client(long timeout) {
+        return client().newBuilder().connectTimeout(timeout, TimeUnit.MILLISECONDS).readTimeout(timeout, TimeUnit.MILLISECONDS).writeTimeout(timeout, TimeUnit.MILLISECONDS).build();
     }
 
     private static OkHttpClient client() {
