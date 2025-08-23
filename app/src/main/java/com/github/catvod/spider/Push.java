@@ -38,7 +38,7 @@ public class Push extends Spider {
         vod.setVodId(url);
         vod.setVodPic(Image.PUSH);
         vod.setTypeName("FongMi");
-        vod.setVodName(url.startsWith("file://") ? new File(url).getName() : url);
+        vod.setVodName(url.startsWith("file://") ? new File(url).getName() : "");
         if (url.contains("://") && url.contains("#")) url = url.replace("#", "***");
         if (Util.isThunder(url)) {
             vod.setVodPlayUrl(url);
