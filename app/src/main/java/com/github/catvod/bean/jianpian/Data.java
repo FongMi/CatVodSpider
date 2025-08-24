@@ -49,8 +49,8 @@ public class Data {
         return TextUtils.isEmpty(id) ? "" : id;
     }
 
-    public String getThumbnail() {
-        return TextUtils.isEmpty(thumbnail) ? "" : "http://img1.vbwus.com" + thumbnail;
+    public String getThumbnail(String imgDomain) {
+        return TextUtils.isEmpty(thumbnail) ? "" : "http://" + imgDomain + thumbnail;
     }
 
     public String getTitle() {
@@ -97,12 +97,12 @@ public class Data {
         return dataList == null ? Collections.emptyList() : dataList;
     }
 
-    public Vod homeVod() {
-        return new Vod(getJumpId(), getTitle(), getThumbnail());
+    public Vod homeVod(String imgDomain) {
+        return new Vod(getJumpId(), getTitle(), getThumbnail(imgDomain));
     }
 
-    public Vod vod() {
-        return new Vod(getId(), getTitle(), getThumbnail(), getMask());
+    public Vod vod(String imgDomain) {
+        return new Vod(getId(), getTitle(), getThumbnail(imgDomain), getMask());
     }
 
     public String getValues(List<Value> items, boolean link) {
