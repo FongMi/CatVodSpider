@@ -30,8 +30,8 @@ public class Search {
         return TextUtils.isEmpty(id) ? "" : id;
     }
 
-    public String getThumbnail() {
-        return TextUtils.isEmpty(thumbnail) ? "" : "http://img1.vbwus.com" + thumbnail;
+    public String getThumbnail(String imgDomain) {
+        return TextUtils.isEmpty(thumbnail) ? "" : "http://" + imgDomain + thumbnail;
     }
 
     public String getTitle() {
@@ -42,8 +42,8 @@ public class Search {
         return TextUtils.isEmpty(mask) ? "" : mask;
     }
 
-    public Vod vod() {
-        return new Vod(getId(), getTitle(), getThumbnail(), getMask());
+    public Vod vod(String imgDomain) {
+        return new Vod(getId(), getTitle(), getThumbnail(imgDomain), getMask());
     }
 
     public List<Search> getData() {

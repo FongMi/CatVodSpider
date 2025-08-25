@@ -122,7 +122,7 @@ public class Jianpian extends Spider {
         List<Vod> list = new ArrayList<>();
         String url = siteUrl + String.format("/api/v2/search/videoV2?key=%s&category_id=88&page=%s&pageSize=20", URLEncoder.encode(key), pg);
         Search search = Search.objectFrom(OkHttp.string(url, getHeader()));
-        for (Search data : search.getData()) list.add(data.vod());
+        for (Search data : search.getData()) list.add(data.vod(imgDomain));
         return Result.string(list);
     }
 }
