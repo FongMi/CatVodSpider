@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class Jianpian extends Spider {
 
-    private final String siteUrl = "https://ij1men.slsw6.com";
+    private final String siteUrl = "https://ev5356.970xw.com";
     private String imgDomain;
     private String extend;
 
