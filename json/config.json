@@ -1,5 +1,5 @@
 {
-  "spider": "./jar/custom_spider.jar",
+  "spider": "../jar/custom_spider.jar",
   "lives": [
     {
       "name": "XtreamCode",
@@ -46,7 +46,7 @@
       "api": "csp_Market",
       "searchable": 0,
       "changeable": 0,
-      "ext": "./json/market.json"
+      "ext": "./market.json"
     },
     {
       "key": "push_agent",
