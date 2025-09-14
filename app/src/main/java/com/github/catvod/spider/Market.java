@@ -42,7 +42,6 @@ public class Market extends Spider {
     public void init(Context context, String extend) throws Exception {
         if (extend.startsWith("http")) extend = OkHttp.string(extend);
         datas = Data.arrayFrom(extend);
-        Init.checkPermission();
     }
 
     @Override
@@ -81,8 +80,7 @@ public class Market extends Spider {
     }
 
     private void download(File file, InputStream is, double length) throws Exception {
-        FileOutputStream os = new FileOutputStream(file);
-        try (BufferedInputStream input = new BufferedInputStream(is)) {
+        try (BufferedInputStream input = new BufferedInputStream(is); FileOutputStream os = new FileOutputStream(file)) {
             byte[] buffer = new byte[4096];
             int readBytes;
             long totalBytes = 0;
@@ -107,7 +105,7 @@ public class Market extends Spider {
     private void setDialog() {
         Init.run(() -> {
             try {
-                dialog = new ProgressDialog(Init.getActivity());
+                dialog = new ProgressDialog(Init.activity());
                 dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 dialog.setCancelable(false);
                 if (isBusy()) dialog.show();
