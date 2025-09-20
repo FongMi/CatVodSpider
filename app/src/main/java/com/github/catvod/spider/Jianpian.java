@@ -10,6 +10,7 @@ import com.github.catvod.bean.jianpian.Detail;
 import com.github.catvod.bean.jianpian.Resp;
 import com.github.catvod.bean.jianpian.Search;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -27,7 +28,7 @@ import java.util.Map;
  */
 public class Jianpian extends Spider {
 
-    private final String siteUrl = "https://ev5356.970xw.com";
+    private String siteUrl = "https://ev5356.970xw.com";
     private String imgDomain;
     private String extend;
 
@@ -41,9 +42,19 @@ public class Jianpian extends Spider {
     @Override
     public void init(Context context, String extend) throws Exception {
         this.extend = extend;
-        String json = OkHttp.string(siteUrl + "/api/appAuthConfig");
-        JsonObject root = new Gson().fromJson(json, JsonObject.class);
-        imgDomain = root.getAsJsonObject("data").get("imgDomain").getAsString();
+        JsonObject domains = new Gson().fromJson(OkHttp.string("https://dns.alidns.com/resolve?name=swrdsfeiujo25sw.cc&type=TXT"), JsonObject.class);
+        String parts = domains.getAsJsonArray("Answer").get(0).getAsJsonObject().get("data").getAsString();
+        parts = parts.replace("\"", "");
+        String[] domain = parts.split(",");
+        for (String d : domain) {
+            siteUrl = "https://wangerniu." + d;
+            String json = OkHttp.string(siteUrl + "/api/appAuthConfig");
+            if (!json.isEmpty()) {
+                JsonObject root = new Gson().fromJson(json, JsonObject.class);
+                imgDomain = root.getAsJsonObject("data").get("imgDomain").getAsString();
+                break;
+            }
+        }
     }
 
     @Override
