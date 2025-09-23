@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId "com.github.catvod.demo"
         minSdk 21
-        targetSdk 36
+        targetSdk 28
     }
 
     buildTypes {
@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:' + okhttpVersion
     implementation 'com.github.thegrizzlylabs:sardine-android:0.9'
     implementation 'wang.harlon.quickjs:wrapper-android:3.2.3'
-    implementation 'com.google.code.gson:gson:2.13.1'
+    implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'com.hierynomus:smbj:0.14.0'
     implementation 'com.orhanobut:logger:2.2.0'
     implementation 'org.jsoup:jsoup:1.21.2'
