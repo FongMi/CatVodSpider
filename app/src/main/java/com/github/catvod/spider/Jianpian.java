@@ -10,7 +10,6 @@ import com.github.catvod.bean.jianpian.Detail;
 import com.github.catvod.bean.jianpian.Resp;
 import com.github.catvod.bean.jianpian.Search;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
