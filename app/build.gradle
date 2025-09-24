@@ -13,8 +13,7 @@ android {
     defaultConfig {
         applicationId "com.github.catvod.demo"
         minSdk 21
-        //noinspection ExpiredTargetSdkVersion
-        targetSdk 28
+        targetSdk 36
     }
 
     buildTypes {
