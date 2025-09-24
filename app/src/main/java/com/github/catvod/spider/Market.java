@@ -62,7 +62,7 @@ public class Market extends Spider {
         try {
             if (isBusy()) return "";
             setBusy(true);
-            Init.run(this::setDialog, 500);
+            Init.post(this::setDialog, 500);
             Response response = OkHttp.newCall(action);
             File file = Path.create(new File(Path.download(), Uri.parse(action).getLastPathSegment()));
             download(file, response.body().byteStream(), Double.parseDouble(response.header("Content-Length", "1")));
@@ -103,7 +103,7 @@ public class Market extends Spider {
     }
 
     private void setDialog() {
-        Init.run(() -> {
+        Init.post(() -> {
             try {
                 dialog = new ProgressDialog(Init.activity());
                 dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -116,7 +116,7 @@ public class Market extends Spider {
     }
 
     private void dismiss() {
-        Init.run(() -> {
+        Init.post(() -> {
             try {
                 setBusy(false);
                 if (dialog != null) dialog.dismiss();
@@ -127,7 +127,7 @@ public class Market extends Spider {
     }
 
     private void setProgress(int value) {
-        Init.run(() -> {
+        Init.post(() -> {
             try {
                 if (dialog != null) dialog.setProgress(value);
             } catch (Exception e) {

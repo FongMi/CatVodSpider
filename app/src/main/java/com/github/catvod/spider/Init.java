@@ -58,11 +58,11 @@ public class Init {
         get().executor.execute(runnable);
     }
 
-    public static void run(Runnable runnable) {
+    public static void post(Runnable runnable) {
         get().handler.post(runnable);
     }
 
-    public static void run(Runnable runnable, int delay) {
+    public static void post(Runnable runnable, int delay) {
         get().handler.postDelayed(runnable, delay);
     }
 
