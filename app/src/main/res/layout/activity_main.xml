@@ -1,82 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.google.android.flexbox.FlexboxLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        app:flexDirection="row"
-        app:flexWrap="wrap"
-        app:justifyContent="flex_start">
+        android:fillViewport="true"
+        android:padding="16dp">
 
-        <Button
-            android:id="@+id/home"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="home"
-            android:textAllCaps="false" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/homeVideo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="homeVideo"
-            android:textAllCaps="false" />
+            <Button
+                android:id="@+id/home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="home"
+                android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="category"
-            android:textAllCaps="false" />
+            <Button
+                android:id="@+id/homeVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="homeVideo"
+                android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="detail"
-            android:textAllCaps="false" />
+            <Button
+                android:id="@+id/category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="category"
+                android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/player"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="player"
-            android:textAllCaps="false" />
+            <Button
+                android:id="@+id/detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="detail"
+                android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="search"
-            android:textAllCaps="false" />
+            <Button
+                android:id="@+id/player"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="player"
+                android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/live"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="live"
-            android:textAllCaps="false" />
+            <Button
+                android:id="@+id/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="search"
+                android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/proxy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="proxy"
-            android:textAllCaps="false" />
+            <Button
+                android:id="@+id/live"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="live"
+                android:textAllCaps="false" />
 
-    </com.google.android.flexbox.FlexboxLayout>
+            <Button
+                android:id="@+id/proxy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="proxy"
+                android:textAllCaps="false" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#000000" />
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -84,10 +86,10 @@
         <TextView
             android:id="@+id/result"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="16dp"
             android:textColor="#000000"
             android:textSize="14sp" />
 
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 </LinearLayout>
