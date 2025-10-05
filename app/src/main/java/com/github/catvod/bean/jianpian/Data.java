@@ -6,13 +6,16 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.utils.Util;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Data {
 
-    @SerializedName(value = "jump_id", alternate = "id")
+    @SerializedName("jump_id")
     private String jumpId;
+    @SerializedName("id")
+    private String id;
     @SerializedName(value = "thumbnail", alternate = "path")
     private String thumbnail;
     @SerializedName("title")
@@ -24,24 +27,30 @@ public class Data {
     @SerializedName("playlist")
     private Value playlist;
     @SerializedName("year")
-    private Value year;
+    private String year;
     @SerializedName("area")
-    private Value area;
+    private String area;
     @SerializedName("types")
     private List<Value> types;
     @SerializedName("actors")
     private List<Value> actors;
     @SerializedName("directors")
     private List<Value> directors;
-    @SerializedName("btbo_downlist")
-    private List<BtboDown> btboDownlist;
+    @SerializedName("source_list_source")
+    private List<SourceListSource> source;
+    @SerializedName("dataList")
+    private List<Data> dataList;
 
     public String getJumpId() {
         return TextUtils.isEmpty(jumpId) ? "" : jumpId;
     }
 
-    public String getThumbnail() {
-        return TextUtils.isEmpty(thumbnail) ? "" : thumbnail + "@Referer=www.jianpianapp.com@User-Agent=jianpian-version362";
+    public String getId() {
+        return TextUtils.isEmpty(id) ? "" : id;
+    }
+
+    public String getThumbnail(String imgDomain) {
+        return TextUtils.isEmpty(thumbnail) ? "" : "http://" + imgDomain + thumbnail;
     }
 
     public String getTitle() {
@@ -61,11 +70,11 @@ public class Data {
     }
 
     public String getYear() {
-        return year == null ? "" : year.getTitle();
+        return year == null ? "" : year;
     }
 
     public String getArea() {
-        return area == null ? "" : area.getTitle();
+        return area == null ? "" : area;
     }
 
     public String getTypes() {
@@ -80,23 +89,25 @@ public class Data {
         return directors == null ? "" : getValues(directors, true);
     }
 
-    public List<BtboDown> getBtboDownlist() {
-        return btboDownlist == null ? Collections.emptyList() : btboDownlist;
+    public List<SourceListSource> getSource() {
+        return source == null ? Collections.emptyList() : source;
     }
 
-    public Vod vod() {
-        return new Vod(getJumpId(), getTitle(), getThumbnail(), getMask());
+    public List<Data> getDataList() {
+        return dataList == null ? Collections.emptyList() : dataList;
+    }
+
+    public Vod homeVod(String imgDomain) {
+        return new Vod(getJumpId(), getTitle(), getThumbnail(imgDomain));
+    }
+
+    public Vod vod(String imgDomain) {
+        return new Vod(getId(), getTitle(), getThumbnail(imgDomain), getMask());
     }
 
     public String getValues(List<Value> items, boolean link) {
         StringBuilder sb = new StringBuilder();
         for (Value value : items) sb.append(value.getValue(link)).append(" ");
-        return Util.substring(sb.toString());
-    }
-
-    public String getPlayUrl() {
-        StringBuilder sb = new StringBuilder();
-        for (BtboDown value : getBtboDownlist()) sb.append(value.getVal()).append("#");
         return Util.substring(sb.toString());
     }
 
@@ -118,13 +129,51 @@ public class Data {
         }
     }
 
-    public static class BtboDown {
+    public static class SourceListSource {
 
-        @SerializedName("val")
-        private String val;
+        @SerializedName("name")
+        private String name;
+        @SerializedName("source_list")
+        private List<SourceList> list;
 
-        public String getVal() {
-            return TextUtils.isEmpty(val) ? "" : val.replaceAll("ftp", "tvbox-xg:ftp");
+        public String getName() {
+            return TextUtils.isEmpty(name) ? "" : name;
         }
+
+        public List<SourceList> getList() {
+            return list == null ? Collections.emptyList() : list;
+        }
+    }
+
+    public static class SourceList {
+
+        @SerializedName("source_name")
+        private String name;
+        @SerializedName("url")
+        private String url;
+
+        public String getName() {
+            return TextUtils.isEmpty(name) ? "" : name;
+        }
+
+        public String getUrl() {
+            return TextUtils.isEmpty(url) ? "" : url.replaceAll("ftp", "tvbox-xg:ftp");
+        }
+    }
+
+    public String getVodFrom() {
+        List<String> items = new ArrayList<>();
+        for (SourceListSource source : getSource()) items.add(source.getName());
+        return TextUtils.join("$$$", items);
+    }
+
+    public String getVodUrl() {
+        List<String> items = new ArrayList<>();
+        for (SourceListSource source : getSource()) {
+            List<String> urls = new ArrayList<>();
+            for (SourceList item : source.getList()) urls.add(item.getName() + "$" + item.getUrl());
+            items.add(TextUtils.join("#", urls));
+        }
+        return TextUtils.join("$$$", items);
     }
 }

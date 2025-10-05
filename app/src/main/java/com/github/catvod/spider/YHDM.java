@@ -53,9 +53,7 @@ public class YHDM extends Spider {
         List<Class> classes = new ArrayList<>();
         List<String> typeIds = Arrays.asList("guochandongman", "ribendongman", "dongmandianying", "omeidongman");
         List<String> typeNames = Arrays.asList("国产动漫", "日本动漫", "动漫电影", "欧美动漫");
-        for (int i = 0; i < typeIds.size(); i++)
-            classes.add(new Class(typeIds.get(i), typeNames.get(i)));
-
+        for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
         Document doc = Jsoup.parse(OkHttp.string(siteUrl, getHeader()));
         List<Vod> list = new ArrayList<>();
         for (Element li : doc.select(".stui-vodlist.clearfix .myui-vodlist__box")) {

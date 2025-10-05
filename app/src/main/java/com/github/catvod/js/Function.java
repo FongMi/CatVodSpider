@@ -1,7 +1,7 @@
 package com.github.catvod.js;
 
-import com.github.catvod.js.utils.Parser;
 import com.github.catvod.js.utils.JSUtil;
+import com.github.catvod.js.utils.Parser;
 import com.whl.quickjs.wrapper.JSArray;
 import com.whl.quickjs.wrapper.JSMethod;
 import com.whl.quickjs.wrapper.QuickJSContext;

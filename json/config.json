@@ -1,13 +1,11 @@
 {
-  "spider": "./jar/custom_spider.jar",
-  "wallpaper": "http://饭太硬.top/深色壁纸/api.php",
+  "spider": "../jar/custom_spider.jar",
   "lives": [
     {
       "name": "XtreamCode",
       "api": "csp_XtreamCode",
       "url": "http://iptv.icsnleb.com:25461/player_api.php?username=12&password=12",
       "epg": "http://iptv.icsnleb.com:25461/xmltv.php?username=12&password=12",
-      "type": 3,
       "ext": {
         "live": true,
         "vod": true,
@@ -16,29 +14,43 @@
           "ts"
         ]
       }
+    },
+    {
+      "name": "MQiTV",
+      "api": "csp_MQiTV",
+      "ext": [
+        {
+          "name": "Hotel A",
+          "url": "https://127.0.0.1:4433"
+        },
+        {
+          "name": "Hotel B",
+          "url": "http://127.0.0.1"
+        }
+      ]
     }
   ],
   "sites": [
     {
-      "key": "本地",
-      "name": "本地",
+      "key": "local",
+      "name": "Local",
       "type": 3,
       "api": "csp_Local",
       "searchable": 0,
       "changeable": 0
     },
     {
-      "key": "商店",
-      "name": "商店",
+      "key": "market",
+      "name": "Market",
       "type": 3,
       "api": "csp_Market",
       "searchable": 0,
       "changeable": 0,
-      "ext": "./json/market.json"
+      "ext": "./market.json"
     },
     {
       "key": "push_agent",
-      "name": "推送",
+      "name": "Push",
       "type": 3,
       "api": "csp_Push",
       "searchable": 0,
@@ -64,68 +76,11 @@
         "2606:4700:4700::1111",
         "2606:4700:4700::1001"
       ]
-    },
-    {
-      "name": "AdGuard",
-      "url": "https://dns.adguard.com/dns-query",
-      "ips": [
-        "94.140.14.140",
-        "94.140.14.141"
-      ]
-    },
-    {
-      "name": "DNSWatch",
-      "url": "https://resolver2.dns.watch/dns-query",
-      "ips": [
-        "84.200.69.80",
-        "84.200.70.40"
-      ]
-    },
-    {
-      "name": "Quad9",
-      "url": "https://dns.quad9.net/dns-quer",
-      "ips": [
-        "9.9.9.9",
-        "149.112.112.112"
-      ]
     }
-  ],
-  "proxy": [
-    "raw.githubusercontent.com",
-    "googlevideo.com",
-    "googleapis.com",
-    "youtube.com"
   ],
   "rules": [
     {
-      "name": "火山嗅探",
-      "hosts": [
-        "huoshan.com"
-      ],
-      "regex": [
-        "item_id="
-      ]
-    },
-    {
-      "name": "抖音嗅探",
-      "hosts": [
-        "douyin.com"
-      ],
-      "regex": [
-        "is_play_url="
-      ]
-    },
-    {
-      "name": "農民嗅探",
-      "hosts": [
-        "toutiaovod.com"
-      ],
-      "regex": [
-        "video/tos/cn"
-      ]
-    },
-    {
-      "name": "七新嗅探",
+      "name": "sniffer",
       "hosts": [
         "api.52wyb.com"
       ],
@@ -134,7 +89,7 @@
       ]
     },
     {
-      "name": "毛驢點擊",
+      "name": "click",
       "hosts": [
         "www.maolvys.com"
       ],

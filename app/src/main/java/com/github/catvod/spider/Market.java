@@ -42,7 +42,6 @@ public class Market extends Spider {
     public void init(Context context, String extend) throws Exception {
         if (extend.startsWith("http")) extend = OkHttp.string(extend);
         datas = Data.arrayFrom(extend);
-        Init.checkPermission();
     }
 
     @Override
@@ -63,7 +62,7 @@ public class Market extends Spider {
         try {
             if (isBusy()) return "";
             setBusy(true);
-            Init.run(this::setDialog, 500);
+            Init.post(this::setDialog, 500);
             Response response = OkHttp.newCall(action);
             File file = Path.create(new File(Path.download(), Uri.parse(action).getLastPathSegment()));
             download(file, response.body().byteStream(), Double.parseDouble(response.header("Content-Length", "1")));
@@ -71,6 +70,7 @@ public class Market extends Spider {
             if (file.getName().endsWith(".apk")) FileUtil.openFile(file);
             else Result.notify("下載完成");
             checkCopy(action);
+            response.close();
             dismiss();
             return "";
         } catch (Exception e) {
@@ -80,8 +80,7 @@ public class Market extends Spider {
     }
 
     private void download(File file, InputStream is, double length) throws Exception {
-        FileOutputStream os = new FileOutputStream(file);
-        try (BufferedInputStream input = new BufferedInputStream(is)) {
+        try (BufferedInputStream input = new BufferedInputStream(is); FileOutputStream os = new FileOutputStream(file)) {
             byte[] buffer = new byte[4096];
             int readBytes;
             long totalBytes = 0;
@@ -104,9 +103,9 @@ public class Market extends Spider {
     }
 
     private void setDialog() {
-        Init.run(() -> {
+        Init.post(() -> {
             try {
-                dialog = new ProgressDialog(Init.getActivity());
+                dialog = new ProgressDialog(Init.activity());
                 dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 dialog.setCancelable(false);
                 if (isBusy()) dialog.show();
@@ -117,7 +116,7 @@ public class Market extends Spider {
     }
 
     private void dismiss() {
-        Init.run(() -> {
+        Init.post(() -> {
             try {
                 setBusy(false);
                 if (dialog != null) dialog.dismiss();
@@ -128,7 +127,7 @@ public class Market extends Spider {
     }
 
     private void setProgress(int value) {
-        Init.run(() -> {
+        Init.post(() -> {
             try {
                 if (dialog != null) dialog.setProgress(value);
             } catch (Exception e) {

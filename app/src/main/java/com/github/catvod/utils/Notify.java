@@ -18,7 +18,7 @@ public class Notify {
     }
 
     public static void show(String text) {
-        Init.run(() -> get().makeText(text));
+        Init.post(() -> get().makeText(text));
     }
 
     private void makeText(String message) {

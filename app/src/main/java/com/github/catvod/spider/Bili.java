@@ -198,7 +198,7 @@ public class Bili extends Spider {
         String dan = "https://api.bilibili.com/x/v1/dm/list.so?oid=".concat(cid);
         for (int i = 0; i < acceptDesc.length; i++) {
             url.add(acceptDesc[i]);
-            url.add(Proxy.getUrl() + "?do=bili" + "&aid=" + aid + "&cid=" + cid + "&qn=" + acceptQuality[i] + "&type=mpd");
+            url.add("proxy://do=bili" + "&aid=" + aid + "&cid=" + cid + "&qn=" + acceptQuality[i] + "&type=mpd");
         }
         return Result.get().url(url).danmaku(Arrays.asList(Danmaku.create().name("B站").url(dan))).dash().header(getHeader()).string();
     }

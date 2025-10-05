@@ -174,7 +174,7 @@ public class WebDAV extends Spider {
     }
 
     private String getProxyUrl(String url) {
-        return Proxy.getUrl() + "?do=webdav&url=" + url;
+        return "proxy://do=webdav&url=" + url;
     }
 
     public static Object[] vod(Map<String, String> params) throws IOException {

@@ -18,9 +18,6 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Util;
 
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -270,29 +267,6 @@ public class AList extends Spider {
 
         @Override
         public List<Vod> call() {
-            List<Vod> alist = alist();
-            return !alist.isEmpty() ? alist : xiaoya();
-        }
-
-        private List<Vod> xiaoya() {
-            List<Vod> list = new ArrayList<>();
-            Document doc = Jsoup.parse(OkHttp.string(drive.searchApi(keyword)));
-            for (Element a : doc.select("ul > a")) {
-                String[] splits = a.text().split("#");
-                if (!splits[0].contains("/")) continue;
-                int index = splits[0].lastIndexOf("/");
-                boolean file = Util.isMedia(splits[0]);
-                Item item = new Item();
-                item.setType(file ? 0 : 1);
-                item.setThumb(splits.length > 3 ? splits[4] : "");
-                item.setPath("/" + splits[0].substring(0, index));
-                item.setName(splits[0].substring(index + 1));
-                list.add(item.getVod(drive));
-            }
-            return list;
-        }
-
-        private List<Vod> alist() {
             try {
                 List<Vod> list = new ArrayList<>();
                 String response = post(drive, drive.searchApi(), drive.params(keyword));
