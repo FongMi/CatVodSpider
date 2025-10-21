@@ -6,6 +6,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import com.github.catvod.bean.Class;
@@ -14,6 +15,7 @@ import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Image;
+import com.github.catvod.utils.Path;
 import com.github.catvod.utils.Util;
 
 import java.io.ByteArrayInputStream;
@@ -22,7 +24,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -54,13 +55,7 @@ public class Local extends Spider {
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
         List<Vod> items = new ArrayList<>();
-        File[] files = new File(tid).listFiles();
-        if (files == null) return Result.string(items);
-        Arrays.sort(files, (o1, o2) -> {
-            if (o1.isDirectory() && o2.isFile()) return -1;
-            if (o1.isFile() && o2.isDirectory()) return 1;
-            return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-        });
+        List<File> files = Path.list(new File(tid));
         for (File file : files) {
             if (file.getName().startsWith(".")) continue;
             if (file.isDirectory() || Util.isMedia(file.getName())) items.add(create(file));
@@ -76,7 +71,8 @@ public class Local extends Spider {
             return Result.string(create(name, url));
         } else {
             File file = new File(ids.get(0));
-            return Result.string(create(file.getName(), file.getAbsolutePath()));
+            List<File> files = Path.list(file.getParentFile());
+            return Result.string(create(file, files));
         }
     }
 
@@ -100,6 +96,19 @@ public class Local extends Spider {
         return vod;
     }
 
+    private Vod create(File file, List<File> files) {
+        Vod vod = new Vod();
+        vod.setTypeName("FongMi");
+        vod.setVodId(file.getName());
+        vod.setVodName(file.getName());
+        vod.setVodPic(Image.VIDEO);
+        vod.setVodPlayFrom("播放");
+        List<String> playUrls = new ArrayList<>();
+        for (File f : files) if (Util.isMedia(f.getName())) playUrls.add(f.getName() + "$" + f.getAbsolutePath());
+        vod.setVodPlayUrl(TextUtils.join("#", playUrls));
+        return vod;
+    }
+
     private Vod create(File file) {
         Vod vod = new Vod();
         vod.setVodId(file.getAbsolutePath());
@@ -119,11 +128,8 @@ public class Local extends Spider {
     }
 
     private List<Sub> getSubs(String path) {
-        File file = new File(path);
-        File[] files = file.getParentFile() == null ? null : file.getParentFile().listFiles();
-        if (files == null || files.length == 0) return Collections.emptyList();
         List<Sub> subs = new ArrayList<>();
-        for (File f : files) {
+        for (File f : Path.list(new File(path).getParentFile())) {
             String ext = Util.getExt(f.getName());
             if (Util.isSub(ext)) subs.add(Sub.create().name(Util.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
         }
