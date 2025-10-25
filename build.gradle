@@ -10,5 +10,5 @@ tasks.register('clean', Delete) {
 }
 
 project.ext {
-    okhttpVersion = '5.1.0'
+    okhttpVersion = '5.2.1'
 }
