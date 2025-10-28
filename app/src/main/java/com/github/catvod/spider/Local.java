@@ -71,8 +71,9 @@ public class Local extends Spider {
             return Result.string(create(name, url));
         } else {
             File file = new File(ids.get(0));
-            List<File> files = Path.list(file.getParentFile());
-            return Result.string(create(file, files));
+            File parent = file.getParentFile();
+            List<File> files = Path.list(parent);
+            return Result.string(create(parent != null ? parent : file, files));
         }
     }
 
