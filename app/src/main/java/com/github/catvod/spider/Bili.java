@@ -39,14 +39,14 @@ import java.util.Map;
 public class Bili extends Spider {
 
     private static final String COOKIE = "buvid3=84B0395D-C9F2-C490-E92E-A09AB48FE26E71636infoc";
-    private static String cookie;
+    private String cookie;
 
     private JsonObject extend;
     private boolean login;
     private boolean isVip;
     private Wbi wbi;
 
-    private static Map<String, String> getHeader() {
+    private Map<String, String> getHeader() {
         Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", Util.CHROME);
         headers.put("Referer", "https://www.bilibili.com");
@@ -198,12 +198,13 @@ public class Bili extends Spider {
         String dan = "https://api.bilibili.com/x/v1/dm/list.so?oid=".concat(cid);
         for (int i = 0; i < acceptDesc.length; i++) {
             url.add(acceptDesc[i]);
-            url.add("proxy://do=bili" + "&aid=" + aid + "&cid=" + cid + "&qn=" + acceptQuality[i] + "&type=mpd");
+            url.add(Proxy.getUrl(siteKey, "&aid=" + aid + "&cid=" + cid + "&qn=" + acceptQuality[i] + "&type=mpd"));
         }
         return Result.get().url(url).danmaku(Arrays.asList(Danmaku.create().name("B站").url(dan))).dash().header(getHeader()).string();
     }
 
-    public static Object[] proxy(Map<String, String> params) {
+    @Override
+    public Object[] proxyLocal(Map<String, String> params) {
         String aid = params.get("aid");
         String cid = params.get("cid");
         String qn = params.get("qn");
@@ -223,7 +224,7 @@ public class Bili extends Spider {
         return result;
     }
 
-    private static HashMap<String, String> getAudioFormat() {
+    private HashMap<String, String> getAudioFormat() {
         HashMap<String, String> audios = new HashMap<>();
         audios.put("30280", "192000");
         audios.put("30232", "132000");
@@ -231,7 +232,7 @@ public class Bili extends Spider {
         return audios;
     }
 
-    private static void findAudio(Dash dash, StringBuilder sb) {
+    private void findAudio(Dash dash, StringBuilder sb) {
         for (Media audio : dash.getAudio()) {
             for (String key : getAudioFormat().keySet()) {
                 if (audio.getId().equals(key)) {
@@ -241,7 +242,7 @@ public class Bili extends Spider {
         }
     }
 
-    private static void findVideo(Dash dash, StringBuilder sb, String qn) {
+    private void findVideo(Dash dash, StringBuilder sb, String qn) {
         for (Media video : dash.getVideo()) {
             if (video.getId().equals(qn)) {
                 sb.append(getMedia(video));
@@ -249,7 +250,7 @@ public class Bili extends Spider {
         }
     }
 
-    private static String getMedia(Media media) {
+    private String getMedia(Media media) {
         if (media.getMimeType().startsWith("video")) {
             return getAdaptationSet(media, String.format(Locale.getDefault(), "height='%s' width='%s' frameRate='%s' sar='%s'", media.getHeight(), media.getWidth(), media.getFrameRate(), media.getSar()));
         } else if (media.getMimeType().startsWith("audio")) {
@@ -259,14 +260,14 @@ public class Bili extends Spider {
         }
     }
 
-    private static String getAdaptationSet(Media media, String params) {
+    private String getAdaptationSet(Media media, String params) {
         String id = media.getId() + "_" + media.getCodecId();
         String type = media.getMimeType().split("/")[0];
         String baseUrl = media.getBaseUrl().replace("&", "&amp;");
         return String.format(Locale.getDefault(), "<AdaptationSet>\n" + "<ContentComponent contentType=\"%s\"/>\n" + "<Representation id=\"%s\" bandwidth=\"%s\" codecs=\"%s\" mimeType=\"%s\" %s startWithSAP=\"%s\">\n" + "<BaseURL>%s</BaseURL>\n" + "<SegmentBase indexRange=\"%s\">\n" + "<Initialization range=\"%s\"/>\n" + "</SegmentBase>\n" + "</Representation>\n" + "</AdaptationSet>", type, id, media.getBandWidth(), media.getCodecs(), media.getMimeType(), params, media.getStartWithSap(), baseUrl, media.getSegmentBase().getIndexRange(), media.getSegmentBase().getInitialization());
     }
 
-    private static String getMpd(Dash dash, String videoList, String audioList) {
+    private String getMpd(Dash dash, String videoList, String audioList) {
         return String.format(Locale.getDefault(), "<MPD xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"urn:mpeg:dash:schema:mpd:2011\" xsi:schemaLocation=\"urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd\" type=\"static\" mediaPresentationDuration=\"PT%sS\" minBufferTime=\"PT%sS\" profiles=\"urn:mpeg:dash:profile:isoff-on-demand:2011\">\n" + "<Period duration=\"PT%sS\" start=\"PT0S\">\n" + "%s\n" + "%s\n" + "</Period>\n" + "</MPD>", dash.getDuration(), dash.getMinBufferTime(), dash.getDuration(), videoList, audioList);
     }
 

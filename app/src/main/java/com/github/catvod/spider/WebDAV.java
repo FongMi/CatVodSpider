@@ -28,7 +28,7 @@ import java.util.TreeMap;
 
 public class WebDAV extends Spider {
 
-    private static List<Drive> drives;
+    private List<Drive> drives;
     private List<String> allExt;
     private String extend;
 
@@ -53,7 +53,7 @@ public class WebDAV extends Spider {
         return Util.removeExt(item.getName());
     }
 
-    private static Drive getDrive(String name) {
+    private Drive getDrive(String name) {
         return drives.get(drives.indexOf(new Drive(name)));
     }
 
@@ -126,7 +126,20 @@ public class WebDAV extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         String[] ids = id.split("~~~");
-        return Result.get().url(getProxyUrl(ids[0])).subs(getSub(ids)).string();
+        return Result.get().url(Proxy.getUrl(siteKey, "&url=" + ids[0])).subs(getSub(ids)).string();
+    }
+
+    @Override
+    public Object[] proxyLocal(Map<String, String> params) throws IOException {
+        String url = params.get("url");
+        String key = url.contains("/") ? url.substring(0, url.indexOf("/")) : url;
+        url = url.substring(key.length());
+        Drive drive = getDrive(key);
+        Object[] result = new Object[3];
+        result[0] = 200;
+        result[1] = "application/octet-stream";
+        result[2] = drive.getWebdav().get(drive.getHost() + url, getHeaders(params));
+        return result;
     }
 
     private List<DavResource> getList(Drive drive, String path, List<String> ext) throws IOException {
@@ -151,7 +164,7 @@ public class WebDAV extends Spider {
     private String findSubs(Drive drive, DavResource res, List<DavResource> items) {
         StringBuilder sb = new StringBuilder();
         for (DavResource item : items) if (removeExt(item).equals(removeExt(res))) sb.append("~~~").append(item.getName()).append("@@@").append(getExt(item)).append("@@@").append(drive.getName()).append(item.getPath());
-        return !sb.isEmpty() ? sb.toString() : findSubs(drive, items);
+        return sb.length() > 0 ? sb.toString() : findSubs(drive, items);
     }
 
     private String findSubs(Drive drive, List<DavResource> items) {
@@ -167,29 +180,13 @@ public class WebDAV extends Spider {
             String[] split = text.split("@@@");
             String name = split[0];
             String ext = split[1];
-            String url = getProxyUrl(split[2]);
+            String url = Proxy.getUrl(siteKey, "&url=" + split[2]);
             sub.add(Sub.create().name(name).ext(ext).url(url));
         }
         return sub;
     }
 
-    private String getProxyUrl(String url) {
-        return "proxy://do=webdav&url=" + url;
-    }
-
-    public static Object[] vod(Map<String, String> params) throws IOException {
-        String url = params.get("url");
-        String key = url.contains("/") ? url.substring(0, url.indexOf("/")) : url;
-        url = url.substring(key.length());
-        Drive drive = getDrive(key);
-        Object[] result = new Object[3];
-        result[0] = 200;
-        result[1] = "application/octet-stream";
-        result[2] = drive.getWebdav().get(drive.getHost() + url, getHeaders(params));
-        return result;
-    }
-
-    private static Map<String, String> getHeaders(Map<String, String> params) {
+    private Map<String, String> getHeaders(Map<String, String> params) {
         Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         List<String> keys = Arrays.asList("referer", "icy-metadata", "range", "connection", "accept-encoding", "user-agent");
         for (String key : params.keySet()) if (keys.contains(key)) headers.put(key, params.get(key));

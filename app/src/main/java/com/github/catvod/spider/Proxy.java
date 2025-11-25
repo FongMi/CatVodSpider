@@ -13,13 +13,9 @@ public class Proxy {
     private static Method method;
     private static int port;
 
-    public static Object[] proxy(Map<String, String> params) throws Exception {
-        return switch (params.get("do")) {
-            case "ck" -> new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes(StandardCharsets.UTF_8))};
-            case "bili" -> Bili.proxy(params);
-            case "webdav" -> WebDAV.vod(params);
-            default -> null;
-        };
+    public static Object[] proxy(Map<String, String> params) {
+        if ("ck".equals(params.get("do"))) return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes(StandardCharsets.UTF_8))};
+        return null;
     }
 
     public static void init() {
