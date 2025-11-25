@@ -66,7 +66,7 @@ public class WebDAV extends Spider {
     }
 
     @Override
-    public String homeContent(boolean filter) throws Exception {
+    public String homeContent(boolean filter) {
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (Drive drive : drives) classes.add(drive.toType());
@@ -75,7 +75,7 @@ public class WebDAV extends Spider {
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws IOException {
         String key = tid.contains("/") ? tid.substring(0, tid.indexOf("/")) : tid;
         String path = tid.contains("/") ? tid.substring(tid.indexOf("/")) : "";
         String order = extend.containsKey("order") ? extend.get("order") : "";
@@ -98,7 +98,7 @@ public class WebDAV extends Spider {
     }
 
     @Override
-    public String detailContent(List<String> ids) throws Exception {
+    public String detailContent(List<String> ids) throws IOException {
         String id = ids.get(0);
         String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
         String parent = id.substring(0, id.lastIndexOf("/"));
@@ -124,12 +124,12 @@ public class WebDAV extends Spider {
     }
 
     @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
+    public String playerContent(String flag, String id, List<String> vipFlags) {
         String[] ids = id.split("~~~");
         return Result.get().url(getProxyUrl(ids[0])).subs(getSub(ids)).string();
     }
 
-    private List<DavResource> getList(Drive drive, String path, List<String> ext) throws Exception {
+    private List<DavResource> getList(Drive drive, String path, List<String> ext) throws IOException {
         path = drive.getHost() + (path.startsWith(drive.getPath()) ? path : drive.getPath() + path);
         List<DavResource> items = drive.getWebdav().list(path);
         items.remove(0); //Remove parent
@@ -150,13 +150,13 @@ public class WebDAV extends Spider {
 
     private String findSubs(Drive drive, DavResource res, List<DavResource> items) {
         StringBuilder sb = new StringBuilder();
-        for (DavResource item : items) if (removeExt(item).equals(removeExt(res))) sb.append("~~~").append(item.getName()).append("@@@").append(getExt(item)).append("@@@").append(drive.getName() + item.getPath());
-        return sb.length() > 0 ? sb.toString() : findSubs(drive, items);
+        for (DavResource item : items) if (removeExt(item).equals(removeExt(res))) sb.append("~~~").append(item.getName()).append("@@@").append(getExt(item)).append("@@@").append(drive.getName()).append(item.getPath());
+        return !sb.isEmpty() ? sb.toString() : findSubs(drive, items);
     }
 
     private String findSubs(Drive drive, List<DavResource> items) {
         StringBuilder sb = new StringBuilder();
-        for (DavResource item : items) sb.append("~~~").append(item.getName()).append("@@@").append(getExt(item)).append("@@@").append(drive.getName() + item.getPath());
+        for (DavResource item : items) sb.append("~~~").append(item.getName()).append("@@@").append(getExt(item)).append("@@@").append(drive.getName()).append(item.getPath());
         return sb.toString();
     }
 

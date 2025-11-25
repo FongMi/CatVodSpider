@@ -22,7 +22,7 @@ public class XtreamCode extends Spider {
     private Config config;
 
     @Override
-    public void init(Context context, String extend) throws Exception {
+    public void init(Context context, String extend) {
         config = Config.objectFrom(extend);
         groups = new ArrayList<>();
     }

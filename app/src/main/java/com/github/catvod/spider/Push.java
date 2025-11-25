@@ -20,7 +20,7 @@ import java.util.List;
 public class Push extends Spider {
 
     @Override
-    public String detailContent(List<String> ids) throws Exception {
+    public String detailContent(List<String> ids) {
         return Result.string(vod(ids.get(0)));
     }
 

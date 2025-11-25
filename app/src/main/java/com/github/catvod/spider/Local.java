@@ -39,7 +39,7 @@ public class Local extends Spider {
     }
 
     @Override
-    public String homeContent(boolean filter) throws Exception {
+    public String homeContent(boolean filter) {
         List<Class> classes = new ArrayList<>();
         classes.add(new Class(Environment.getExternalStorageDirectory().getAbsolutePath(), "本地文件", "1"));
         File[] files = new File("/storage").listFiles();
@@ -53,7 +53,7 @@ public class Local extends Spider {
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
         List<Vod> items = new ArrayList<>();
         List<File> files = Path.list(new File(tid));
         for (File file : files) {
@@ -78,12 +78,22 @@ public class Local extends Spider {
     }
 
     @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
+    public String playerContent(String flag, String id, List<String> vipFlags) {
         if (id.startsWith("http")) {
             return Result.get().url(id).string();
         } else {
             return Result.get().url("file://" + id).subs(getSubs(id)).string();
         }
+    }
+
+    @Override
+    public Object[] proxyLocal(Map<String, String> params) {
+        String path = new String(Base64.decode(params.get("path"), Base64.DEFAULT | Base64.URL_SAFE));
+        Object[] result = new Object[3];
+        result[0] = 200;
+        result[1] = "application/octet-stream";
+        result[2] = new ByteArrayInputStream(getBase64(path));
+        return result;
     }
 
     private Vod create(String name, String url) {
@@ -114,13 +124,13 @@ public class Local extends Spider {
         Vod vod = new Vod();
         vod.setVodId(file.getAbsolutePath());
         vod.setVodName(file.getName());
-        vod.setVodPic(file.isFile() ? "proxy://do=local&path=" + Base64.encodeToString(file.getAbsolutePath().getBytes(), Base64.DEFAULT | Base64.URL_SAFE) : Image.FOLDER);
+        vod.setVodPic(file.isFile() ? Proxy.getUrl(siteKey, "&path=" + Base64.encodeToString(file.getAbsolutePath().getBytes(), Base64.DEFAULT | Base64.URL_SAFE)) : Image.FOLDER);
         vod.setVodRemarks(format.format(file.lastModified()));
         vod.setVodTag(file.isDirectory() ? "folder" : "file");
         return vod;
     }
 
-    private static byte[] getBase64(String path) {
+    private byte[] getBase64(String path) {
         Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
         if (bitmap == null) return Base64.decode(Image.VIDEO.split("base64,")[1], Base64.DEFAULT);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -135,14 +145,5 @@ public class Local extends Spider {
             if (Util.isSub(ext)) subs.add(Sub.create().name(Util.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
         }
         return subs;
-    }
-
-    public static Object[] proxy(Map<String, String> params) {
-        String path = new String(Base64.decode(params.get("path"), Base64.DEFAULT | Base64.URL_SAFE));
-        Object[] result = new Object[3];
-        result[0] = 200;
-        result[1] = "application/octet-stream";
-        result[2] = new ByteArrayInputStream(getBase64(path));
-        return result;
     }
 }

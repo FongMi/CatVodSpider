@@ -17,6 +17,7 @@ import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Util;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AList extends Spider {
 
+    private ExecutorService executor;
     private List<Drive> drives;
     private String ext;
 
@@ -68,12 +70,13 @@ public class AList extends Spider {
 
     @Override
     public void init(Context context, String extend) {
+        executor = Executors.newCachedThreadPool();
         ext = extend;
         fetchRule();
     }
 
     @Override
-    public String homeContent(boolean filter) throws Exception {
+    public String homeContent(boolean filter) {
         List<Class> classes = new ArrayList<>();
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (Drive drive : drives) if (!drive.hidden()) classes.add(drive.toType());
@@ -82,7 +85,7 @@ public class AList extends Spider {
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
         String type = extend.containsKey("type") ? extend.get("type") : "";
         String order = extend.containsKey("order") ? extend.get("order") : "";
         List<Item> folders = new ArrayList<>();
@@ -104,7 +107,7 @@ public class AList extends Spider {
     }
 
     @Override
-    public String detailContent(List<String> ids) throws Exception {
+    public String detailContent(List<String> ids) {
         String id = ids.get(0);
         String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
         String path = id.substring(0, id.lastIndexOf("/"));
@@ -135,7 +138,6 @@ public class AList extends Spider {
     public String searchContent(String keyword, boolean quick) throws Exception {
         List<Vod> list = new ArrayList<>();
         List<Job> jobs = new ArrayList<>();
-        ExecutorService executor = Executors.newCachedThreadPool();
         for (Drive drive : drives) if (drive.search()) jobs.add(new Job(drive.check(), keyword));
         for (Future<List<Vod>> future : executor.invokeAll(jobs, 15, TimeUnit.SECONDS)) list.addAll(future.get());
         return Result.string(list);
@@ -146,6 +148,11 @@ public class AList extends Spider {
         String[] ids = decodeVodId(id).split("~~~");
         String url = getDetail(ids[0]).getUrl();
         return Result.get().url(url).header(getPlayHeader(url)).subs(getSubs(ids)).string();
+    }
+
+    @Override
+    public void destroy() {
+        executor.shutdownNow();
     }
 
     private static Map<String, String> getPlayHeader(String url) {
@@ -209,7 +216,7 @@ public class AList extends Spider {
         }
     }
 
-    private String getListJson(boolean isNew, String response) throws Exception {
+    private String getListJson(boolean isNew, String response) throws JSONException {
         if (isNew) {
             return new JSONObject(response).getJSONObject("data").getJSONArray("content").toString();
         } else {
@@ -217,7 +224,7 @@ public class AList extends Spider {
         }
     }
 
-    private String getDetailJson(boolean isNew, String response) throws Exception {
+    private String getDetailJson(boolean isNew, String response) throws JSONException {
         if (isNew) {
             return new JSONObject(response).getJSONObject("data").toString();
         } else {
@@ -225,7 +232,7 @@ public class AList extends Spider {
         }
     }
 
-    private String getSearchJson(boolean isNew, String response) throws Exception {
+    private String getSearchJson(boolean isNew, String response) throws JSONException {
         if (isNew) {
             return new JSONObject(response).getJSONObject("data").getJSONArray("content").toString();
         } else {

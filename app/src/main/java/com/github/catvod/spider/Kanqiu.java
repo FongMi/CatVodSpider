@@ -12,6 +12,7 @@ import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Util;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -37,12 +38,12 @@ public class Kanqiu extends Spider {
     }
 
     @Override
-    public void init(Context context, String extend) throws Exception {
+    public void init(Context context, String extend) {
         if (!extend.isEmpty()) siteUrl = extend;
     }
 
     @Override
-    public String homeContent(boolean filter) throws Exception {
+    public String homeContent(boolean filter) throws JSONException {
         List<Class> classes = new ArrayList<>();
         List<String> typeIds = Arrays.asList("", "1", "8", "21");
         List<String> typeNames = Arrays.asList("全部直播", "篮球直播", "足球直播", "其他直播");
@@ -53,7 +54,7 @@ public class Kanqiu extends Spider {
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
         String cateId = extend.get("cateId") == null ? tid : extend.get("cateId");
         String urlPath = cateId == null || cateId.isEmpty() ? "" : String.format("/match/%s/live", cateId);
         Elements lis = Jsoup.parse(OkHttp.string(siteUrl + urlPath, getHeader())).select(".list-group-item");
@@ -72,7 +73,7 @@ public class Kanqiu extends Spider {
     }
 
     @Override
-    public String detailContent(List<String> ids) throws Exception {
+    public String detailContent(List<String> ids) throws JSONException {
         if (ids.get(0).equals(siteUrl)) return Result.error("比赛尚未开始");
         String content = OkHttp.string(ids.get(0) + "-url", getHeader());
         String result = new JSONObject(content).optString("data");
@@ -95,7 +96,7 @@ public class Kanqiu extends Spider {
     }
 
     @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
+    public String playerContent(String flag, String id, List<String> vipFlags) {
         return Result.get().url(id.replace("***", "#")).parse().header(getHeader()).string();
     }
 }
