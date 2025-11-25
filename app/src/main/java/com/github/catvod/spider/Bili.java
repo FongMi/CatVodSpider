@@ -204,7 +204,7 @@ public class Bili extends Spider {
     }
 
     @Override
-    public Object[] proxyLocal(Map<String, String> params) {
+    public Object[] proxy(Map<String, String> params) {
         String aid = params.get("aid");
         String cid = params.get("cid");
         String qn = params.get("qn");

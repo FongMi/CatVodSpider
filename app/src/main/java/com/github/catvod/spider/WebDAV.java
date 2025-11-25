@@ -130,7 +130,7 @@ public class WebDAV extends Spider {
     }
 
     @Override
-    public Object[] proxyLocal(Map<String, String> params) throws IOException {
+    public Object[] proxy(Map<String, String> params) throws IOException {
         String url = params.get("url");
         String key = url.contains("/") ? url.substring(0, url.indexOf("/")) : url;
         url = url.substring(key.length());

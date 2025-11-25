@@ -87,7 +87,7 @@ public class Local extends Spider {
     }
 
     @Override
-    public Object[] proxyLocal(Map<String, String> params) {
+    public Object[] proxy(Map<String, String> params) {
         String path = new String(Base64.decode(params.get("path"), Base64.DEFAULT | Base64.URL_SAFE));
         Object[] result = new Object[3];
         result[0] = 200;

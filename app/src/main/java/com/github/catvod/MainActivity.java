@@ -7,7 +7,6 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.databinding.ActivityMainBinding;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.PTT;
-import com.github.catvod.spider.Proxy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
@@ -134,7 +133,7 @@ public class MainActivity extends Activity {
     public void proxy() {
         try {
             Map<String, String> params = new HashMap<>();
-            Logger.t("liveContent").d(Proxy.proxy(params));
+            Logger.t("liveContent").d(spider.proxy(params));
         } catch (Throwable e) {
             e.printStackTrace();
         }

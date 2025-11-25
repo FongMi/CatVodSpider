@@ -42,7 +42,7 @@ public class MQiTV extends Spider {
     }
 
     @Override
-    public Object[] proxyLocal(Map<String, String> params) {
+    public Object[] proxy(Map<String, String> params) {
         String ip = params.get("ip");
         String port = params.get("port");
         String playing = params.get("playing");
@@ -55,7 +55,7 @@ public class MQiTV extends Spider {
             String id = params.get("id");
             String auth = config.getAuth(id, token);
             if (!"OK".equals(auth)) config.clear();
-            if (!"OK".equals(auth)) return proxyLocal(params);
+            if (!"OK".equals(auth)) return proxy(params);
             String m3u8 = config.getM3U8(id, token, port);
             return m3u8.isEmpty() ? get302(config.getPlayUrl(port, playing)) : get200(m3u8);
         }
