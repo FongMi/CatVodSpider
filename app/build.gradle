@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.catvod.demo"
-        minSdk 21
+        minSdk 26
         targetSdk 36
     }
 
@@ -22,7 +22,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false  // 临时禁用混淆
+            shrinkResources false
             proguardFiles 'proguard-rules.pro'
             proguardDictionaries {
                 dictionaryNames = ["build/class-dictionary", "build/package-dictionary", "build/obfuscation-dictionary"]
@@ -53,4 +54,5 @@ dependencies {
     implementation 'com.hierynomus:smbj:0.14.0'
     implementation 'com.orhanobut:logger:2.2.0'
     implementation 'org.jsoup:jsoup:1.21.2'
+    implementation 'com.alibaba:fastjson:2.0.60'
 }
