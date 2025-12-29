@@ -180,6 +180,10 @@ public class LeoDanmakuService {
             DanmakuSpider.log("搜索解析错误: " + e.getMessage());
             e.printStackTrace();
         }
+
+        if (!list.isEmpty()) {
+            DanmakuSpider.apiUrl = apiBase;
+        }
         
         return list;
     }

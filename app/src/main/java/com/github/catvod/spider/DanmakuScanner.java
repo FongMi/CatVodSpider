@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.github.catvod.net.OkHttp;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -131,11 +130,18 @@ public class DanmakuScanner {
                                 return;
                             }
                             JSONObject jsonObject = new JSONObject(media);
+
+                            String url = jsonObject.optString("url");
+
+                            if (TextUtils.isEmpty(url)) {
+                                return;
+                            }
+
                             String title = jsonObject.optString("title");
                             String artist = jsonObject.optString("artist");
 
                             if (!TextUtils.isEmpty(title)) {
-                                processDetectedTitle(title, artist, act);
+                                processDetectedTitle(title, artist, url, act);
                             }
                         } else {
                             // 不在播放界面，重置播放状态
@@ -201,7 +207,7 @@ public class DanmakuScanner {
             } else if (!isVideoPlaying && wasPlaying) {
                 // 视频停止播放
                 DanmakuSpider.log("⏸️ 检测到视频停止播放");
-                DanmakuSpider.currentVideoSignature = "";
+                DanmakuSpider.currentVideoUrl = "";
                 DanmakuSpider.lastVideoDetectedTime = 0;
                 DanmakuSpider.lastDanmakuId = -1;
                 DanmakuSpider.resetAutoSearch();
@@ -360,7 +366,7 @@ public class DanmakuScanner {
     }
 
     // 处理检测到的标题
-    private static void processDetectedTitle(String tvName, String fileName, Activity activity) {
+    private static void processDetectedTitle(String tvName, String fileName, String url, Activity activity) {
         // 清理标题
         String cleanedTitle = cleanTitle(tvName);
         lastDetectedTitle = cleanedTitle;
@@ -411,7 +417,13 @@ public class DanmakuScanner {
 
         // 生成视频签名
         String newSignature = generateSignature(episodeInfo);
-        String currentSignature = DanmakuSpider.currentVideoSignature;
+        String currentSignature = null;
+        int queryIndex = DanmakuSpider.currentVideoUrl.indexOf('?');
+        if (queryIndex >= 0) {
+            currentSignature = DanmakuSpider.currentVideoUrl.substring(0, queryIndex);
+        } else {
+            currentSignature = DanmakuSpider.currentVideoUrl;
+        }
 
         DanmakuSpider.log("🔑 视频签名: " + newSignature + " (当前: " + currentSignature + ")");
 
@@ -424,7 +436,7 @@ public class DanmakuScanner {
 
         if (!isSameVideo) {
             // 不同的视频
-            DanmakuSpider.currentVideoSignature = newSignature;
+            DanmakuSpider.currentVideoUrl = currentSignature;
             DanmakuSpider.lastVideoDetectedTime = currentTime;
 
             // 首次检测
