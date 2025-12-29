@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.github.catvod.net.OkHttp;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -122,9 +124,18 @@ public class DanmakuScanner {
                             checkPlaybackStatus(act);
 
                             // Hook获取标题
-                            String newTitle = extractTitleFromView(act.getWindow().getDecorView());
-                            if (!TextUtils.isEmpty(newTitle)) {
-                                processDetectedTitle(newTitle, act);
+//                            String newTitle = extractTitleFromView(act.getWindow().getDecorView());
+                            String media = NetworkUtils.robustHttpGet("http://127.0.0.1:9978/media");
+//                            DanmakuSpider.log("[Monitor] media: " + media);
+                            if (TextUtils.isEmpty(media)) {
+                                return;
+                            }
+                            JSONObject jsonObject = new JSONObject(media);
+                            String title = jsonObject.optString("title");
+                            String artist = jsonObject.optString("artist");
+
+                            if (!TextUtils.isEmpty(title)) {
+                                processDetectedTitle(title, artist, act);
                             }
                         } else {
                             // 不在播放界面，重置播放状态
@@ -349,19 +360,7 @@ public class DanmakuScanner {
     }
 
     // 处理检测到的标题
-    private static void processDetectedTitle(String rawTitle, Activity activity) {
-        if (TextUtils.isEmpty(rawTitle)) {
-            return;
-        }
-
-        if (!rawTitle.contains("：")) {
-//            DanmakuSpider.log("📭 忽略无效标题: " + rawTitle);
-            return;
-        }
-
-        String tvName = rawTitle.split("：")[0];
-        String fileName = rawTitle.split("：")[1];
-
+    private static void processDetectedTitle(String tvName, String fileName, Activity activity) {
         // 清理标题
         String cleanedTitle = cleanTitle(tvName);
         lastDetectedTitle = cleanedTitle;
@@ -392,7 +391,7 @@ public class DanmakuScanner {
             }
         }
 
-        DanmakuSpider.log("🔍 Hook检测到标题: " + rawTitle);
+        DanmakuSpider.log("🔍 Hook检测到标题: " + tvName);
         DanmakuSpider.log("🧹 清理后标题: " + cleanedTitle);
 
         // 提取剧集信息
