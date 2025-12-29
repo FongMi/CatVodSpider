@@ -72,7 +72,7 @@ public class DanmakuUIHelper {
                 // IP地址提示
                 TextView ipInfo = new TextView(activity);
                 String ip = NetworkUtils.getLocalIpAddress();
-                ipInfo.setText("Web配置: http://" + ip + ":9810");
+//                ipInfo.setText("Web配置: http://" + ip + ":9810");
                 ipInfo.setTextSize(14);
                 ipInfo.setTextColor(ACCENT_COLOR);
                 ipInfo.setGravity(Gravity.CENTER);
@@ -135,6 +135,8 @@ public class DanmakuUIHelper {
 
                 builder.setView(mainLayout);
                 AlertDialog dialog = builder.create();
+                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                        dpToPx(activity, 600)); // 设置固定高度
 
                 // 按钮事件
                 saveBtn.setOnClickListener(v -> {
@@ -385,10 +387,13 @@ public class DanmakuUIHelper {
                 LinearLayout resultContainer = new LinearLayout(activity);
                 resultContainer.setOrientation(LinearLayout.VERTICAL);
                 resultContainer.setPadding(0, 10, 0, 0);
+                resultContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
 
                 LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 400));
+                        ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 140)); // 限制高度
+                scrollParams.setMargins(0, 5, 0, 5);
                 resultScroll.setLayoutParams(scrollParams);
+
                 resultScroll.addView(resultContainer);
                 mainLayout.addView(resultScroll);
 
@@ -740,7 +745,17 @@ public class DanmakuUIHelper {
                 resultContainer.addView(groupBtn);
 
                 if (groupsWithLastUrl.contains(animeTitle)) {
-                    groupBtn.post(() -> groupBtn.performClick());
+                    groupBtn.post(() -> {
+                        groupBtn.performClick();
+                        // 滚动到选中项
+                        if (resultContainer.getParent() instanceof ScrollView) {
+                            ScrollView scrollView = (ScrollView) resultContainer.getParent();
+                            scrollView.post(() -> {
+                                int scrollY = resultContainer.getTop() + groupBtn.getTop();
+                                scrollView.smoothScrollTo(0, scrollY);
+                            });
+                        }
+                    });
                 }
             }
         }

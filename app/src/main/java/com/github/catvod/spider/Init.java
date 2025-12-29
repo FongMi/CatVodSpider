@@ -126,7 +126,7 @@ public class Init {
                 SpiderDebug.log("exe ret " + exec.waitFor());
 
                 // 启动心跳检查
-                get().startHealthCheck(context, goProxy, abs);
+//                get().startHealthCheck(context, goProxy, abs);
 
             } catch (Exception ex) {
                 SpiderDebug.log("启动 goProxy异常：" + ex.getMessage());

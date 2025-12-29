@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
         executor.execute(this::initSpider);
         spider = new PTT();
         initView();
-//        initEvent();
+        initEvent();
     }
 
     private void initView() {
@@ -44,16 +44,16 @@ public class MainActivity extends Activity {
         setContentView(binding.getRoot());
     }
 
-//    private void initEvent() {
-//        binding.home.setOnClickListener(view -> executor.execute(this::homeContent));
-//        binding.homeVideo.setOnClickListener(view -> executor.execute(this::homeVideoContent));
-//        binding.category.setOnClickListener(view -> executor.execute(this::categoryContent));
-//        binding.detail.setOnClickListener(view -> executor.execute(this::detailContent));
-//        binding.player.setOnClickListener(view -> executor.execute(this::playerContent));
-//        binding.search.setOnClickListener(view -> executor.execute(this::searchContent));
-//        binding.live.setOnClickListener(view -> executor.execute(this::liveContent));
-//        binding.proxy.setOnClickListener(view -> executor.execute(this::proxy));
-//    }
+    private void initEvent() {
+        binding.home.setOnClickListener(view -> executor.execute(this::homeContent));
+        binding.homeVideo.setOnClickListener(view -> executor.execute(this::homeVideoContent));
+        binding.category.setOnClickListener(view -> executor.execute(this::categoryContent));
+        binding.detail.setOnClickListener(view -> executor.execute(this::detailContent));
+        binding.player.setOnClickListener(view -> executor.execute(this::playerContent));
+        binding.search.setOnClickListener(view -> executor.execute(this::searchContent));
+        binding.live.setOnClickListener(view -> executor.execute(this::liveContent));
+        binding.proxy.setOnClickListener(view -> executor.execute(this::proxy));
+    }
 
     private void initSpider() {
         try {
@@ -64,71 +64,71 @@ public class MainActivity extends Activity {
         }
     }
 
-//    public void homeContent() {
-//        try {
-//            String result = gson.toJson(JsonParser.parseString(spider.homeContent(true)));
-//            Init.post(() -> binding.result.setText(result));
-//        } catch (Throwable e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void homeVideoContent() {
-//        try {
-//            String result = gson.toJson(JsonParser.parseString(spider.homeVideoContent()));
-//            Init.post(() -> binding.result.setText(result));
-//        } catch (Throwable e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void categoryContent() {
-//        try {
-//            HashMap<String, String> extend = new HashMap<>();
-//            extend.put("c", "19");
-//            extend.put("year", "2024");
-//            String result = gson.toJson(JsonParser.parseString(spider.categoryContent("3", "2", true, extend)));
-//            Init.post(() -> binding.result.setText(result));
-//        } catch (Throwable e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void detailContent() {
-//        try {
-//            String result = gson.toJson(JsonParser.parseString(spider.detailContent(List.of("78702"))));
-//            Init.post(() -> binding.result.setText(result));
-//        } catch (Throwable e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void playerContent() {
-//        try {
-//            String result = gson.toJson(JsonParser.parseString(spider.playerContent("", "382044/1/78", new ArrayList<>())));
-//            Init.post(() -> binding.result.setText(result));
-//        } catch (Throwable e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void searchContent() {
-//        try {
-//            String result = gson.toJson(JsonParser.parseString(spider.searchContent("我的人间烟火", false)));
-//            Init.post(() -> binding.result.setText(result));
-//        } catch (Throwable e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void liveContent() {
-//        try {
-//            String result = gson.toJson(JsonParser.parseString(spider.liveContent("")));
-//            Init.post(() -> binding.result.setText(result));
-//        } catch (Throwable e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void homeContent() {
+        try {
+            String result = gson.toJson(JsonParser.parseString(spider.homeContent(true)));
+            Init.post(() -> binding.result.setText(result));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void homeVideoContent() {
+        try {
+            String result = gson.toJson(JsonParser.parseString(spider.homeVideoContent()));
+            Init.post(() -> binding.result.setText(result));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void categoryContent() {
+        try {
+            HashMap<String, String> extend = new HashMap<>();
+            extend.put("c", "19");
+            extend.put("year", "2024");
+            String result = gson.toJson(JsonParser.parseString(spider.categoryContent("3", "2", true, extend)));
+            Init.post(() -> binding.result.setText(result));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void detailContent() {
+        try {
+            String result = gson.toJson(JsonParser.parseString(spider.detailContent(List.of("78702"))));
+            Init.post(() -> binding.result.setText(result));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void playerContent() {
+        try {
+            String result = gson.toJson(JsonParser.parseString(spider.playerContent("", "382044/1/78", new ArrayList<>())));
+            Init.post(() -> binding.result.setText(result));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void searchContent() {
+        try {
+            String result = gson.toJson(JsonParser.parseString(spider.searchContent("我的人间烟火", false)));
+            Init.post(() -> binding.result.setText(result));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void liveContent() {
+        try {
+            String result = gson.toJson(JsonParser.parseString(spider.liveContent("")));
+            Init.post(() -> binding.result.setText(result));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
 
     public void proxy() {
         try {

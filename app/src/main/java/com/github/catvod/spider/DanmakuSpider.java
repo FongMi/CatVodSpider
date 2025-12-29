@@ -89,7 +89,7 @@ public class DanmakuSpider extends Spider {
         if (!TextUtils.isEmpty(extend) && extend.startsWith("http")) {
             loaded.add(extend);
         }
-        allApiUrls.clear();
+//        allApiUrls.clear();
         allApiUrls.addAll(loaded);
 
         // 加载自动推送状态
@@ -98,12 +98,7 @@ public class DanmakuSpider extends Spider {
         // 显示启动提示
         Activity act = getTopActivity();
         if (act != null) {
-            act.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(act, "Leo弹幕加载成功", Toast.LENGTH_SHORT).show();
-                }
-            });
+            act.runOnUiThread(() -> Toast.makeText(act, "Leo弹幕加载成功", Toast.LENGTH_SHORT).show());
         }
 
         log("Leo弹幕插件 v1.0 初始化完成");
