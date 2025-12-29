@@ -77,7 +77,7 @@ public class DanmakuSpider extends Spider {
         }
     }
 
-    private static synchronized void doInitWork(Context context, String extend) {
+    public static synchronized void doInitWork(Context context, String extend) {
         if (initialized) return;
 
         // 初始化缓存目录

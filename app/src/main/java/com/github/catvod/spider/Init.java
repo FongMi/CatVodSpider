@@ -64,6 +64,7 @@ public class Init {
         // 启动Hook监控
         DanmakuScanner.startHookMonitor();
         DanmakuSpider.log("Leo弹幕监控已启动");
+        DanmakuSpider.doInitWork(context,"");
     }
 
     private static void initGoProxy(Context context) {
