@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.github.catvod.crawler.Spider;
 
+import com.github.catvod.net.OkHttp;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -72,14 +73,10 @@ public class DanmakuSpider extends Spider {
     @Override
     public void init(Context context, String extend) throws Exception {
         super.init(context, extend);
-        if (!initialized) {
-            doInitWork(context, extend);
-        }
+        doInitWork(context, extend);
     }
 
     public static synchronized void doInitWork(Context context, String extend) {
-        if (initialized) return;
-
         // 初始化缓存目录
         sCacheDir = new File(context.getCacheDir(), "leo_danmaku_cache");
         if (!sCacheDir.exists()) sCacheDir.mkdirs();
@@ -89,8 +86,10 @@ public class DanmakuSpider extends Spider {
         if (!TextUtils.isEmpty(extend) && extend.startsWith("http")) {
             loaded.add(extend);
         }
-//        allApiUrls.clear();
+        allApiUrls.clear();
         allApiUrls.addAll(loaded);
+
+        if (initialized) return;
 
         // 加载自动推送状态
         loadAutoPushState(context);
