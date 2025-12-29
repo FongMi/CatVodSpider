@@ -14,15 +14,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DanmakuSpider extends Spider {
 
     // 配置
-    public static List<String> allApiUrls = new ArrayList<>();
+    public static Set<String> allApiUrls = new HashSet<>();
     public static String apiUrl = "";
     private static boolean initialized = false;
     private static File sCacheDir = null;
@@ -88,16 +85,12 @@ public class DanmakuSpider extends Spider {
         if (!sCacheDir.exists()) sCacheDir.mkdirs();
 
         // 初始化配置
-        List<String> loaded = DanmakuConfigManager.loadConfig(context);
+        Set<String> loaded = DanmakuConfigManager.loadConfig(context);
         if (!TextUtils.isEmpty(extend) && extend.startsWith("http")) {
-            loaded.add(0, extend);
+            loaded.add(extend);
         }
         allApiUrls.clear();
         allApiUrls.addAll(loaded);
-
-        if (!allApiUrls.isEmpty()) {
-            apiUrl = allApiUrls.get(allApiUrls.size() - 1);
-        }
 
         // 加载自动推送状态
         loadAutoPushState(context);

@@ -7,14 +7,16 @@ import android.text.TextUtils;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DanmakuConfigManager {
     
     private static final String PREF_NAME = "leo_danmaku_conf";
     private static final String KEY_URLS = "api_urls";
     
-    public static void saveConfig(Context context, List<String> urls) {
+    public static void saveConfig(Context context, Set<String> urls) {
         try {
             SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
             JSONArray arr = new JSONArray();
@@ -23,8 +25,8 @@ public class DanmakuConfigManager {
         } catch (Exception e) {}
     }
     
-    public static List<String> loadConfig(Context context) {
-        List<String> list = new ArrayList<>();
+    public static Set<String> loadConfig(Context context) {
+        Set<String> list = new HashSet<>();
         try {
             SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
             String json = prefs.getString(KEY_URLS, "");

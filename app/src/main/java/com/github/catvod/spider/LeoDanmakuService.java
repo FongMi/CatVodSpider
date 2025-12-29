@@ -13,7 +13,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 
 public class LeoDanmakuService {
@@ -26,34 +25,11 @@ public class LeoDanmakuService {
 
     // 在 LeoDanmakuService 类中添加缓存相关字段
     private static final long CACHE_EXPIRE_TIME = 30 * 60 * 1000; // 30分钟
-    private static final Map<String, CacheEntry> cache = new ConcurrentHashMap<>();
-
-    // 缓存条目类
-    private static class CacheEntry {
-        List<DanmakuItem> results;
-        long timestamp;
-
-        CacheEntry(List<DanmakuItem> results) {
-            this.results = results;
-            this.timestamp = System.currentTimeMillis();
-        }
-    }
 
     // 执行搜索
     public static List<DanmakuItem> searchDanmaku(String keyword, Activity activity) {
         if (TextUtils.isEmpty(keyword)) return new ArrayList<>();
 
-        // 生成缓存键
-        String cacheKey = keyword.trim().toLowerCase();
-
-        // 检查缓存
-        CacheEntry entry = cache.get(cacheKey);
-        if (entry != null && System.currentTimeMillis() - entry.timestamp < CACHE_EXPIRE_TIME) {
-            DanmakuSpider.log("从缓存获取搜索结果: " + cacheKey);
-            return entry.results;
-        }
-
-        // 如果没有缓存或已过期，执行搜索
         final List<DanmakuItem> globalResults = Collections.synchronizedList(new ArrayList<DanmakuItem>());
 
         try {
@@ -120,23 +96,8 @@ public class LeoDanmakuService {
             DanmakuSpider.log("搜索异常: " + e.getMessage());
         }
 
-        // 将结果存入缓存
-        cache.put(cacheKey, new CacheEntry(globalResults));
-
         return globalResults;
     }
-
-    // 添加清除缓存的方法
-    public static void clearCache() {
-        cache.clear();
-        DanmakuSpider.log("已清除弹幕搜索缓存");
-    }
-
-    // 添加检查缓存大小的方法
-    public static int getCacheSize() {
-        return cache.size();
-    }
-
 
     // 执行搜索
     private static List<DanmakuItem> doSearch(String apiBase, String keyword) {

@@ -18,7 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DanmakuUIHelper {
 
@@ -137,7 +139,7 @@ public class DanmakuUIHelper {
                 saveBtn.setOnClickListener(v -> {
                     String text = apiInput.getText().toString();
                     String[] lines = text.split("\n");
-                    List<String> newUrls = new java.util.ArrayList<>();
+                    Set<String> newUrls = new HashSet<>();
                     for (String line : lines) {
                         String trimmed = line.trim();
                         if (!TextUtils.isEmpty(trimmed) && trimmed.startsWith("http")) {
@@ -152,10 +154,12 @@ public class DanmakuUIHelper {
 
                     DanmakuSpider.allApiUrls.clear();
                     DanmakuSpider.allApiUrls.addAll(newUrls);
-                    DanmakuSpider.apiUrl = newUrls.get(0);
                     DanmakuConfigManager.saveConfig(activity, newUrls);
 
                     Toast.makeText(activity, "配置已保存", Toast.LENGTH_SHORT).show();
+
+                    DanmakuSpider.log("已保存API地址: " + newUrls);
+
                     dialog.dismiss();
                 });
 
