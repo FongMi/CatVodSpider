@@ -33,6 +33,7 @@ public class DanmakuUIHelper {
     private static final int BACKGROUND_LIGHT = 0xFFF5F5F5;
     private static final int BACKGROUND_WHITE = 0xFFFFFFFF;
     private static final int BORDER_COLOR = 0xFFE0E0E0;
+    private static final int FOCUS_HIGHLIGHT_COLOR = 0xFF80BFFF; // 比主色调浅一些的蓝色
 
 
     // 显示配置对话框
@@ -197,6 +198,27 @@ public class DanmakuUIHelper {
         button.setBackground(createRoundedBorderDrawable(color));
         button.setTextSize(14);
         button.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        // 添加焦点效果
+        button.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    // 获得焦点时显示填充背景
+                    ((Button) v).setBackground(createRoundedBackgroundDrawable(FOCUS_HIGHLIGHT_COLOR));
+                    ((Button) v).setTextColor(Color.WHITE);
+                    v.setScaleX(1.05f);
+                    v.setScaleY(1.05f);
+                } else {
+                    // 失去焦点时恢复边框样式
+                    ((Button) v).setBackground(createRoundedBorderDrawable(color));
+                    ((Button) v).setTextColor(color);
+                    v.setScaleX(1.0f);
+                    v.setScaleY(1.0f);
+                }
+            }
+        });
+
         return button;
     }
 
@@ -209,6 +231,24 @@ public class DanmakuUIHelper {
         button.setBackground(createRoundedBackgroundDrawable(backgroundColor));
         button.setTextSize(14);
         button.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        // 添加焦点效果
+        button.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    v.setBackgroundColor(FOCUS_HIGHLIGHT_COLOR);
+                    ((Button) v).setTextColor(Color.WHITE);
+                    v.setScaleX(1.05f);
+                    v.setScaleY(1.05f);
+                } else {
+                    ((Button) v).setBackgroundColor(backgroundColor);
+                    v.setScaleX(1.0f);
+                    v.setScaleY(1.0f);
+                }
+            }
+        });
+
         return button;
     }
 
@@ -414,6 +454,39 @@ public class DanmakuUIHelper {
                                 tabBtn.setPadding(15, 10, 15, 10);
                                 tabBtn.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
 
+                                // 添加焦点效果
+                                tabBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                    @Override
+                                    public void onFocusChange(View v, boolean hasFocus) {
+                                        if (hasFocus) {
+                                            v.setBackgroundColor(FOCUS_HIGHLIGHT_COLOR);
+                                            v.setScaleX(1.05f);
+                                            v.setScaleY(1.05f);
+                                        } else {
+                                            // 检查是否为当前选中页签
+                                            String currentTabName = (String) v.getTag();
+                                            List<LeoDanmakuService.DanmakuItem> tabItems = groupedResults.get(currentTabName);
+                                            boolean containsLastUrl = false;
+                                            if (DanmakuSpider.lastDanmakuUrl != null && !DanmakuSpider.lastDanmakuUrl.isEmpty()) {
+                                                for (LeoDanmakuService.DanmakuItem item : tabItems) {
+                                                    if (item.getDanmakuUrl() != null && item.getDanmakuUrl().equals(DanmakuSpider.lastDanmakuUrl)) {
+                                                        containsLastUrl = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                            if (containsLastUrl) {
+                                                v.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
+                                            } else {
+                                                v.setBackground(createRoundedBackgroundDrawable(0xFFCCCCCC));
+                                            }
+                                            v.setScaleX(1.0f);
+                                            v.setScaleY(1.0f);
+                                        }
+                                    }
+                                });
+
                                 LinearLayout.LayoutParams tabParams = new LinearLayout.LayoutParams(
                                         0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
                                 tabParams.setMargins(5, 0, 5, 0);
@@ -517,40 +590,39 @@ public class DanmakuUIHelper {
 
         // 检查哪些分组包含上次使用的弹幕URL
         java.util.Set<String> groupsWithLastUrl = new java.util.HashSet<>();
-        if (DanmakuSpider.lastDanmakuUrl != null) {  // 只有在lastDanmakuUrl不为空时才检查
+        if (DanmakuSpider.lastDanmakuUrl != null) {
             for (java.util.Map.Entry<String, List<LeoDanmakuService.DanmakuItem>> entry : animeGroups.entrySet()) {
                 String animeTitle = entry.getKey();
                 List<LeoDanmakuService.DanmakuItem> animeItems = entry.getValue();
                 for (LeoDanmakuService.DanmakuItem item : animeItems) {
                     if (item.getDanmakuUrl() != null && item.getDanmakuUrl().equals(DanmakuSpider.lastDanmakuUrl)) {
                         groupsWithLastUrl.add(animeTitle);
-                        break; // 找到一个就够了
+                        break;
                     }
                 }
             }
         }
 
-        // 获取分组键的列表，保持顺序
-        java.util.List<String> animeTitles = new java.util.ArrayList<>(animeGroups.keySet());
-        java.util.Collections.sort(animeTitles); // 排序以确保一致性
+        // 用于跟踪当前选中的分组按钮
+        final java.util.Map<String, Button> groupButtons = new java.util.HashMap<>();
 
-        // 遍历每个 animeTitle 组
+        java.util.List<String> animeTitles = new java.util.ArrayList<>(animeGroups.keySet());
+        java.util.Collections.sort(animeTitles);
+
         for (int groupIndex = 0; groupIndex < animeTitles.size(); groupIndex++) {
             String animeTitle = animeTitles.get(groupIndex);
             List<LeoDanmakuService.DanmakuItem> animeItems = animeGroups.get(animeTitle);
 
             if (animeItems.size() == 1) {
-                // 如果只有一个项目，直接显示按钮
                 LeoDanmakuService.DanmakuItem item = animeItems.get(0);
                 Button resultItem = createResultButton(activity, item, dialog);
                 resultContainer.addView(resultItem);
             } else {
-                // 如果有多个项目，创建分组按钮
                 Button groupBtn = new Button(activity);
                 groupBtn.setText(animeTitle + " (" + animeItems.size() + "集)");
                 groupBtn.setPadding(20, 10, 20, 10);
 
-                // 检查这个分组是否包含上次使用的弹幕URL，如果是则高亮显示
+                // 初始设置选中状态
                 if (groupsWithLastUrl.contains(animeTitle)) {
                     groupBtn.setBackgroundColor(PRIMARY_COLOR);
                     groupBtn.setTextColor(Color.WHITE);
@@ -560,82 +632,119 @@ public class DanmakuUIHelper {
                 }
 
                 groupBtn.setClickable(true);
-                groupBtn.setFocusable(false);
+                groupBtn.setFocusable(true);
 
-                // 添加展开/收起状态标记和子项索引范围
-                int[] stateInfo = new int[]{0, 0, 0}; // [isExpanded(0/1), startIndex, endIndex]
+                // 保存按钮引用，用于管理选中状态
+                groupButtons.put(animeTitle, groupBtn);
+
+                // 添加焦点效果 - 只处理焦点，不处理选中状态
+                groupBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        Button button = (Button) v;
+                        String title = null;
+
+                        // 找到对应的标题
+                        for (java.util.Map.Entry<String, Button> entry : groupButtons.entrySet()) {
+                            if (entry.getValue() == v) {
+                                title = entry.getKey();
+                                break;
+                            }
+                        }
+
+                        if (hasFocus) {
+                            // 获得焦点时显示浅色高亮
+                            v.setBackgroundColor(FOCUS_HIGHLIGHT_COLOR);
+                            button.setTextColor(Color.WHITE);
+                            v.setScaleX(1.05f);
+                            v.setScaleY(1.05f);
+                        } else {
+                            // 失去焦点时，恢复到原始选中状态颜色，而不是默认颜色
+                            if (groupsWithLastUrl.contains(title)) {
+                                v.setBackgroundColor(PRIMARY_COLOR);
+                                button.setTextColor(Color.WHITE);
+                            } else {
+                                v.setBackgroundColor(0xFFDDDDDD);
+                                button.setTextColor(0xFF333333);
+                            }
+                            v.setScaleX(1.0f);
+                            v.setScaleY(1.0f);
+                        }
+                    }
+                });
+
+                // 添加展开/收起状态标记
+                int[] stateInfo = new int[]{0, 0}; // [isExpanded(0/1), childCount]
                 groupBtn.setTag(stateInfo);
 
                 // 点击分组按钮展开/收起内容
                 groupBtn.setOnClickListener(v -> {
+                    // 点击时更新选中状态 - 只有当前按钮保持选中状态
+                    for (java.util.Map.Entry<String, Button> entry : groupButtons.entrySet()) {
+                        Button otherBtn = entry.getValue();
+                        if (otherBtn == v) {
+                            // 当前按钮选中
+                            otherBtn.setBackgroundColor(PRIMARY_COLOR);
+                            otherBtn.setTextColor(Color.WHITE);
+                            groupsWithLastUrl.clear();
+                            groupsWithLastUrl.add(entry.getKey());
+                        } else {
+                            // 其他按钮取消选中
+                            otherBtn.setBackgroundColor(0xFFDDDDDD);
+                            otherBtn.setTextColor(0xFF333333);
+                        }
+                    }
+
                     int[] currentStateInfo = (int[]) groupBtn.getTag();
                     boolean isExpanded = currentStateInfo[0] == 1;
 
                     if (isExpanded) {
-                        // 收起内容 - 移除该分组的子项
+                        // 收起内容
                         int buttonIndex = resultContainer.indexOfChild(groupBtn);
                         int childCount = currentStateInfo[1];
 
-                        // 从后往前删除指定数量的子项
                         for (int i = 0; i < childCount; i++) {
                             if (buttonIndex + 1 < resultContainer.getChildCount()) {
                                 resultContainer.removeViewAt(buttonIndex + 1);
                             }
                         }
 
-                        // 更新状态
                         currentStateInfo[0] = 0; // 未展开
                         currentStateInfo[1] = 0; // 子项数量
-                        // 重新设置高亮状态
-                        if (groupsWithLastUrl.contains(animeTitle)) {
-                            groupBtn.setBackgroundColor(PRIMARY_COLOR);
-                            groupBtn.setTextColor(Color.WHITE);
-                        } else {
-                            groupBtn.setTextColor(0xFF333333);
-                            groupBtn.setBackgroundColor(0xFFDDDDDD);
-                        }
                         groupBtn.setText(animeTitle + " (" + animeItems.size() + "集)");
                     } else {
-                        // 展开内容 - 在当前按钮后插入子项
+                        // 展开内容
                         int buttonIndex = resultContainer.indexOfChild(groupBtn);
 
-                        // 插入子项
                         for (int i = 0; i < animeItems.size(); i++) {
                             LeoDanmakuService.DanmakuItem item = animeItems.get(i);
-                            Button subItem = createResultButton(activity, item, dialog);
-                            subItem.setPadding(40, 8, 20, 8); // 增加左边距表示层级
+                            Button subItem = createResultButton(activity, item, dialog);                            subItem.setPadding(40, 8, 20, 8);
                             resultContainer.addView(subItem, buttonIndex + 1 + i);
                         }
 
-                        // 更新状态
                         currentStateInfo[0] = 1; // 已展开
                         currentStateInfo[1] = animeItems.size(); // 子项数量
-                        // 重新设置高亮状态
-                        if (groupsWithLastUrl.contains(animeTitle)) {
-                            groupBtn.setBackgroundColor(PRIMARY_COLOR);
-                            groupBtn.setTextColor(Color.WHITE);
-                        } else {
-                            groupBtn.setTextColor(0xFF333333);
-                            groupBtn.setBackgroundColor(0xFFDDDDDD);
-                        }
                         groupBtn.setText(animeTitle + " (" + animeItems.size() + "集) [-]");
                     }
-
-                    // 更新按钮状态标记
                     groupBtn.setTag(currentStateInfo);
+
+                    if (resultContainer.getParent() instanceof ScrollView) {
+                        ScrollView scrollView = (ScrollView) resultContainer.getParent();
+                        scrollView.post(() -> {
+                            int scrollY = resultContainer.getTop() + groupBtn.getTop();
+                            scrollView.smoothScrollTo(0, scrollY);
+                        });
+                    }
                 });
 
                 resultContainer.addView(groupBtn);
 
-                // 自动展开包含lastDanmakuUrl的分组，而不是只展开第一个
                 if (groupsWithLastUrl.contains(animeTitle)) {
-                    // 模拟点击包含lastDanmakuUrl的分组按钮以展开它
-                    groupBtn.post(() -> groupBtn.performClick());  // 使用post确保UI已更新
+                    groupBtn.post(() -> groupBtn.performClick());
                 }
             }
         }
 
-        // 为结果容器启用焦点导航
         resultContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
     }
 
@@ -667,18 +776,22 @@ public class DanmakuUIHelper {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    v.setBackgroundColor(0xFF007AFF);
+                    // 获得焦点时的高亮效果
+                    v.setBackgroundColor(FOCUS_HIGHLIGHT_COLOR);
                     ((Button) v).setTextColor(Color.WHITE);
                     v.setScaleX(1.05f);
                     v.setScaleY(1.05f);
                 } else {
-                    // 如果是上次使用的URL，保持高亮状态
+                    // 失去焦点时的恢复逻辑
                     LeoDanmakuService.DanmakuItem item = (LeoDanmakuService.DanmakuItem) v.getTag();
                     String danmakuUrl = item.getDanmakuUrl();
+
+                    // 检查是否为上次使用的弹幕URL，如果是则保持高亮状态
                     if (danmakuUrl != null && danmakuUrl.equals(DanmakuSpider.lastDanmakuUrl)) {
                         v.setBackgroundColor(PRIMARY_COLOR);
                         ((Button) v).setTextColor(Color.WHITE);
                     } else {
+                        // 普通状态
                         v.setBackgroundColor(0xFFEEEEEE);
                         ((Button) v).setTextColor(0xFF333333);
                     }
