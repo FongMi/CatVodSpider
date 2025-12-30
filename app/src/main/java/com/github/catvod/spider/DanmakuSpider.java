@@ -33,7 +33,7 @@ public class DanmakuSpider extends Spider {
     public static boolean hasAutoSearched = false; // 是否已自动搜索过
     public static String lastProcessedTitle = "";  // 上次处理的标题
     // 添加：视频识别相关
-    public static String currentVideoUrl = "";  // 当前视频的唯一标识（基于标题提取）
+    public static String currentVideoSignature = "";  // 当前视频的唯一标识（基于标题提取）
     public static long lastVideoDetectedTime = 0;     // 上次检测到视频的时间
     public static final long VIDEO_CHANGE_THRESHOLD = 5000; // 视频切换的最小间隔（5秒）
     

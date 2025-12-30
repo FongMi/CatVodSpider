@@ -122,9 +122,7 @@ public class LeoDanmakuService {
                 DanmakuSpider.log("搜索响应为空");
                 return list;
             }
-            
-            DanmakuSpider.log("搜索响应: " + (json.length() > 100 ? json.substring(0, 100) + "..." : json));
-            
+
             // 解析JSON
             JSONArray array = null;
             JSONObject rootOpt = null;
@@ -179,10 +177,6 @@ public class LeoDanmakuService {
         } catch (Exception e) {
             DanmakuSpider.log("搜索解析错误: " + e.getMessage());
             e.printStackTrace();
-        }
-
-        if (!list.isEmpty()) {
-            DanmakuSpider.apiUrl = apiBase;
         }
         
         return list;
@@ -247,41 +241,30 @@ public class LeoDanmakuService {
         activity.runOnUiThread(() -> Toast.makeText(activity, "开始自动搜索弹幕", Toast.LENGTH_LONG).show());
         DanmakuSpider.log("开始自动搜索弹幕：" + episodeInfo.getEpisodeName());
 
-        // 30秒超时
+        // 20秒超时
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             synchronized (lock) {
                 if (!found[0]) {
                     activity.runOnUiThread(() -> {
-                        DanmakuSpider.log("自动搜索超时（30秒）");
-//                        Toast.makeText(activity, "自动搜索超时（30秒）", Toast.LENGTH_SHORT).show();
+                        DanmakuSpider.log("自动搜索超时（20秒）");
+//                        Toast.makeText(activity, "自动搜索超时（20秒）", Toast.LENGTH_SHORT).show();
                     });
                     lock.notify();
                 }
             }
-        }, 30000);
+        }, 20000);
 
         new Thread(() -> {
             try {
-                String cleanTitle = DanmakuUtils.extractTitle(episodeInfo.getEpisodeName());
-                if (TextUtils.isEmpty(cleanTitle)) {
+                if (TextUtils.isEmpty(episodeInfo.getEpisodeName())) {
                     synchronized (lock) {
                         lock.notify();
                     }
                     return;
                 }
 
-                DanmakuSpider.log("自动搜索关键词: '" + cleanTitle + "' (原始: '" + episodeInfo.getEpisodeName() + "')");
-                List<DanmakuItem> results = searchDanmaku(cleanTitle, activity);
-
-                // 如果没找到结果，尝试使用更简单的关键词
-                if (results.isEmpty()) {
-                    DanmakuSpider.log("第一次搜索无结果，尝试简化关键词...");
-                    // 尝试只保留主要的中文或英文单词
-                    String simplified = cleanTitle.replaceAll("[0-9]", "").trim();
-                    if (!TextUtils.isEmpty(simplified) && !simplified.equals(cleanTitle)) {
-                        results = searchDanmaku(simplified, activity);
-                    }
-                }
+                DanmakuSpider.log("自动搜索关键词: '" + episodeInfo.getEpisodeName());
+                List<DanmakuItem> results = searchDanmaku(episodeInfo.getEpisodeName(), activity);
 
                 if (!results.isEmpty()) {
                     int matchedIndex = -1;
@@ -418,6 +401,18 @@ public class LeoDanmakuService {
             if (TextUtils.isEmpty(danmakuUrl)) {
                 DanmakuSpider.log("推送弹幕URL为空");
                 return;
+            }
+
+            // 使用URI类来解析URL并获取域名
+            try {
+                java.net.URI uri = new java.net.URI(danmakuUrl);
+                String domain = uri.getScheme() + "://" + uri.getHost();
+                if (uri.getPort() != -1) {
+                    domain += ":" + uri.getPort();
+                }
+                DanmakuSpider.apiUrl = domain;
+            } catch (java.net.URISyntaxException e) {
+                DanmakuSpider.log("URL格式错误: " + e.getMessage());
             }
 
             String localIp = NetworkUtils.getLocalIpAddress();

@@ -31,6 +31,8 @@ public class EpisodeInfo {
      */
     private String type;
 
+    private String fileName;
+
     public String getEpisodeName() {
         return episodeName;
     }
@@ -77,5 +79,13 @@ public class EpisodeInfo {
 
     public void setSeriesName(String seriesName) {
         this.seriesName = seriesName;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

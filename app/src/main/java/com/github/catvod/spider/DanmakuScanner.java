@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import org.json.JSONObject;
+import com.github.catvod.bean.tv.Media;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -124,25 +125,20 @@ public class DanmakuScanner {
 
                             // Hook获取标题
 //                            String newTitle = extractTitleFromView(act.getWindow().getDecorView());
-                            String media = NetworkUtils.robustHttpGet("http://127.0.0.1:9978/media");
-//                            DanmakuSpider.log("[Monitor] media: " + media);
-                            if (TextUtils.isEmpty(media)) {
+                            String mediaJson = NetworkUtils.robustHttpGet("http://127.0.0.1:9978/media");
+                            if (TextUtils.isEmpty(mediaJson)) {
                                 return;
                             }
-                            JSONObject jsonObject = new JSONObject(media);
+//                            DanmakuSpider.log("[Monitor] mediaJson: " + mediaJson);
 
-                            String url = jsonObject.optString("url");
+                            Gson gson = new Gson();
+                            Media mediaEntity = gson.fromJson(mediaJson, Media.class);
 
-                            if (TextUtils.isEmpty(url)) {
+                            if (TextUtils.isEmpty(mediaEntity.getUrl()) && mediaEntity.getState() != 3) {
                                 return;
                             }
 
-                            String title = jsonObject.optString("title");
-                            String artist = jsonObject.optString("artist");
-
-                            if (!TextUtils.isEmpty(title)) {
-                                processDetectedTitle(title, artist, url, act);
-                            }
+                            processDetectedTitle(mediaEntity, act);
                         } else {
                             // 不在播放界面，重置播放状态
                             resetPlaybackStatus();
@@ -207,7 +203,7 @@ public class DanmakuScanner {
             } else if (!isVideoPlaying && wasPlaying) {
                 // 视频停止播放
                 DanmakuSpider.log("⏸️ 检测到视频停止播放");
-                DanmakuSpider.currentVideoUrl = "";
+                DanmakuSpider.currentVideoSignature = "";
                 DanmakuSpider.lastVideoDetectedTime = 0;
                 DanmakuSpider.lastDanmakuId = -1;
                 DanmakuSpider.resetAutoSearch();
@@ -366,84 +362,53 @@ public class DanmakuScanner {
     }
 
     // 处理检测到的标题
-    private static void processDetectedTitle(String tvName, String fileName, String url, Activity activity) {
-        // 清理标题
-        String cleanedTitle = cleanTitle(tvName);
-        lastDetectedTitle = cleanedTitle;
-
-        // 检查标题缓存
-        long currentTime = System.currentTimeMillis();
-        Long lastSeenTime = titleCache.get(cleanedTitle);
-        if (lastSeenTime != null && (currentTime - lastSeenTime) < TITLE_CACHE_TIMEOUT) {
-            DanmakuSpider.log("⏳ 标题在缓存中，跳过处理: " + cleanedTitle);
-            return;
-        }
-
-        // 更新标题缓存
-        titleCache.put(cleanedTitle, currentTime);
-
-        // 限制缓存大小
-        if (titleCache.size() > 50) {
-            String oldestTitle = null;
-            long oldestTime = Long.MAX_VALUE;
-            for (Map.Entry<String, Long> entry : titleCache.entrySet()) {
-                if (entry.getValue() < oldestTime) {
-                    oldestTime = entry.getValue();
-                    oldestTitle = entry.getKey();
-                }
-            }
-            if (oldestTitle != null) {
-                titleCache.remove(oldestTitle);
-            }
-        }
-
-        DanmakuSpider.log("🔍 Hook检测到标题: " + tvName);
-        DanmakuSpider.log("🧹 清理后标题: " + cleanedTitle);
+    private static void processDetectedTitle(Media media, Activity activity) {
+        lastDetectedTitle = media.getTitle();
 
         // 提取剧集信息
-        String seriesName = extractSeriesName(cleanedTitle);
-        String episodeNum = extractEpisodeNum(fileName);
-        String year = extractYear(fileName);
-        String seasonNum = extractSeasonNum(fileName);
+        String seriesName = extractSeriesName(media.getTitle());
+        String episodeNum = extractEpisodeNum(media.getArtist());
+        // 优先从剧集名中提取
+        String year = extractYear(media.getArtist());
+        // 剧集年份为空时从标题中提取
+        if (TextUtils.isEmpty(year)) {
+            year = extractYear(media.getTitle());
+        }
+        String seasonNum = extractSeasonNum(media.getArtist());
 
         EpisodeInfo episodeInfo = new EpisodeInfo();
         episodeInfo.setEpisodeNum(episodeNum);
-        episodeInfo.setEpisodeName(cleanedTitle);
+        episodeInfo.setEpisodeName(media.getTitle());
         episodeInfo.setEpisodeYear(year);
         episodeInfo.setEpisodeSeasonNum(seasonNum);
         episodeInfo.setSeriesName(seriesName);
+        episodeInfo.setFileName(media.getArtist().replace("正在播放：", ""));
 
         DanmakuSpider.log("🎬 剧集名: " + seriesName + ", 年份: " + year + ", 季数: " + seasonNum + ", 集数: " + episodeNum);
 
         // 生成视频签名
         String newSignature = generateSignature(episodeInfo);
-        String currentSignature = null;
-        int queryIndex = DanmakuSpider.currentVideoUrl.indexOf('?');
-        if (queryIndex >= 0) {
-            currentSignature = DanmakuSpider.currentVideoUrl.substring(0, queryIndex);
-        } else {
-            currentSignature = DanmakuSpider.currentVideoUrl;
-        }
 
-        DanmakuSpider.log("🔑 视频签名: " + newSignature + " (当前: " + currentSignature + ")");
+        DanmakuSpider.log("🔑 视频签名: " + newSignature);
 
         // 检查是否为同一个视频
         boolean isSameVideo = false;
-        if (!TextUtils.isEmpty(currentSignature) && !TextUtils.isEmpty(newSignature)) {
-            isSameVideo = isSameVideo(currentSignature, newSignature);
-            DanmakuSpider.log("📊 视频相同性判断: " + isSameVideo);
+        if (!TextUtils.isEmpty(DanmakuSpider.currentVideoSignature) && !TextUtils.isEmpty(newSignature)) {
+            isSameVideo = isSameVideo(DanmakuSpider.currentVideoSignature, newSignature);
         }
 
         if (!isSameVideo) {
+            long currentTime = System.currentTimeMillis();
+
             // 不同的视频
-            DanmakuSpider.currentVideoUrl = currentSignature;
+            DanmakuSpider.currentVideoSignature = newSignature;
             DanmakuSpider.lastVideoDetectedTime = currentTime;
 
             // 首次检测
             if (isFirstDetection || !DanmakuSpider.hasAutoSearched) {
                 isFirstDetection = false;
                 DanmakuSpider.hasAutoSearched = true;
-                DanmakuSpider.lastProcessedTitle = cleanedTitle;
+                DanmakuSpider.lastProcessedTitle = media.getTitle();
 
                 // 记录当前播放的剧集信息
                 currentSeriesName = seriesName;
@@ -465,7 +430,7 @@ public class DanmakuScanner {
 
     // 生成签名
     private static String generateSignature(EpisodeInfo episodeInfo) {
-        return episodeInfo.getEpisodeName() + ":" + episodeInfo.getEpisodeYear() + ":" + episodeInfo.getEpisodeSeasonNum() + ":" + episodeInfo.getEpisodeNum();
+        return episodeInfo.getEpisodeName() + "|" + episodeInfo.getFileName();
     }
 
     // 判断是否为同一个视频
@@ -763,34 +728,29 @@ public class DanmakuScanner {
                 DanmakuSpider.log("⏰ 距离上次换集: " + timeSinceLastChange + "ms");
                 videoPlayStartTime = System.currentTimeMillis();
 
-                // 检查换集间隔
-                if (timeSinceLastChange > MIN_EPISODE_CHANGE_INTERVAL) {
-                    // 尝试获取下一个弹幕URL
-                    String nextUrl = DanmakuSpider.getNextDanmakuUrl(Integer.parseInt(currentEpisodeNum), Integer.parseInt(episodeInfo.getEpisodeNum()));
-                    DanmakuSpider.log("🔄 换集检测: nextUrl=" + (nextUrl != null ? nextUrl : "null"));
+                // 尝试获取下一个弹幕URL
+                String nextUrl = DanmakuSpider.getNextDanmakuUrl(Integer.parseInt(currentEpisodeNum), Integer.parseInt(episodeInfo.getEpisodeNum()));
+                DanmakuSpider.log("🔄 换集检测: nextUrl=" + (nextUrl != null ? nextUrl : "null"));
 
-                    if (nextUrl != null) {
-                        // 更新记录
-                        currentEpisodeNum = episodeInfo.getEpisodeNum();
-                        lastEpisodeChangeTime = currentTime;
+                if (nextUrl != null) {
+                    // 更新记录
+                    currentEpisodeNum = episodeInfo.getEpisodeNum();
+                    lastEpisodeChangeTime = currentTime;
 
-                        // 生成推送key
-                        String pushKey = generateSignature(episodeInfo);
+                    // 生成推送key
+                    String pushKey = generateSignature(episodeInfo);
 
-                        // 检查是否最近已经推送过相同的弹幕
-                        Long lastPush = lastPushTime.get(nextUrl);
-                        if (lastPush != null && (currentTime - lastPush) < 60000) {
-                            DanmakuSpider.log("⚠️ 最近1分钟内已推送过相同弹幕，跳过");
-                            return;
-                        }
-
-                        // 延迟推送，等待视频播放
-                        scheduleDelayedPush(nextUrl, activity, episodeInfo.getEpisodeName(), pushKey);
-                    } else {
-                        DanmakuSpider.log("⚠️ 无法获取下一个弹幕URL");
+                    // 检查是否最近已经推送过相同的弹幕
+                    Long lastPush = lastPushTime.get(nextUrl);
+                    if (lastPush != null && (currentTime - lastPush) < 60000) {
+                        DanmakuSpider.log("⚠️ 最近1分钟内已推送过相同弹幕，跳过");
+                        return;
                     }
+
+                    // 延迟推送，等待视频播放
+                    scheduleDelayedPush(nextUrl, activity, episodeInfo.getEpisodeName(), pushKey);
                 } else {
-                    DanmakuSpider.log("⚠️ 换集间隔过短（" + timeSinceLastChange + "ms），忽略");
+                    DanmakuSpider.log("⚠️ 无法获取下一个弹幕URL");
                 }
             } else {
                 DanmakuSpider.log("✅ 同一集，忽略");
