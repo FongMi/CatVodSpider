@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.github.catvod.bean.danmu.DanmakuItem;
 
 import java.io.File;
 import java.util.HashSet;
@@ -418,7 +419,7 @@ public class DanmakuUIHelper {
                     resultContainer.addView(loading);
 
                     new Thread(() -> {
-                        List<LeoDanmakuService.DanmakuItem> results =
+                        List<DanmakuItem> results =
                                 LeoDanmakuService.manualSearch(keyword, activity);
 
                         new Handler(Looper.getMainLooper()).post(() -> {
@@ -436,9 +437,9 @@ public class DanmakuUIHelper {
                             }
 
                             // 按 from 属性分组结果
-                            java.util.Map<String, List<LeoDanmakuService.DanmakuItem>> groupedResults =
+                            java.util.Map<String, List<DanmakuItem>> groupedResults =
                                     new java.util.HashMap<>();
-                            for (LeoDanmakuService.DanmakuItem item : results) {
+                            for (DanmakuItem item : results) {
                                 String from = item.from != null ? item.from : "默认";
                                 groupedResults.computeIfAbsent(from, k -> new java.util.ArrayList<>()).add(item);
                             }
@@ -470,10 +471,10 @@ public class DanmakuUIHelper {
                                         } else {
                                             // 检查是否为当前选中页签
                                             String currentTabName = (String) v.getTag();
-                                            List<LeoDanmakuService.DanmakuItem> tabItems = groupedResults.get(currentTabName);
+                                            List<DanmakuItem> tabItems = groupedResults.get(currentTabName);
                                             boolean containsLastUrl = false;
                                             if (DanmakuSpider.lastDanmakuUrl != null && !DanmakuSpider.lastDanmakuUrl.isEmpty()) {
-                                                for (LeoDanmakuService.DanmakuItem item : tabItems) {
+                                                for (DanmakuItem item : tabItems) {
                                                     if (item.getDanmakuUrl() != null && item.getDanmakuUrl().equals(DanmakuSpider.lastDanmakuUrl)) {
                                                         containsLastUrl = true;
                                                         break;
@@ -516,10 +517,10 @@ public class DanmakuUIHelper {
                                 tabContainer.addView(tabBtn);
 
                                 // 检查这个页签是否包含lastDanmakuUrl
-                                List<LeoDanmakuService.DanmakuItem> tabItems = groupedResults.get(tabName);
+                                List<DanmakuItem> tabItems = groupedResults.get(tabName);
                                 boolean containsLastUrl = false;
                                 if (DanmakuSpider.lastDanmakuUrl != null && !DanmakuSpider.lastDanmakuUrl.isEmpty()) {
-                                    for (LeoDanmakuService.DanmakuItem item : tabItems) {
+                                    for (DanmakuItem item : tabItems) {
                                         if (item.getDanmakuUrl() != null && item.getDanmakuUrl().equals(DanmakuSpider.lastDanmakuUrl)) {
                                             containsLastUrl = true;
                                             break;
@@ -573,7 +574,7 @@ public class DanmakuUIHelper {
 
 
     // 为指定页签显示结果
-    private static void showResultsForTab(LinearLayout resultContainer, List<LeoDanmakuService.DanmakuItem> items,
+    private static void showResultsForTab(LinearLayout resultContainer, List<DanmakuItem> items,
                                           Activity activity, AlertDialog dialog) {
         resultContainer.removeAllViews();
 
@@ -587,8 +588,8 @@ public class DanmakuUIHelper {
         }
 
         // 按 animeTitle 分组
-        java.util.Map<String, List<LeoDanmakuService.DanmakuItem>> animeGroups = new java.util.HashMap<>();
-        for (LeoDanmakuService.DanmakuItem item : items) {
+        java.util.Map<String, List<DanmakuItem>> animeGroups = new java.util.HashMap<>();
+        for (DanmakuItem item : items) {
             String animeTitle = item.animeTitle != null ? item.animeTitle : item.title;
             animeGroups.computeIfAbsent(animeTitle, k -> new java.util.ArrayList<>()).add(item);
         }
@@ -596,10 +597,10 @@ public class DanmakuUIHelper {
         // 检查哪些分组包含上次使用的弹幕URL
         java.util.Set<String> groupsWithLastUrl = new java.util.HashSet<>();
         if (DanmakuSpider.lastDanmakuUrl != null) {
-            for (java.util.Map.Entry<String, List<LeoDanmakuService.DanmakuItem>> entry : animeGroups.entrySet()) {
+            for (java.util.Map.Entry<String, List<DanmakuItem>> entry : animeGroups.entrySet()) {
                 String animeTitle = entry.getKey();
-                List<LeoDanmakuService.DanmakuItem> animeItems = entry.getValue();
-                for (LeoDanmakuService.DanmakuItem item : animeItems) {
+                List<DanmakuItem> animeItems = entry.getValue();
+                for (DanmakuItem item : animeItems) {
                     if (item.getDanmakuUrl() != null && item.getDanmakuUrl().equals(DanmakuSpider.lastDanmakuUrl)) {
                         groupsWithLastUrl.add(animeTitle);
                         break;
@@ -616,10 +617,10 @@ public class DanmakuUIHelper {
 
         for (int groupIndex = 0; groupIndex < animeTitles.size(); groupIndex++) {
             String animeTitle = animeTitles.get(groupIndex);
-            List<LeoDanmakuService.DanmakuItem> animeItems = animeGroups.get(animeTitle);
+            List<DanmakuItem> animeItems = animeGroups.get(animeTitle);
 
             if (animeItems.size() == 1) {
-                LeoDanmakuService.DanmakuItem item = animeItems.get(0);
+                DanmakuItem item = animeItems.get(0);
                 Button resultItem = createResultButton(activity, item, dialog);
                 resultContainer.addView(resultItem);
             } else {
@@ -722,7 +723,7 @@ public class DanmakuUIHelper {
                         int buttonIndex = resultContainer.indexOfChild(groupBtn);
 
                         for (int i = 0; i < animeItems.size(); i++) {
-                            LeoDanmakuService.DanmakuItem item = animeItems.get(i);
+                            DanmakuItem item = animeItems.get(i);
                             Button subItem = createResultButton(activity, item, dialog);                            subItem.setPadding(40, 8, 20, 8);
                             resultContainer.addView(subItem, buttonIndex + 1 + i);
                         }
@@ -765,12 +766,12 @@ public class DanmakuUIHelper {
 
 
     // 创建结果按钮的辅助方法
-    private static Button createResultButton(Activity activity, LeoDanmakuService.DanmakuItem item, AlertDialog dialog) {
+    private static Button createResultButton(Activity activity, DanmakuItem item, AlertDialog dialog) {
         Button resultItem = new Button(activity);
         resultItem.setFocusable(true);
         resultItem.setFocusableInTouchMode(true);
         resultItem.setClickable(true);
-        resultItem.setText(item.toString());
+        resultItem.setText(item.getTitleWithEp());
         resultItem.setPadding(20, 10, 20, 10);
 
         // 检查是否为上次使用的弹幕URL，如果是则高亮显示
@@ -798,7 +799,7 @@ public class DanmakuUIHelper {
                     v.setScaleY(1.05f);
                 } else {
                     // 失去焦点时的恢复逻辑
-                    LeoDanmakuService.DanmakuItem item = (LeoDanmakuService.DanmakuItem) v.getTag();
+                    DanmakuItem item = (DanmakuItem) v.getTag();
                     String danmakuUrl = item.getDanmakuUrl();
 
                     // 检查是否为上次使用的弹幕URL，如果是则保持高亮状态
@@ -817,12 +818,11 @@ public class DanmakuUIHelper {
         });
 
         resultItem.setOnClickListener(v1 -> {
-            LeoDanmakuService.DanmakuItem selected =
-                    (LeoDanmakuService.DanmakuItem) v1.getTag();
-            String danmakuUrl = selected.getDanmakuUrl();
+            DanmakuItem selected =
+                    (DanmakuItem) v1.getTag();
             // 记录弹幕URL
-            DanmakuSpider.recordDanmakuUrl(danmakuUrl, false);
-            LeoDanmakuService.pushDanmakuDirect(danmakuUrl, activity, false);
+            DanmakuSpider.recordDanmakuUrl(selected, false);
+            LeoDanmakuService.pushDanmakuDirect(selected, activity, false);
             dialog.dismiss();
         });
 

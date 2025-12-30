@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.github.catvod.bean.danmu.DanmakuItem;
 import com.github.catvod.bean.tv.Media;
 import com.google.gson.Gson;
 
@@ -23,13 +24,7 @@ import java.util.regex.Pattern;
 
 public class DanmakuScanner {
 
-    // Leo弹幕状态
-    public static boolean LEO_DANMAKU_ENABLED = true;
     public static String lastDetectedTitle = "";
-
-    // 状态跟踪
-    private static final Map<String, Long> titleCache = new HashMap<>();
-    private static final long TITLE_CACHE_TIMEOUT = 2000;
 
     private static String currentSeriesName = "";
     private static String currentEpisodeNum = "";
@@ -48,14 +43,14 @@ public class DanmakuScanner {
 
     // 延迟推送队列
     private static class PendingPush {
-        String url;
+        DanmakuItem danmakuItem;
         Activity activity;
         String title;
         long scheduleTime;
         boolean isForcedPush = false; // 标记是否为强制推送
 
-        PendingPush(String url, Activity activity, String title, long scheduleTime) {
-            this.url = url;
+        PendingPush(DanmakuItem danmakuItem, Activity activity, String title, long scheduleTime) {
+            this.danmakuItem = danmakuItem;
             this.activity = activity;
             this.title = title;
             this.scheduleTime = scheduleTime;
@@ -121,7 +116,7 @@ public class DanmakuScanner {
                             });
 
                             // 检查播放状态
-                            checkPlaybackStatus(act);
+//                            checkPlaybackStatus(act);
 
                             // Hook获取标题
 //                            String newTitle = extractTitleFromView(act.getWindow().getDecorView());
@@ -134,7 +129,24 @@ public class DanmakuScanner {
                             Gson gson = new Gson();
                             Media mediaEntity = gson.fromJson(mediaJson, Media.class);
 
-                            if (TextUtils.isEmpty(mediaEntity.getUrl()) && mediaEntity.getState() != 3) {
+                            if (TextUtils.isEmpty(mediaEntity.getUrl())) {
+                                return;
+                            }
+
+                            isVideoPlaying = mediaEntity.getState() == 3 || mediaEntity.getState() == 2;
+
+                            if (isVideoPlaying) {
+                                // 视频开始播放
+                                videoPlayStartTime = System.currentTimeMillis();
+                                DanmakuSpider.log("▶️ 检测到视频开始播放");
+                            } else {
+                                // 视频停止播放
+                                DanmakuSpider.log("⏸️ 检测到视频停止播放");
+
+                                // 清空缓存和队列
+                                pendingPushes.clear();
+                                lastPushTime.clear();
+
                                 return;
                             }
 
@@ -213,7 +225,6 @@ public class DanmakuScanner {
                 videoPlayStartTime = 0;
 
                 // 清空缓存和队列
-                titleCache.clear();
                 pendingPushes.clear();
                 lastPushTime.clear();
             }
@@ -311,14 +322,14 @@ public class DanmakuScanner {
             return;
         }
 
-        DanmakuSpider.log("🚀 开始执行" + (isForced ? "强制" : "") + "推送: " + push.url);
+        DanmakuSpider.log("🚀 开始执行" + (isForced ? "强制" : "") + "推送: " + push.danmakuItem.getDanmakuUrl());
 
         new Thread(() -> {
             try {
-                LeoDanmakuService.pushDanmakuDirect(push.url, push.activity, true);
+                LeoDanmakuService.pushDanmakuDirect(push.danmakuItem, push.activity, true);
 
                 // 记录推送时间，防止重复推送
-                lastPushTime.put(push.url, System.currentTimeMillis());
+                lastPushTime.put(push.danmakuItem.getDanmakuUrl(), System.currentTimeMillis());
             } catch (Exception e) {
                 DanmakuSpider.log("❌ 推送失败: " + e.getMessage());
             }
@@ -346,7 +357,6 @@ public class DanmakuScanner {
         }
 
         // 清空缓存和队列
-        titleCache.clear();
         pendingPushes.clear();
         lastPushTime.clear();
 
@@ -721,18 +731,17 @@ public class DanmakuScanner {
 
         if (isSameSeries) {
             // 相同剧集系列，检查集数是否变化
-            if (!TextUtils.isEmpty(currentEpisodeNum) && !currentEpisodeNum.equals(episodeInfo.getEpisodeNum())) {
+            if (!currentEpisodeNum.equals(episodeInfo.getEpisodeNum())) {
                 long timeSinceLastChange = currentTime - lastEpisodeChangeTime;
 
-                DanmakuSpider.log("🔄 检测到同系列换集: " + currentEpisodeNum + " -> " + episodeInfo.getEpisodeSeasonNum());
+                DanmakuSpider.log("🔄 检测到同系列换集: " + currentEpisodeNum + " -> " + episodeInfo.getEpisodeNum());
                 DanmakuSpider.log("⏰ 距离上次换集: " + timeSinceLastChange + "ms");
                 videoPlayStartTime = System.currentTimeMillis();
 
                 // 尝试获取下一个弹幕URL
-                String nextUrl = DanmakuSpider.getNextDanmakuUrl(Integer.parseInt(currentEpisodeNum), Integer.parseInt(episodeInfo.getEpisodeNum()));
-                DanmakuSpider.log("🔄 换集检测: nextUrl=" + (nextUrl != null ? nextUrl : "null"));
+                DanmakuItem nextDanmakuItem = DanmakuSpider.getNextDanmakuItem(Integer.parseInt(currentEpisodeNum), Integer.parseInt(episodeInfo.getEpisodeNum()));
 
-                if (nextUrl != null) {
+                if (nextDanmakuItem != null) {
                     // 更新记录
                     currentEpisodeNum = episodeInfo.getEpisodeNum();
                     lastEpisodeChangeTime = currentTime;
@@ -741,14 +750,14 @@ public class DanmakuScanner {
                     String pushKey = generateSignature(episodeInfo);
 
                     // 检查是否最近已经推送过相同的弹幕
-                    Long lastPush = lastPushTime.get(nextUrl);
+                    Long lastPush = lastPushTime.get(nextDanmakuItem.getDanmakuUrl());
                     if (lastPush != null && (currentTime - lastPush) < 60000) {
                         DanmakuSpider.log("⚠️ 最近1分钟内已推送过相同弹幕，跳过");
                         return;
                     }
 
                     // 延迟推送，等待视频播放
-                    scheduleDelayedPush(nextUrl, activity, episodeInfo.getEpisodeName(), pushKey);
+                    scheduleDelayedPush(nextDanmakuItem, activity, episodeInfo.getEpisodeName(), pushKey);
                 } else {
                     DanmakuSpider.log("⚠️ 无法获取下一个弹幕URL");
                 }
@@ -803,13 +812,13 @@ public class DanmakuScanner {
     }
 
     // 安排延迟推送
-    private static void scheduleDelayedPush(String nextUrl, Activity activity, String title, String pushKey) {
+    private static void scheduleDelayedPush(DanmakuItem item, Activity activity, String title, String pushKey) {
         DanmakuSpider.log("⏰ 安排延迟推送: " + pushKey);
-        DanmakuSpider.log("   URL: " + nextUrl);
+        DanmakuSpider.log("   item: " + item.toString());
         DanmakuSpider.log("   等待视频播放后再推送（最多等待" + FORCE_PUSH_TIMEOUT/1000 + "秒）...");
 
         // 添加到待推送队列
-        PendingPush pendingPush = new PendingPush(nextUrl, activity, title, System.currentTimeMillis());
+        PendingPush pendingPush = new PendingPush(item, activity, title, System.currentTimeMillis());
         pendingPushes.put(pushKey, pendingPush);
     }
 

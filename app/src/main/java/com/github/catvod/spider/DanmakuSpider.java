@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.github.catvod.bean.danmu.DanmakuItem;
 import com.github.catvod.crawler.Spider;
 
 import org.json.JSONArray;
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 public class DanmakuSpider extends Spider {
 
@@ -29,6 +31,7 @@ public class DanmakuSpider extends Spider {
     public static String lastAutoDanmakuUrl = "";  // 上次自动推送的弹幕URL
     public static String lastManualDanmakuUrl = ""; // 上次手动选择的弹幕URL
     public static String lastDanmakuUrl = ""; // 上次弹幕URL
+    public static ConcurrentMap<Integer, DanmakuItem> lastDanmakuItemMap = null;
     public static int lastDanmakuId = -1;          // 上次的弹幕ID
     public static boolean hasAutoSearched = false; // 是否已自动搜索过
     public static String lastProcessedTitle = "";  // 上次处理的标题
@@ -138,37 +141,20 @@ public class DanmakuSpider extends Spider {
     }
 
     // 记录弹幕URL
-    public static void recordDanmakuUrl(String url, boolean isAuto) {
+    public static void recordDanmakuUrl(DanmakuItem danmakuItem, boolean isAuto) {
         if (isAuto) {
-            lastAutoDanmakuUrl = url;
-            log("记录自动弹幕URL: " + url);
+            lastAutoDanmakuUrl = danmakuItem.getDanmakuUrl();
+            log("记录自动弹幕URL: " + danmakuItem.getDanmakuUrl());
         } else {
-            lastManualDanmakuUrl = url;
-            log("记录手动弹幕URL: " + url);
+            lastManualDanmakuUrl = danmakuItem.getDanmakuUrl();
+            log("记录手动弹幕URL: " + danmakuItem.getDanmakuUrl());
         }
-        lastDanmakuUrl = url;
+        lastDanmakuUrl = danmakuItem.getDanmakuUrl();
+        lastDanmakuId = danmakuItem.getEpId();
 
-        // 无论是自动还是手动，都尝试提取ID
-        try {
-            String[] parts = url.split("/");
-            String lastPart = parts[parts.length - 1];
-            lastPart = lastPart.replace("?format=xml", "");
-
-            // 尝试提取数字ID
-            try {
-                lastDanmakuId = Integer.parseInt(lastPart);
-                log("✅ 记录弹幕ID: " + lastDanmakuId + "，来自URL: " + url);
-                // 记录视频检测时间
-                lastVideoDetectedTime = System.currentTimeMillis();
-                log("✅ 更新视频检测时间: " + lastVideoDetectedTime);
-            } catch (NumberFormatException e) {
-                log("❌ 无法从URL提取数字ID: " + lastPart);
-                lastDanmakuId = -1;
-            }
-        } catch (Exception e) {
-            lastDanmakuId = -1;
-            log("❌ 记录弹幕ID失败: " + e.getMessage());
-        }
+        // 记录视频检测时间
+        lastVideoDetectedTime = System.currentTimeMillis();
+        log("✅ 更新视频检测时间: " + lastVideoDetectedTime);
 
         // 设置已搜索过，这样换集时就会尝试递增
         if (lastDanmakuId > 0) {
@@ -178,7 +164,7 @@ public class DanmakuSpider extends Spider {
     }
 
     // 获取下一个弹幕ID
-    public static String getNextDanmakuUrl(int currentEpisodeNum, int newEpisodeNum) {
+    public static DanmakuItem getNextDanmakuItem(int currentEpisodeNum, int newEpisodeNum) {
         int nextId = lastDanmakuId + (newEpisodeNum - currentEpisodeNum);
         log("📝 获取下一个弹幕URL: " + lastDanmakuId + " -> " + nextId);
 
@@ -186,37 +172,13 @@ public class DanmakuSpider extends Spider {
             return null;
         }
 
-        String baseUrl = apiUrl;
-
-        // 优先使用lastAutoDanmakuUrl提取基础URL
-        if (!TextUtils.isEmpty(lastAutoDanmakuUrl)) {
-            // 从URL中提取基础部分
-            try {
-                // 例如: http://192.168.31.77:9321/omnibox/api/v2/comment/82670?format=xml
-                // 需要提取: http://192.168.31.77:9321/omnibox
-                int idx = lastAutoDanmakuUrl.indexOf("/api/v2/comment/");
-                if (idx > 0) {
-                    baseUrl = lastAutoDanmakuUrl.substring(0, idx);
-                } else {
-                    // 回退方案：去掉最后一部分
-                    idx = lastAutoDanmakuUrl.lastIndexOf("/");
-                    if (idx > 0) {
-                        baseUrl = lastAutoDanmakuUrl.substring(0, idx);
-                        // 再去掉"comment"部分
-                        idx = baseUrl.lastIndexOf("/");
-                        if (idx > 0) {
-                            baseUrl = baseUrl.substring(0, idx);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                log("❌ 提取基础URL失败: " + e.getMessage());
-            }
+        DanmakuItem nextDanmakuItem = lastDanmakuItemMap.get(nextId);
+        if (nextDanmakuItem != null) {
+            log("✅ 获取到下一个弹幕弹幕信息: " + nextDanmakuItem.toString());
+            return nextDanmakuItem;
         }
 
-        String nextUrl = baseUrl + "/api/v2/comment/" + nextId + "?format=xml";
-        log("✅ 生成下一个弹幕URL: " + nextUrl);
-        return nextUrl;
+        return null;
     }
 
     // 日志记录

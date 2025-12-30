@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.github.catvod.bean.danmu.DanmakuItem;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -95,6 +96,13 @@ public class LeoDanmakuService {
         } catch (Exception e) {
             DanmakuSpider.log("搜索异常: " + e.getMessage());
         }
+
+        // 将List转换为ConcurrentMap
+        ConcurrentHashMap<Integer, DanmakuItem> resultMap = new ConcurrentHashMap<>();
+        for (DanmakuItem item : globalResults) {
+            resultMap.put(item.getEpId(), item);
+        }
+        DanmakuSpider.lastDanmakuItemMap = resultMap;
 
         return globalResults;
     }
@@ -192,11 +200,9 @@ public class LeoDanmakuService {
         String epTitle = ep.optString("episodeTitle");
         if (TextUtils.isEmpty(epTitle)) epTitle = ep.optString("epTitle");
         
-        String epId = ep.optString("episodeId");
-        if (TextUtils.isEmpty(epId)) epId = ep.optString("epId");
-        if (TextUtils.isEmpty(epId)) epId = ep.optString("id");
+        int epId = ep.optInt("episodeId", ep.optInt("epId", ep.optInt("id")));
         
-        if (TextUtils.isEmpty(animeTitle) || TextUtils.isEmpty(epId)) {
+        if (TextUtils.isEmpty(animeTitle)) {
             return;
         }
         
@@ -311,17 +317,14 @@ public class LeoDanmakuService {
                         DanmakuSpider.log("⚠️ 未找到精确匹配，使用第一条结果: " + selectedItem.title + " - " + selectedItem.epTitle);
                     }
 
-                    String danmakuUrl = selectedItem.getDanmakuUrl();
-
-
-                    DanmakuSpider.log("🎯 自动搜索找到结果: " + danmakuUrl);
+                    DanmakuSpider.log("🎯 自动搜索找到结果: " + selectedItem);
 
                     // 立即记录弹幕URL（在推送前）
-                    DanmakuSpider.recordDanmakuUrl(danmakuUrl, true);
+                    DanmakuSpider.recordDanmakuUrl(selectedItem, true);
 
                     found[0] = true;
 
-                    pushDanmakuDirect(danmakuUrl, activity, true);
+                    pushDanmakuDirect(selectedItem, activity, true);
                 } else {
                     DanmakuSpider.log("自动搜索未找到任何结果");
                     // 显示提示
@@ -370,54 +373,44 @@ public class LeoDanmakuService {
     }
     
     // 直接推送弹幕URL
-    public static void pushDanmakuDirect(String danmakuUrl, Activity activity, boolean isAuto) {
+    public static void pushDanmakuDirect(DanmakuItem danmakuItem, Activity activity, boolean isAuto) {
         // 防重复推送检查
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastPushTime < PUSH_MIN_INTERVAL) {
-            DanmakuSpider.log("⚠️ 推送过于频繁，跳过本次推送: " + danmakuUrl);
+            DanmakuSpider.log("⚠️ 推送过于频繁，跳过本次推送: " + danmakuItem.getDanmakuUrl());
             return;
         }
         lastPushTime = currentTime;
         // 记录弹幕URL（这个可以在主线程执行）
-        DanmakuSpider.recordDanmakuUrl(danmakuUrl, isAuto);
+        DanmakuSpider.recordDanmakuUrl(danmakuItem, isAuto);
 
         // 在网络请求前检查是否在主线程
         boolean isMainThread = Looper.myLooper() == Looper.getMainLooper();
         if (isMainThread) {
             DanmakuSpider.log("警告：推送弹幕在主线程调用，切换到子线程");
             // 切换到子线程执行
-            new Thread(() -> pushDanmakuInThread(danmakuUrl, activity)).start();
+            new Thread(() -> pushDanmakuInThread(danmakuItem, activity)).start();
         } else {
             // 已经在子线程，直接执行
             DanmakuSpider.log("已经在子线程，直接执行弹幕推送");
 
-            pushDanmakuInThread(danmakuUrl, activity);
+            pushDanmakuInThread(danmakuItem, activity);
         }
     }
 
     // 单独的网络推送方法，确保在子线程中执行
-    private static void pushDanmakuInThread(String danmakuUrl, Activity activity) {
+    private static void pushDanmakuInThread(DanmakuItem danmakuItem, Activity activity) {
         try {
-            if (TextUtils.isEmpty(danmakuUrl)) {
+            if (TextUtils.isEmpty(danmakuItem.getDanmakuUrl())) {
                 DanmakuSpider.log("推送弹幕URL为空");
                 return;
             }
 
-            // 使用URI类来解析URL并获取域名
-            try {
-                java.net.URI uri = new java.net.URI(danmakuUrl);
-                String domain = uri.getScheme() + "://" + uri.getHost();
-                if (uri.getPort() != -1) {
-                    domain += ":" + uri.getPort();
-                }
-                DanmakuSpider.apiUrl = domain;
-            } catch (java.net.URISyntaxException e) {
-                DanmakuSpider.log("URL格式错误: " + e.getMessage());
-            }
+            DanmakuSpider.apiUrl = danmakuItem.getApiBase();
 
             String localIp = NetworkUtils.getLocalIpAddress();
             String pushUrl = "http://" + localIp + ":9978/action?do=refresh&type=danmaku&path=" +
-                    URLEncoder.encode(danmakuUrl, "UTF-8");
+                    URLEncoder.encode(danmakuItem.getDanmakuUrl(), "UTF-8");
             DanmakuSpider.log("推送地址: " + pushUrl);
 
             String resp = "";
@@ -435,14 +428,14 @@ public class LeoDanmakuService {
                 }
             }
 
-            DanmakuSpider.log("推送弹幕到TVBox: " + danmakuUrl + " 响应: " + resp);
+            DanmakuSpider.log("推送弹幕到TVBox: " + danmakuItem.getDanmakuUrl() + " 响应: " + resp);
 
             // 在主线程显示Toast
             if (activity != null && !activity.isFinishing()) {
                 final String finalResp = resp;
                 activity.runOnUiThread(() -> {
                     if (!TextUtils.isEmpty(finalResp) && finalResp.toLowerCase().contains("ok")) {
-                        Toast.makeText(activity, "Leo弹幕已推送", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Leo弹幕已推送：" + String.format("%s - %s", danmakuItem.getTitle(), danmakuItem.getEpTitle()), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(activity, "推送失败: " + finalResp, Toast.LENGTH_SHORT).show();
                     }
@@ -453,33 +446,6 @@ public class LeoDanmakuService {
             if (activity != null && !activity.isFinishing()) {
                 activity.runOnUiThread(() -> Toast.makeText(activity, "推送异常", Toast.LENGTH_SHORT).show());
             }
-        }
-    }
-    
-    // 弹幕项
-    public static class DanmakuItem {
-        public String title;
-        public String epTitle;
-        public String shortTitle;
-        public String epId;
-        public String apiBase;
-
-        public String from;
-
-        public String animeTitle;
-        
-        public String getDanmakuUrl() {
-            return apiBase + "/api/v2/comment/" + epId + "?format=xml";
-        }
-
-        @Override
-        public String toString() {
-            if (title == null) {
-                return epTitle;
-            }
-            String[] parts = title.split("from");
-            String prefix = parts.length > 0 ? parts[0].trim() : title.trim();
-            return prefix + " - " + epTitle;
         }
     }
 }
