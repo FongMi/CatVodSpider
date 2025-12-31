@@ -85,9 +85,27 @@ public class DanmakuSpider extends Spider {
 
         // 初始化配置
         Set<String> loaded = DanmakuConfigManager.loadConfig(context);
-        if (!TextUtils.isEmpty(extend) && extend.startsWith("http")) {
-            loaded.add(extend);
+        if (!TextUtils.isEmpty(extend)) {
+            if (extend.startsWith("http")) {
+                loaded.add(extend);
+            } else if (extend.startsWith("{") && extend.endsWith("}")) {
+                try {
+                    JSONObject jsonObject = new JSONObject(extend);
+                    String apiUrl = jsonObject.getString("apiUrl");
+                    if (!TextUtils.isEmpty(apiUrl)) {
+                        loaded.add(apiUrl);
+                    }
+                    String autoPushEnabled = jsonObject.getString("autoPushEnabled");
+                    if (!TextUtils.isEmpty(autoPushEnabled)) {
+                        DanmakuSpider.autoPushEnabled = Boolean.parseBoolean(autoPushEnabled);
+                        log("自动推送状态已设置为: " + DanmakuSpider.autoPushEnabled);
+                    }
+                } catch (Exception e) {
+                    log("解析JSON格式配置失败: " + e.getMessage());
+                }
+            }
         }
+
         allApiUrls.clear();
         allApiUrls.addAll(loaded);
 
