@@ -380,10 +380,6 @@ public class DanmakuScanner {
         String episodeNum = extractEpisodeNum(media.getArtist());
         // 优先从剧集名中提取
         String year = extractYear(media.getArtist());
-        // 剧集年份为空时从标题中提取
-        if (TextUtils.isEmpty(year)) {
-            year = extractYear(media.getTitle());
-        }
         String seasonNum = extractSeasonNum(media.getArtist());
 
         EpisodeInfo episodeInfo = new EpisodeInfo();
@@ -399,42 +395,20 @@ public class DanmakuScanner {
         // 生成视频签名
         String newSignature = generateSignature(episodeInfo);
 
-        DanmakuSpider.log("🔑 视频签名: " + newSignature);
+//        DanmakuSpider.log("🔑 视频签名: " + newSignature);
 
         // 检查是否为同一个视频
-        boolean isSameVideo = false;
-        if (!TextUtils.isEmpty(DanmakuSpider.currentVideoSignature) && !TextUtils.isEmpty(newSignature)) {
-            isSameVideo = isSameVideo(DanmakuSpider.currentVideoSignature, newSignature);
-        }
+        boolean isSameVideo = isSameVideo(DanmakuSpider.currentVideoSignature, newSignature);;
 
         if (!isSameVideo) {
-            long currentTime = System.currentTimeMillis();
-
             // 不同的视频
             DanmakuSpider.currentVideoSignature = newSignature;
-            DanmakuSpider.lastVideoDetectedTime = currentTime;
+            DanmakuSpider.lastVideoDetectedTime = System.currentTimeMillis();
 
-            // 首次检测
-            if (isFirstDetection || !DanmakuSpider.hasAutoSearched) {
-                isFirstDetection = false;
-                DanmakuSpider.hasAutoSearched = true;
-                DanmakuSpider.lastProcessedTitle = media.getTitle();
-
-                // 记录当前播放的剧集信息
-                currentSeriesName = seriesName;
-                currentEpisodeNum = episodeNum;
-                lastEpisodeChangeTime = currentTime;
-
-                DanmakuSpider.log("🔄 首次检测到视频，记录信息");
-
-                startAutoSearch(episodeInfo, activity);
-            } else {
-                // 已经自动搜索过，检查是否可以换集
-                handleEpisodeChange(episodeInfo, activity);
-            }
+            handleEpisodeChange(episodeInfo, activity);
         } else {
             // 同一个视频，忽略重复触发
-            DanmakuSpider.log("✅ 检测到同一个视频，忽略重复触发");
+//            DanmakuSpider.log("✅ 检测到同一个视频，忽略重复触发");
         }
     }
 
@@ -563,7 +537,7 @@ public class DanmakuScanner {
         Pattern specificPattern = Pattern.compile("[Ss](?:[0-9]+)?[Ee]([0-9]+)");
         Matcher matcher = specificPattern.matcher(title);
         if (matcher.find()) {
-            DanmakuSpider.log("匹配S01E03格式: " + matcher.group(1));
+//            DanmakuSpider.log("匹配S01E03格式: " + matcher.group(1));
             return matcher.group(1);
         }
 
@@ -571,7 +545,7 @@ public class DanmakuScanner {
         Pattern chinesePattern = Pattern.compile("第\\s*([零一二三四五六七八九十百千万0-9]+)\\s*[集话章回]");
         matcher = chinesePattern.matcher(title);
         if (matcher.find()) {
-            DanmakuSpider.log("匹配中文集数: " + matcher.group(1));
+//            DanmakuSpider.log("匹配中文集数: " + matcher.group(1));
             return convertChineseNumberToArabic(matcher.group(1));
         }
 
@@ -579,7 +553,7 @@ public class DanmakuScanner {
         Pattern epPattern = Pattern.compile("[Ee][Pp]?\\s*([0-9]+)");
         matcher = epPattern.matcher(title);
         if (matcher.find()) {
-            DanmakuSpider.log("匹配EP03格式: " + matcher.group(1));
+//            DanmakuSpider.log("匹配EP03格式: " + matcher.group(1));
             return matcher.group(1);
         }
 
@@ -587,7 +561,7 @@ public class DanmakuScanner {
         Pattern dottedPattern = Pattern.compile("[Ss](?:[0-9]+)?[\\.\\-\\s]*[Ee]([0-9]+)");
         matcher = dottedPattern.matcher(title);
         if (matcher.find()) {
-            DanmakuSpider.log("匹配点分隔格式: " + matcher.group(1));
+//            DanmakuSpider.log("匹配点分隔格式: " + matcher.group(1));
             return matcher.group(1);
         }
 
@@ -595,7 +569,7 @@ public class DanmakuScanner {
         Pattern suffixPattern = Pattern.compile("\\.E([0-9]{1,3})(?:\\.|\\b|[^0-9])");
         matcher = suffixPattern.matcher(title);
         if (matcher.find()) {
-            DanmakuSpider.log("匹配后缀式 E03 格式: " + matcher.group(1));
+//            DanmakuSpider.log("匹配后缀式 E03 格式: " + matcher.group(1));
             return matcher.group(1);
         }
 
@@ -605,7 +579,7 @@ public class DanmakuScanner {
         if (matcher.find()) {
             String num = matcher.group(1);
             if (num != null && num.length() >= 2 && num.length() <= 3) {
-                DanmakuSpider.log("匹配文件名格式: " + num);
+//                DanmakuSpider.log("匹配文件名格式: " + num);
                 return num;
             }
         }
@@ -614,7 +588,7 @@ public class DanmakuScanner {
         Pattern numPattern = Pattern.compile("(\\d{1,3})(?:\\D*)$");
         matcher = numPattern.matcher(title);
         if (matcher.find()) {
-            DanmakuSpider.log("最后才匹配通用数字（优先级最低）: " + matcher.group(1));
+//            DanmakuSpider.log("最后才匹配通用数字（优先级最低）: " + matcher.group(1));
             return matcher.group(1);
         }
 
@@ -770,6 +744,8 @@ public class DanmakuScanner {
             currentSeriesName = episodeInfo.getSeriesName();
             currentEpisodeNum = episodeInfo.getEpisodeNum();
             lastEpisodeChangeTime = currentTime;
+
+            startAutoSearch(episodeInfo, activity);
         }
     }
 

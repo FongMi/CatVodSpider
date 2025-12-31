@@ -184,7 +184,7 @@ public class DanmakuSpider extends Spider {
     // 日志记录
     public static void log(String msg) {
         String time = new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date());
-        logBuffer.add(time + " " + msg);
+        logBuffer.add(time + " " + Thread.currentThread().getName() + " " + msg);
         if (logBuffer.size() > MAX_LOG_SIZE) {
             logBuffer.remove(0);
         }
