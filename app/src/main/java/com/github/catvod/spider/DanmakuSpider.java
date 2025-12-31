@@ -98,6 +98,7 @@ public class DanmakuSpider extends Spider {
                     String autoPushEnabled = jsonObject.getString("autoPushEnabled");
                     if (!TextUtils.isEmpty(autoPushEnabled)) {
                         DanmakuSpider.autoPushEnabled = Boolean.parseBoolean(autoPushEnabled);
+                        DanmakuSpider.saveAutoPushState(context);
                         log("自动推送状态已设置为: " + DanmakuSpider.autoPushEnabled);
                     }
                 } catch (Exception e) {
