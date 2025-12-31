@@ -1,6 +1,8 @@
 package com.github.catvod.spider;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.github.catvod.bean.danmu.DanmakuItem;
 import com.github.catvod.bean.tv.Media;
+import com.github.catvod.danmu.SharedPreferencesService;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -154,6 +157,8 @@ public class DanmakuScanner {
                         } else {
                             // 不在播放界面，重置播放状态
                             resetPlaybackStatus();
+
+                            DanmakuSpider.log("不在播放界面，重置播放状态");
                         }
                     }
                 } catch (Exception e) {
@@ -265,6 +270,12 @@ public class DanmakuScanner {
 
     // 重置播放状态
     private static void resetPlaybackStatus() {
+        DanmakuSpider.currentVideoSignature = "";
+        DanmakuSpider.lastVideoDetectedTime = 0;
+        DanmakuSpider.lastDanmakuId = -1;
+        currentSeriesName = "";
+        currentEpisodeNum = "";
+        lastEpisodeChangeTime = 0;
         isVideoPlaying = false;
         videoPlayStartTime = 0;
     }
@@ -365,10 +376,12 @@ public class DanmakuScanner {
 
     // 判断是否为播放界面
     private static boolean isPlayerActivity(String className) {
-        return className.contains("player") || className.contains("video") ||
-                className.contains("detail") || className.contains("play") ||
-                className.contains("media") || className.contains("movie") ||
-                className.contains("tv") || className.contains("film");
+        return className.contains("videoactivity");
+
+//        return className.contains("player") || className.contains("video") ||
+//                className.contains("detail") || className.contains("play") ||
+//                className.contains("media") || className.contains("movie") ||
+//                className.contains("tv") || className.contains("film");
     }
 
     // 处理检测到的标题
@@ -384,7 +397,7 @@ public class DanmakuScanner {
 
         EpisodeInfo episodeInfo = new EpisodeInfo();
         episodeInfo.setEpisodeNum(episodeNum);
-        episodeInfo.setEpisodeName(media.getTitle());
+        episodeInfo.setEpisodeName(SharedPreferencesService.getSearchKeywordCache(activity, media.getTitle()));
         episodeInfo.setEpisodeYear(year);
         episodeInfo.setEpisodeSeasonNum(seasonNum);
         episodeInfo.setSeriesName(seriesName);

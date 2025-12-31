@@ -3,6 +3,7 @@ package com.github.catvod.spider;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,6 +18,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.github.catvod.bean.danmu.DanmakuItem;
+import com.github.catvod.danmu.SharedPreferencesService;
 
 import java.io.File;
 import java.util.HashSet;
@@ -319,7 +321,11 @@ public class DanmakuUIHelper {
             try {
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-                // 创建自定义标题
+                LinearLayout mainLayout = new LinearLayout(activity);
+                mainLayout.setOrientation(LinearLayout.VERTICAL);
+                mainLayout.setBackgroundColor(BACKGROUND_WHITE);
+
+                // 创建标题部分
                 LinearLayout titleLayout = new LinearLayout(activity);
                 titleLayout.setOrientation(LinearLayout.VERTICAL);
                 titleLayout.setBackgroundColor(PRIMARY_COLOR);
@@ -332,10 +338,14 @@ public class DanmakuUIHelper {
                 titleText.setTypeface(null, android.graphics.Typeface.BOLD);
                 titleLayout.addView(titleText);
 
-                builder.setCustomTitle(titleText);
+                mainLayout.addView(titleLayout);
 
+                // 内容区域
                 ScrollView scrollView = new ScrollView(activity);
                 scrollView.setBackgroundColor(BACKGROUND_LIGHT);
+                LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
+                scrollView.setLayoutParams(scrollParams);
 
                 TextView logView = new TextView(activity);
                 logView.setText(DanmakuSpider.getLogContent());
@@ -347,22 +357,46 @@ public class DanmakuUIHelper {
                 logView.setLineSpacing(dpToPx(activity, 1), 1.4f);
 
                 scrollView.addView(logView);
-                builder.setView(scrollView);
+                mainLayout.addView(scrollView);
 
-                // 使用统一的按钮样式
+                // 按钮区域
+                LinearLayout btnLayout = new LinearLayout(activity);
+                btnLayout.setOrientation(LinearLayout.HORIZONTAL);
+                btnLayout.setGravity(Gravity.CENTER);
+                btnLayout.setPadding(dpToPx(activity, 16), dpToPx(activity, 12), dpToPx(activity, 16), dpToPx(activity, 12));
+                btnLayout.setBackgroundColor(BACKGROUND_WHITE);
+
                 Button clearButton = createStyledButton(activity, "清空", ACCENT_COLOR);
                 Button closeButton = createStyledButtonWithBorder(activity, "关闭", PRIMARY_COLOR);
 
-                builder.setPositiveButton("关闭", null);
-                builder.setNeutralButton("清空", (dialog, which) -> {
+                LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                        0, dpToPx(activity, 44), 1);
+                btnParams.setMargins(dpToPx(activity, 6), 0, dpToPx(activity, 6), 0);
+
+                clearButton.setLayoutParams(btnParams);
+                closeButton.setLayoutParams(btnParams);
+
+                btnLayout.addView(clearButton);
+                btnLayout.addView(closeButton);
+                mainLayout.addView(btnLayout);
+
+                builder.setView(mainLayout);
+                AlertDialog dialog = builder.create();
+                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                        dpToPx(activity, 500));
+
+                clearButton.setOnClickListener(v -> {
                     DanmakuSpider.clearLogs();
                     dialog.dismiss();
                     showLogDialog(ctx);
                 });
 
-                builder.show();
+                closeButton.setOnClickListener(v -> dialog.dismiss());
+
+                dialog.show();
             } catch (Exception e) {
-                DanmakuSpider.log("显示配置对话框异常: " + e.getMessage());
+                DanmakuSpider.log("显示日志对话框异常: " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }
@@ -403,7 +437,9 @@ public class DanmakuUIHelper {
 
                 final EditText searchInput = new EditText(activity);
                 searchInput.setHint("输入关键词搜索弹幕...");
-                searchInput.setText(initialKeyword);
+                // 优先读取缓存的手动输入值，如果没有则使用initialKeyword
+                String cachedKeyword = SharedPreferencesService.getSearchKeywordCache(activity, initialKeyword);
+                searchInput.setText(cachedKeyword);
                 searchInput.setHintTextColor(TEXT_TERTIARY);
                 searchInput.setBackgroundColor(BACKGROUND_LIGHT);
                 searchInput.setPadding(dpToPx(activity, 12), dpToPx(activity, 10), dpToPx(activity, 12), dpToPx(activity, 10));
@@ -457,6 +493,11 @@ public class DanmakuUIHelper {
                     if (TextUtils.isEmpty(keyword)) {
                         Toast.makeText(activity, "请输入关键词", Toast.LENGTH_SHORT).show();
                         return;
+                    }
+
+                    // 判断是否需要保存到缓存：当用户手动输入的值与initialKeyword不同时，保存到缓存
+                    if (!keyword.equals(initialKeyword) && !TextUtils.isEmpty(keyword)) {
+                        SharedPreferencesService.saveSearchKeywordCache(activity, initialKeyword, keyword);
                     }
 
                     resultContainer.removeAllViews();
@@ -610,8 +651,9 @@ public class DanmakuUIHelper {
 
                 dialog.show();
 
-                // 自动触发搜索（如果有初始关键词）
-                if (!TextUtils.isEmpty(initialKeyword)) {
+                // 自动触发搜索（优先使用缓存关键词，其次使用initialKeyword）
+                String keywordToSearch = SharedPreferencesService.getSearchKeywordCache(activity, initialKeyword);
+                if (!TextUtils.isEmpty(keywordToSearch)) {
                     searchBtn.performClick();
                 }
 
@@ -890,3 +932,4 @@ public class DanmakuUIHelper {
         return resultItem;
     }
 }
+
