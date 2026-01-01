@@ -1,7 +1,7 @@
 plugins {
     id 'ru.cleverpumpkin.proguard-dictionaries-generator' version '1.0.8' apply false
-    id 'com.android.application' version '8.13.0' apply false
-    id 'com.android.library' version '8.13.0' apply false
+    id 'com.android.application' version '8.13.2' apply false
+    id 'com.android.library' version '8.13.2' apply false
 }
 
 tasks.register('clean', Delete) {
@@ -9,5 +9,5 @@ tasks.register('clean', Delete) {
 }
 
 project.ext {
-    okhttpVersion = '5.3.1'
+    okhttpVersion = '5.3.2'
 }
