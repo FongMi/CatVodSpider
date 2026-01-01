@@ -393,11 +393,14 @@ public class DanmakuScanner {
         String episodeNum = extractEpisodeNum(media.getArtist());
         // 优先从剧集名中提取
         String year = extractYear(media.getArtist());
+        if (TextUtils.isEmpty(year)) {
+            year = extractYear2(media.getTitle());
+        }
         String seasonNum = extractSeasonNum(media.getArtist());
 
         EpisodeInfo episodeInfo = new EpisodeInfo();
         episodeInfo.setEpisodeNum(episodeNum);
-        episodeInfo.setEpisodeName(SharedPreferencesService.getSearchKeywordCache(activity, media.getTitle()));
+        episodeInfo.setEpisodeName(SharedPreferencesService.getSearchKeywordCache(activity, cleanTitle(media.getTitle())));
         episodeInfo.setEpisodeYear(year);
         episodeInfo.setEpisodeSeasonNum(seasonNum);
         episodeInfo.setSeriesName(seriesName);
@@ -446,31 +449,25 @@ public class DanmakuScanner {
 
         DanmakuSpider.log("🔍 清理前标题: " + title);
 
-        // 移除文件扩展名
-        String cleaned = title
-                .replaceAll("(?i)\\.(mkv|mp4|avi|rmvb|flv|wmv|mov|webm|ts)$", "")
-                .replaceAll("(?i)\\[.*?\\]", "")  // 移除方括号内容
-                .replaceAll("(?i)\\(.*?\\)", "")  // 移除圆括号内容
-                .replaceAll("(?i)【.*?】", "")    // 移除中文方括号内容
-                .replaceAll("(?i)（.*?）", "")    // 移除中文圆括号内容
-                .replaceAll("\\s+", " ")          // 合并多个空格
-                .trim();
+        String cleaned = title;
 
-        // 移除质量标识
-        cleaned = cleaned
-                .replaceAll("(?i)4k", "")
-                .replaceAll("(?i)4k", "")
-                .replaceAll("(?i)1080[Pp]", "")
-                .replaceAll("(?i)720[Pp]", "")
-                .replaceAll("(?i)[Hh][Dd]", "")
-                .replaceAll("(?i)[Ff][Uu][Ll][Ll]", "")
-                .replaceAll("\\s+", " ")
-                .trim();
+        // 先处理括号部分
+        int bracketIndex = cleaned.indexOf("（");
+        if (bracketIndex != -1) {
+            cleaned = cleaned.substring(0, bracketIndex);
+        }
+
+        // 再处理空格部分
+        int spaceIndex = cleaned.lastIndexOf(" ");
+        if (spaceIndex != -1) {
+            cleaned = cleaned.substring(0, spaceIndex);
+        }
 
         DanmakuSpider.log("🧹 清理后标题: " + cleaned);
 
         return cleaned;
     }
+
 
     // 判断是否为有效剧集标题
     private static boolean isValidEpisodeTitle(String title) {
@@ -624,6 +621,30 @@ public class DanmakuScanner {
 
         return "";
     }
+
+    // 提取剧集年份
+    private static String extractYear2(String title) {
+        if (TextUtils.isEmpty(title)) {
+            return "";
+        }
+
+        // 匹配（xxxx）格式的年份，支持中文或英文括号
+        Pattern bracketPattern = Pattern.compile("[（\\(](20\\d{2}|19\\d{2})[）\\)]");
+        Matcher bracketMatcher = bracketPattern.matcher(title);
+        if (bracketMatcher.find()) {
+            return bracketMatcher.group(1);
+        }
+
+        // 匹配空格后的年份格式
+        Pattern spacePattern = Pattern.compile("\\s(20\\d{2}|19\\d{2})(?!\\d)");
+        Matcher spaceMatcher = spacePattern.matcher(title);
+        if (spaceMatcher.find()) {
+            return spaceMatcher.group(1);
+        }
+
+        return "";
+    }
+
 
 
 

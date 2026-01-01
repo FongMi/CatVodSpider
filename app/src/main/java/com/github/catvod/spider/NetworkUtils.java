@@ -24,7 +24,7 @@ public class NetworkUtils {
 
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(10000);
-                conn.setReadTimeout(15000);
+                conn.setReadTimeout(60000);
                 conn.setRequestProperty("User-Agent", "Mozilla/5.0");
                 conn.setInstanceFollowRedirects(true);
                 // 添加这些请求头，模拟浏览器

@@ -80,6 +80,7 @@ public class Init {
             try {
                 //x86_64, arm64-v8a, x86, armeabi-v7a, armeabi
                 String goProxy = abs.contains("arm64-v8a") ? "goProxy-arm64" : "goProxy-arm";
+//                String goProxy = abs.contains("arm64-v8a") ? "Omnibox-arm64" : "Omnibox-arm";
                 File file = new File(context.getCacheDir(), goProxy);
 
                 Process exec = Runtime.getRuntime().exec("/system/bin/sh");

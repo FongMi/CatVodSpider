@@ -247,18 +247,18 @@ public class LeoDanmakuService {
         activity.runOnUiThread(() -> Toast.makeText(activity, "开始自动搜索弹幕", Toast.LENGTH_LONG).show());
         DanmakuSpider.log("开始自动搜索弹幕：" + episodeInfo.getEpisodeName());
 
-        // 20秒超时
+        // 60秒超时
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             synchronized (lock) {
                 if (!found[0]) {
                     activity.runOnUiThread(() -> {
-                        DanmakuSpider.log("自动搜索超时（20秒）");
-//                        Toast.makeText(activity, "自动搜索超时（20秒）", Toast.LENGTH_SHORT).show();
+                        DanmakuSpider.log("自动搜索超时（60秒）");
+//                        Toast.makeText(activity, "自动搜索超时（60秒）", Toast.LENGTH_SHORT).show();
                     });
                     lock.notify();
                 }
             }
-        }, 20000);
+        }, 60000);
 
         new Thread(() -> {
             try {
