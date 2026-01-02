@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.catvod.demo"
-        minSdk 26
+        minSdk 21
         targetSdk 36
     }
 
@@ -54,5 +54,4 @@ dependencies {
     implementation 'com.hierynomus:smbj:0.14.0'
     implementation 'com.orhanobut:logger:2.2.0'
     implementation 'org.jsoup:jsoup:1.21.2'
-    implementation 'com.alibaba:fastjson:2.0.60'
 }

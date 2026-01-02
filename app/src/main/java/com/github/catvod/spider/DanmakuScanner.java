@@ -449,57 +449,34 @@ public class DanmakuScanner {
 
         DanmakuSpider.log("🔍 清理前标题: " + title);
 
-        String cleaned = title;
+        // 先处理括号部分 - 同时处理中文和英文括号
+        int bracketIndex = title.indexOf("（");
+        int englishBracketIndex = title.indexOf("(");
 
-        // 先处理括号部分
-        int bracketIndex = cleaned.indexOf("（");
+        // 找到最小的括号位置（最先出现的）
+        int minIndex = Integer.MAX_VALUE;
         if (bracketIndex != -1) {
-            cleaned = cleaned.substring(0, bracketIndex);
+            minIndex = Math.min(minIndex, bracketIndex);
+        }
+        if (englishBracketIndex != -1) {
+            minIndex = Math.min(minIndex, englishBracketIndex);
+        }
+
+        if (minIndex != Integer.MAX_VALUE) {
+            title = title.substring(0, minIndex);
         }
 
         // 再处理空格部分
-        int spaceIndex = cleaned.lastIndexOf(" ");
+        int spaceIndex = title.lastIndexOf(" ");
         if (spaceIndex != -1) {
-            cleaned = cleaned.substring(0, spaceIndex);
+            title = title.substring(0, spaceIndex);
         }
 
-        DanmakuSpider.log("🧹 清理后标题: " + cleaned);
+        DanmakuSpider.log("🧹 清理后标题: " + title);
 
-        return cleaned;
+        return title;
     }
 
-
-    // 判断是否为有效剧集标题
-    private static boolean isValidEpisodeTitle(String title) {
-        if (TextUtils.isEmpty(title) || title.length() < 2) {
-            return false;
-        }
-
-        // 排除常见无效文本
-        String lower = title.toLowerCase();
-        String[] excludeKeywords = {
-                "类型:", "线路", "源", "播放器", "播放", "设置", "选集",
-                "baidu", "loading", "buffering", "error", "fail",
-                "祝大家", "大吉大利", "新年快乐", "春节快乐", "最近观看",
-                "history", "favorite", "收藏", "搜索", "search", "MB/s", "KB/s"
-        };
-
-        for (String keyword : excludeKeywords) {
-            if (lower.contains(keyword.toLowerCase())) {
-                return false;
-            }
-        }
-
-        // 检查是否包含剧集特征
-        boolean hasEpisodeMarker = title.matches(".*第.*[集话章回].*") ||
-                title.matches("(?i).*(?:ep|episode|e)\\s*[0-9]+.*") ||
-                title.matches("(?i).*s[0-9]+.*e[0-9]+.*") ||
-                title.matches(".*[\\-—~～:：]\\s*[0-9]+.*") ||
-                title.matches(".*\\b[0-9]{1,3}\\b.*");
-
-        return hasEpisodeMarker && (title.matches(".*[\\u4e00-\\u9fa5].*") ||
-                title.matches(".*[a-zA-Z].*"));
-    }
 
     // 提取剧集名
     private static String extractSeriesName(String title) {
@@ -510,10 +487,13 @@ public class DanmakuScanner {
         // 尝试匹配剧集名模式
         Matcher matcher = SERIES_NAME_PATTERN.matcher(title);
         if (matcher.find()) {
-            String seriesName = matcher.group(1).trim();
-            // 清理结尾的标点
-            seriesName = seriesName.replaceAll("[:：\\-—~～\\[\\]【】()（）]+$", "");
-            return seriesName;
+            String seriesName = matcher.group(1);
+            if (seriesName != null) {
+                seriesName = seriesName.trim();
+                // 清理结尾的标点
+                seriesName = seriesName.replaceAll("[:：\\-—~～\\[\\]【】()（）]+$", "");
+                return seriesName;
+            }
         }
 
         // 如果找不到模式，尝试提取数字前的部分
@@ -528,13 +508,11 @@ public class DanmakuScanner {
         }
 
         // 最后手段：移除所有数字和标点
-        String cleaned = title
+        return title
                 .replaceAll("\\d+", "")
                 .replaceAll("[:：\\-—~～\\[\\]【】()（）]+", " ")
                 .replaceAll("\\s+", " ")
                 .trim();
-
-        return cleaned;
     }
 
     // 提取集数
@@ -583,23 +561,66 @@ public class DanmakuScanner {
             return matcher.group(1);
         }
 
-        // 优先级6: 匹配文件名格式
-        Pattern filenamePattern = Pattern.compile("\\.([0-9]{2,3})\\.(?:[0-9]{3,4}[pP]|HD|720|1080|4K)");
-        matcher = filenamePattern.matcher(title);
+        // 优先级6: 匹配带括号或方括号的数字（如 [02] 或 (02)）- 提高优先级
+        Pattern bracketPattern = Pattern.compile("[\\[\\(]([0-9]{1,3})[\\]\\)]");
+        matcher = bracketPattern.matcher(title);
         if (matcher.find()) {
             String num = matcher.group(1);
-            if (num != null && num.length() >= 2 && num.length() <= 3) {
-//                DanmakuSpider.log("匹配文件名格式: " + num);
+            if (num != null && num.length() >= 1 && num.length() <= 3) {
+//            DanmakuSpider.log("匹配括号格式: " + num);
                 return num;
             }
         }
 
-        // 优先级7: 最后才匹配通用数字（优先级最低）
-        Pattern numPattern = Pattern.compile("(\\d{1,3})(?:\\D*)$");
+        // 优先级7: 匹配文件名格式，如 02.1080p 或 02.720p 等，但排除画质标识如 4K
+        // 改进的文件名格式匹配：匹配数字.分辨率格式，但不匹配数字.画质格式
+        Pattern filenamePattern = Pattern.compile("\\b([0-9]{1,3})\\.(?:[0-9]{3,4}[pP]|HD|SD|720|1080|480)(?:\\b|\\D)");
+        matcher = filenamePattern.matcher(title);
+        if (matcher.find()) {
+            String num = matcher.group(1);
+            if (num != null && num.length() >= 1 && num.length() <= 3) {
+//            DanmakuSpider.log("匹配文件名格式: " + num);
+                return num;
+            }
+        }
+
+        // 优先级8: 匹配前面有字母或标识的数字（如 E02, V02 等）
+        Pattern letterPrefixPattern = Pattern.compile("[A-Za-z]([0-9]{1,3})(?:\\b|\\D)");
+        matcher = letterPrefixPattern.matcher(title);
+        if (matcher.find()) {
+            String num = matcher.group(1);
+            if (num != null && num.length() >= 1 && num.length() <= 3) {
+//            DanmakuSpider.log("匹配字母前缀格式: " + num);
+                return num;
+            }
+        }
+
+        // 优先级9: 最后才匹配通用数字（优先级最低），但要排除文件大小、画质标识
+        // 优化：排除常见的文件大小、画质、版本等标识
+        Pattern numPattern = Pattern.compile("\\b([0-9]{1,3})\\b(?!(?:K|k|KB|MB|GB|\\.[0-9]+[MK]|\\d+\\.\\d+[MK]|p|P|hd|HD|sd|SD|4k|4K|2k|2K|fps|FPS|[xX][0-9]+|[0-9]+[xX][0-9]+))");
         matcher = numPattern.matcher(title);
         if (matcher.find()) {
-//            DanmakuSpider.log("最后才匹配通用数字（优先级最低）: " + matcher.group(1));
-            return matcher.group(1);
+            String num = matcher.group(1);
+            if (num != null && num.length() >= 1 && num.length() <= 3) {
+                // 额外检查：确保不是文件大小的一部分（如 974.24M 中的 974）
+                String fullMatch = matcher.group(0);
+                int matchStart = matcher.start();
+                int matchEnd = matcher.end();
+
+                // 检查数字前后是否包含文件大小标识
+                boolean isFileSize = false;
+                if (matchEnd < title.length()) {
+                    String after = title.substring(matchEnd);
+                    if (after.matches("^\\.?[0-9]*[MKGT][a-zA-Z]?")) { // 匹配 .24M, M, K 等
+                        isFileSize = true;
+                    }
+                }
+
+                if (!isFileSize) {
+//            DanmakuSpider.log("最后才匹配通用数字（优先级最低）: " + num);
+                    return num;
+                }
+            }
         }
 
         return "";

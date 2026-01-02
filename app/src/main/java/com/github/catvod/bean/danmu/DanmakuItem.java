@@ -1,7 +1,5 @@
 package com.github.catvod.bean.danmu;
 
-import java.util.StringJoiner;
-
 public class DanmakuItem {
     public String title;
     public String epTitle;
@@ -84,14 +82,15 @@ public class DanmakuItem {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", DanmakuItem.class.getSimpleName() + "[", "]")
-                .add("title='" + title + "'")
-                .add("epTitle='" + epTitle + "'")
-                .add("shortTitle='" + shortTitle + "'")
-                .add("epId=" + epId)
-                .add("apiBase='" + apiBase + "'")
-                .add("from='" + from + "'")
-                .add("animeTitle='" + animeTitle + "'")
-                .toString();
+        final StringBuilder sb = new StringBuilder("DanmakuItem{");
+        sb.append("title='").append(title).append('\'');
+        sb.append(", epTitle='").append(epTitle).append('\'');
+        sb.append(", shortTitle='").append(shortTitle).append('\'');
+        sb.append(", epId=").append(epId);
+        sb.append(", apiBase='").append(apiBase).append('\'');
+        sb.append(", from='").append(from).append('\'');
+        sb.append(", animeTitle='").append(animeTitle).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }
