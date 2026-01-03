@@ -437,15 +437,79 @@ public class LeoDanmakuService {
 
             DanmakuSpider.apiUrl = danmakuItem.getApiBase();
 
+            // 步骤1: 先获取弹幕数据，验证是否有效
+            String danmakuData = null;
+            int danmakuCount = 0;
+            int maxRetries = 3;
+            boolean dataValid = false;
+
+            for (int attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    danmakuData = NetworkUtils.robustHttpGet(danmakuItem.getDanmakuUrl());
+                    DanmakuSpider.log("获取弹幕数据 (尝试 " + (attempt + 1) + "/" + maxRetries + ") - URL: " + danmakuItem.getDanmakuUrl());
+
+                    if (!TextUtils.isEmpty(danmakuData) && danmakuData.toLowerCase().contains("<?xml")) {
+                        // 解析XML，获取弹幕总数
+                        danmakuCount = countDanmakuItems(danmakuData);
+                        if (danmakuCount > 0) {
+                            DanmakuSpider.log("✅ 获取到有效弹幕数据，总数: " + danmakuCount + " 条");
+                            dataValid = true;
+                            break;
+                        } else {
+                            DanmakuSpider.log("⚠️ 弹幕XML格式正确但无内容，尝试次数: " + (attempt + 1) + "/" + maxRetries);
+                        }
+                    } else if (!TextUtils.isEmpty(danmakuData)) {
+                        DanmakuSpider.log("⚠️ 获取到数据但不是XML格式，尝试次数: " + (attempt + 1) + "/" + maxRetries);
+                    } else {
+                        DanmakuSpider.log("⚠️ 获取弹幕数据为空，尝试次数: " + (attempt + 1) + "/" + maxRetries);
+                    }
+
+                    // 重试等待
+                    if (attempt < maxRetries - 1) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                } catch (Exception e) {
+                    DanmakuSpider.log("获取弹幕数据异常 (尝试 " + (attempt + 1) + "/" + maxRetries + "): " + e.getMessage());
+                    if (attempt < maxRetries - 1) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                }
+            }
+
+            // 如果数据验证失败，直接返回
+            if (!dataValid) {
+                DanmakuSpider.log("❌ 无法获取有效的弹幕数据，取消推送");
+                if (activity != null && !activity.isFinishing()) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            DanmakuSpider.safeShowToast(activity, "弹幕数据验证失败，请稍后重试");
+                        }
+                    });
+                }
+                return;
+            }
+
+            // 步骤2: 数据验证成功，开始推送
             String localIp = NetworkUtils.getLocalIpAddress();
             String pushUrl = "http://" + localIp + ":9978/action?do=refresh&type=danmaku&path=" +
                     URLEncoder.encode(danmakuItem.getDanmakuUrl(), "UTF-8");
             DanmakuSpider.log("推送地址: " + pushUrl);
 
-            String resp = "";
+            String pushResp = "";
             for (int i = 0; i < 3; i++) {
-                resp = NetworkUtils.robustHttpGet(pushUrl);
-                if (!TextUtils.isEmpty(resp) && resp.toLowerCase().contains("ok")) {
+                pushResp = NetworkUtils.robustHttpGet(pushUrl);
+                DanmakuSpider.log("推送尝试 " + (i + 1) + "/3: " + (!TextUtils.isEmpty(pushResp) ? "成功" : "失败"));
+                if (!TextUtils.isEmpty(pushResp) && pushResp.toLowerCase().contains("ok")) {
+                    DanmakuSpider.log("✅ 推送成功");
                     break;
                 }
                 if (i < 2) {
@@ -457,27 +521,59 @@ public class LeoDanmakuService {
                 }
             }
 
-            DanmakuSpider.log("推送弹幕到TVBox: " + danmakuItem.getDanmakuUrl() + " 响应: " + resp);
+            final int finalDanmakuCount = danmakuCount;
+            final String finalPushResp = pushResp;
 
-            // 在主线程显示Toast
+            // 步骤3: 在主线程显示结果
             if (activity != null && !activity.isFinishing()) {
-                final String finalResp = resp;
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (!TextUtils.isEmpty(finalResp) && finalResp.toLowerCase().contains("ok")) {
-                            DanmakuSpider.safeShowToast(activity, "Leo弹幕已推送：" + String.format("%s - %s", danmakuItem.getTitle(), danmakuItem.getEpTitle()));
+                        if (!TextUtils.isEmpty(finalPushResp) && finalPushResp.toLowerCase().contains("ok")) {
+                            String message = String.format("Leo弹幕已推送: %s - %s (共%d条)",
+                                    danmakuItem.getTitle(),
+                                    danmakuItem.getEpTitle(),
+                                    finalDanmakuCount);
+                            DanmakuSpider.safeShowToast(activity, message);
+                            DanmakuSpider.log(message);
                         } else {
-                            DanmakuSpider.safeShowToast(activity, "推送失败: " + finalResp);
+                            DanmakuSpider.safeShowToast(activity, "推送失败: 无响应或响应异常");
+                            DanmakuSpider.log("❌ 推送失败，响应: " + finalPushResp);
                         }
                     }
                 });
             }
         } catch (Exception e) {
-            DanmakuSpider.log("推送失败: " + e.getMessage());
+            DanmakuSpider.log("推送异常: " + e.getMessage());
+            e.printStackTrace();
             if (activity != null && !activity.isFinishing()) {
-                DanmakuSpider.safeShowToast(activity, "推送异常");
+                DanmakuSpider.safeShowToast(activity, "推送异常: " + e.getMessage());
             }
+        }
+    }
+
+    // 辅助方法：从XML中解析弹幕总数
+    private static int countDanmakuItems(String xmlData) {
+        try {
+            int count = 0;
+            // 统计<d>标签的出现次数（简单的XML弹幕格式通常为<d>...</d>）
+            int index = 0;
+            while ((index = xmlData.indexOf("<d ", index)) != -1) {
+                count++;
+                index++;
+            }
+            // 如果没找到带属性的<d，尝试简单<d>标签
+            if (count == 0) {
+                index = 0;
+                while ((index = xmlData.indexOf("<d>", index)) != -1) {
+                    count++;
+                    index += 3;
+                }
+            }
+            return count;
+        } catch (Exception e) {
+            DanmakuSpider.log("解析弹幕数据异常: " + e.getMessage());
+            return 0;
         }
     }
 }
