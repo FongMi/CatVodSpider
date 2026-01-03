@@ -7,7 +7,6 @@ import java.io.ByteArrayInputStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-
 public class Proxy {
 
     private static Method method;

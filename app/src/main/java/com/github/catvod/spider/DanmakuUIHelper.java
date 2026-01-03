@@ -3,7 +3,6 @@ package com.github.catvod.spider;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,11 +15,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.github.catvod.bean.danmu.DanmakuItem;
 import com.github.catvod.danmu.SharedPreferencesService;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +49,16 @@ public class DanmakuUIHelper {
     private static final int FOCUS_HIGHLIGHT_COLOR = 0xFF80BFFF;// 焦点高亮色
     private static final int SHADOW_COLOR = 0x1A000000;         // 阴影色
     private static final int GRAY_INACTIVE = 0xFFBBBBBB;        // 灰色(未选中状态)
+
+
+    /**
+     * 排序状态标记 (false=正序, true=倒序)
+     */
+    private static boolean isReversed;
+    /**
+     * 当前选中的标签索引
+     */
+    private static List<DanmakuItem> currentItems = new ArrayList<>();
 
 
     // 显示配置对话框
@@ -379,7 +388,7 @@ public class DanmakuUIHelper {
                     titleLayout.setPadding(dpToPx(activity, 20), dpToPx(activity, 16), dpToPx(activity, 20), dpToPx(activity, 16));
 
                     TextView titleText = new TextView(activity);
-                    titleText.setText("Leo弹幕日志");
+                    titleText.setText("Leo弹幕日志 - 打包时间：2026-01-03 23:47");
                     titleText.setTextSize(20);
                     titleText.setTextColor(Color.WHITE);
                     titleText.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -477,26 +486,26 @@ public class DanmakuUIHelper {
                     }
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
                     LinearLayout mainLayout = new LinearLayout(activity);
                     mainLayout.setOrientation(LinearLayout.VERTICAL);
                     mainLayout.setBackgroundColor(BACKGROUND_WHITE);
-                    mainLayout.setPadding(dpToPx(activity, 20), dpToPx(activity, 16), dpToPx(activity, 20), dpToPx(activity, 16));
+                    // 减小主布局内边距，腾出空间
+                    mainLayout.setPadding(dpToPx(activity, 15), dpToPx(activity, 10), dpToPx(activity, 15), dpToPx(activity, 10));
 
-                    // 标题 - 改进样式
+                    // 1. 缩小标题 [1]
                     TextView title = new TextView(activity);
                     title.setText("Leo弹幕搜索");
-                    title.setTextSize(22);
+                    title.setTextSize(16); // 缩小字号
                     title.setTextColor(PRIMARY_COLOR);
                     title.setGravity(Gravity.CENTER);
                     title.setTypeface(null, android.graphics.Typeface.BOLD);
-                    title.setPadding(0, dpToPx(activity, 4), 0, dpToPx(activity, 16));
+                    title.setPadding(0, dpToPx(activity, 2), 0, dpToPx(activity, 5));
                     mainLayout.addView(title);
 
                     // 搜索框容器 - 改进设计
                     LinearLayout searchLayout = new LinearLayout(activity);
                     searchLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    searchLayout.setPadding(0, 0, 0, dpToPx(activity, 12));
+                    searchLayout.setPadding(0, 0, 0, dpToPx(activity, 4));
                     searchLayout.setGravity(Gravity.CENTER_VERTICAL);
 
                     final EditText searchInput = new EditText(activity);
@@ -510,14 +519,21 @@ public class DanmakuUIHelper {
                     searchInput.setTextSize(14);
                     searchInput.setTextColor(TEXT_PRIMARY);
                     LinearLayout.LayoutParams inputParams = new LinearLayout.LayoutParams(0, dpToPx(activity, 44), 1);
-                    inputParams.setMargins(0, 0, dpToPx(activity, 8), 0);
+                    inputParams.setMargins(0, 0, dpToPx(activity, 4), 0);
                     searchInput.setLayoutParams(inputParams);
+
+                    // 倒序按钮
+                    Button reverseBtn = createStyledButton(activity, "↓↑", TERTIARY_LIGHT);
+                    reverseBtn.setLayoutParams(new LinearLayout.LayoutParams(
+                            dpToPx(activity, 50), dpToPx(activity, 44)));
+                    reverseBtn.setTextSize(16);
 
                     Button searchBtn = createStyledButton(activity, "搜索", PRIMARY_COLOR);
                     searchBtn.setLayoutParams(new LinearLayout.LayoutParams(
                             dpToPx(activity, 70), dpToPx(activity, 44)));
 
                     searchLayout.addView(searchInput);
+                    searchLayout.addView(reverseBtn);
                     searchLayout.addView(searchBtn);
                     mainLayout.addView(searchLayout);
 
@@ -528,7 +544,7 @@ public class DanmakuUIHelper {
                     tabContainer.setBackgroundColor(BACKGROUND_LIGHT);
                     LinearLayout.LayoutParams tabContainerParams = new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 48));
-                    tabContainerParams.setMargins(0, 0, 0, dpToPx(activity, 8));
+                    tabContainerParams.setMargins(0, dpToPx(activity, 2), 0, dpToPx(activity, 8));
                     tabContainer.setLayoutParams(tabContainerParams);
                     mainLayout.addView(tabContainer);
 
@@ -541,8 +557,8 @@ public class DanmakuUIHelper {
                     resultContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
 
                     LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 140)); // 限制高度
-                    scrollParams.setMargins(0, 5, 0, 5);
+                            ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 300));
+                    scrollParams.weight = 1; // 设置权重让其尽可能占满空间
                     resultScroll.setLayoutParams(scrollParams);
 
                     resultScroll.addView(resultContainer);
@@ -550,6 +566,18 @@ public class DanmakuUIHelper {
 
                     builder.setView(mainLayout);
                     final AlertDialog dialog = builder.create();
+
+                    // 倒序按钮事件
+                    reverseBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            isReversed = !isReversed;
+                            reverseBtn.setBackground(createRoundedBackgroundDrawable(isReversed ? ACCENT_COLOR : TERTIARY_LIGHT));
+
+                            // 重新构建分组并显示
+                            showResultsForTab(resultContainer, currentItems, activity, dialog);
+                        }
+                    });
 
                     // 搜索按钮事件
                     searchBtn.setOnClickListener(new View.OnClickListener() {
@@ -588,6 +616,11 @@ public class DanmakuUIHelper {
                                 public void run() {
                                     List<DanmakuItem> results =
                                             LeoDanmakuService.manualSearch(keyword, activity);
+                                    
+                                    // 根据排序状态反转结果
+                                    if (isReversed) {
+                                        java.util.Collections.reverse(results);
+                                    }
 
                                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                                         @Override
@@ -738,6 +771,12 @@ public class DanmakuUIHelper {
 
                     safeShowDialog(activity, dialog);
 
+                    android.view.WindowManager.LayoutParams lp = new android.view.WindowManager.LayoutParams();
+                    lp.copyFrom(dialog.getWindow().getAttributes());
+                    lp.width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.9); // 宽度占90%
+                    lp.height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.85); // 高度占85%
+                    dialog.getWindow().setAttributes(lp);
+
                     // 自动触发搜索（优先使用缓存关键词，其次使用initialKeyword）
                     String keywordToSearch = SharedPreferencesService.getSearchKeywordCache(activity, initialKeyword);
                     if (!TextUtils.isEmpty(keywordToSearch)) {
@@ -763,6 +802,8 @@ public class DanmakuUIHelper {
     private static void showResultsForTab(LinearLayout resultContainer, List<DanmakuItem> items,
                                           Activity activity, AlertDialog dialog) {
         resultContainer.removeAllViews();
+
+        currentItems = items;
 
         if (items == null || items.isEmpty()) {
             TextView empty = new TextView(activity);
@@ -915,6 +956,8 @@ public class DanmakuUIHelper {
                             // 展开内容
                             int buttonIndex = resultContainer.indexOfChild(groupBtn);
 
+                            sortResults(animeItems, isReversed);
+
                             for (int i = 0; i < animeItems.size(); i++) {
                                 DanmakuItem item = animeItems.get(i);
                                 Button subItem = createResultButton(activity, item, dialog);                            subItem.setPadding(40, 8, 20, 8);
@@ -947,17 +990,44 @@ public class DanmakuUIHelper {
                         @Override
                         public void run() {
                             groupBtn.performClick();
-                            // 滚动到选中项
-                            if (resultContainer.getParent() instanceof ScrollView) {
-                                ScrollView scrollView = (ScrollView) resultContainer.getParent();
-                                scrollView.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        int scrollY = resultContainer.getTop() + groupBtn.getTop();
-                                        scrollView.smoothScrollTo(0, scrollY);
+                            // 等待内容展开后再滚动到具体选中的子项
+                            resultContainer.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // 寻找包含lastDanmakuUrl的具体子项
+                                    View targetView = null;
+                                    for (int i = 0; i < resultContainer.getChildCount(); i++) {
+                                        View child = resultContainer.getChildAt(i);
+                                        if (child instanceof Button && child.getTag() instanceof DanmakuItem) {
+                                            DanmakuItem item = (DanmakuItem) child.getTag();
+                                            if (item.getDanmakuUrl() != null &&
+                                                    item.getDanmakuUrl().equals(DanmakuSpider.lastDanmakuUrl)) {
+                                                targetView = child;
+                                                break;
+                                            }
+                                        }
                                     }
-                                });
-                            }
+
+                                    if (resultContainer.getParent() instanceof ScrollView) {
+                                        ScrollView scrollView = (ScrollView) resultContainer.getParent();
+                                        View finalTargetView = targetView;
+                                        scrollView.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (finalTargetView != null) {
+                                                    // 滚动到具体选中的结果项
+                                                    int scrollY = resultContainer.getTop() + finalTargetView.getTop();
+                                                    scrollView.smoothScrollTo(0, scrollY);
+                                                } else {
+                                                    // 如果找不到目标项，滚动到分组按钮
+                                                    int scrollY = resultContainer.getTop() + groupBtn.getTop();
+                                                    scrollView.smoothScrollTo(0, scrollY);
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
                         }
                     });
                 }
@@ -966,6 +1036,19 @@ public class DanmakuUIHelper {
 
         resultContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
     }
+
+    private static void sortResults(List<DanmakuItem> results, boolean reversed) {
+        java.util.Collections.sort(results, new java.util.Comparator<DanmakuItem>() {
+            @Override
+            public int compare(DanmakuItem item1, DanmakuItem item2) {
+                // 基于 epId 进行排序，假设 epId 是 String 或可比较类型 [1]
+                if (item1.epId == null || item2.epId == null) return 0;
+                int cmp = item1.epId.compareTo(item2.epId);
+                return reversed ? -cmp : cmp; // 根据状态决定正序或倒序
+            }
+        });
+    }
+
 
 
     // 创建结果按钮的辅助方法 - 改进版本

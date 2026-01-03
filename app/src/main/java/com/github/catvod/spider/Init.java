@@ -10,13 +10,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 import com.github.catvod.crawler.SpiderDebug;
-import com.orhanobut.logger.BuildConfig;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -61,9 +59,7 @@ public class Init {
         Proxy.init();
 
         initGoProxy(context);
-
-        DanmakuSpider.log("打包时间： 2026-01-03 11:07");
-
+        
         DanmakuSpider.doInitWork(context,"");
 
         // 启动Hook监控
@@ -308,7 +304,7 @@ public class Init {
             return;
         }
 
-        try (InputStreamReader isr = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+        try (InputStreamReader isr = new InputStreamReader(stream, "UTF-8")) {
             try (BufferedReader br = new BufferedReader(isr)) {
                 String readLine;
                 while ((readLine = br.readLine()) != null) {
