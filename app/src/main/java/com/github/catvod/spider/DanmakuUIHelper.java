@@ -61,161 +61,181 @@ public class DanmakuUIHelper {
             return;
         }
         Activity activity = (Activity) ctx;
-        if (activity.isFinishing()) {
-            DanmakuSpider.log("Activity已销毁，不显示配置对话框");
+        if (activity.isFinishing() || activity.isDestroyed()) {
+            DanmakuSpider.log("Activity已销毁或正在销毁，不显示配置对话框");
             return;
         }
 
-        activity.runOnUiThread(() -> {
-            try {
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
-                LinearLayout mainLayout = new LinearLayout(activity);
-                mainLayout.setOrientation(LinearLayout.VERTICAL);
-                mainLayout.setBackgroundColor(BACKGROUND_WHITE);
-                mainLayout.setPadding(dpToPx(activity, 24), dpToPx(activity, 20), dpToPx(activity, 24), dpToPx(activity, 20));
-
-                // 标题 - 增强视觉效果
-                TextView title = new TextView(activity);
-                title.setText("Leo弹幕配置");
-                title.setTextSize(24);
-                title.setTextColor(PRIMARY_COLOR);
-                title.setGravity(Gravity.CENTER);
-                title.setPadding(0, dpToPx(activity, 8), 0, dpToPx(activity, 20));
-                title.setTypeface(null, android.graphics.Typeface.BOLD);
-                mainLayout.addView(title);
-
-                // 副标题说明
-                TextView subtitle = new TextView(activity);
-                subtitle.setText("配置弹幕搜索API地址");
-                subtitle.setTextSize(13);
-                subtitle.setTextColor(TEXT_SECONDARY);
-                subtitle.setGravity(Gravity.CENTER);
-                subtitle.setPadding(0, 0, 0, dpToPx(activity, 16));
-                mainLayout.addView(subtitle);
-
-                // IP地址提示 - 改进样式
-                TextView ipInfo = new TextView(activity);
-                String ip = NetworkUtils.getLocalIpAddress();
-//                ipInfo.setText("Web配置: http://" + ip + ":9810");
-                ipInfo.setTextSize(13);
-                ipInfo.setTextColor(ACCENT_COLOR);
-                ipInfo.setGravity(Gravity.CENTER);
-                ipInfo.setPadding(dpToPx(activity, 12), dpToPx(activity, 8), dpToPx(activity, 12), dpToPx(activity, 12));
-                ipInfo.setBackgroundColor(0xFFFFF8E1);
-                mainLayout.addView(ipInfo);
-
-                // API输入框容器 - 改进样式
-                LinearLayout inputContainer = new LinearLayout(activity);
-                inputContainer.setOrientation(LinearLayout.VERTICAL);
-                inputContainer.setBackgroundColor(BORDER_LIGHT);
-                inputContainer.setPadding(dpToPx(activity, 2), dpToPx(activity, 2), dpToPx(activity, 2), dpToPx(activity, 2));
-                LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                containerParams.setMargins(0, dpToPx(activity, 12), 0, dpToPx(activity, 12));
-                inputContainer.setLayoutParams(containerParams);
-
-                EditText apiInput = new EditText(activity);
-                apiInput.setText(TextUtils.join("\n", DanmakuSpider.allApiUrls));
-                apiInput.setHint("每行一个API地址\n例如: https://example.com/danmu");
-                apiInput.setMinLines(4);
-                apiInput.setMaxLines(7);
-                apiInput.setBackgroundColor(BACKGROUND_WHITE);
-                apiInput.setTextColor(TEXT_PRIMARY);
-                apiInput.setTextSize(13);
-                apiInput.setPadding(dpToPx(activity, 12), dpToPx(activity, 12), dpToPx(activity, 12), dpToPx(activity, 12));
-                apiInput.setHintTextColor(TEXT_TERTIARY);
-
-                inputContainer.addView(apiInput);
-                mainLayout.addView(inputContainer);
-
-                // 分割线 - 改进样式
-                View divider = new View(activity);
-                divider.setBackgroundColor(BORDER_LIGHT);
-                LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 1));
-                dividerParams.setMargins(0, dpToPx(activity, 16), 0, dpToPx(activity, 16));
-                divider.setLayoutParams(dividerParams);
-                mainLayout.addView(divider);
-
-                // 按钮布局 - 改进设计
-                LinearLayout btnLayout = new LinearLayout(activity);
-                btnLayout.setOrientation(LinearLayout.HORIZONTAL);
-                btnLayout.setGravity(Gravity.CENTER);
-
-                Button saveBtn = createStyledButton(activity, "保存", PRIMARY_COLOR);
-                Button clearBtn = createStyledButton(activity, "清空缓存", ACCENT_COLOR);
-                Button cancelBtn = createStyledButtonWithBorder(activity, "取消", PRIMARY_COLOR);
-
-                LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
-                        0, dpToPx(activity, 44), 1);
-                btnParams.setMargins(dpToPx(activity, 6), 0, dpToPx(activity, 6), 0);
-
-                saveBtn.setLayoutParams(btnParams);
-                clearBtn.setLayoutParams(btnParams);
-                cancelBtn.setLayoutParams(btnParams);
-
-                btnLayout.addView(saveBtn);
-                btnLayout.addView(clearBtn);
-                btnLayout.addView(cancelBtn);
-
-                mainLayout.addView(btnLayout);
-
-                builder.setView(mainLayout);
-                AlertDialog dialog = builder.create();
-                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                        dpToPx(activity, 600)); // 设置固定高度
-
-                // 按钮事件
-                saveBtn.setOnClickListener(v -> {
-                    String text = apiInput.getText().toString();
-                    String[] lines = text.split("\n");
-                    Set<String> newUrls = new HashSet<>();
-                    for (String line : lines) {
-                        String trimmed = line.trim();
-                        if (!TextUtils.isEmpty(trimmed) && trimmed.startsWith("http")) {
-                            newUrls.add(trimmed);
-                        }
-                    }
-
-                    if (newUrls.isEmpty()) {
-                        Toast.makeText(activity, "请输入有效的API地址", Toast.LENGTH_SHORT).show();
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // 在创建对话框前再次检查状态
+                    if (activity.isFinishing() || activity.isDestroyed()) {
+                        DanmakuSpider.log("Activity已销毁，不显示配置对话框");
                         return;
                     }
 
-                    DanmakuSpider.allApiUrls.clear();
-                    DanmakuSpider.allApiUrls.addAll(newUrls);
-                    DanmakuConfigManager.saveConfig(activity, newUrls);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-                    Toast.makeText(activity, "配置已保存", Toast.LENGTH_SHORT).show();
+                    LinearLayout mainLayout = new LinearLayout(activity);
+                    mainLayout.setOrientation(LinearLayout.VERTICAL);
+                    mainLayout.setBackgroundColor(BACKGROUND_WHITE);
+                    mainLayout.setPadding(dpToPx(activity, 24), dpToPx(activity, 20), dpToPx(activity, 24), dpToPx(activity, 20));
 
-                    DanmakuSpider.log("已保存API地址: " + newUrls);
+                    // 标题 - 增强视觉效果
+                    TextView title = new TextView(activity);
+                    title.setText("Leo弹幕配置");
+                    title.setTextSize(24);
+                    title.setTextColor(PRIMARY_COLOR);
+                    title.setGravity(Gravity.CENTER);
+                    title.setPadding(0, dpToPx(activity, 8), 0, dpToPx(activity, 20));
+                    title.setTypeface(null, android.graphics.Typeface.BOLD);
+                    mainLayout.addView(title);
 
-                    dialog.dismiss();
-                });
+                    // 副标题说明
+                    TextView subtitle = new TextView(activity);
+                    subtitle.setText("配置弹幕搜索API地址");
+                    subtitle.setTextSize(13);
+                    subtitle.setTextColor(TEXT_SECONDARY);
+                    subtitle.setGravity(Gravity.CENTER);
+                    subtitle.setPadding(0, 0, 0, dpToPx(activity, 16));
+                    mainLayout.addView(subtitle);
 
-                clearBtn.setOnClickListener(v -> {
-                    try {
-                        File cacheDir = new File(activity.getCacheDir(), "leo_danmaku_cache");
-                        if (cacheDir.exists()) {
-                            File[] files = cacheDir.listFiles();
-                            if (files != null) {
-                                for (File f : files) f.delete();
+                    // IP地址提示 - 改进样式
+                    TextView ipInfo = new TextView(activity);
+                    String ip = NetworkUtils.getLocalIpAddress();
+//                ipInfo.setText("Web配置: http://" + ip + ":9810");
+                    ipInfo.setTextSize(13);
+                    ipInfo.setTextColor(ACCENT_COLOR);
+                    ipInfo.setGravity(Gravity.CENTER);
+                    ipInfo.setPadding(dpToPx(activity, 12), dpToPx(activity, 8), dpToPx(activity, 12), dpToPx(activity, 12));
+                    ipInfo.setBackgroundColor(0xFFFFF8E1);
+                    mainLayout.addView(ipInfo);
+
+                    // API输入框容器 - 改进样式
+                    LinearLayout inputContainer = new LinearLayout(activity);
+                    inputContainer.setOrientation(LinearLayout.VERTICAL);
+                    inputContainer.setBackgroundColor(BORDER_LIGHT);
+                    inputContainer.setPadding(dpToPx(activity, 2), dpToPx(activity, 2), dpToPx(activity, 2), dpToPx(activity, 2));
+                    LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    containerParams.setMargins(0, dpToPx(activity, 12), 0, dpToPx(activity, 12));
+                    inputContainer.setLayoutParams(containerParams);
+
+                    EditText apiInput = new EditText(activity);
+                    apiInput.setText(TextUtils.join("\n", DanmakuSpider.allApiUrls));
+                    apiInput.setHint("每行一个API地址\n例如: https://example.com/danmu");
+                    apiInput.setMinLines(4);
+                    apiInput.setMaxLines(7);
+                    apiInput.setBackgroundColor(BACKGROUND_WHITE);
+                    apiInput.setTextColor(TEXT_PRIMARY);
+                    apiInput.setTextSize(13);
+                    apiInput.setPadding(dpToPx(activity, 12), dpToPx(activity, 12), dpToPx(activity, 12), dpToPx(activity, 12));
+                    apiInput.setHintTextColor(TEXT_TERTIARY);
+
+                    inputContainer.addView(apiInput);
+                    mainLayout.addView(inputContainer);
+
+                    // 分割线 - 改进样式
+                    View divider = new View(activity);
+                    divider.setBackgroundColor(BORDER_LIGHT);
+                    LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 1));
+                    dividerParams.setMargins(0, dpToPx(activity, 16), 0, dpToPx(activity, 16));
+                    divider.setLayoutParams(dividerParams);
+                    mainLayout.addView(divider);
+
+                    // 按钮布局 - 改进设计
+                    LinearLayout btnLayout = new LinearLayout(activity);
+                    btnLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    btnLayout.setGravity(Gravity.CENTER);
+
+                    Button saveBtn = createStyledButton(activity, "保存", PRIMARY_COLOR);
+                    Button clearBtn = createStyledButton(activity, "清空缓存", ACCENT_COLOR);
+                    Button cancelBtn = createStyledButtonWithBorder(activity, "取消", PRIMARY_COLOR);
+
+                    LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                            0, dpToPx(activity, 44), 1);
+                    btnParams.setMargins(dpToPx(activity, 6), 0, dpToPx(activity, 6), 0);
+
+                    saveBtn.setLayoutParams(btnParams);
+                    clearBtn.setLayoutParams(btnParams);
+                    cancelBtn.setLayoutParams(btnParams);
+
+                    btnLayout.addView(saveBtn);
+                    btnLayout.addView(clearBtn);
+                    btnLayout.addView(cancelBtn);
+
+                    mainLayout.addView(btnLayout);
+
+                    builder.setView(mainLayout);
+                    AlertDialog dialog = builder.create();
+                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                            dpToPx(activity, 600)); // 设置固定高度
+
+                    // 按钮事件
+                    saveBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String text = apiInput.getText().toString();
+                            String[] lines = text.split("\n");
+                            Set<String> newUrls = new HashSet<>();
+                            for (String line : lines) {
+                                String trimmed = line.trim();
+                                if (!TextUtils.isEmpty(trimmed) && trimmed.startsWith("http")) {
+                                    newUrls.add(trimmed);
+                                }
+                            }
+
+                            if (newUrls.isEmpty()) {
+                                DanmakuSpider.safeShowToast(activity, "请输入有效的API地址");
+                                return;
+                            }
+
+                            DanmakuSpider.allApiUrls.clear();
+                            DanmakuSpider.allApiUrls.addAll(newUrls);
+                            DanmakuConfigManager.saveConfig(activity, newUrls);
+
+                            DanmakuSpider.safeShowToast(activity, "配置已保存");
+
+                            DanmakuSpider.log("已保存API地址: " + newUrls);
+
+                            dialog.dismiss();
+                        }
+                    });
+
+                    clearBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                File cacheDir = new File(activity.getCacheDir(), "leo_danmaku_cache");
+                                if (cacheDir.exists()) {
+                                    File[] files = cacheDir.listFiles();
+                                    if (files != null) {
+                                        for (File f : files) f.delete();
+                                    }
+                                }
+                                DanmakuScanner.lastDetectedTitle = "";
+                                DanmakuSpider.resetAutoSearch();
+                                DanmakuSpider.safeShowToast(activity, "缓存已清空");
+                            } catch (Exception e) {
+                                DanmakuSpider.safeShowToast(activity, "清空失败");
                             }
                         }
-                        DanmakuScanner.lastDetectedTitle = "";
-                        DanmakuSpider.resetAutoSearch();
-                        Toast.makeText(activity, "缓存已清空", Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        Toast.makeText(activity, "清空失败", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
 
-                cancelBtn.setOnClickListener(v -> dialog.dismiss());
+                    cancelBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
 
-                dialog.show();
-            } catch (Exception e) {
-                e.printStackTrace();
+                    safeShowDialog(activity, dialog);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -230,19 +250,22 @@ public class DanmakuUIHelper {
         button.setTypeface(null, android.graphics.Typeface.BOLD);
 
         // 添加焦点效果
-        button.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                // 获得焦点时显示填充背景
-                ((Button) v).setBackground(createRoundedBackgroundDrawable(PRIMARY_LIGHT));
-                ((Button) v).setTextColor(PRIMARY_COLOR);
-                v.setScaleX(1.08f);
-                v.setScaleY(1.08f);
-            } else {
-                // 失去焦点时恢复边框样式
-                ((Button) v).setBackground(createRoundedBorderDrawable(color));
-                ((Button) v).setTextColor(color);
-                v.setScaleX(1.0f);
-                v.setScaleY(1.0f);
+        button.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    // 获得焦点时显示填充背景
+                    ((Button) v).setBackground(createRoundedBackgroundDrawable(PRIMARY_LIGHT));
+                    ((Button) v).setTextColor(PRIMARY_COLOR);
+                    v.setScaleX(1.08f);
+                    v.setScaleY(1.08f);
+                } else {
+                    // 失去焦点时恢复边框样式
+                    ((Button) v).setBackground(createRoundedBorderDrawable(color));
+                    ((Button) v).setTextColor(color);
+                    v.setScaleX(1.0f);
+                    v.setScaleY(1.0f);
+                }
             }
         });
 
@@ -259,16 +282,19 @@ public class DanmakuUIHelper {
         button.setTypeface(null, android.graphics.Typeface.BOLD);
 
         // 添加焦点效果
-        button.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                v.setBackground(createRoundedBackgroundDrawable(0xFF0052CC));
-                ((Button) v).setTextColor(Color.WHITE);
-                v.setScaleX(1.08f);
-                v.setScaleY(1.08f);
-            } else {
-                ((Button) v).setBackground(createRoundedBackgroundDrawable(backgroundColor));
-                v.setScaleX(1.0f);
-                v.setScaleY(1.0f);
+        button.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    v.setBackground(createRoundedBackgroundDrawable(0xFF0052CC));
+                    ((Button) v).setTextColor(Color.WHITE);
+                    v.setScaleX(1.08f);
+                    v.setScaleY(1.08f);
+                } else {
+                    ((Button) v).setBackground(createRoundedBackgroundDrawable(backgroundColor));
+                    v.setScaleX(1.0f);
+                    v.setScaleY(1.0f);
+                }
             }
         });
 
@@ -302,6 +328,20 @@ public class DanmakuUIHelper {
         return drawable;
     }
 
+    // 安全显示对话框的辅助方法
+    private static void safeShowDialog(Activity activity, AlertDialog dialog) {
+        if (activity != null && !activity.isFinishing() && !activity.isDestroyed() && !dialog.isShowing()) {
+            try {
+                dialog.show();
+            } catch (Exception e) {
+                DanmakuSpider.log("显示对话框失败: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            DanmakuSpider.log("Activity已销毁或对话框已在显示，无法显示对话框");
+        }
+    }
+
 
     // 显示日志对话框
     public static void showLogDialog(Context ctx) {
@@ -312,91 +352,107 @@ public class DanmakuUIHelper {
         }
 
         Activity activity = (Activity) ctx;
-        if (activity.isFinishing()) {
-            DanmakuSpider.log("Activity已销毁，不显示配置对话框");
+        if (activity.isFinishing() || activity.isDestroyed()) {
+            DanmakuSpider.log("Activity已销毁或正在销毁，不显示日志对话框");
             return;
         }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // 在创建对话框前再次检查状态
+                    if (activity.isFinishing() || activity.isDestroyed()) {
+                        DanmakuSpider.log("Activity已销毁，不显示日志对话框");
+                        return;
+                    }
 
-        activity.runOnUiThread(() -> {
-            try {
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-                LinearLayout mainLayout = new LinearLayout(activity);
-                mainLayout.setOrientation(LinearLayout.VERTICAL);
-                mainLayout.setBackgroundColor(BACKGROUND_WHITE);
+                    LinearLayout mainLayout = new LinearLayout(activity);
+                    mainLayout.setOrientation(LinearLayout.VERTICAL);
+                    mainLayout.setBackgroundColor(BACKGROUND_WHITE);
 
-                // 创建标题部分
-                LinearLayout titleLayout = new LinearLayout(activity);
-                titleLayout.setOrientation(LinearLayout.VERTICAL);
-                titleLayout.setBackgroundColor(PRIMARY_COLOR);
-                titleLayout.setPadding(dpToPx(activity, 20), dpToPx(activity, 16), dpToPx(activity, 20), dpToPx(activity, 16));
+                    // 创建标题部分
+                    LinearLayout titleLayout = new LinearLayout(activity);
+                    titleLayout.setOrientation(LinearLayout.VERTICAL);
+                    titleLayout.setBackgroundColor(PRIMARY_COLOR);
+                    titleLayout.setPadding(dpToPx(activity, 20), dpToPx(activity, 16), dpToPx(activity, 20), dpToPx(activity, 16));
 
-                TextView titleText = new TextView(activity);
-                titleText.setText("Leo弹幕日志");
-                titleText.setTextSize(20);
-                titleText.setTextColor(Color.WHITE);
-                titleText.setTypeface(null, android.graphics.Typeface.BOLD);
-                titleLayout.addView(titleText);
+                    TextView titleText = new TextView(activity);
+                    titleText.setText("Leo弹幕日志");
+                    titleText.setTextSize(20);
+                    titleText.setTextColor(Color.WHITE);
+                    titleText.setTypeface(null, android.graphics.Typeface.BOLD);
+                    titleLayout.addView(titleText);
 
-                mainLayout.addView(titleLayout);
+                    mainLayout.addView(titleLayout);
 
-                // 内容区域
-                ScrollView scrollView = new ScrollView(activity);
-                scrollView.setBackgroundColor(BACKGROUND_LIGHT);
-                LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
-                scrollView.setLayoutParams(scrollParams);
+                    // 内容区域
+                    ScrollView scrollView = new ScrollView(activity);
+                    scrollView.setBackgroundColor(BACKGROUND_LIGHT);
+                    LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
+                    scrollView.setLayoutParams(scrollParams);
 
-                TextView logView = new TextView(activity);
-                logView.setText(DanmakuSpider.getLogContent());
-                logView.setTextSize(11);
-                logView.setTextColor(TEXT_SECONDARY);
-                logView.setPadding(dpToPx(activity, 16), dpToPx(activity, 16), dpToPx(activity, 16), dpToPx(activity, 16));
-                logView.setBackgroundColor(BACKGROUND_WHITE);
-                logView.setTypeface(android.graphics.Typeface.MONOSPACE);
-                logView.setLineSpacing(dpToPx(activity, 1), 1.4f);
+                    TextView logView = new TextView(activity);
+                    logView.setText(DanmakuSpider.getLogContent());
+                    logView.setTextSize(11);
+                    logView.setTextColor(TEXT_SECONDARY);
+                    logView.setPadding(dpToPx(activity, 16), dpToPx(activity, 16), dpToPx(activity, 16), dpToPx(activity, 16));
+                    logView.setBackgroundColor(BACKGROUND_WHITE);
+                    logView.setTypeface(android.graphics.Typeface.MONOSPACE);
+                    logView.setLineSpacing(dpToPx(activity, 1), 1.4f);
 
-                scrollView.addView(logView);
-                mainLayout.addView(scrollView);
+                    scrollView.addView(logView);
+                    mainLayout.addView(scrollView);
 
-                // 按钮区域
-                LinearLayout btnLayout = new LinearLayout(activity);
-                btnLayout.setOrientation(LinearLayout.HORIZONTAL);
-                btnLayout.setGravity(Gravity.CENTER);
-                btnLayout.setPadding(dpToPx(activity, 16), dpToPx(activity, 12), dpToPx(activity, 16), dpToPx(activity, 12));
-                btnLayout.setBackgroundColor(BACKGROUND_WHITE);
+                    // 按钮区域
+                    LinearLayout btnLayout = new LinearLayout(activity);
+                    btnLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    btnLayout.setGravity(Gravity.CENTER);
+                    btnLayout.setPadding(dpToPx(activity, 16), dpToPx(activity, 12), dpToPx(activity, 16), dpToPx(activity, 12));
+                    btnLayout.setBackgroundColor(BACKGROUND_WHITE);
 
-                Button clearButton = createStyledButton(activity, "清空", ACCENT_COLOR);
-                Button closeButton = createStyledButtonWithBorder(activity, "关闭", PRIMARY_COLOR);
+                    Button clearButton = createStyledButton(activity, "清空", ACCENT_COLOR);
+                    Button closeButton = createStyledButtonWithBorder(activity, "关闭", PRIMARY_COLOR);
 
-                LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
-                        0, dpToPx(activity, 44), 1);
-                btnParams.setMargins(dpToPx(activity, 6), 0, dpToPx(activity, 6), 0);
+                    LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                            0, dpToPx(activity, 44), 1);
+                    btnParams.setMargins(dpToPx(activity, 6), 0, dpToPx(activity, 6), 0);
 
-                clearButton.setLayoutParams(btnParams);
-                closeButton.setLayoutParams(btnParams);
+                    clearButton.setLayoutParams(btnParams);
+                    closeButton.setLayoutParams(btnParams);
 
-                btnLayout.addView(clearButton);
-                btnLayout.addView(closeButton);
-                mainLayout.addView(btnLayout);
+                    btnLayout.addView(clearButton);
+                    btnLayout.addView(closeButton);
+                    mainLayout.addView(btnLayout);
 
-                builder.setView(mainLayout);
-                AlertDialog dialog = builder.create();
-                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                        dpToPx(activity, 500));
+                    builder.setView(mainLayout);
+                    AlertDialog dialog = builder.create();
+                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                            dpToPx(activity, 500));
 
-                clearButton.setOnClickListener(v -> {
-                    DanmakuSpider.clearLogs();
-                    dialog.dismiss();
-                    showLogDialog(ctx);
-                });
+                    clearButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DanmakuSpider.clearLogs();
+                            dialog.dismiss();
+                            showLogDialog(ctx);
+                        }
+                    });
 
-                closeButton.setOnClickListener(v -> dialog.dismiss());
+                    closeButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
 
-                dialog.show();
-            } catch (Exception e) {
-                DanmakuSpider.log("显示日志对话框异常: " + e.getMessage());
-                e.printStackTrace();
+                    safeShowDialog(activity, dialog);
+                } catch (Exception e) {
+                    DanmakuSpider.log("显示日志对话框异常: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -405,261 +461,285 @@ public class DanmakuUIHelper {
     // 显示搜索对话框
     public static void showSearchDialog(Activity activity, String initialKeyword) {
         // 检查Activity状态
-        if (activity == null || activity.isFinishing()) {
-            DanmakuSpider.log("Activity不可用，不显示搜索对话框");
+        if (activity.isFinishing() || activity.isDestroyed()) {
+            DanmakuSpider.log("Activity已销毁或正在销毁，不显示搜索对话框");
             return;
         }
 
-        activity.runOnUiThread(() -> {
-            try {
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
-                LinearLayout mainLayout = new LinearLayout(activity);
-                mainLayout.setOrientation(LinearLayout.VERTICAL);
-                mainLayout.setBackgroundColor(BACKGROUND_WHITE);
-                mainLayout.setPadding(dpToPx(activity, 20), dpToPx(activity, 16), dpToPx(activity, 20), dpToPx(activity, 16));
-
-                // 标题 - 改进样式
-                TextView title = new TextView(activity);
-                title.setText("Leo弹幕搜索");
-                title.setTextSize(22);
-                title.setTextColor(PRIMARY_COLOR);
-                title.setGravity(Gravity.CENTER);
-                title.setTypeface(null, android.graphics.Typeface.BOLD);
-                title.setPadding(0, dpToPx(activity, 4), 0, dpToPx(activity, 16));
-                mainLayout.addView(title);
-
-                // 搜索框容器 - 改进设计
-                LinearLayout searchLayout = new LinearLayout(activity);
-                searchLayout.setOrientation(LinearLayout.HORIZONTAL);
-                searchLayout.setPadding(0, 0, 0, dpToPx(activity, 12));
-                searchLayout.setGravity(Gravity.CENTER_VERTICAL);
-
-                final EditText searchInput = new EditText(activity);
-                searchInput.setHint("输入关键词搜索弹幕...");
-                // 优先读取缓存的手动输入值，如果没有则使用initialKeyword
-                String cachedKeyword = SharedPreferencesService.getSearchKeywordCache(activity, initialKeyword);
-                searchInput.setText(cachedKeyword);
-                searchInput.setHintTextColor(TEXT_TERTIARY);
-                searchInput.setBackgroundColor(BACKGROUND_LIGHT);
-                searchInput.setPadding(dpToPx(activity, 12), dpToPx(activity, 10), dpToPx(activity, 12), dpToPx(activity, 10));
-                searchInput.setTextSize(14);
-                searchInput.setTextColor(TEXT_PRIMARY);
-                LinearLayout.LayoutParams inputParams = new LinearLayout.LayoutParams(0, dpToPx(activity, 44), 1);
-                inputParams.setMargins(0, 0, dpToPx(activity, 8), 0);
-                searchInput.setLayoutParams(inputParams);
-
-                Button searchBtn = createStyledButton(activity, "搜索", PRIMARY_COLOR);
-                searchBtn.setLayoutParams(new LinearLayout.LayoutParams(
-                        dpToPx(activity, 70), dpToPx(activity, 44)));
-
-                searchLayout.addView(searchInput);
-                searchLayout.addView(searchBtn);
-                mainLayout.addView(searchLayout);
-
-                // 页签容器 - 改进样式
-                LinearLayout tabContainer = new LinearLayout(activity);
-                tabContainer.setOrientation(LinearLayout.HORIZONTAL);
-                tabContainer.setPadding(0, dpToPx(activity, 4), 0, dpToPx(activity, 8));
-                tabContainer.setBackgroundColor(BACKGROUND_LIGHT);
-                LinearLayout.LayoutParams tabContainerParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 48));
-                tabContainerParams.setMargins(0, 0, 0, dpToPx(activity, 8));
-                tabContainer.setLayoutParams(tabContainerParams);
-                mainLayout.addView(tabContainer);
-
-                // 结果容器 - 改进样式
-                ScrollView resultScroll = new ScrollView(activity);
-                resultScroll.setBackgroundColor(BACKGROUND_WHITE);
-                LinearLayout resultContainer = new LinearLayout(activity);
-                resultContainer.setOrientation(LinearLayout.VERTICAL);
-                resultContainer.setPadding(0, 10, 0, 0);
-                resultContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-
-                LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 140)); // 限制高度
-                scrollParams.setMargins(0, 5, 0, 5);
-                resultScroll.setLayoutParams(scrollParams);
-
-                resultScroll.addView(resultContainer);
-                mainLayout.addView(resultScroll);
-
-                builder.setView(mainLayout);
-                final AlertDialog dialog = builder.create();
-
-                // 搜索按钮事件
-                searchBtn.setOnClickListener(v -> {
-                    String keyword = searchInput.getText().toString().trim();
-                    if (TextUtils.isEmpty(keyword)) {
-                        Toast.makeText(activity, "请输入关键词", Toast.LENGTH_SHORT).show();
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // 在创建对话框前再次检查状态
+                    if (activity.isFinishing() || activity.isDestroyed()) {
+                        DanmakuSpider.log("Activity已销毁，不显示搜索对话框");
                         return;
                     }
 
-                    // 判断是否需要保存到缓存：当用户手动输入的值与initialKeyword不同时，保存到缓存
-                    if (!keyword.equals(initialKeyword) && !TextUtils.isEmpty(keyword)) {
-                        SharedPreferencesService.saveSearchKeywordCache(activity, initialKeyword, keyword);
-                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-                    resultContainer.removeAllViews();
-                    tabContainer.removeAllViews();
-                    TextView loading = new TextView(activity);
-                    loading.setText("正在搜索: " + keyword);
-                    loading.setGravity(Gravity.CENTER);
-                    loading.setPadding(0, 20, 0, 20);
-                    loading.setTextColor(TEXT_SECONDARY);
-                    resultContainer.addView(loading);
+                    LinearLayout mainLayout = new LinearLayout(activity);
+                    mainLayout.setOrientation(LinearLayout.VERTICAL);
+                    mainLayout.setBackgroundColor(BACKGROUND_WHITE);
+                    mainLayout.setPadding(dpToPx(activity, 20), dpToPx(activity, 16), dpToPx(activity, 20), dpToPx(activity, 16));
 
-                    new Thread(() -> {
-                        List<DanmakuItem> results =
-                                LeoDanmakuService.manualSearch(keyword, activity);
+                    // 标题 - 改进样式
+                    TextView title = new TextView(activity);
+                    title.setText("Leo弹幕搜索");
+                    title.setTextSize(22);
+                    title.setTextColor(PRIMARY_COLOR);
+                    title.setGravity(Gravity.CENTER);
+                    title.setTypeface(null, android.graphics.Typeface.BOLD);
+                    title.setPadding(0, dpToPx(activity, 4), 0, dpToPx(activity, 16));
+                    mainLayout.addView(title);
 
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            resultContainer.removeAllViews();
-                            tabContainer.removeAllViews();
+                    // 搜索框容器 - 改进设计
+                    LinearLayout searchLayout = new LinearLayout(activity);
+                    searchLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    searchLayout.setPadding(0, 0, 0, dpToPx(activity, 12));
+                    searchLayout.setGravity(Gravity.CENTER_VERTICAL);
 
-                            if (results.isEmpty()) {
-                                TextView empty = new TextView(activity);
-                                empty.setText("未找到结果");
-                                empty.setGravity(Gravity.CENTER);
-                                empty.setPadding(0, 50, 0, 50);
-                                empty.setTextColor(TEXT_SECONDARY);
-                                resultContainer.addView(empty);
+                    final EditText searchInput = new EditText(activity);
+                    searchInput.setHint("输入关键词搜索弹幕...");
+                    // 优先读取缓存的手动输入值，如果没有则使用initialKeyword
+                    String cachedKeyword = SharedPreferencesService.getSearchKeywordCache(activity, initialKeyword);
+                    searchInput.setText(cachedKeyword);
+                    searchInput.setHintTextColor(TEXT_TERTIARY);
+                    searchInput.setBackgroundColor(BACKGROUND_LIGHT);
+                    searchInput.setPadding(dpToPx(activity, 12), dpToPx(activity, 10), dpToPx(activity, 12), dpToPx(activity, 10));
+                    searchInput.setTextSize(14);
+                    searchInput.setTextColor(TEXT_PRIMARY);
+                    LinearLayout.LayoutParams inputParams = new LinearLayout.LayoutParams(0, dpToPx(activity, 44), 1);
+                    inputParams.setMargins(0, 0, dpToPx(activity, 8), 0);
+                    searchInput.setLayoutParams(inputParams);
+
+                    Button searchBtn = createStyledButton(activity, "搜索", PRIMARY_COLOR);
+                    searchBtn.setLayoutParams(new LinearLayout.LayoutParams(
+                            dpToPx(activity, 70), dpToPx(activity, 44)));
+
+                    searchLayout.addView(searchInput);
+                    searchLayout.addView(searchBtn);
+                    mainLayout.addView(searchLayout);
+
+                    // 页签容器 - 改进样式
+                    LinearLayout tabContainer = new LinearLayout(activity);
+                    tabContainer.setOrientation(LinearLayout.HORIZONTAL);
+                    tabContainer.setPadding(0, dpToPx(activity, 4), 0, dpToPx(activity, 8));
+                    tabContainer.setBackgroundColor(BACKGROUND_LIGHT);
+                    LinearLayout.LayoutParams tabContainerParams = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 48));
+                    tabContainerParams.setMargins(0, 0, 0, dpToPx(activity, 8));
+                    tabContainer.setLayoutParams(tabContainerParams);
+                    mainLayout.addView(tabContainer);
+
+                    // 结果容器 - 改进样式
+                    ScrollView resultScroll = new ScrollView(activity);
+                    resultScroll.setBackgroundColor(BACKGROUND_WHITE);
+                    LinearLayout resultContainer = new LinearLayout(activity);
+                    resultContainer.setOrientation(LinearLayout.VERTICAL);
+                    resultContainer.setPadding(0, 10, 0, 0);
+                    resultContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+
+                    LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 140)); // 限制高度
+                    scrollParams.setMargins(0, 5, 0, 5);
+                    resultScroll.setLayoutParams(scrollParams);
+
+                    resultScroll.addView(resultContainer);
+                    mainLayout.addView(resultScroll);
+
+                    builder.setView(mainLayout);
+                    final AlertDialog dialog = builder.create();
+
+                    // 搜索按钮事件
+                    searchBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String keyword = searchInput.getText().toString().trim();
+                            if (TextUtils.isEmpty(keyword)) {
+                                DanmakuSpider.safeShowToast(activity, "请输入关键词");
                                 return;
                             }
 
-                            // 按 from 属性分组结果
-                            java.util.Map<String, List<DanmakuItem>> groupedResults =
-                                    new java.util.HashMap<>();
-                            for (DanmakuItem item : results) {
-                                String from = item.from != null ? item.from : "默认";
-                                groupedResults.computeIfAbsent(from, k -> new java.util.ArrayList<>()).add(item);
+                            // 判断是否需要保存到缓存：当用户手动输入的值与initialKeyword不同时，保存到缓存
+                            if (!keyword.equals(initialKeyword) && !TextUtils.isEmpty(keyword)) {
+                                SharedPreferencesService.saveSearchKeywordCache(activity, initialKeyword, keyword);
                             }
 
-                            // 创建页签
-                            java.util.List<String> tabs = new java.util.ArrayList<>(groupedResults.keySet());
-                            java.util.Collections.sort(tabs);
+                            resultContainer.removeAllViews();
+                            tabContainer.removeAllViews();
+                            TextView loading = new TextView(activity);
+                            loading.setText("正在搜索: " + keyword);
+                            loading.setGravity(Gravity.CENTER);
+                            loading.setPadding(0, 20, 0, 20);
+                            loading.setTextColor(TEXT_SECONDARY);
+                            resultContainer.addView(loading);
 
-                            // 创建页签按钮 - 第一层级(蓝色)
-                            for (int i = 0; i < tabs.size(); i++) {
-                                String tabName = tabs.get(i);
-                                Button tabBtn = new Button(activity);
-                                tabBtn.setText(tabName);
-                                tabBtn.setTag(tabName);
-                                tabBtn.setTextSize(14);
-                                tabBtn.setTextColor(Color.WHITE);
-                                tabBtn.setPadding(15, 10, 15, 10);
-                                tabBtn.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    List<DanmakuItem> results =
+                                            LeoDanmakuService.manualSearch(keyword, activity);
 
-                                // 添加焦点效果 - 第一层级：深蓝色焦点
-                                tabBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                                    @Override
-                                    public void onFocusChange(View v, boolean hasFocus) {
-                                        if (hasFocus) {
-                                            // 焦点状态：深蓝色
-                                            v.setBackground(createRoundedBackgroundDrawable(PRIMARY_DARK));
-                                            v.setScaleX(1.08f);
-                                            v.setScaleY(1.08f);
-                                        } else {
-                                            // 检查是否为当前选中页签
-                                            String currentTabName = (String) v.getTag();
-                                            List<DanmakuItem> tabItems = groupedResults.get(currentTabName);
-                                            boolean containsLastUrl = false;
-                                            if (DanmakuSpider.lastDanmakuUrl != null && !DanmakuSpider.lastDanmakuUrl.isEmpty()) {
-                                                for (DanmakuItem item : tabItems) {
-                                                    if (item.getDanmakuUrl() != null && item.getDanmakuUrl().equals(DanmakuSpider.lastDanmakuUrl)) {
-                                                        containsLastUrl = true;
-                                                        break;
+                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            resultContainer.removeAllViews();
+                                            tabContainer.removeAllViews();
+
+                                            if (results.isEmpty()) {
+                                                TextView empty = new TextView(activity);
+                                                empty.setText("未找到结果");
+                                                empty.setGravity(Gravity.CENTER);
+                                                empty.setPadding(0, 50, 0, 50);
+                                                empty.setTextColor(TEXT_SECONDARY);
+                                                resultContainer.addView(empty);
+                                                return;
+                                            }
+
+                                            // 按 from 属性分组结果
+                                            java.util.Map<String, List<DanmakuItem>> groupedResults =
+                                                    new java.util.HashMap<>();
+                                            for (DanmakuItem item : results) {
+                                                String from = item.from != null ? item.from : "默认";
+                                                if (!groupedResults.containsKey(from)) {
+                                                    groupedResults.put(from, new java.util.ArrayList<>());
+                                                }
+                                                groupedResults.get(from).add(item);
+                                            }
+
+                                            // 创建页签
+                                            java.util.List<String> tabs = new java.util.ArrayList<>(groupedResults.keySet());
+                                            java.util.Collections.sort(tabs);
+
+                                            // 创建页签按钮 - 第一层级(蓝色)
+                                            for (int i = 0; i < tabs.size(); i++) {
+                                                String tabName = tabs.get(i);
+                                                Button tabBtn = new Button(activity);
+                                                tabBtn.setText(tabName);
+                                                tabBtn.setTag(tabName);
+                                                tabBtn.setTextSize(14);
+                                                tabBtn.setTextColor(Color.WHITE);
+                                                tabBtn.setPadding(15, 10, 15, 10);
+                                                tabBtn.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
+
+                                                // 添加焦点效果 - 第一层级：深蓝色焦点
+                                                tabBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                                    @Override
+                                                    public void onFocusChange(View v, boolean hasFocus) {
+                                                        if (hasFocus) {
+                                                            // 焦点状态：深蓝色
+                                                            v.setBackground(createRoundedBackgroundDrawable(PRIMARY_DARK));
+                                                            v.setScaleX(1.08f);
+                                                            v.setScaleY(1.08f);
+                                                        } else {
+                                                            // 检查是否为当前选中页签
+                                                            String currentTabName = (String) v.getTag();
+                                                            List<DanmakuItem> tabItems = groupedResults.get(currentTabName);
+                                                            boolean containsLastUrl = false;
+                                                            if (DanmakuSpider.lastDanmakuUrl != null && !DanmakuSpider.lastDanmakuUrl.isEmpty()) {
+                                                                for (DanmakuItem item : tabItems) {
+                                                                    if (item.getDanmakuUrl() != null && item.getDanmakuUrl().equals(DanmakuSpider.lastDanmakuUrl)) {
+                                                                        containsLastUrl = true;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            if (containsLastUrl) {
+                                                                v.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
+                                                            } else {
+                                                                v.setBackground(createRoundedBackgroundDrawable(GRAY_INACTIVE));
+                                                            }
+                                                            v.setScaleX(1.0f);
+                                                            v.setScaleY(1.0f);
+                                                        }
+                                                    }
+                                                });
+
+                                                LinearLayout.LayoutParams tabParams = new LinearLayout.LayoutParams(
+                                                        0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
+                                                tabParams.setMargins(5, 0, 5, 0);
+                                                tabBtn.setLayoutParams(tabParams);
+
+                                                final int tabIndex = i;
+                                                tabBtn.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v1) {
+                                                        // 更新页签样式 - 只高亮当前选中的页签(蓝色)
+                                                        for (int j = 0; j < tabContainer.getChildCount(); j++) {
+                                                            Button btn = (Button) tabContainer.getChildAt(j);
+                                                            if (j == tabIndex) {
+                                                                btn.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
+                                                                ((Button) btn).setTextColor(Color.WHITE);
+                                                            } else {
+                                                                btn.setBackground(createRoundedBackgroundDrawable(GRAY_INACTIVE));
+                                                                ((Button) btn).setTextColor(Color.WHITE);
+                                                            }
+                                                        }
+
+                                                        // 显示对应页签的内容
+                                                        showResultsForTab(resultContainer, groupedResults.get(tabName), activity, dialog);
+                                                    }
+                                                });
+
+                                                tabContainer.addView(tabBtn);
+
+                                                // 检查这个页签是否包含lastDanmakuUrl
+                                                List<DanmakuItem> tabItems = groupedResults.get(tabName);
+                                                boolean containsLastUrl = false;
+                                                if (DanmakuSpider.lastDanmakuUrl != null && !DanmakuSpider.lastDanmakuUrl.isEmpty()) {
+                                                    for (DanmakuItem item : tabItems) {
+                                                        if (item.getDanmakuUrl() != null && item.getDanmakuUrl().equals(DanmakuSpider.lastDanmakuUrl)) {
+                                                            containsLastUrl = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+
+                                                // 只有当lastDanmakuUrl为空或空字符串时才默认选中第一个页签
+                                                if (DanmakuSpider.lastDanmakuUrl == null || DanmakuSpider.lastDanmakuUrl.isEmpty()) {
+                                                    // 默认选中第一个页签 - 蓝色
+                                                    if (i == 0) {
+                                                        tabBtn.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
+                                                        tabBtn.setTextColor(Color.WHITE);
+                                                        showResultsForTab(resultContainer, groupedResults.get(tabName), activity, dialog);
+                                                    } else {
+                                                        // 其他页签设置为灰色背景
+                                                        tabBtn.setBackground(createRoundedBackgroundDrawable(GRAY_INACTIVE));
+                                                        tabBtn.setTextColor(Color.WHITE);
+                                                    }
+                                                } else {
+                                                    // 如果lastDanmakuUrl不为空，只高亮包含该URL的页签，并选中展示其内容
+                                                    if (containsLastUrl) {
+                                                        tabBtn.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
+                                                        tabBtn.setTextColor(Color.WHITE);
+                                                        showResultsForTab(resultContainer, groupedResults.get(tabName), activity, dialog);
+                                                    } else {
+                                                        tabBtn.setBackground(createRoundedBackgroundDrawable(GRAY_INACTIVE));
+                                                        tabBtn.setTextColor(Color.WHITE);
                                                     }
                                                 }
                                             }
-
-                                            if (containsLastUrl) {
-                                                v.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
-                                            } else {
-                                                v.setBackground(createRoundedBackgroundDrawable(GRAY_INACTIVE));
-                                            }
-                                            v.setScaleX(1.0f);
-                                            v.setScaleY(1.0f);
                                         }
-                                    }
-                                });
-
-                                LinearLayout.LayoutParams tabParams = new LinearLayout.LayoutParams(
-                                        0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
-                                tabParams.setMargins(5, 0, 5, 0);
-                                tabBtn.setLayoutParams(tabParams);
-
-                                final int tabIndex = i;
-                                tabBtn.setOnClickListener(v1 -> {
-                                    // 更新页签样式 - 只高亮当前选中的页签(蓝色)
-                                    for (int j = 0; j < tabContainer.getChildCount(); j++) {
-                                        Button btn = (Button) tabContainer.getChildAt(j);
-                                        if (j == tabIndex) {
-                                            btn.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
-                                            ((Button) btn).setTextColor(Color.WHITE);
-                                        } else {
-                                            btn.setBackground(createRoundedBackgroundDrawable(GRAY_INACTIVE));
-                                            ((Button) btn).setTextColor(Color.WHITE);
-                                        }
-                                    }
-
-                                    // 显示对应页签的内容
-                                    showResultsForTab(resultContainer, groupedResults.get(tabName), activity, dialog);
-                                });
-
-                                tabContainer.addView(tabBtn);
-
-                                // 检查这个页签是否包含lastDanmakuUrl
-                                List<DanmakuItem> tabItems = groupedResults.get(tabName);
-                                boolean containsLastUrl = false;
-                                if (DanmakuSpider.lastDanmakuUrl != null && !DanmakuSpider.lastDanmakuUrl.isEmpty()) {
-                                    for (DanmakuItem item : tabItems) {
-                                        if (item.getDanmakuUrl() != null && item.getDanmakuUrl().equals(DanmakuSpider.lastDanmakuUrl)) {
-                                            containsLastUrl = true;
-                                            break;
-                                        }
-                                    }
+                                    });
                                 }
+                            }).start();
+                        }
+                    });
 
-                                // 只有当lastDanmakuUrl为空或空字符串时才默认选中第一个页签
-                                if (DanmakuSpider.lastDanmakuUrl == null || DanmakuSpider.lastDanmakuUrl.isEmpty()) {
-                                    // 默认选中第一个页签 - 蓝色
-                                    if (i == 0) {
-                                        tabBtn.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
-                                        tabBtn.setTextColor(Color.WHITE);
-                                        showResultsForTab(resultContainer, groupedResults.get(tabName), activity, dialog);
-                                    } else {
-                                        // 其他页签设置为灰色背景
-                                        tabBtn.setBackground(createRoundedBackgroundDrawable(GRAY_INACTIVE));
-                                        tabBtn.setTextColor(Color.WHITE);
-                                    }
-                                } else {
-                                    // 如果lastDanmakuUrl不为空，只高亮包含该URL的页签，并选中展示其内容
-                                    if (containsLastUrl) {
-                                        tabBtn.setBackground(createRoundedBackgroundDrawable(PRIMARY_COLOR));
-                                        tabBtn.setTextColor(Color.WHITE);
-                                        showResultsForTab(resultContainer, groupedResults.get(tabName), activity, dialog);
-                                    } else {
-                                        tabBtn.setBackground(createRoundedBackgroundDrawable(GRAY_INACTIVE));
-                                        tabBtn.setTextColor(Color.WHITE);
-                                    }
-                                }
-                            }
-                        });
-                    }).start();
-                });
+                    safeShowDialog(activity, dialog);
 
-                dialog.show();
-
-                // 自动触发搜索（优先使用缓存关键词，其次使用initialKeyword）
-                String keywordToSearch = SharedPreferencesService.getSearchKeywordCache(activity, initialKeyword);
-                if (!TextUtils.isEmpty(keywordToSearch)) {
-                    searchBtn.performClick();
+                    // 自动触发搜索（优先使用缓存关键词，其次使用initialKeyword）
+                    String keywordToSearch = SharedPreferencesService.getSearchKeywordCache(activity, initialKeyword);
+                    if (!TextUtils.isEmpty(keywordToSearch)) {
+                        searchBtn.performClick();
+                    }
+                } catch (Exception e) {
+                    // 静默失败，避免闪退
+                    DanmakuSpider.log("显示搜索对话框异常: " + e.getMessage());
+                    e.printStackTrace();
                 }
-
-            } catch (Exception e) {
-                // 静默失败，避免闪退
-                DanmakuSpider.log("显示搜索对话框异常: " + e.getMessage());
             }
         });
     }
@@ -689,7 +769,10 @@ public class DanmakuUIHelper {
         java.util.Map<String, List<DanmakuItem>> animeGroups = new java.util.HashMap<>();
         for (DanmakuItem item : items) {
             String animeTitle = item.animeTitle != null ? item.animeTitle : item.title;
-            animeGroups.computeIfAbsent(animeTitle, k -> new java.util.ArrayList<>()).add(item);
+            if (!animeGroups.containsKey(animeTitle)) {
+                animeGroups.put(animeTitle, new java.util.ArrayList<>());
+            }
+            animeGroups.get(animeTitle).add(item);
         }
 
         // 检查哪些分组包含上次使用的弹幕URL
@@ -784,77 +867,89 @@ public class DanmakuUIHelper {
                 groupBtn.setTag(stateInfo);
 
                 // 点击分组按钮展开/收起内容
-                groupBtn.setOnClickListener(v -> {
-                    // 点击时更新选中状态 - 只有当前按钮保持选中状态(橙色)
-                    for (java.util.Map.Entry<String, Button> entry : groupButtons.entrySet()) {
-                        Button otherBtn = entry.getValue();
-                        if (otherBtn == v) {
-                            // 当前按钮选中 - 橙色
-                            otherBtn.setBackground(createRoundedBackgroundDrawable(SECONDARY_COLOR));
-                            otherBtn.setTextColor(Color.WHITE);
-                            groupsWithLastUrl.clear();
-                            groupsWithLastUrl.add(entry.getKey());
-                        } else {
-                            // 其他按钮取消选中 - 灰色
-                            otherBtn.setBackground(createRoundedBackgroundDrawable(0xFFE8E8E8));
-                            otherBtn.setTextColor(TEXT_PRIMARY);
-                        }
-                    }
-
-                    int[] currentStateInfo = (int[]) groupBtn.getTag();
-                    boolean isExpanded = currentStateInfo[0] == 1;
-
-                    if (isExpanded) {
-                        // 收起内容
-                        int buttonIndex = resultContainer.indexOfChild(groupBtn);
-                        int childCount = currentStateInfo[1];
-
-                        for (int i = 0; i < childCount; i++) {
-                            if (buttonIndex + 1 < resultContainer.getChildCount()) {
-                                resultContainer.removeViewAt(buttonIndex + 1);
+                groupBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // 点击时更新选中状态 - 只有当前按钮保持选中状态(橙色)
+                        for (java.util.Map.Entry<String, Button> entry : groupButtons.entrySet()) {
+                            Button otherBtn = entry.getValue();
+                            if (otherBtn == v) {
+                                // 当前按钮选中 - 橙色
+                                otherBtn.setBackground(createRoundedBackgroundDrawable(SECONDARY_COLOR));
+                                otherBtn.setTextColor(Color.WHITE);
+                                groupsWithLastUrl.clear();
+                                groupsWithLastUrl.add(entry.getKey());
+                            } else {
+                                // 其他按钮取消选中 - 灰色
+                                otherBtn.setBackground(createRoundedBackgroundDrawable(0xFFE8E8E8));
+                                otherBtn.setTextColor(TEXT_PRIMARY);
                             }
                         }
 
-                        currentStateInfo[0] = 0; // 未展开
-                        currentStateInfo[1] = 0; // 子项数量
-                        groupBtn.setText(animeTitle + " (" + animeItems.size() + "集)");
-                    } else {
-                        // 展开内容
-                        int buttonIndex = resultContainer.indexOfChild(groupBtn);
+                        int[] currentStateInfo = (int[]) groupBtn.getTag();
+                        boolean isExpanded = currentStateInfo[0] == 1;
 
-                        for (int i = 0; i < animeItems.size(); i++) {
-                            DanmakuItem item = animeItems.get(i);
-                            Button subItem = createResultButton(activity, item, dialog);                            subItem.setPadding(40, 8, 20, 8);
-                            resultContainer.addView(subItem, buttonIndex + 1 + i);
+                        if (isExpanded) {
+                            // 收起内容
+                            int buttonIndex = resultContainer.indexOfChild(groupBtn);
+                            int childCount = currentStateInfo[1];
+
+                            for (int i = 0; i < childCount; i++) {
+                                if (buttonIndex + 1 < resultContainer.getChildCount()) {
+                                    resultContainer.removeViewAt(buttonIndex + 1);
+                                }
+                            }
+
+                            currentStateInfo[0] = 0; // 未展开
+                            currentStateInfo[1] = 0; // 子项数量
+                            groupBtn.setText(animeTitle + " (" + animeItems.size() + "集)");
+                        } else {
+                            // 展开内容
+                            int buttonIndex = resultContainer.indexOfChild(groupBtn);
+
+                            for (int i = 0; i < animeItems.size(); i++) {
+                                DanmakuItem item = animeItems.get(i);
+                                Button subItem = createResultButton(activity, item, dialog);                            subItem.setPadding(40, 8, 20, 8);
+                                resultContainer.addView(subItem, buttonIndex + 1 + i);
+                            }
+
+                            currentStateInfo[0] = 1; // 已展开
+                            currentStateInfo[1] = animeItems.size(); // 子项数量
+                            groupBtn.setText(animeTitle + " (" + animeItems.size() + "集) [-]");
                         }
+                        groupBtn.setTag(currentStateInfo);
 
-                        currentStateInfo[0] = 1; // 已展开
-                        currentStateInfo[1] = animeItems.size(); // 子项数量
-                        groupBtn.setText(animeTitle + " (" + animeItems.size() + "集) [-]");
-                    }
-                    groupBtn.setTag(currentStateInfo);
-
-                    if (resultContainer.getParent() instanceof ScrollView) {
-                        ScrollView scrollView = (ScrollView) resultContainer.getParent();
-                        scrollView.post(() -> {
-                            int scrollY = resultContainer.getTop() + groupBtn.getTop();
-                            scrollView.smoothScrollTo(0, scrollY);
-                        });
+                        if (resultContainer.getParent() instanceof ScrollView) {
+                            ScrollView scrollView = (ScrollView) resultContainer.getParent();
+                            scrollView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int scrollY = resultContainer.getTop() + groupBtn.getTop();
+                                    scrollView.smoothScrollTo(0, scrollY);
+                                }
+                            });
+                        }
                     }
                 });
 
                 resultContainer.addView(groupBtn);
 
                 if (groupsWithLastUrl.contains(animeTitle)) {
-                    groupBtn.post(() -> {
-                        groupBtn.performClick();
-                        // 滚动到选中项
-                        if (resultContainer.getParent() instanceof ScrollView) {
-                            ScrollView scrollView = (ScrollView) resultContainer.getParent();
-                            scrollView.post(() -> {
-                                int scrollY = resultContainer.getTop() + groupBtn.getTop();
-                                scrollView.smoothScrollTo(0, scrollY);
-                            });
+                    groupBtn.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            groupBtn.performClick();
+                            // 滚动到选中项
+                            if (resultContainer.getParent() instanceof ScrollView) {
+                                ScrollView scrollView = (ScrollView) resultContainer.getParent();
+                                scrollView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        int scrollY = resultContainer.getTop() + groupBtn.getTop();
+                                        scrollView.smoothScrollTo(0, scrollY);
+                                    }
+                                });
+                            }
                         }
                     });
                 }
@@ -895,38 +990,44 @@ public class DanmakuUIHelper {
 
         resultItem.setTag(item);
 
-        resultItem.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                // 获得焦点时的高亮效果 - 深绿色
-                v.setBackground(createRoundedBackgroundDrawable(TERTIARY_DARK));
-                ((Button) v).setTextColor(Color.WHITE);
-                v.setScaleX(1.06f);
-                v.setScaleY(1.06f);
-            } else {
-                // 失去焦点时的恢复逻辑
-                DanmakuItem item_tag = (DanmakuItem) v.getTag();
-                String danmakuUrl = item_tag.getDanmakuUrl();
-
-                // 检查是否为上次使用的弹幕URL，如果是则保持高亮状态
-                if (danmakuUrl != null && danmakuUrl.equals(DanmakuSpider.lastDanmakuUrl)) {
-                    v.setBackground(createRoundedBackgroundDrawable(TERTIARY_COLOR));
+        resultItem.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    // 获得焦点时的高亮效果 - 深绿色
+                    v.setBackground(createRoundedBackgroundDrawable(TERTIARY_DARK));
                     ((Button) v).setTextColor(Color.WHITE);
+                    v.setScaleX(1.06f);
+                    v.setScaleY(1.06f);
                 } else {
-                    // 普通状态
-                    v.setBackground(createRoundedBackgroundDrawable(0xFFF0F0F0));
-                    ((Button) v).setTextColor(TEXT_PRIMARY);
+                    // 失去焦点时的恢复逻辑
+                    DanmakuItem item_tag = (DanmakuItem) v.getTag();
+                    String danmakuUrl = item_tag.getDanmakuUrl();
+
+                    // 检查是否为上次使用的弹幕URL，如果是则保持高亮状态
+                    if (danmakuUrl != null && danmakuUrl.equals(DanmakuSpider.lastDanmakuUrl)) {
+                        v.setBackground(createRoundedBackgroundDrawable(TERTIARY_COLOR));
+                        ((Button) v).setTextColor(Color.WHITE);
+                    } else {
+                        // 普通状态
+                        v.setBackground(createRoundedBackgroundDrawable(0xFFF0F0F0));
+                        ((Button) v).setTextColor(TEXT_PRIMARY);
+                    }
+                    v.setScaleX(1.0f);
+                    v.setScaleY(1.0f);
                 }
-                v.setScaleX(1.0f);
-                v.setScaleY(1.0f);
             }
         });
 
-        resultItem.setOnClickListener(v1 -> {
-            DanmakuItem selected = (DanmakuItem) v1.getTag();
-            // 记录弹幕URL
-            DanmakuSpider.recordDanmakuUrl(selected, false);
-            LeoDanmakuService.pushDanmakuDirect(selected, activity, false);
-            dialog.dismiss();
+        resultItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v1) {
+                DanmakuItem selected = (DanmakuItem) v1.getTag();
+                // 记录弹幕URL
+                DanmakuSpider.recordDanmakuUrl(selected, false);
+                LeoDanmakuService.pushDanmakuDirect(selected, activity, false);
+                dialog.dismiss();
+            }
         });
 
         return resultItem;

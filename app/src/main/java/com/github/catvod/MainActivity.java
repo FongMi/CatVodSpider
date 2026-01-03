@@ -33,7 +33,12 @@ public class MainActivity extends Activity {
         gson = new GsonBuilder().setPrettyPrinting().create();
         Logger.addLogAdapter(new AndroidLogAdapter());
         executor = Executors.newCachedThreadPool();
-        executor.execute(this::initSpider);
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                initSpider();
+            }
+        });
         spider = new PTT();
         initView();
         initEvent();
@@ -45,14 +50,94 @@ public class MainActivity extends Activity {
     }
 
     private void initEvent() {
-        binding.home.setOnClickListener(view -> executor.execute(this::homeContent));
-        binding.homeVideo.setOnClickListener(view -> executor.execute(this::homeVideoContent));
-        binding.category.setOnClickListener(view -> executor.execute(this::categoryContent));
-        binding.detail.setOnClickListener(view -> executor.execute(this::detailContent));
-        binding.player.setOnClickListener(view -> executor.execute(this::playerContent));
-        binding.search.setOnClickListener(view -> executor.execute(this::searchContent));
-        binding.live.setOnClickListener(view -> executor.execute(this::liveContent));
-        binding.proxy.setOnClickListener(view -> executor.execute(this::proxy));
+        binding.home.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        homeContent();
+                    }
+                });
+            }
+        });
+        binding.homeVideo.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        homeVideoContent();
+                    }
+                });
+            }
+        });
+        binding.category.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        categoryContent();
+                    }
+                });
+            }
+        });
+        binding.detail.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        detailContent();
+                    }
+                });
+            }
+        });
+        binding.player.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        playerContent();
+                    }
+                });
+            }
+        });
+        binding.search.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        searchContent();
+                    }
+                });
+            }
+        });
+        binding.live.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        liveContent();
+                    }
+                });
+            }
+        });
+        binding.proxy.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        proxy();
+                    }
+                });
+            }
+        });
     }
 
     private void initSpider() {
@@ -67,7 +152,12 @@ public class MainActivity extends Activity {
     public void homeContent() {
         try {
             String result = gson.toJson(JsonParser.parseString(spider.homeContent(true)));
-            Init.post(() -> binding.result.setText(result));
+            Init.post(new Runnable() {
+                @Override
+                public void run() {
+                    binding.result.setText(result);
+                }
+            });
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -76,7 +166,12 @@ public class MainActivity extends Activity {
     public void homeVideoContent() {
         try {
             String result = gson.toJson(JsonParser.parseString(spider.homeVideoContent()));
-            Init.post(() -> binding.result.setText(result));
+            Init.post(new Runnable() {
+                @Override
+                public void run() {
+                    binding.result.setText(result);
+                }
+            });
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -88,7 +183,12 @@ public class MainActivity extends Activity {
             extend.put("c", "19");
             extend.put("year", "2024");
             String result = gson.toJson(JsonParser.parseString(spider.categoryContent("3", "2", true, extend)));
-            Init.post(() -> binding.result.setText(result));
+            Init.post(new Runnable() {
+                @Override
+                public void run() {
+                    binding.result.setText(result);
+                }
+            });
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -96,8 +196,13 @@ public class MainActivity extends Activity {
 
     public void detailContent() {
         try {
-            String result = gson.toJson(JsonParser.parseString(spider.detailContent(List.of("78702"))));
-            Init.post(() -> binding.result.setText(result));
+            String result = gson.toJson(JsonParser.parseString(spider.detailContent(java.util.Arrays.asList("78702"))));
+            Init.post(new Runnable() {
+                @Override
+                public void run() {
+                    binding.result.setText(result);
+                }
+            });
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -106,7 +211,12 @@ public class MainActivity extends Activity {
     public void playerContent() {
         try {
             String result = gson.toJson(JsonParser.parseString(spider.playerContent("", "382044/1/78", new ArrayList<>())));
-            Init.post(() -> binding.result.setText(result));
+            Init.post(new Runnable() {
+                @Override
+                public void run() {
+                    binding.result.setText(result);
+                }
+            });
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -115,7 +225,12 @@ public class MainActivity extends Activity {
     public void searchContent() {
         try {
             String result = gson.toJson(JsonParser.parseString(spider.searchContent("我的人间烟火", false)));
-            Init.post(() -> binding.result.setText(result));
+            Init.post(new Runnable() {
+                @Override
+                public void run() {
+                    binding.result.setText(result);
+                }
+            });
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -124,7 +239,12 @@ public class MainActivity extends Activity {
     public void liveContent() {
         try {
             String result = gson.toJson(JsonParser.parseString(spider.liveContent("")));
-            Init.post(() -> binding.result.setText(result));
+            Init.post(new Runnable() {
+                @Override
+                public void run() {
+                    binding.result.setText(result);
+                }
+            });
         } catch (Throwable e) {
             e.printStackTrace();
         }

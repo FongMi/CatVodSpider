@@ -120,7 +120,12 @@ public class DanmakuSpider extends Spider {
         // 显示启动提示
         Activity act = getTopActivity();
         if (act != null) {
-            act.runOnUiThread(() -> Toast.makeText(act, "Leo弹幕加载成功", Toast.LENGTH_SHORT).show());
+            safeRunOnUiThread(act, new Runnable() {
+                @Override
+                public void run() {
+                    safeShowToast(act, "Leo弹幕加载成功");
+                }
+            });
         }
 
         log("Leo弹幕插件 v1.0 初始化完成");
@@ -151,6 +156,31 @@ public class DanmakuSpider extends Spider {
             log("获取TopActivity失败: " + e.getMessage());
         }
         return null;
+    }
+
+    // 安全显示Toast
+    public static void safeShowToast2(Activity activity, String message) {
+        if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+            safeRunOnUiThread(activity, new Runnable() {
+                @Override
+                public void run() {
+                    if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+                        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    public static void safeShowToast(Context context, String message) {
+        safeShowToast2((Activity)context, message);
+    }
+
+    // 安全运行UI线程
+    public static void safeRunOnUiThread(Activity activity, Runnable runnable) {
+        if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+            activity.runOnUiThread(runnable);
+        }
     }
 
     // 重置自动搜索状态
@@ -289,9 +319,8 @@ public class DanmakuSpider extends Spider {
 
                                     // 更新UI显示
                                     DanmakuSpider.log("自动推送状态切换: " + autoPushEnabled);
-                                    Toast.makeText(ctx,
-                                            autoPushEnabled ? "自动推送已开启" : "自动推送已关闭",
-                                            Toast.LENGTH_SHORT).show();
+                                    safeShowToast(ctx,
+                                            autoPushEnabled ? "自动推送已开启" : "自动推送已关闭");
 
                                     // 重新加载页面以更新状态显示
                                     refreshCategoryContent(ctx);
@@ -300,9 +329,8 @@ public class DanmakuSpider extends Spider {
                                 }
                             } catch (Exception e) {
                                 DanmakuSpider.log("显示对话框失败: " + e.getMessage());
-                                Toast.makeText(ctx,
-                                        "请稍后再试",
-                                        Toast.LENGTH_SHORT).show();
+                                safeShowToast(ctx,
+                                        "请稍后再试");
                             }
                         }
                     });
@@ -375,3 +403,4 @@ public class DanmakuSpider extends Spider {
         return vod;
     }
 }
+

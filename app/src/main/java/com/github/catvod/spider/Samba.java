@@ -112,10 +112,13 @@ public class Samba extends Spider {
             if (isFolder(item) && item.getFileName().startsWith(".")) iterator.remove();
             if (isFile(item) && !Util.isMedia(item.getFileName())) iterator.remove();
         }
-        Collections.sort(items, (o1, o2) -> {
-            if (isFolder(o1) && isFile(o2)) return -1;
-            if (isFile(o1) && isFolder(o2)) return 1;
-            return o1.getFileName().toLowerCase().compareTo(o2.getFileName().toLowerCase());
+        Collections.sort(items, new java.util.Comparator<FileIdBothDirectoryInformation>() {
+            @Override
+            public int compare(FileIdBothDirectoryInformation o1, FileIdBothDirectoryInformation o2) {
+                if (isFolder(o1) && isFile(o2)) return -1;
+                if (isFile(o1) && isFolder(o2)) return 1;
+                return o1.getFileName().toLowerCase().compareTo(o2.getFileName().toLowerCase());
+            }
         });
         return items;
     }

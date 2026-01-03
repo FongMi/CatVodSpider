@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 import okhttp3.Call;
 import okhttp3.Dns;
@@ -114,7 +116,12 @@ public class OkHttp {
     }
 
     private static OkHttpClient.Builder getBuilder() {
-        return new OkHttpClient.Builder().dns(safeDns()).connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS).readTimeout(TIMEOUT, TimeUnit.MILLISECONDS).writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS).hostnameVerifier((hostname, session) -> true).sslSocketFactory(getSSLContext().getSocketFactory(), trustAllCertificates());
+        return new OkHttpClient.Builder().dns(safeDns()).connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS).readTimeout(TIMEOUT, TimeUnit.MILLISECONDS).writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS).hostnameVerifier(new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        }).sslSocketFactory(getSSLContext().getSocketFactory(), trustAllCertificates());
     }
 
     private static OkHttpClient client(long timeout) {

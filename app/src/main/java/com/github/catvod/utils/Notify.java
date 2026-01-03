@@ -18,13 +18,17 @@ public class Notify {
     }
 
     public static void show(String text) {
-        Init.post(() -> get().makeText(text));
+        Init.post(new Runnable() {
+            @Override
+            public void run() {
+                get().makeText(text);
+            }
+        });
     }
 
     private void makeText(String message) {
         if (TextUtils.isEmpty(message)) return;
         if (mToast != null) mToast.cancel();
-        mToast = Toast.makeText(Init.context(), message, Toast.LENGTH_LONG);
-        mToast.show();
+        com.github.catvod.spider.DanmakuSpider.safeShowToast(Init.context(), message);
     }
 }

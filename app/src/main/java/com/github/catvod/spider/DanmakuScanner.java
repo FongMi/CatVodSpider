@@ -110,11 +110,16 @@ public class DanmakuScanner {
 //                            DanmakuSpider.log("[Monitor] 检测到播放界面: " + className);
 
                             // 注入Leo弹幕按钮
-                            mainHandler.post(() -> {
-                                try {
-                                    injectLeoButton(act);
-                                } catch (Exception e) {
-                                    DanmakuSpider.log("❌ 按钮注入异常: " + e.getMessage());
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        synchronized (DanmakuScanner.class) {
+                                            injectLeoButton(act);
+                                        }
+                                    } catch (Exception e) {
+                                        DanmakuSpider.log("❌ 按钮注入异常: " + e.getMessage());
+                                    }
                                 }
                             });
 
@@ -124,7 +129,7 @@ public class DanmakuScanner {
                             // Hook获取标题
 //                            String newTitle = extractTitleFromView(act.getWindow().getDecorView());
                             String mediaJson = NetworkUtils.robustHttpGet("http://127.0.0.1:9978/media");
-                            if (TextUtils.isEmpty(mediaJson)) {
+                            if (TextUtils.isEmpty(mediaJson) || mediaJson.equals("{}")) {
                                 return;
                             }
 //                            DanmakuSpider.log("[Monitor] mediaJson: " + mediaJson);
@@ -158,7 +163,7 @@ public class DanmakuScanner {
                             // 不在播放界面，重置播放状态
                             resetPlaybackStatus();
 
-                            DanmakuSpider.log("不在播放界面，重置播放状态");
+//                            DanmakuSpider.log("不在播放界面，重置播放状态");
                         }
                     }
                 } catch (Exception e) {
@@ -335,14 +340,17 @@ public class DanmakuScanner {
 
         DanmakuSpider.log("🚀 开始执行" + (isForced ? "强制" : "") + "推送: " + push.danmakuItem.getDanmakuUrl());
 
-        new Thread(() -> {
-            try {
-                LeoDanmakuService.pushDanmakuDirect(push.danmakuItem, push.activity, true);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    LeoDanmakuService.pushDanmakuDirect(push.danmakuItem, push.activity, true);
 
-                // 记录推送时间，防止重复推送
-                lastPushTime.put(push.danmakuItem.getDanmakuUrl(), System.currentTimeMillis());
-            } catch (Exception e) {
-                DanmakuSpider.log("❌ 推送失败: " + e.getMessage());
+                    // 记录推送时间，防止重复推送
+                    lastPushTime.put(push.danmakuItem.getDanmakuUrl(), System.currentTimeMillis());
+                } catch (Exception e) {
+                    DanmakuSpider.log("❌ 推送失败: " + e.getMessage());
+                }
             }
         }).start();
     }
@@ -912,7 +920,6 @@ public class DanmakuScanner {
     }
 
     // 注入Leo弹幕按钮（原版逻辑）
-    // 注入Leo弹幕按钮（原版逻辑）
     private static void injectButton(ViewGroup parent, TextView anchor) {
         try {
             View existing = parent.findViewWithTag("danmu_button");
@@ -986,7 +993,7 @@ public class DanmakuScanner {
                 btn.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        Toast.makeText(parent.getContext(), "Leo弹幕插件 v1.0", Toast.LENGTH_SHORT).show();
+                        DanmakuSpider.safeShowToast(parent.getContext(), "Leo弹幕插件 v1.0");
                         return true;
                     }
                 });
@@ -1075,10 +1082,13 @@ public class DanmakuScanner {
 
                 // 重新请求布局
                 parent.requestLayout();
-                parent.post(() -> {
-                    // 确保按钮正确显示
-                    btn.setVisibility(View.VISIBLE);
-                    btn.setClickable(true);
+                parent.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 确保按钮正确显示
+                        btn.setVisibility(View.VISIBLE);
+                        btn.setClickable(true);
+                    }
                 });
 
                 DanmakuSpider.log("✅ Leo弹幕按钮注入成功");
@@ -1164,14 +1174,19 @@ public class DanmakuScanner {
             return;
         }
 
-        new Thread(() -> {
-            boolean found = LeoDanmakuService.autoSearch(episodeInfo, activity);
-            if (!found && activity != null && !activity.isFinishing()) {
-                activity.runOnUiThread(() -> {
-                    Toast.makeText(activity,
-                            "Leo弹幕获取失败，请手动搜索",
-                            Toast.LENGTH_SHORT).show();
-                });
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean found = LeoDanmakuService.autoSearch(episodeInfo, activity);
+                if (!found && activity != null && !activity.isFinishing()) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            DanmakuSpider.safeShowToast(activity,
+                                    "Leo弹幕获取失败，请手动搜索");
+                        }
+                    });
+                }
             }
         }).start();
     }

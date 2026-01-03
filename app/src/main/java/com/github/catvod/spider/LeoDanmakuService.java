@@ -37,7 +37,7 @@ public class LeoDanmakuService {
             List<String> targets = new ArrayList<>(DanmakuSpider.allApiUrls);
             if (targets.isEmpty()) {
                 DanmakuSpider.log("没有配置API地址");
-                Toast.makeText(activity, "没有配置API地址", Toast.LENGTH_SHORT).show();
+                DanmakuSpider.safeShowToast(activity, "没有配置API地址");
                 return globalResults;
             }
 
@@ -46,7 +46,12 @@ public class LeoDanmakuService {
             int pendingTasks = 0;
 
             for (final String url : targets) {
-                completionService.submit(() -> doSearch(url, keyword));
+                completionService.submit(new Callable<List<DanmakuItem>>() {
+                    @Override
+                    public List<DanmakuItem> call() throws Exception {
+                        return doSearch(url, keyword);
+                    }
+                });
                 pendingTasks++;
             }
 
@@ -244,100 +249,119 @@ public class LeoDanmakuService {
         final boolean[] found = {false};
         final Object lock = new Object();
 
-        activity.runOnUiThread(() -> Toast.makeText(activity, "开始自动搜索弹幕", Toast.LENGTH_LONG).show());
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                DanmakuSpider.safeShowToast(activity, "开始自动搜索弹幕");
+            }
+        });
         DanmakuSpider.log("开始自动搜索弹幕：" + episodeInfo.getEpisodeName());
 
         // 60秒超时
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            synchronized (lock) {
-                if (!found[0]) {
-                    activity.runOnUiThread(() -> {
-                        DanmakuSpider.log("自动搜索超时（60秒）");
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (lock) {
+                    if (!found[0]) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                DanmakuSpider.log("自动搜索超时（60秒）");
 //                        Toast.makeText(activity, "自动搜索超时（60秒）", Toast.LENGTH_SHORT).show();
-                    });
-                    lock.notify();
+                            }
+                        });
+                        lock.notify();
+                    }
                 }
             }
         }, 60000);
 
-        new Thread(() -> {
-            try {
-                if (TextUtils.isEmpty(episodeInfo.getEpisodeName())) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (TextUtils.isEmpty(episodeInfo.getEpisodeName())) {
+                        synchronized (lock) {
+                            lock.notify();
+                        }
+                        return;
+                    }
+
+                    DanmakuSpider.log("自动搜索关键词: " + episodeInfo.getEpisodeName());
+                    List<DanmakuItem> results = searchDanmaku(episodeInfo.getEpisodeName(), activity);
+
+                    if (!results.isEmpty()) {
+                        int matchedIndex = -1;
+                        for (int i = 0; i < results.size(); i++) {
+                            DanmakuItem item = results.get(i);
+
+                            boolean isMatch = true;
+
+                            // 检查年份匹配
+                            if (!TextUtils.isEmpty(episodeInfo.getEpisodeYear())) {
+                                if (!item.title.contains(episodeInfo.getEpisodeYear())) {
+                                    isMatch = false;
+                                }
+                            }
+
+                            // 如果年份匹配成功或没有年份信息，检查集数匹配
+                            if (isMatch && !TextUtils.isEmpty(episodeInfo.getEpisodeNum())) {
+                                String episodeNum = episodeInfo.getEpisodeNum();
+                                try {
+                                    int epNum = Integer.parseInt(episodeNum);
+                                    String formattedEpTitle = String.format("第%s集", epNum);
+                                    if (!item.epTitle.contains(formattedEpTitle)) {
+                                        isMatch = false;
+                                    }
+                                } catch (NumberFormatException e) {
+                                    DanmakuSpider.log("集数格式错误: " + episodeNum);
+                                    isMatch = false;
+                                }
+                            }
+
+                            if (isMatch) {
+                                matchedIndex = i;
+                                break; // 找到匹配项，立即退出循环
+                            }
+                        }
+
+                        // 如果找到匹配项，使用匹配项；否则使用第一条
+                        DanmakuItem selectedItem;
+                        if (matchedIndex != -1) {
+                            selectedItem = results.get(matchedIndex);
+                            DanmakuSpider.log("🎯 找到匹配的弹幕项: " + selectedItem.title + " - " + selectedItem.epTitle);
+                        } else {
+                            selectedItem = results.get(0); // 使用第一条作为默认选项
+                            DanmakuSpider.log("⚠️ 未找到精确匹配，使用第一条结果: " + selectedItem.title + " - " + selectedItem.epTitle);
+                        }
+
+                        DanmakuSpider.log("🎯 自动搜索找到结果: " + selectedItem);
+
+                        // 立即记录弹幕URL（在推送前）
+                        DanmakuSpider.recordDanmakuUrl(selectedItem, true);
+
+                        found[0] = true;
+
+                        pushDanmakuDirect(selectedItem, activity, true);
+                    } else {
+                        DanmakuSpider.log("自动搜索未找到任何结果");
+                        // 显示提示
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                DanmakuSpider.safeShowToast(activity, "自动搜索未找到弹幕，请手动搜索");
+                            }
+                        });
+                    }
+
                     synchronized (lock) {
                         lock.notify();
                     }
-                    return;
-                }
-
-                DanmakuSpider.log("自动搜索关键词: '" + episodeInfo.getEpisodeName());
-                List<DanmakuItem> results = searchDanmaku(episodeInfo.getEpisodeName(), activity);
-
-                if (!results.isEmpty()) {
-                    int matchedIndex = -1;
-                    for (int i = 0; i < results.size(); i++) {
-                        DanmakuItem item = results.get(i);
-
-                        boolean isMatch = true;
-
-                        // 检查年份匹配
-                        if (!TextUtils.isEmpty(episodeInfo.getEpisodeYear())) {
-                            if (!item.title.contains(episodeInfo.getEpisodeYear())) {
-                                isMatch = false;
-                            }
-                        }
-
-                        // 如果年份匹配成功或没有年份信息，检查集数匹配
-                        if (isMatch && !TextUtils.isEmpty(episodeInfo.getEpisodeNum())) {
-                            String episodeNum = episodeInfo.getEpisodeNum();
-                            try {
-                                int epNum = Integer.parseInt(episodeNum);
-                                String formattedEpTitle = String.format("第%s集", epNum);
-                                if (!item.epTitle.contains(formattedEpTitle)) {
-                                    isMatch = false;
-                                }
-                            } catch (NumberFormatException e) {
-                                DanmakuSpider.log("集数格式错误: " + episodeNum);
-                                isMatch = false;
-                            }
-                        }
-
-                        if (isMatch) {
-                            matchedIndex = i;
-                            break; // 找到匹配项，立即退出循环
-                        }
+                } catch (Exception e) {
+                    DanmakuSpider.log("自动搜索异常: " + e.getMessage());
+                    synchronized (lock) {
+                        lock.notify();
                     }
-
-                    // 如果找到匹配项，使用匹配项；否则使用第一条
-                    DanmakuItem selectedItem;
-                    if (matchedIndex != -1) {
-                        selectedItem = results.get(matchedIndex);
-                        DanmakuSpider.log("🎯 找到匹配的弹幕项: " + selectedItem.title + " - " + selectedItem.epTitle);
-                    } else {
-                        selectedItem = results.get(0); // 使用第一条作为默认选项
-                        DanmakuSpider.log("⚠️ 未找到精确匹配，使用第一条结果: " + selectedItem.title + " - " + selectedItem.epTitle);
-                    }
-
-                    DanmakuSpider.log("🎯 自动搜索找到结果: " + selectedItem);
-
-                    // 立即记录弹幕URL（在推送前）
-                    DanmakuSpider.recordDanmakuUrl(selectedItem, true);
-
-                    found[0] = true;
-
-                    pushDanmakuDirect(selectedItem, activity, true);
-                } else {
-                    DanmakuSpider.log("自动搜索未找到任何结果");
-                    // 显示提示
-                    activity.runOnUiThread(() -> Toast.makeText(activity, "自动搜索未找到弹幕，请手动搜索", Toast.LENGTH_LONG).show());
-                }
-
-                synchronized (lock) {
-                    lock.notify();
-                }
-            } catch (Exception e) {
-                DanmakuSpider.log("自动搜索异常: " + e.getMessage());
-                synchronized (lock) {
-                    lock.notify();
                 }
             }
         }).start();
@@ -389,7 +413,12 @@ public class LeoDanmakuService {
         if (isMainThread) {
             DanmakuSpider.log("警告：推送弹幕在主线程调用，切换到子线程");
             // 切换到子线程执行
-            new Thread(() -> pushDanmakuInThread(danmakuItem, activity)).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    pushDanmakuInThread(danmakuItem, activity);
+                }
+            }).start();
         } else {
             // 已经在子线程，直接执行
             DanmakuSpider.log("已经在子线程，直接执行弹幕推送");
@@ -433,18 +462,21 @@ public class LeoDanmakuService {
             // 在主线程显示Toast
             if (activity != null && !activity.isFinishing()) {
                 final String finalResp = resp;
-                activity.runOnUiThread(() -> {
-                    if (!TextUtils.isEmpty(finalResp) && finalResp.toLowerCase().contains("ok")) {
-                        Toast.makeText(activity, "Leo弹幕已推送：" + String.format("%s - %s", danmakuItem.getTitle(), danmakuItem.getEpTitle()), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(activity, "推送失败: " + finalResp, Toast.LENGTH_SHORT).show();
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!TextUtils.isEmpty(finalResp) && finalResp.toLowerCase().contains("ok")) {
+                            DanmakuSpider.safeShowToast(activity, "Leo弹幕已推送：" + String.format("%s - %s", danmakuItem.getTitle(), danmakuItem.getEpTitle()));
+                        } else {
+                            DanmakuSpider.safeShowToast(activity, "推送失败: " + finalResp);
+                        }
                     }
                 });
             }
         } catch (Exception e) {
             DanmakuSpider.log("推送失败: " + e.getMessage());
             if (activity != null && !activity.isFinishing()) {
-                activity.runOnUiThread(() -> Toast.makeText(activity, "推送异常", Toast.LENGTH_SHORT).show());
+                DanmakuSpider.safeShowToast(activity, "推送异常");
             }
         }
     }
