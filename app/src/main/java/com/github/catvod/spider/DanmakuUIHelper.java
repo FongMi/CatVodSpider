@@ -561,9 +561,17 @@ public class DanmakuUIHelper {
                                 return;
                             }
 
-                            // 判断是否需要保存到缓存：当用户手动输入的值与initialKeyword不同时，保存到缓存
-                            if (!keyword.equals(initialKeyword) && !TextUtils.isEmpty(keyword)) {
+                            // 判断是否需要保存到缓存：
+                            // 1. 如果用户输入的值与initialKeyword不同，保存该值到缓存
+                            // 2. 如果用户改回initialKeyword，清空缓存（使用空字符串作为标记）
+                            if (!keyword.equals(initialKeyword)) {
+                                // 用户输入了不同的值，保存到缓存
                                 SharedPreferencesService.saveSearchKeywordCache(activity, initialKeyword, keyword);
+                                DanmakuSpider.log("已保存新的搜索缓存: " + initialKeyword + " -> " + keyword);
+                            } else {
+                                // 用户改回初始值，清空缓存
+                                SharedPreferencesService.saveSearchKeywordCache(activity, initialKeyword, "");
+                                DanmakuSpider.log("已清空搜索缓存: " + initialKeyword);
                             }
 
                             resultContainer.removeAllViews();

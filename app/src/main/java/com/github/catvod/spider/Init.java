@@ -62,7 +62,7 @@ public class Init {
 
         initGoProxy(context);
 
-        DanmakuSpider.log("打包时间： 2026-01-03 09:51");
+        DanmakuSpider.log("打包时间： 2026-01-03 11:07");
 
         DanmakuSpider.doInitWork(context,"");
 

@@ -796,8 +796,8 @@ public class DanmakuScanner {
                     // 延迟推送，等待视频播放
                     scheduleDelayedPush(nextDanmakuItem, activity, episodeInfo.getEpisodeName(), pushKey);
                 } else {
-                    DanmakuSpider.log("⚠️ 无法获取下一个弹幕URL");
-                }
+                    DanmakuSpider.log("⚠️ 无法直接获取下一个弹幕URL，重新查询");
+                    LeoDanmakuService.autoSearch(episodeInfo, activity);                }
             } else {
                 DanmakuSpider.log("✅ 同一集，忽略");
             }
@@ -1169,7 +1169,7 @@ public class DanmakuScanner {
 
     private static void startAutoSearch(EpisodeInfo episodeInfo, final Activity activity) {
         // 检查自动推送状态
-        if (!DanmakuSpider.autoPushEnabled) {
+        if (!DanmakuSpider.autoPushEnabled && !DanmakuSpider.hasAutoSearched) {
             DanmakuSpider.log("❌ 自动推送已关闭，跳过自动搜索");
             return;
         }
