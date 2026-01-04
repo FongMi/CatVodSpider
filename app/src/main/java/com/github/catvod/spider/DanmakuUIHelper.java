@@ -388,7 +388,7 @@ public class DanmakuUIHelper {
                     titleLayout.setPadding(dpToPx(activity, 20), dpToPx(activity, 16), dpToPx(activity, 20), dpToPx(activity, 16));
 
                     TextView titleText = new TextView(activity);
-                    titleText.setText("Leo弹幕日志 - 打包时间：2026-01-04 20:24");
+                    titleText.setText("Leo弹幕日志 - 打包时间：2026-01-04 20:45");
                     titleText.setTextSize(20);
                     titleText.setTextColor(Color.WHITE);
                     titleText.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -557,7 +557,7 @@ public class DanmakuUIHelper {
                     resultContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
 
                     LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(activity, 300));
+                            ViewGroup.LayoutParams.MATCH_PARENT, 0);
                     scrollParams.weight = 1; // 设置权重让其尽可能占满空间
                     resultScroll.setLayoutParams(scrollParams);
 
