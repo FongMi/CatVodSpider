@@ -388,7 +388,7 @@ public class DanmakuUIHelper {
                     titleLayout.setPadding(dpToPx(activity, 20), dpToPx(activity, 16), dpToPx(activity, 20), dpToPx(activity, 16));
 
                     TextView titleText = new TextView(activity);
-                    titleText.setText("Leo弹幕日志 - 打包时间：2026-01-04 20:45");
+                    titleText.setText("Leo弹幕日志 - 打包时间：2026-01-04 21:11");
                     titleText.setTextSize(20);
                     titleText.setTextColor(Color.WHITE);
                     titleText.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -523,7 +523,7 @@ public class DanmakuUIHelper {
                     searchInput.setLayoutParams(inputParams);
 
                     // 倒序按钮
-                    Button reverseBtn = createStyledButton(activity, "↓↑", TERTIARY_LIGHT);
+                    Button reverseBtn = createStyledButton(activity, "↓↑", isReversed ? ACCENT_COLOR : TERTIARY_LIGHT);
                     reverseBtn.setLayoutParams(new LinearLayout.LayoutParams(
                             dpToPx(activity, 50), dpToPx(activity, 44)));
                     reverseBtn.setTextSize(16);
