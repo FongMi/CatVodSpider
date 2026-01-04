@@ -252,10 +252,19 @@ public class LeoDanmakuService {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                DanmakuSpider.safeShowToast(activity, "开始自动搜索弹幕");
+                StringBuilder sb = new StringBuilder();
+                sb.append("开始搜索弹幕 ").append(episodeInfo.getEpisodeName());
+
+                if (!TextUtils.isEmpty(episodeInfo.getEpisodeYear())) {
+                    sb.append("(").append(episodeInfo.getEpisodeYear()).append(")");
+                }
+                if (!TextUtils.isEmpty(episodeInfo.getEpisodeNum())) {
+                    sb.append(" ").append(episodeInfo.getEpisodeNum());
+                }
+                DanmakuSpider.safeShowToast(activity, sb.toString());
+                DanmakuSpider.log(sb.toString());
             }
         });
-        DanmakuSpider.log("开始自动搜索弹幕：" + episodeInfo.getEpisodeName());
 
         // 60秒超时
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -530,7 +539,7 @@ public class LeoDanmakuService {
                     @Override
                     public void run() {
                         if (!TextUtils.isEmpty(finalPushResp) && finalPushResp.toLowerCase().contains("ok")) {
-                            String message = String.format("Leo弹幕已推送: %s - %s (共%d条)",
+                            String message = String.format("弹幕已推送: %s - %s (共%d条)",
                                     danmakuItem.getTitle(),
                                     danmakuItem.getEpTitle(),
                                     finalDanmakuCount);
