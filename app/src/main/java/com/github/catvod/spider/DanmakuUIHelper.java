@@ -162,6 +162,7 @@ public class DanmakuUIHelper {
 
                     Button saveBtn = createStyledButton(activity, "保存", PRIMARY_COLOR);
                     Button clearBtn = createStyledButton(activity, "清空缓存", ACCENT_COLOR);
+                    Button lpConfigBtn = createStyledButton(activity, "布局", ACCENT_COLOR);
                     Button cancelBtn = createStyledButtonWithBorder(activity, "取消", PRIMARY_COLOR);
 
                     LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
@@ -170,10 +171,12 @@ public class DanmakuUIHelper {
 
                     saveBtn.setLayoutParams(btnParams);
                     clearBtn.setLayoutParams(btnParams);
+                    lpConfigBtn.setLayoutParams(btnParams);
                     cancelBtn.setLayoutParams(btnParams);
 
                     btnLayout.addView(saveBtn);
                     btnLayout.addView(clearBtn);
+                    btnLayout.addView(lpConfigBtn);
                     btnLayout.addView(cancelBtn);
 
                     mainLayout.addView(btnLayout);
@@ -204,7 +207,9 @@ public class DanmakuUIHelper {
 
                             DanmakuSpider.allApiUrls.clear();
                             DanmakuSpider.allApiUrls.addAll(newUrls);
-                            DanmakuConfigManager.saveConfig(activity, newUrls);
+                            DanmakuConfig config = DanmakuConfigManager.getConfig( activity);
+                            config.setApiUrls(newUrls);
+                            DanmakuConfigManager.saveConfig(activity, config);
 
                             DanmakuSpider.safeShowToast(activity, "配置已保存");
 
@@ -234,6 +239,14 @@ public class DanmakuUIHelper {
                         }
                     });
 
+                    lpConfigBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showLpConfigDialog(activity);
+                            dialog.dismiss();
+                        }
+                    });
+
                     cancelBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -248,6 +261,162 @@ public class DanmakuUIHelper {
             }
         });
     }
+
+    public static void showLpConfigDialog(Context ctx) {
+        if (!(ctx instanceof Activity)) {
+            DanmakuSpider.log("错误：Context不是Activity");
+            return;
+        }
+        Activity activity = (Activity) ctx;
+        if (activity.isFinishing() || activity.isDestroyed()) {
+            DanmakuSpider.log("Activity已销毁或正在销毁，不显示配置对话框");
+            return;
+        }
+
+        activity.runOnUiThread(() -> {
+            try {
+                if (activity.isFinishing() || activity.isDestroyed()) {
+                    DanmakuSpider.log("Activity已销毁，不显示配置对话框");
+                    return;
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+                LinearLayout mainLayout = new LinearLayout(activity);
+                mainLayout.setOrientation(LinearLayout.VERTICAL);
+                mainLayout.setBackgroundColor(BACKGROUND_WHITE);
+                mainLayout.setPadding(dpToPx(activity, 24), dpToPx(activity, 20), dpToPx(activity, 24), dpToPx(activity, 20));
+
+                TextView title = new TextView(activity);
+                title.setText("布局配置");
+                title.setTextSize(24);
+                title.setTextColor(PRIMARY_COLOR);
+                title.setGravity(Gravity.CENTER);
+                title.setPadding(0, dpToPx(activity, 8), 0, dpToPx(activity, 20));
+                title.setTypeface(null, android.graphics.Typeface.BOLD);
+                mainLayout.addView(title);
+
+                DanmakuConfig config = DanmakuConfigManager.getConfig(activity);
+
+                // 宽度配置行
+                LinearLayout widthLayout = new LinearLayout(activity);
+                widthLayout.setOrientation(LinearLayout.HORIZONTAL);
+                widthLayout.setGravity(Gravity.CENTER_VERTICAL);
+
+                TextView widthLabel = new TextView(activity);
+                widthLabel.setText("宽度:");
+                widthLabel.setTextSize(14);
+                widthLabel.setTextColor(TEXT_PRIMARY);
+                widthLabel.setPadding(0, 0, dpToPx(activity, 10), 0);
+
+                EditText widthInput = new EditText(activity);
+                widthInput.setHint("0.1 - 1.0");
+                widthInput.setText(String.valueOf(config.getLpWidth()));
+                widthInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER |
+                        android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+                widthLayout.addView(widthLabel);
+                widthLayout.addView(widthInput, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                mainLayout.addView(widthLayout);
+
+                // 高度配置行
+                LinearLayout heightLayout = new LinearLayout(activity);
+                heightLayout.setOrientation(LinearLayout.HORIZONTAL);
+                heightLayout.setGravity(Gravity.CENTER_VERTICAL);
+
+                TextView heightLabel = new TextView(activity);
+                heightLabel.setText("高度:");
+                heightLabel.setTextSize(14);
+                heightLabel.setTextColor(TEXT_PRIMARY);
+                heightLabel.setPadding(0, 0, dpToPx(activity, 10), 0);
+
+                EditText heightInput = new EditText(activity);
+                heightInput.setHint("0.1 - 1.0");
+                heightInput.setText(String.valueOf(config.getLpHeight()));
+                heightInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER |
+                        android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+                heightLayout.addView(heightLabel);
+                heightLayout.addView(heightInput, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                mainLayout.addView(heightLayout);
+
+                // 透明度配置行
+                LinearLayout alphaLayout = new LinearLayout(activity);
+                alphaLayout.setOrientation(LinearLayout.HORIZONTAL);
+                alphaLayout.setGravity(Gravity.CENTER_VERTICAL);
+
+                TextView alphaLabel = new TextView(activity);
+                alphaLabel.setText("透明度:");
+                alphaLabel.setTextSize(14);
+                alphaLabel.setTextColor(TEXT_PRIMARY);
+                alphaLabel.setPadding(0, 0, dpToPx(activity, 10), 0);
+
+                EditText alphaInput = new EditText(activity);
+                alphaInput.setHint("0.1 - 1.0");
+                alphaInput.setText(String.valueOf(config.getLpAlpha()));
+                alphaInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER |
+                android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+                alphaLayout.addView(alphaLabel);
+                alphaLayout.addView(alphaInput, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                mainLayout.addView(alphaLayout);
+
+
+                LinearLayout btnLayout = new LinearLayout(activity);
+                btnLayout.setOrientation(LinearLayout.HORIZONTAL);
+                btnLayout.setGravity(Gravity.CENTER);
+
+                Button saveBtn = createStyledButton(activity, "保存", PRIMARY_COLOR);
+                Button cancelBtn = createStyledButtonWithBorder(activity, "取消", PRIMARY_COLOR);
+
+                LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                        0, dpToPx(activity, 44), 1);
+                btnParams.setMargins(dpToPx(activity, 6), 0, dpToPx(activity, 6), 0);
+
+                saveBtn.setLayoutParams(btnParams);
+                cancelBtn.setLayoutParams(btnParams);
+
+                btnLayout.addView(saveBtn);
+                btnLayout.addView(cancelBtn);
+
+                mainLayout.addView(btnLayout);
+
+                builder.setView(mainLayout);
+                AlertDialog dialog = builder.create();
+
+                saveBtn.setOnClickListener(v -> {
+                    try {
+                        float width = Float.parseFloat(widthInput.getText().toString());
+                        float height = Float.parseFloat(heightInput.getText().toString());
+                        float alpha = Float.parseFloat(alphaInput.getText().toString());
+
+                        if (width > 1.0f) width = 1.0f;
+                        if (width < 0.1f) width = 0.1f;
+                        if (height > 1.0f) height = 1.0f;
+                        if (height < 0.1f) height = 0.1f;
+                        if (alpha > 1.0f) alpha = 1.0f;
+                        if (alpha < 0.1f) alpha = 0.1f;
+
+                        config.setLpWidth(width);
+                        config.setLpHeight(height);
+                        config.setLpAlpha(alpha);
+                        DanmakuConfigManager.saveConfig(activity, config);
+                        DanmakuSpider.safeShowToast(activity, "布局配置已保存");
+                        dialog.dismiss();
+                    } catch (NumberFormatException e) {
+                        DanmakuSpider.safeShowToast(activity, "请输入有效的数字");
+                    }
+                });
+
+                cancelBtn.setOnClickListener(v -> dialog.dismiss());
+
+                safeShowDialog(activity, dialog);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
 
     // 创建带边框的按钮 - 改进版本
     private static Button createStyledButtonWithBorder(Activity activity, String text, int color) {
@@ -388,7 +557,7 @@ public class DanmakuUIHelper {
                     titleLayout.setPadding(dpToPx(activity, 20), dpToPx(activity, 16), dpToPx(activity, 20), dpToPx(activity, 16));
 
                     TextView titleText = new TextView(activity);
-                    titleText.setText("Leo弹幕日志 - 打包时间：2026-01-04 21:11");
+                    titleText.setText("Leo弹幕日志 - 打包时间：2026-01-05 00:05");
                     titleText.setTextSize(20);
                     titleText.setTextColor(Color.WHITE);
                     titleText.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -523,7 +692,7 @@ public class DanmakuUIHelper {
                     searchInput.setLayoutParams(inputParams);
 
                     // 倒序按钮
-                    Button reverseBtn = createStyledButton(activity, "↓↑", isReversed ? ACCENT_COLOR : TERTIARY_LIGHT);
+                    Button reverseBtn = createStyledButton(activity, isReversed ? "倒序" : "升序", isReversed ? ACCENT_COLOR : TERTIARY_LIGHT);
                     reverseBtn.setLayoutParams(new LinearLayout.LayoutParams(
                             dpToPx(activity, 50), dpToPx(activity, 44)));
                     reverseBtn.setTextSize(16);
@@ -573,6 +742,7 @@ public class DanmakuUIHelper {
                         public void onClick(View v) {
                             isReversed = !isReversed;
                             reverseBtn.setBackground(createRoundedBackgroundDrawable(isReversed ? ACCENT_COLOR : TERTIARY_LIGHT));
+                            reverseBtn.setText(isReversed ? "倒序" : "升序");
 
                             // 重新构建分组并显示
                             showResultsForTab(resultContainer, currentItems, activity, dialog);
@@ -773,8 +943,10 @@ public class DanmakuUIHelper {
 
                     android.view.WindowManager.LayoutParams lp = new android.view.WindowManager.LayoutParams();
                     lp.copyFrom(dialog.getWindow().getAttributes());
-                    lp.width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.9); // 宽度占90%
-                    lp.height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.85); // 高度占85%
+                    DanmakuConfig config = DanmakuConfigManager.getConfig(activity);
+                    lp.width = (int) (activity.getResources().getDisplayMetrics().widthPixels * config.getLpWidth());
+                    lp.height = (int) (activity.getResources().getDisplayMetrics().heightPixels * config.getLpHeight());
+                    lp.alpha = config.getLpAlpha();
                     dialog.getWindow().setAttributes(lp);
 
                     // 自动触发搜索（优先使用缓存关键词，其次使用initialKeyword）
@@ -1124,4 +1296,3 @@ public class DanmakuUIHelper {
         return resultItem;
     }
 }
-

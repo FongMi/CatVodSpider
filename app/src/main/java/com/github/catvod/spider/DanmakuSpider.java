@@ -84,7 +84,11 @@ public class DanmakuSpider extends Spider {
         if (!sCacheDir.exists()) sCacheDir.mkdirs();
 
         // 初始化配置
-        Set<String> loaded = DanmakuConfigManager.loadConfig(context);
+        DanmakuConfig config = DanmakuConfigManager.loadConfig(context);
+        Set<String> loaded = config.getApiUrls();
+        if (loaded == null) {
+            loaded = new HashSet<>();
+        }
         if (!TextUtils.isEmpty(extend)) {
             if (extend.startsWith("http")) {
                 loaded.add(extend);
@@ -97,8 +101,8 @@ public class DanmakuSpider extends Spider {
                     }
                     String autoPushEnabled = jsonObject.getString("autoPushEnabled");
                     if (!TextUtils.isEmpty(autoPushEnabled)) {
-                        DanmakuSpider.autoPushEnabled = Boolean.parseBoolean(autoPushEnabled);
-                        DanmakuSpider.saveAutoPushState(context);
+                        config.setAutoPushEnabled(Boolean.parseBoolean(autoPushEnabled));
+                        DanmakuSpider.autoPushEnabled = config.isAutoPushEnabled();
                         log("自动推送状态已设置为: " + DanmakuSpider.autoPushEnabled);
                     }
                 } catch (Exception e) {
@@ -110,7 +114,8 @@ public class DanmakuSpider extends Spider {
         allApiUrls.clear();
         allApiUrls.addAll(loaded);
 
-        DanmakuConfigManager.saveConfig(context, allApiUrls);
+        config.setApiUrls(loaded);
+        DanmakuConfigManager.saveConfig(context, config);
 
         if (initialized) return;
 
@@ -283,6 +288,10 @@ public class DanmakuSpider extends Spider {
             JSONObject logVod = createVod("log", "查看日志", "", "调试信息");
             list.put(logVod);
 
+            // 创建布局配置按钮
+            JSONObject lpConfigVod = createVod("lp_config", "布局配置", "", "调整弹窗大小和透明度");
+            list.put(lpConfigVod);
+
             result.put("list", list);
             result.put("page", 1);
             result.put("pagecount", 1);
@@ -326,6 +335,8 @@ public class DanmakuSpider extends Spider {
                                     refreshCategoryContent(ctx);
                                 } else if (id.equals("log")) {
                                     DanmakuUIHelper.showLogDialog(ctx);
+                                } else if (id.equals("lp_config")) {
+                                    DanmakuUIHelper.showLpConfigDialog(ctx);
                                 }
                             } catch (Exception e) {
                                 DanmakuSpider.log("显示对话框失败: " + e.getMessage());
@@ -342,11 +353,11 @@ public class DanmakuSpider extends Spider {
             JSONObject vod = new JSONObject();
             vod.put("vod_id", id);
             vod.put("vod_name", id.equals("auto_push") ? "自动推送弹幕" :
-                    id.equals("log") ? "查看日志" : "Leo弹幕设置");
+                    id.equals("log") ? "查看日志" : id.equals("lp_config") ? "布局配置" : "Leo弹幕设置");
             vod.put("vod_pic", "");
             vod.put("vod_remarks", id.equals("auto_push") ?
                     (autoPushEnabled ? "已开启" : "已关闭") :
-                    id.equals("log") ? "调试信息" : "请稍候...");
+                    id.equals("log") ? "调试信息" : id.equals("lp_config") ? "调整弹窗大小和透明度" : "请稍候...");
             vod.put("vod_play_url", "");
             vod.put("vod_play_from", "");
             JSONObject result = new JSONObject();
@@ -403,4 +414,3 @@ public class DanmakuSpider extends Spider {
         return vod;
     }
 }
-
