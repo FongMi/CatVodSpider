@@ -132,8 +132,10 @@ public class DanmakuUIHelper {
                     containerParams.setMargins(0, dpToPx(activity, 12), 0, dpToPx(activity, 12));
                     inputContainer.setLayoutParams(containerParams);
 
+                    DanmakuConfig config = DanmakuConfigManager.getConfig(activity);
+
                     EditText apiInput = new EditText(activity);
-                    apiInput.setText(TextUtils.join("\n", DanmakuSpider.allApiUrls));
+                    apiInput.setText(TextUtils.join("\n", config.getApiUrls()));
                     apiInput.setHint("每行一个API地址\n例如: https://example.com/danmu");
                     apiInput.setMinLines(4);
                     apiInput.setMaxLines(7);
@@ -205,8 +207,6 @@ public class DanmakuUIHelper {
                                 return;
                             }
 
-                            DanmakuSpider.allApiUrls.clear();
-                            DanmakuSpider.allApiUrls.addAll(newUrls);
                             DanmakuConfig config = DanmakuConfigManager.getConfig( activity);
                             config.setApiUrls(newUrls);
                             DanmakuConfigManager.saveConfig(activity, config);

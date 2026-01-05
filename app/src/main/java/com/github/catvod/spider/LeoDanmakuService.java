@@ -34,7 +34,8 @@ public class LeoDanmakuService {
         final List<DanmakuItem> globalResults = Collections.synchronizedList(new ArrayList<DanmakuItem>());
 
         try {
-            List<String> targets = new ArrayList<>(DanmakuSpider.allApiUrls);
+            DanmakuConfig config = DanmakuConfigManager.getConfig(activity);
+            List<String> targets = new ArrayList<>(config.getApiUrls());
             if (targets.isEmpty()) {
                 DanmakuSpider.log("没有配置API地址");
                 DanmakuSpider.safeShowToast(activity, "没有配置API地址");

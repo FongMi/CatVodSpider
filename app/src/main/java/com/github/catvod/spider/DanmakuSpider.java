@@ -20,14 +20,10 @@ import java.util.concurrent.ConcurrentMap;
 
 public class DanmakuSpider extends Spider {
 
-    // 配置
-    public static Set<String> allApiUrls = new HashSet<>();
     public static String apiUrl = "";
     private static boolean initialized = false;
     private static File sCacheDir = null;
     
-    // Leo弹幕状态
-    public static boolean LEO_DANMAKU_ENABLED = true;
     public static String lastAutoDanmakuUrl = "";  // 上次自动推送的弹幕URL
     public static String lastManualDanmakuUrl = ""; // 上次手动选择的弹幕URL
     public static String lastDanmakuUrl = ""; // 上次弹幕URL
@@ -38,7 +34,6 @@ public class DanmakuSpider extends Spider {
     // 添加：视频识别相关
     public static String currentVideoSignature = "";  // 当前视频的唯一标识（基于标题提取）
     public static long lastVideoDetectedTime = 0;     // 上次检测到视频的时间
-    public static final long VIDEO_CHANGE_THRESHOLD = 5000; // 视频切换的最小间隔（5秒）
     
     // 日志
     private static final ArrayList<String> logBuffer = new ArrayList<>();
@@ -110,9 +105,6 @@ public class DanmakuSpider extends Spider {
                 }
             }
         }
-
-        allApiUrls.clear();
-        allApiUrls.addAll(loaded);
 
         config.setApiUrls(loaded);
         DanmakuConfigManager.saveConfig(context, config);
