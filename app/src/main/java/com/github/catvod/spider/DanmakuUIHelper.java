@@ -557,7 +557,7 @@ public class DanmakuUIHelper {
                     titleLayout.setPadding(dpToPx(activity, 20), dpToPx(activity, 16), dpToPx(activity, 20), dpToPx(activity, 16));
 
                     TextView titleText = new TextView(activity);
-                    titleText.setText("Leo弹幕日志 - 打包时间：2026-01-05 00:05");
+                    titleText.setText("Leo弹幕日志 - 打包时间：2026-01-05 20:05");
                     titleText.setTextSize(20);
                     titleText.setTextColor(Color.WHITE);
                     titleText.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -692,7 +692,7 @@ public class DanmakuUIHelper {
                     searchInput.setLayoutParams(inputParams);
 
                     // 倒序按钮
-                    Button reverseBtn = createStyledButton(activity, isReversed ? "倒序" : "升序", isReversed ? ACCENT_COLOR : TERTIARY_LIGHT);
+                    Button reverseBtn = createStyledButton(activity, isReversed ? "升序" : "倒序", isReversed ? TERTIARY_LIGHT : ACCENT_COLOR);
                     reverseBtn.setLayoutParams(new LinearLayout.LayoutParams(
                             dpToPx(activity, 50), dpToPx(activity, 44)));
                     reverseBtn.setTextSize(16);
@@ -703,6 +703,12 @@ public class DanmakuUIHelper {
 
                     searchLayout.addView(searchInput);
                     searchLayout.addView(reverseBtn);
+                    // 添加间隔
+                    View separator = new View(activity);
+                    LinearLayout.LayoutParams separatorParams = new LinearLayout.LayoutParams(
+                            dpToPx(activity, 4), dpToPx(activity, 44));
+                    separator.setLayoutParams(separatorParams);
+                    searchLayout.addView(separator);
                     searchLayout.addView(searchBtn);
                     mainLayout.addView(searchLayout);
 
@@ -741,8 +747,8 @@ public class DanmakuUIHelper {
                         @Override
                         public void onClick(View v) {
                             isReversed = !isReversed;
-                            reverseBtn.setBackground(createRoundedBackgroundDrawable(isReversed ? ACCENT_COLOR : TERTIARY_LIGHT));
-                            reverseBtn.setText(isReversed ? "倒序" : "升序");
+                            reverseBtn.setBackground(createRoundedBackgroundDrawable(isReversed ? TERTIARY_LIGHT : ACCENT_COLOR));
+                            reverseBtn.setText(isReversed ? "升序" : "倒序");
 
                             // 重新构建分组并显示
                             showResultsForTab(resultContainer, currentItems, activity, dialog);
