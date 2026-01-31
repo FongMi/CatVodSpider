@@ -47,7 +47,7 @@ public class Jianpian extends Spider {
         String[] domain = parts.split(",");
         for (String d : domain) {
             siteUrl = "https://wangerniu." + d;
-            String json = OkHttp.string(siteUrl + "/api/appAuthConfig");
+            String json = OkHttp.string(siteUrl + "/api/v2/settings/resourceDomainConfig");
             if (!json.isEmpty()) {
                 JsonObject root = new Gson().fromJson(json, JsonObject.class);
                 imgDomain = root.getAsJsonObject("data").get("imgDomain").getAsString();
