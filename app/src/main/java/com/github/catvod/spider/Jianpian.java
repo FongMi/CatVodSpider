@@ -64,7 +64,10 @@ public class Jianpian extends Spider {
         List<Class> classes = new ArrayList<>();
         JsonObject homeCategory = new Gson().fromJson(OkHttp.string(siteUrl + "/api/v2/settings/homeCategory"), JsonObject.class);
         JsonArray dataArray = homeCategory.getAsJsonArray("data");
-        for (JsonElement element : dataArray) classes.add(new Class(element.getAsJsonObject().get("id").getAsString(), element.getAsJsonObject().get("name").getAsString()));
+        for (JsonElement element : dataArray) {
+            if (element.getAsJsonObject().get("name").getAsString().equals("推荐")) continue;
+            classes.add(new Class(element.getAsJsonObject().get("id").getAsString(), element.getAsJsonObject().get("name").getAsString()));
+        }
         return Result.string(classes, JsonParser.parseString(OkHttp.string(extend)));
     }
 
