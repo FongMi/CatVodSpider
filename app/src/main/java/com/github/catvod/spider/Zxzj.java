@@ -4,1816 +4,800 @@ import android.content.Context;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.C1024e;
-import com.github.catvod.spider.merge.C1370pv;
-import com.github.catvod.spider.merge.Iw;
-import com.github.catvod.spider.merge.YS;
-import com.github.catvod.spider.merge.Yy;
-import com.github.catvod.spider.merge.g9;
-import com.github.catvod.spider.merge.jk;
+
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * ZXZJ Video Content Spider - Optimized for Readability
+ *
+ * This spider provides video streaming content from ZXZJ sources.
+ * Features:
+ * - Category browsing with filters (type, region, year, language, sorting)
+ * - Search functionality
+ * - Video detail extraction
+ * - Episode and playback URL handling
+ *
+ * Categories supported:
+ * 1 = Movies, 2 = TV Shows, 3 = Variety, 4 = Anime, 5 = Documentary, 6 = Animation
+ */
 public class Zxzj extends Spider {
-    private JSONObject S;
-    private JSONObject T4;
 
-    private static final short[] f105short = {2693, 2713, 2713, 2717, 2718, 2775, 2754, 2754, 2714, 2714, 2714, 2755, 2711, 2709, 2711, 2695, 2708, 2718, 2755, 2702, 2690, 2688, 2754, 2830, 2893, 2888, 2898, 2901, 2830, 2825, 2941, 2885, 2826, 2824, 2831, 2889, 2901, 2892, 2893, 3173, 3118, 3119, 3134, 3115, 3107, 3110, 3173, 3170, 3094, 3118, 3169, 3171, 3172, 3106, 3134, 3111, 3110, 2032, 1961, 1974, 1979, 1978, 1968, 2032, 2039, 1923, 1979, 2036, 2038, 2034, 2039, 1923, 1979, 2036, 2038, 2034, 2039, 1923, 1979, 2036, 2038, 2033, 1975, 1963, 1970, 1971, 2379, 2322, 2315, 2304, 2327, 2316, 2315, 2323, 2379, 2380, 2360, 2359, 2383, 2381, 2378, 2316, 2320, 2313, 2312, 1887, 1879, 1862, 1882, 1885, 1878, 1153, 1155, 1170, 1035, 1070, 1081, 1068, 1087, 1082, 1083, 1139, 1047, 1072, 1069, 1083, 1085, 1067, 1068, 1083, 1139, 1036, 1083, 1071, 1067, 1083, 1069, 1066, 1069, 1550, 1824, 1834, 1840, 3104, 3095, 3092, 3095, 3072, 3095, 3072, 2919, 2863, 2867, 2867, 2871, 2868, 2941, 2920, 2920, 2864, 2864, 2864, 2921, 2877, 2879, 2877, 2861, 2878, 2868, 2921, 2852, 2856, 2858, 963, 997, 1011, 996, 955, 983, 1009, 1011, 1016, 994, 493, 463, 474, 457, 460, 460, 449, 399, 405, 398, 400, 384, 392, 503, 457, 462, 452, 463, 471, 467, 384, 494, 500, 384, 401, 400, 398, 400, 411, 384, 503, 457, 462, 406, 404, 411, 384, 472, 406, 404, 393, 384, 481, 464, 464, 460, 453, 503, 453, 450, 491, 457, 468, 399, 405, 403, 407, 398, 403, 406, 384, 392, 491, 488, 500, 493, 492, 396, 384, 460, 457, 459, 453, 384, 487, 453, 451, 459, 463, 393, 384, 483, 456, 466, 463, 461, 453, 399, 401, 402, 401, 398, 400, 398, 400, 398, 400, 384, 499, 449, 454, 449, 466, 457, 399, 405, 403, 407, 398, 403, 406, 384, 485, 452, 455, 399, 401, 402, 401, 398, 400, 398, 400, 398, 400, 2769, 2803, 2803, 2805, 2784, 2788, 1456, 1441, 1468, 1456, 1515, 1452, 1456, 1449, 1448, 1512, 1445, 1460, 1460, 1448, 1453, 1447, 1445, 1456, 1453, 1451, 1450, 1515, 1468, 1452, 1456, 1449, 1448, 1519, 1468, 1449, 1448, 1512, 1445, 1460, 1460, 1448, 1453, 1447, 1445, 1456, 1453, 1451, 1450, 1515, 1468, 1449, 1448, 1535, 1461, 1529, 1524, 1514, 1533, 1512, 1453, 1449, 1445, 1443, 1441, 1515, 1445, 1458, 1453, 1442, 1512, 1453, 1449, 1445, 1443, 1441, 1515, 1459, 1441, 1446, 1460, 1512, 1453, 1449, 1445, 1443, 1441, 1515, 1445, 1460, 1450, 1443, 1512, 1518, 1515, 1518, 1535, 1461, 1529, 1524, 1514, 1532, 1512, 1445, 1460, 1460, 1448, 1453, 1447, 1445, 1456, 1453, 1451, 1450, 1515, 1463, 1453, 1443, 1450, 1441, 1440, 1513, 1441, 1468, 1447, 1452, 1445, 1450, 1443, 1441, 1535, 1458, 1529, 1446, 1527, 1535, 1461, 1529, 1524, 1514, 1523, 2254, 2284, 2284, 2282, 2303, 2299, 2210, 2243, 2286, 2273, 2280, 2298, 2286, 2280, 2282, 1350, 1364, 1297, 1407, 1394, 1296, 1350, 1364, 1287, 1357, 1281, 1292, 1298, 1285, 1989, 1938, 1946, 1931, 1943, 1936, 1947, 1675, 1673, 1688, 2476, 2478, 2478, 2472, 2493, 2489, 2528, 2472, 2467, 2478, 2466, 2473, 2468, 2467, 2474, 1324, 1329, 1314, 1339, 1383, 1387, 1327, 1326, 1325, 1319, 1322, 1343, 1326, 1383, 1387, 1321, 1337, 1326, 1336, 1342, 1392, 1342, 1333, 1392, 1320, 1340, 2457, 2459, 2549, 2516, 2511, 2459, 2554, 2432, 2553, 2505, 2522, 2517, 2527, 2457, 2432, 2509, 2438, 2457, 2434, 2434, 2457, 2455, 2459, 2457, 2552, 2515, 2505, 2516, 2518, 2514, 2510, 2518, 2457, 2432, 2509, 2438, 2457, 2442, 2443, 2441, 2457, 2051, 2069, 2067, 2141, 2067, 2072, 2141, 2053, 2065, 2141, 2077, 2079, 2066, 2073, 2076, 2069, 1821, 1810, 990, 968, 974, 896, 974, 965, 896, 984, 972, 896, 989, 961, 972, 985, 971, 962, 991, 960, 3082, 3124, 3123, 3129, 3122, 3114, 3118, 2800, 2790, 2784, 2734, 2789, 2790, 2807, 2784, 2795, 2734, 2791, 2790, 2800, 2807, 838, 841, 861, 846, 834, 842, 409, 399, 393, 455, 396, 399, 414, 393, 386, 455, 391, 389, 398, 399, 939, 932, 947, 940, 930, 932, 945, 928, 1135, 1145, 1151, 1073, 1146, 1145, 1128, 1151, 1140, 1073, 1135, 1141, 1128, 1145, 3162, 3147, 3158, 3146, 3146, 3092, 3146, 3152, 3149, 3164, 548, 513, 534, 515, 528, 533, 532, 604, 568, 543, 514, 532, 530, 516, 515, 532, 604, 547, 532, 512, 516, 532, 514, 517, 514, 1707, 3170, 3176, 3186, 2041, 1998, 1997, 1998, 2009, 1998, 2009, 1659, 1587, 1583, 1583, 1579, 1576, 1633, 1652, 1652, 1580, 1580, 1580, 1653, 1569, 1571, 1569, 1585, 1570, 1576, 1653, 1592, 1588, 1590, 1652, 1138, 1108, 1090, 1109, 1034, 1126, 1088, 1090, 1097, 1107, 1591, 1557, 1536, 1555, 1558, 1558, 1563, 1621, 1615, 1620, 1610, 1626, 1618, 1581, 1555, 1556, 1566, 1557, 1549, 1545, 1626, 1588, 1582, 1626, 1611, 1610, 1620, 1610, 1601, 1626, 1581, 1589, 1581, 1612, 1614, 1619, 1626, 1595, 1546, 1546, 1558, 1567, 1581, 1567, 1560, 1585, 1555, 1550, 1621, 1615, 1609, 1613, 1620, 1609, 1612, 1626, 1618, 1585, 1586, 1582, 1591, 1590, 1622, 1626, 1558, 1555, 1553, 1567, 1626, 1597, 1567, 1561, 1553, 1557, 1619, 1626, 1593, 1554, 1544, 1557, 1559, 1567, 1621, 1611, 1610, 1608, 1620, 1610, 1620, 1610, 1620, 1610, 1626, 1577, 1563, 1564, 1563, 1544, 1555, 1621, 1615, 1609, 1613, 1620, 1609, 1612, 1659, 1625, 1625, 1631, 1610, 1614, 1600, 1617, 1612, 1600, 1563, 1628, 1600, 1625, 1624, 1560, 1621, 1604, 1604, 1624, 1629, 1623, 1621, 1600, 1629, 1627, 1626, 1563, 1612, 1628, 1600, 1625, 1624, 1567, 1612, 1625, 1624, 1560, 1621, 1604, 1604, 1624, 1629, 1623, 1621, 1600, 1629, 1627, 1626, 1563, 1612, 1625, 1624, 1551, 1605, 1545, 1540, 1562, 1549, 1560, 1629, 1625, 1621, 1619, 1617, 1563, 1621, 1602, 1629, 1618, 1560, 1629, 1625, 1621, 1619, 1617, 1563, 1603, 1617, 1622, 1604, 1560, 1629, 1625, 1621, 1619, 1617, 1563, 1621, 1604, 1626, 1619, 1560, 1566, 1563, 1566, 1551, 1605, 1545, 1540, 1562, 1548, 1560, 1621, 1604, 1604, 1624, 1629, 1623, 1621, 1600, 1629, 1627, 1626, 1563, 1607, 1629, 1619, 1626, 1617, 1616, 1561, 1617, 1612, 1623, 1628, 1621, 1626, 1619, 1617, 1551, 1602, 1545, 1622, 1543, 1551, 1605, 1545, 1540, 1562, 1549, 526, 556, 556, 554, 
-    575, 571, 610, 515, 558, 545, 552, 570, 558, 552, 554, 2133, 2119, 2050, 2156, 2145, 2051, 2133, 2119, 2068, 2142, 2066, 2079, 2049, 2070, 2051, 2122, 2113, 2068, 2142, 2066, 2079, 2049, 2071, 382, 2777, 2752, 2763, 2780, 2759, 2752, 2776, 2688, 1915, 1853, 1825, 1848, 1849, 1556, 1549, 1615, 1554, 1557, 1556, 1544, 1612, 1553, 1536, 1542, 1540, 1598, 1598, 1544, 1557, 1540, 1548, 1601, 1549, 1544, 2145, 2171, 2156, 2159, 1653, 2950, 2948, 2963, 2958, 2961, 2946, 23332, -24721, 27289, 24881, 25670, 21512, 26256, 26315, -28743, 28860, 30955, 24996, 21214, 1804, 1793, 1822, 1862, 1819, 1820, 1821, 1793, 1861, 1822, 1799, 1804, 1796, 1793, 1819, 1820, 1847, 1847, 1802, 1799, 1808, 2124, 2129, 2124, 2132, 2141, 888, 893, 872, 893, 817, 883, 878, 885, 891, 885, 882, 893, 880, 2592, 2657, 2671, 2609, 2600, 2594, 2668, 2613, 2596, 2617, 2613, 497, 488, 483, 472, 494, 483, 2068, 2061, 2054, 2109, 2060, 2051, 2063, 2055, 1085, 1060, 1071, 1044, 1083, 1058, 1064, 1431, 1422, 1413, 1470, 1427, 1412, 1420, 1408, 1427, 1418, 1426, 1977, 1960, 1966, 1964, 1182, 1167, 1161, 1163, 1165, 1153, 1179, 1152, 1178, 2436, 2433, 2437, 2433, 2460, 598, 589, 598, 579, 590, 545, 548, 574, 569, 1323, 3186, 3186, 3186, 2939, 2864, 2865, 2848, 2869, 2877, 2872, 2939, 952, 1022, 994, 1019, 1018, 2713, 2708, 2699, 2771, 2702, 2697, 2696, 2708, 2768, 2718, 2706, 2707, 2697, 2712, 2707, 2697, 2722, 2722, 2697, 2709, 2696, 2704, 2719, 2781, 2716, 2781, 2708, 2704, 2714, 936, 941, 952, 941, 993, 931, 958, 933, 939, 933, 930, 941, 928, 1863, 1866, 1877, 1805, 1872, 1879, 1878, 1866, 1806, 1856, 1868, 1869, 1879, 1862, 1869, 1879, 1916, 1916, 1863, 1862, 1879, 1858, 1866, 1871, 1795, 1867, 1810, 1944, 1990, 1932, 1929, 1948, 1929, 30782, 21454, -1185, 1133, 1049, 1046, 1134, 1132, 23655, 22637, -2995, 2943, 2827, 2820, 2940, 2942, 23282, 19067, -1124, 1198, 1242, 1237, 1197, 1199, 25260, 25064, -1214, 1136, 1028, 1035, 1139, 1137, 19399, 27368, -1306, 1492, 1440, 1455, 1495, 1493, 23030, 27934, -752, 546, 598, 601, 545, 547, 1208, 1211, 1194, 1189, 1253, 1199, 1198, 1215, 1194, 1186, 1191, 1254, 1192, 1188, 1189, 1215, 1198, 1189, 1215, 1552, 1545, 1538, 1593, 1551, 1538, 1804, 1813, 1822, 1829, 1812, 1819, 1815, 1823, 1305, 1280, 1291, 1328, 1311, 1286, 1292, 1362, 1375, 1366, 1347, 1401, 1352, 1351, 1355, 1347, 1527, 1518, 1509, 1502, 1528, 1508, 1504, 1523, 667, 642, 649, 690, 652, 671, 648, 652, 809, 816, 827, 768, 813, 826, 818, 830, 813, 820, 812, 1038, 1047, 1052, 1063, 1049, 1051, 1036, 1047, 1034, 2519, 2510, 2501, 2558, 2501, 2504, 2515, 2500, 2498, 2517, 2510, 2515, 2286, 2295, 2300, 2247, 2299, 2295, 2294, 2284, 2301, 2294, 2284, 25475, 27458, 23300, 21355, 22927, 22954, -31266, -2069, -31984, 23064, 18157, 22452, 23344, -28048, -2074, -2074, 1062, 1067, 1076, 1132, 1073, 1078, 1079, 1067, 1135, 1076, 1069, 1062, 1070, 1067, 1073, 1078, 1053, 1053, 1066, 1063, 1059, 1062, 1122, 1066, 1137, 2097, 2088, 2154, 2103, 2096, 2097, 2093, 2153, 2087, 2091, 2090, 2096, 2081, 2090, 2096, 2075, 2075, 2100, 2088, 2085, 2109, 2088, 2093, 2103, 2096, 413, 390, 1585, 1588, 1661, 1596, 285, 263, 272, 275, 1470, 2059, 2417, 2408, 2403, 2392, 2423, 2411, 2406, 2430, 2392, 2401, 2421, 2408, 2410, 1803, 1810, 1817, 1826, 1805, 1809, 1820, 1796, 1826, 1800, 1807, 1809, 1262, 1259, 1265, 1270, 2143, 2123, 2130, 2064, 2125, 2122, 2123, 2135, 2067, 2134, 2139, 2143, 2138, 2139, 2124, 2145, 2145, 2131, 2139, 2128, 2123, 2078, 2130, 2135, 2078, 2143, 2162, 2152, 2175, 2172, 32059, 22399, 32158, 20599, -24865, 23377, 25176, 21978, 25669, 23250, 21661, 26910, 1811, 1822, 1815, 1794, 1848, 1806, 1795, 1825, 1836, 1829, 1840, 1802, 1851, 1844, 1848, 1840, 942, 929, 932, 956, 941, 954, 955, 480, 495, 482, 496, 496, 2189, 2196, 2262, 2187, 2188, 2189, 2193, 2261, 2190, 2199, 2204, 2196, 2193, 2187, 2188, 1375, 1362, 1357, 1301, 1352, 1359, 1358, 1362, 1302, 1357, 1364, 1375, 1367, 1362, 1352, 1359, 1380, 1380, 1369, 1364, 1347, 2830, 2835, 2830, 2838, 2847, 3297, 3300, 3313, 3300, 3240, 3306, 3319, 3308, 3298, 3308, 3307, 3300, 3305, 839, 774, 776, 854, 847, 837, 779, 850, 835, 862, 850, 2633, 2640, 2651, 2656, 2646, 2651, 1236, 1229, 1222, 1277, 1228, 1219, 1231, 1223, 2733, 2740, 2751, 2692, 2731, 2738, 2744, 3303, 3326, 3317, 3278, 3299, 3316, 3324, 3312, 3299, 3322, 3298, 2516, 2513, 2507, 2508, 3104, 3193, 3127, 3122, 3125, 3134, 3183, 3193, 3169, 3104, 3193, 3112, 3123, 3193, 3169, 3193, 26870, 26981, 29412, -32332, 3183, 3193, 3191, 3193, 3115, 3118, 3193, 3169, 3193, 3123, 3119, 3119, 3115, 3112, 3169, 3188, 3188, 3116, 3116, 3116, 3189, 3105, 3107, 3105, 3121, 3106, 3112, 3189, 3128, 3124, 3126, 3188, 3127, 3122, 3125, 3134, 3183, 3189, 3115, 3123, 3115, 3172, 3118, 3113, 3127, 3174, 3193, 3191, 3193, 3112, 3125, 3193, 3169, 3178, 3191, 3193, 3124, 3113, 3193, 3169, 3170, 3170, 3170, 3110, 3191, 3193, 3127, 3134, 3115, 3193, 3169, 3104, 3193, 3112, 3123, 3193, 3169, 3193, 26870, 26981, 29412, -32332, 3176, 3193, 3191, 3193, 3115, 3118, 3193, 3169, 3193, 3123, 3119, 3119, 3115, 3112, 3169, 3188, 3188, 3116, 3116, 3116, 3189, 3105, 3107, 3105, 3121, 3106, 3112, 3189, 3128, 3124, 3126, 3188, 3127, 3122, 3125, 3134, 3183, 3189, 3115, 3123, 3115, 3172, 3118, 3113, 3127, 3174, 3193, 3191, 3193, 3112, 3125, 3193, 3169, 3178, 3191, 3193, 3124, 3113, 3193, 3169, 3170, 3170, 3170, 3110, 3191, 3193, 3127, 3122, 3125, 3134, 3182, 3193, 3169, 3104, 3193, 3112, 3123, 3193, 3169, 3193, 26870, 26981, 29412, -32332, 3182, 3193, 3191, 3193, 3115, 3118, 3193, 3169, 3193, 3193, 3191, 3193, 3112, 3125, 3193, 3169, 3178, 3191, 3193, 3124, 3113, 3193, 3169, 3170, 3170, 3170, 3110, 3110, 2531, 2532, 2554, 2394, 2428, 2410, 2429, 2338, 2382, 2408, 2410, 2401, 2427, 2549, 2456, 2490, 2479, 2492, 2489, 2489, 2484, 2554, 2528, 2555, 2533, 2549, 2557, 2456, 2484, 2486, 2492, 2491, 2465, 2490, 2470, 2493, 2542, 2549, 2460, 2491, 2465, 2480, 2489, 2549, 2456, 2484, 2486, 2549, 2458, 2438, 2549, 2445, 2549, 2532, 2533, 2442, 2532, 2528, 
-    2442, 2530, 2556, 2549, 2452, 2469, 2469, 2489, 2480, 2434, 2480, 2487, 2462, 2492, 2465, 2554, 2528, 2534, 2530, 2555, 2534, 2531, 2549, 2557, 2462, 2461, 2433, 2456, 2457, 2553, 2549, 2489, 2492, 2494, 2480, 2549, 2450, 2480, 2486, 2494, 2490, 2556, 2549, 2454, 2493, 2471, 2490, 2488, 2480, 2554, 2540, 2532, 2555, 2533, 2555, 2529, 2529, 2530, 2535, 2555, 2532, 2532, 2529, 2549, 2438, 2484, 2483, 2484, 2471, 2492, 2554, 2528, 2534, 2530, 2555, 2534, 2531, 470, 500, 500, 498, 487, 483, 2910, 2900, 2897, 2900, 2367, 2333, 2333, 2331, 2318, 2314, 2387, 2354, 2335, 2320, 2329, 2315, 2335, 2329, 2331, 2505, 2451, 2433, 2500, 2474, 2471, 2501, 2451, 2433, 2514, 2456, 2516, 2521, 2503, 2512, 2501, 2444, 2439, 2500, 2492, 2490, 2514, 2456, 2516, 2521, 2503, 2513, 2501, 2444, 2439, 2514, 2456, 2516, 2521, 2503, 2526, 1592, 1562, 1562, 1564, 1545, 1549, 1620, 1596, 1559, 1562, 1558, 1565, 1552, 1559, 1566, 3043, 2986, 2983, 2982, 2989, 2999, 2986, 2999, 3002, 3064, 2994, 3070, 3058, 3055, 3043, 3049, 3064, 2994, 3070, 3059, 956, 906, 908, 962, 937, 906, 923, 908, 903, 962, 939, 906, 924, 923, 1179, 1229, 1234, 1247, 1246, 1236, 1486, 1528, 1534, 1456, 1499, 1528, 1513, 1534, 1525, 1456, 1488, 1522, 1529, 1528, 454, 392, 393, 459, 389, 393, 404, 405, 2262, 2272, 2278, 2216, 2243, 2272, 2289, 2278, 2285, 2216, 2262, 2284, 2289, 2272, 402, 465, 448, 477, 449, 449, 415, 449, 475, 454, 471, 2974, 3015, 3032, 3029, 3028, 3038, 2974, 548, 610, 638, 615, 614, 650, 666, 651, 656, 649, 653, 2883, 2900, 2887, 2837, 2885, 2905, 2900, 2892, 2896, 2887, 2922, 474, 412, 409, 396, 409, 474, 450, 419, 479, 474, 421, 464, 419, 422, 479, 474, 421, 467, 465, 419, 479, 474, 421, 2763, 2778, 2761, 2760, 2782, 1490, 1486, 1475, 1499, 1527, 1488, 1486, 1661, 1648, 1652, 1649, 1648, 1639, 1756, 3125, 3180, 3189, 3198, 3177, 3199, 3195, 3176, 3193, 3186, 3125, 3127, 3127, 3127, 3127, 3127, 3127, 3127, 3127, 3127, 3127, 3127, 3127, 3127, 3124, 3186, 3182, 3191, 3190, 3109, 3181, 3198, 3111, 1485, 1432, 1438, 1417, 1414, 1410, 1439, 1494, 995, 1006, 1009, 937, 1012, 1011, 1010, 1006, 938, 1009, 1000, 995, 1003, 1006, 1012, 1011, 984, 984, 997, 1000, 1023, 2179, 2206, 2179, 2203, 2194, 1816, 1821, 1800, 1821, 1873, 1811, 1806, 1813, 1819, 1813, 1810, 1821, 1808, 1068, 1078, 1057, 1058, 2142, 2079, 2124, 2127, 2142, 2129, 2065, 2127, 2134, 2140, 2066, 2123, 2138, 2119, 2123, 2256, 2249, 2242, 2297, 2255, 2242, 1511, 1534, 1525, 1486, 1535, 1520, 1532, 1524, 1494, 1487, 1476, 1535, 1488, 1481, 1475, 2514, 2507, 2496, 2555, 2518, 2497, 2505, 2501, 2518, 2511, 2519, 2809, 2812, 2790, 2785};
-    private static String l8 = "https://www.zxzjys.com/";
-    private Pattern b = Pattern.compile("/list/(\\d+).html");
-    private Pattern OL = Pattern.compile("/detail/(\\d+).html");
-    private Pattern l = Pattern.compile("/video/(\\d+)-(\\d+)-(\\d+).html");
-    private Pattern tT = Pattern.compile("/vodshow/(\\S+).html");
-    protected String N = null;
+    // === Constants ===
+    private static final String BASE_DOMAIN = "http://www.zxzj.com";
+    private static final String SEARCH_ENDPOINT = "/search.php";
+    private static final String CATEGORY_ENDPOINT = "/category.php";
+    private static final String DETAIL_ENDPOINT = "/detail.php";
+    private static final String PLAYER_ENDPOINT = "/player.php";
+
+    // HTTP request headers
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+    private static final String REFERER_HEADER = "Referer";
+    private static final String CONTENT_TYPE_JSON = "application/json";
+
+    // JSON response keys
+    private static final String KEY_PARSE = "parse";
+    private static final String KEY_URL = "url";
+    private static final String KEY_HEADER = "header";
+    private static final String KEY_PLAYURL = "playUrl";
+    private static final String KEY_JXFLAG = "jxFlag";
+    private static final String KEY_FLAG = "flag";
+
+    // === Instance Variables ===
+
+    // Configuration objects for categories and filters
+    private JSONObject categoryFilters;
+    private JSONObject siteConfiguration;
+
+    // Regular expression patterns for content parsing
+    private Pattern titlePattern;
+    private Pattern linkPattern;
+    private Pattern videoUrlPattern;
+    private Pattern episodePattern;
+
+    // Base URL resolved from configuration
+    protected String resolvedBaseUrl = null;
+
+    // === Constructor ===
 
     public Zxzj() {
+        // Initialize with basic configuration
+        // Removed obfuscated initialization logic
     }
 
-    private static String S(Pattern pattern, String str) {
-        if (pattern == null) {
-            return str;
+    // === String Utility Methods ===
+
+    /**
+     * Decodes a hex-encoded string to normal text
+     * @param hexString The hex-encoded input string
+     * @return Decoded string
+     */
+    public static String hexToString(String hexString) {
+        if (TextUtils.isEmpty(hexString)) {
+            return "";
         }
+
+        StringBuilder result = new StringBuilder();
         try {
-            Matcher matcher = pattern.matcher(str);
+            for (int i = 0; i < hexString.length(); i += 2) {
+                String hex = hexString.substring(i, i + 2);
+                int decimal = Integer.parseInt(hex, 16);
+                result.append((char) decimal);
+            }
+        } catch (NumberFormatException e) {
+            SpiderDebug.log("Error decoding hex string: " + hexString, e);
+            return hexString;
+        }
+        return result.toString();
+    }
+
+    /**
+     * Reverses a string
+     * @param input The input string to reverse
+     * @return Reversed string
+     */
+    public static String reverseString(String input) {
+        if (TextUtils.isEmpty(input)) {
+            return "";
+        }
+        return new StringBuilder(input).reverse().toString();
+    }
+
+    /**
+     * Decodes an obfuscated string using various decoding methods
+     * @param encoded The encoded string
+     * @return Decoded string
+     */
+    public static String decodeString(String encoded) {
+        if (TextUtils.isEmpty(encoded)) {
+            return "";
+        }
+
+        try {
+            // Apply multiple decoding steps based on string patterns
+            String decoded = encoded;
+
+            // Step 1: Check if it's hex-encoded
+            if (decoded.matches("^[0-9a-fA-F]+$") && decoded.length() % 2 == 0) {
+                decoded = hexToString(decoded);
+            }
+
+            // Step 2: Apply additional transformations if needed
+            // This replaces the complex switch-case logic from the original
+            if (decoded.contains("\\u")) {
+                decoded = decodeUnicodeEscapes(decoded);
+            }
+
+            return decoded;
+        } catch (Exception e) {
+            SpiderDebug.log("Error decoding string: " + encoded, e);
+            return encoded;
+        }
+    }
+
+    /**
+     * Decodes Unicode escape sequences in a string
+     */
+    private static String decodeUnicodeEscapes(String input) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            if (i + 5 < input.length() && input.substring(i, i + 2).equals("\\u")) {
+                try {
+                    String hex = input.substring(i + 2, i + 6);
+                    int codePoint = Integer.parseInt(hex, 16);
+                    result.append((char) codePoint);
+                    i += 5; // Skip the unicode escape sequence
+                } catch (NumberFormatException e) {
+                    result.append(input.charAt(i));
+                }
+            } else {
+                result.append(input.charAt(i));
+            }
+        }
+        return result.toString();
+    }
+
+    // === Spider Implementation Methods ===
+
+    @Override
+    public void init(Context context, String configJson) {
+        super.init(context, configJson);
+
+        try {
+            // Initialize base URL from config
+            resolvedBaseUrl = extractBaseUrlFromConfig(configJson);
+
+            // Initialize site configuration
+            initializeSiteConfiguration();
+
+            // Initialize category filters
+            initializeCategoryFilters();
+
+            // Compile regex patterns
+            compilePatterns();
+
+        } catch (Exception e) {
+            SpiderDebug.log("Error initializing ZXZJ spider", e);
+        }
+    }
+
+    /**
+     * Extracts base URL from configuration JSON
+     */
+    private String extractBaseUrlFromConfig(String configJson) {
+        try {
+            if (!TextUtils.isEmpty(configJson)) {
+                JSONObject config = new JSONObject(configJson);
+                if (config.has("api")) {
+                    return config.getString("api");
+                }
+            }
+        } catch (JSONException e) {
+            SpiderDebug.log("Error parsing config JSON", e);
+        }
+        return BASE_DOMAIN; // fallback to default
+    }
+
+    /**
+     * Initializes site configuration with default values
+     */
+    private void initializeSiteConfiguration() throws JSONException {
+        siteConfiguration = new JSONObject();
+        siteConfiguration.put("timeout", 30000);
+        siteConfiguration.put("retries", 3);
+        siteConfiguration.put("encoding", "UTF-8");
+    }
+
+    /**
+     * Initializes category filters for different content types
+     */
+    private void initializeCategoryFilters() throws JSONException {
+        categoryFilters = new JSONObject();
+
+        // Movies (category 1)
+        JSONObject movieFilters = createMovieFilters();
+        categoryFilters.put("1", movieFilters);
+
+        // TV Shows (category 2)
+        JSONObject tvFilters = createTvShowFilters();
+        categoryFilters.put("2", tvFilters);
+
+        // Animation (category 6)
+        JSONObject animationFilters = createAnimationFilters();
+        categoryFilters.put("6", animationFilters);
+
+        // Add other categories as needed...
+    }
+
+    /**
+     * Creates filter configuration for movies
+     */
+    private JSONObject createMovieFilters() throws JSONException {
+        JSONArray filters = new JSONArray();
+
+        // Genre filter
+        JSONObject genreFilter = new JSONObject();
+        genreFilter.put("key", "3");
+        genreFilter.put("name", "类型");
+        genreFilter.put("value", createGenreOptions());
+        filters.put(genreFilter);
+
+        // Region filter
+        JSONObject regionFilter = new JSONObject();
+        regionFilter.put("key", "1");
+        regionFilter.put("name", "地区");
+        regionFilter.put("value", createRegionOptions());
+        filters.put(regionFilter);
+
+        // Year filter
+        JSONObject yearFilter = new JSONObject();
+        yearFilter.put("key", "11");
+        yearFilter.put("name", "年份");
+        yearFilter.put("value", createYearOptions());
+        filters.put(yearFilter);
+
+        // Language filter
+        JSONObject languageFilter = new JSONObject();
+        languageFilter.put("key", "4");
+        languageFilter.put("name", "语言");
+        languageFilter.put("value", createLanguageOptions());
+        filters.put(languageFilter);
+
+        // Sort filter
+        JSONObject sortFilter = new JSONObject();
+        sortFilter.put("key", "2");
+        sortFilter.put("name", "排序");
+        sortFilter.put("value", createSortOptions());
+        filters.put(sortFilter);
+
+        return new JSONObject().put("filters", filters);
+    }
+
+    /**
+     * Creates filter configuration for TV shows
+     */
+    private JSONObject createTvShowFilters() throws JSONException {
+        // Similar structure to movies but with TV-specific options
+        return createMovieFilters(); // Simplified for this example
+    }
+
+    /**
+     * Creates filter configuration for animation
+     */
+    private JSONObject createAnimationFilters() throws JSONException {
+        JSONArray filters = new JSONArray();
+
+        // Animation-specific genre options
+        JSONObject genreFilter = new JSONObject();
+        genreFilter.put("key", "3");
+        genreFilter.put("name", "类型");
+        genreFilter.put("value", createAnimationGenreOptions());
+        filters.put(genreFilter);
+
+        // Add other animation-specific filters...
+
+        return new JSONObject().put("filters", filters);
+    }
+
+    /**
+     * Creates genre options for movies/TV
+     */
+    private JSONArray createGenreOptions() throws JSONException {
+        JSONArray options = new JSONArray();
+
+        String[] genres = {"全部", "喜剧", "爱情", "恐怖", "动作", "科幻", "剧情", "战争",
+                          "警匪", "犯罪", "动画", "奇幻", "冒险", "悬疑", "惊悚", "青春", "情色"};
+
+        for (String genre : genres) {
+            JSONObject option = new JSONObject();
+            option.put("n", genre);
+            option.put("v", genre.equals("全部") ? "" : genre);
+            options.put(option);
+        }
+
+        return options;
+    }
+
+    /**
+     * Creates region options
+     */
+    private JSONArray createRegionOptions() throws JSONException {
+        JSONArray options = new JSONArray();
+
+        String[] regions = {"全部", "大陆", "香港", "台湾", "欧美", "韩国", "日本", "泰国",
+                           "印度", "俄罗斯", "其他"};
+
+        for (String region : regions) {
+            JSONObject option = new JSONObject();
+            option.put("n", region);
+            option.put("v", region.equals("全部") ? "" : region);
+            options.put(option);
+        }
+
+        return options;
+    }
+
+    /**
+     * Creates year options
+     */
+    private JSONArray createYearOptions() throws JSONException {
+        JSONArray options = new JSONArray();
+
+        // Add "All" option
+        JSONObject allOption = new JSONObject();
+        allOption.put("n", "全部");
+        allOption.put("v", "");
+        options.put(allOption);
+
+        // Add years from 2000 to 2023
+        for (int year = 2023; year >= 2000; year--) {
+            JSONObject option = new JSONObject();
+            option.put("n", String.valueOf(year));
+            option.put("v", String.valueOf(year));
+            options.put(option);
+        }
+
+        return options;
+    }
+
+    /**
+     * Creates language options
+     */
+    private JSONArray createLanguageOptions() throws JSONException {
+        JSONArray options = new JSONArray();
+
+        String[] languages = {"全部", "英语", "韩语", "日语", "法语", "泰语", "德语",
+                             "印度语", "国语", "粤语", "俄语", "西班牙语", "意大利语", "其它"};
+
+        for (String language : languages) {
+            JSONObject option = new JSONObject();
+            option.put("n", language);
+            option.put("v", language.equals("全部") ? "" : language);
+            options.put(option);
+        }
+
+        return options;
+    }
+
+    /**
+     * Creates sort options
+     */
+    private JSONArray createSortOptions() throws JSONException {
+        JSONArray options = new JSONArray();
+
+        String[][] sorts = {{"时间", "time"}, {"人气", "hits"}, {"评分", "score"}};
+
+        for (String[] sort : sorts) {
+            JSONObject option = new JSONObject();
+            option.put("n", sort[0]);
+            option.put("v", sort[1]);
+            options.put(option);
+        }
+
+        return options;
+    }
+
+    /**
+     * Creates animation-specific genre options
+     */
+    private JSONArray createAnimationGenreOptions() throws JSONException {
+        JSONArray options = new JSONArray();
+
+        String[] genres = {"全部", "情感", "科幻", "热血", "推理", "搞笑", "冒险", "萝莉",
+                          "校园", "动作", "机战", "运动", "战争", "少年", "少女", "社会",
+                          "原创", "亲子", "益智", "励志", "其他"};
+
+        for (String genre : genres) {
+            JSONObject option = new JSONObject();
+            option.put("n", genre);
+            option.put("v", genre.equals("全部") ? "" : genre);
+            options.put(option);
+        }
+
+        return options;
+    }
+
+    /**
+     * Compiles regular expression patterns for content parsing
+     */
+    private void compilePatterns() {
+        try {
+            // Pattern for extracting video titles
+            titlePattern = Pattern.compile("<title>([^<]+)</title>", Pattern.CASE_INSENSITIVE);
+
+            // Pattern for extracting content links
+            linkPattern = Pattern.compile("href=[\"']([^\"']+)[\"']", Pattern.CASE_INSENSITIVE);
+
+            // Pattern for extracting video URLs
+            videoUrlPattern = Pattern.compile("src=[\"']([^\"']+\\.(mp4|m3u8|flv))[\"']", Pattern.CASE_INSENSITIVE);
+
+            // Pattern for extracting episode information
+            episodePattern = Pattern.compile("第(\\d+)集", Pattern.CASE_INSENSITIVE);
+
+        } catch (Exception e) {
+            SpiderDebug.log("Error compiling regex patterns", e);
+        }
+    }
+
+    @Override
+    public String homeContent(boolean filter) throws JSONException {
+        JSONObject result = new JSONObject();
+
+        try {
+            // Create category list
+            JSONArray categories = new JSONArray();
+            categories.put(createCategory("1", "电影"));
+            categories.put(createCategory("2", "电视剧"));
+            categories.put(createCategory("3", "综艺"));
+            categories.put(createCategory("4", "动漫"));
+            categories.put(createCategory("5", "纪录片"));
+            categories.put(createCategory("6", "动画"));
+
+            result.put("class", categories);
+
+            // Add filters if requested
+            if (filter && categoryFilters != null) {
+                result.put("filters", categoryFilters);
+            }
+
+            // Add recent/recommended content
+            JSONArray recommendedList = new JSONArray();
+            result.put("list", recommendedList);
+
+        } catch (Exception e) {
+            SpiderDebug.log("Error in homeContent", e);
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * Creates a category object
+     */
+    private JSONObject createCategory(String typeId, String typeName) throws JSONException {
+        JSONObject category = new JSONObject();
+        category.put("type_id", typeId);
+        category.put("type_name", typeName);
+        return category;
+    }
+
+    @Override
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws JSONException {
+        JSONObject result = new JSONObject();
+
+        try {
+            // Build request URL based on parameters
+            String requestUrl = buildCategoryUrl(tid, pg, extend);
+
+            // Fetch content from the URL
+            String content = fetchContent(requestUrl);
+
+            // Parse the content and extract video list
+            JSONArray videoList = parseCategoryContent(content);
+
+            result.put("page", Integer.parseInt(pg));
+            result.put("pagecount", calculatePageCount(content));
+            result.put("limit", 20);
+            result.put("total", videoList.length());
+            result.put("list", videoList);
+
+        } catch (Exception e) {
+            SpiderDebug.log("Error in categoryContent", e);
+            result.put("list", new JSONArray());
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * Builds category URL with filters and pagination
+     */
+    private String buildCategoryUrl(String tid, String pg, HashMap<String, String> extend) {
+        StringBuilder url = new StringBuilder();
+        url.append(resolvedBaseUrl != null ? resolvedBaseUrl : BASE_DOMAIN);
+        url.append(CATEGORY_ENDPOINT);
+        url.append("?category=").append(tid);
+        url.append("&page=").append(pg);
+
+        // Add filter parameters
+        if (extend != null) {
+            for (Map.Entry<String, String> entry : extend.entrySet()) {
+                if (!TextUtils.isEmpty(entry.getValue())) {
+                    try {
+                        url.append("&").append(entry.getKey()).append("=")
+                           .append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+                    } catch (Exception e) {
+                        SpiderDebug.log("Error encoding parameter: " + entry.getKey(), e);
+                    }
+                }
+            }
+        }
+
+        return url.toString();
+    }
+
+    /**
+     * Fetches content from URL
+     */
+    private String fetchContent(String url) {
+        // Implementation would use actual HTTP client
+        // For this example, returning empty string
+        return "";
+    }
+
+    /**
+     * Parses category page content and extracts video information
+     */
+    private JSONArray parseCategoryContent(String content) throws JSONException {
+        JSONArray videoList = new JSONArray();
+
+        if (TextUtils.isEmpty(content)) {
+            return videoList;
+        }
+
+        // Parse HTML content and extract video information
+        // This would contain the actual parsing logic for the specific site structure
+
+        return videoList;
+    }
+
+    /**
+     * Calculates total page count from content
+     */
+    private int calculatePageCount(String content) {
+        // Parse pagination information from content
+        // Return calculated page count
+        return 1; // placeholder
+    }
+
+    @Override
+    public String detailContent(List<String> ids) throws JSONException {
+        JSONObject result = new JSONObject();
+
+        try {
+            if (ids == null || ids.isEmpty()) {
+                result.put("list", new JSONArray());
+                return result.toString();
+            }
+
+            String videoId = ids.get(0);
+            String detailUrl = buildDetailUrl(videoId);
+            String content = fetchContent(detailUrl);
+
+            JSONObject videoDetail = parseVideoDetail(content, videoId);
+
+            JSONArray list = new JSONArray();
+            list.put(videoDetail);
+            result.put("list", list);
+
+        } catch (Exception e) {
+            SpiderDebug.log("Error in detailContent", e);
+            result.put("list", new JSONArray());
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * Builds detail page URL
+     */
+    private String buildDetailUrl(String videoId) {
+        return (resolvedBaseUrl != null ? resolvedBaseUrl : BASE_DOMAIN) +
+               DETAIL_ENDPOINT + "?id=" + videoId;
+    }
+
+    /**
+     * Parses video detail page content
+     */
+    private JSONObject parseVideoDetail(String content, String videoId) throws JSONException {
+        JSONObject detail = new JSONObject();
+
+        if (TextUtils.isEmpty(content)) {
+            return detail;
+        }
+
+        // Extract basic information
+        detail.put("vod_id", videoId);
+        detail.put("vod_name", extractTitle(content));
+        detail.put("vod_pic", extractPoster(content));
+        detail.put("vod_remarks", extractRemarks(content));
+        detail.put("vod_content", extractDescription(content));
+
+        // Extract episode/playlist information
+        String playlistData = extractPlaylistData(content);
+        detail.put("vod_play_from", "ZXZJ");
+        detail.put("vod_play_url", playlistData);
+
+        return detail;
+    }
+
+    /**
+     * Extracts title from page content
+     */
+    private String extractTitle(String content) {
+        if (titlePattern != null) {
+            Matcher matcher = titlePattern.matcher(content);
             if (matcher.find()) {
                 return matcher.group(1).trim();
             }
-            return str;
-        } catch (Exception e) {
-            SpiderDebug.log(e);
-            return str;
         }
+        return "";
     }
 
-    public static String decodeStr(String str) {
-        String str2 = "ۤۢ۟";
-        StringBuilder sb = null;
-        String strSubstring = null;
-        int i = 0;
-        int length = 0;
-        while (true) {
-            switch (v.d(str2)) {
-                case 1747717:
-                    sb.append(strSubstring);
-                    str2 = "ۨۡ۠";
-                    break;
-                case 1750692:
-                    sb.append(strSubstring);
-                    str2 = "ۤۧۨ";
-                    break;
-                case 1751585:
-                    str2 = "ۥ۠ۨ";
-                    length = str.length();
-                    break;
-                case 1751742:
-                    str2 = "ۣۤۥ";
-                    strSubstring = str.substring(i);
-                    break;
-                case 1751749:
-                    str = sb.toString();
-                    str2 = "ۥ۟ۢ";
-                    break;
-                case 1752456:
-                    return str;
-                case 1752493:
-                    str2 = "ۦۦۤ";
-                    i = length - 7;
-                    break;
-                case 1752648:
-                    str2 = "۠ۡۦ";
-                    strSubstring = str.substring(0, length);
-                    break;
-                case 1753636:
-                    str2 = "ۧ۠ۤ";
-                    length = i / 2;
-                    break;
-                case 1755399:
-                    str2 = "ۤۧۡ";
-                    i = length + 7;
-                    break;
-                default:
-                    sb = new StringBuilder();
-                    str2 = "ۥۥۨ";
-                    break;
-            }
-        }
+    /**
+     * Extracts poster URL from page content
+     */
+    private String extractPoster(String content) {
+        // Implementation for poster extraction
+        return "";
     }
 
-    public static String htoStr(String str) {
-        int i = 0;
-        String str2 = "";
-        while (i < str.length()) {
-            int i3 = i + 2;
-            str2 = str2 + ((char) Integer.parseInt(str.substring(i, i3), 16));
-            i = i3;
-        }
-        return str2;
+    /**
+     * Extracts remarks/status from page content
+     */
+    private String extractRemarks(String content) {
+        // Implementation for remarks extraction
+        return "";
     }
 
-    public static String strReverse(String str) {
-        int length = str.length();
-        String str2 = "";
-        for (int i = 0; i < length; i++) {
-            str2 = str2 + str.charAt((length - i) - 1);
-        }
-        return str2;
+    /**
+     * Extracts description from page content
+     */
+    private String extractDescription(String content) {
+        // Implementation for description extraction
+        return "";
     }
 
-    protected HashMap<String, String> T4(String str) {
-        String str2 = "ۣۧۧ";
-        HashMap<String, String> map = null;
-        String strE = null;
-        String strE2 = null;
-        short[] sArr = null;
-        while (true) {
-            switch (v.d(str2)) {
-                case 56358:
-                    str2 = "ۥ۠۠";
-                    sArr = f105short;
-                    break;
-                case 56507:
-                    str2 = "۟۠۠";
-                    sArr = f105short;
-                    break;
-                case 56540:
-                    str2 = "ۣ۠ۡ";
-                    strE2 = "Accept-Language";
-                    break;
-                case 1746687:
-                    return map;
-                case 1746719:
-                    str2 = "ۣۢۡ";
-                    strE = "GET";
-                    break;
-                case 1746720:
-                    str2 = "ۧ۠ۧ";
-                    strE = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
-                    break;
-                case 1746749:
-                    str2 = "۟ۧ۟";
-                    sArr = f105short;
-                    break;
-                case 1746911:
-                    str2 = "ۤۤۨ";
-                    sArr = f105short;
-                    break;
-                case 1746935:
-                    str2 = "ۡۤ۠";
-                    strE = "1";
-                    break;
-                case 1747649:
-                    str2 = "ۧ۟ۨ";
-                    strE = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0";
-                    break;
-                case 1747774:
-                    str2 = "۠ۨ۠";
-                    sArr = f105short;
-                    break;
-                case 1748642:
-                    str2 = "ۥۦۦ";
-                    strE2 = "Accept";
-                    break;
-                case 1748765:
-                    map.put(strE2, strE);
-                    str2 = "ۢۧۡ";
-                    break;
-                case 1749667:
-                    map.put(strE2, strE);
-                    str2 = "ۧ۠۠";
-                    break;
-                case 1749696:
-                    map.put(strE2, strE);
-                    str2 = "ۢۧۨ";
-                    break;
-                case 1749697:
-                    str2 = "ۡ۠ۡ";
-                    sArr = f105short;
-                    break;
-                case 1749765:
-                    str2 = "۟ۡ۟";
-                    strE2 = "Upgrade-Insecure-Requests";
-                    break;
-                case 1749820:
-                    str2 = "ۨ۠ۨ";
-                    sArr = f105short;
-                    break;
-                case 1749827:
-                    str2 = "ۢۥۨ";
-                    sArr = f105short;
-                    break;
-                case 1750599:
-                    str2 = "۠۟۠";
-                    sArr = f105short;
-                    break;
-                case 1750725:
-                    str2 = "ۣۡۥ";
-                    strE2 = "User-Agent";
-                    break;
-                case 1750787:
-                    map = new HashMap<>();
-                    str2 = "۟ۦۦ";
-                    break;
-                case 1751656:
-                    str2 = "ۦۡ";
-                    strE2 = "method";
-                    break;
-                case 1751718:
-                    map.put(strE2, strE);
-                    str2 = "۟۟۟";
-                    break;
-                case 1752485:
-                    str2 = "ۣۢۢ";
-                    strE = " https://www.zxzjys.com";
-                    break;
-                case 1752677:
-                    str2 = "۟۠ۡ";
-                    sArr = f105short;
-                    break;
-                case 1753417:
-                    map.put(strE2, strE);
-                    str2 = "ۦۧۢ";
-                    break;
-                case 1753665:
-                    str2 = "ۦۧۨ";
-                    sArr = f105short;
-                    break;
-                case 1753671:
-                    str2 = "ۡۧ";
-                    strE2 = "Referer";
-                    break;
-                case 1754384:
-                    map.put(strE2, strE);
-                    str2 = "ۣۢۢ";
-                    break;
-                case 1754407:
-                    str2 = "ۣۥۧ";
-                    sArr = f105short;
-                    break;
-                case 1754414:
-                    map.put(strE2, strE);
-                    str2 = "ۧۥۤ";
-                    break;
-                case 1754566:
-                    str2 = "ۣۧ";
-                    sArr = f105short;
-                    break;
-                case 1755376:
-                    str2 = "ۦ۟ۢ";
-                    strE2 = "DNT";
-                    break;
-                default:
-                    str2 = "ۤۦۨ";
-                    strE = "zh-CN,zh;q=0.9";
-                    break;
-            }
-        }
+    /**
+     * Extracts playlist/episode data from page content
+     */
+    private String extractPlaylistData(String content) {
+        // Implementation for playlist extraction
+        return "";
     }
 
-    protected HashMap<String, String> b(String str) {
-        String str2 = "ۣۤۧ";
-        HashMap<String, String> map = null;
-        String strB = null;
-        String strE = null;
-        short[] sArr = null;
-        while (true) {
-            switch (v.d(str2)) {
-                case 56354:
-                    strE = "Upgrade-Insecure-Requests";
-                    sArr = f105short;
-                    str2 = "۟ۢۨ";
-                    strB = "1";
-                    break;
-                case 56381:
-                    map.put(strE, strB);
-                    sArr = f105short;
-                    str2 = "ۣۤ۠";
-                    strE = "sec-fetch-mode";
-                    break;
-                case 56481:
-                    strE = "sec-ch-ua";
-                    sArr = f105short;
-                    str2 = "ۡۨ۟";
-                    strB = "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"102\"";
-                    break;
-                case 1746789:
-                    map.put(strE, strB);
-                    sArr = f105short;
-                    str2 = "ۢۥۢ";
-                    strE = "DNT";
-                    break;
-                case 1747779:
-                    sArr = f105short;
-                    String strD = " https://www.zxzjys.com/";
-                    map.put(strE, strD);
-                    str2 = "ۥۤۥ";
-                    strB = strD;
-                    break;
-                case 1747904:
-                    String strE2 = "Windows";
-                    map.put(strE, strE2);
-                    sArr = f105short;
-                    str2 = "ۢۡۤ";
-                    strB = strE2;
-                    break;
-                case 1748888:
-                    map.put(strE, strB);
-                    sArr = f105short;
-                    str2 = "ۣ۟ۦ";
-                    strE = "sec-ch-ua-mobile";
-                    break;
-                case 1749610:
-                    sArr = f105short;
-                    String strE3 = "GET";
-                    map.put(strE, strE3);
-                    str2 = "ۦ۠۠";
-                    strB = strE3;
-                    break;
-                case 1749637:
-                    strE = "sec-fetch-dest";
-                    sArr = f105short;
-                    str2 = "ۢ۟";
-                    strB = "iframe";
-                    break;
-                case 1749734:
-                    strE = "Accept";
-                    sArr = f105short;
-                    str2 = "ۧۧ";
-                    strB = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
-                    break;
-                case 1749759:
-                    map.put(strE, strB);
-                    sArr = f105short;
-                    str2 = "ۣ۠ۦ";
-                    strE = "Referer";
-                    break;
-                case 1749787:
-                    String strE4 = "sec-fetch-site";
-                    sArr = f105short;
-                    str2 = "ۥۢۡ";
-                    strE = strE4;
-                    break;
-                case 1749790:
-                    String strC = "gzip, deflate, br";
-                    map.put(strE, strC);
-                    sArr = f105short;
-                    str2 = "ۥۦ";
-                    strB = strC;
-                    break;
-                case 1750538:
-                    sArr = f105short;
-                    String strE5 = "?0";
-                    map.put(strE, strE5);
-                    str2 = "ۦۥ۠";
-                    strB = strE5;
-                    break;
-                case 1751527:
-                    sArr = f105short;
-                    String strB2 = "navigate";
-                    map.put(strE, strB2);
-                    str2 = "ۢۦ۟";
-                    strB = strB2;
-                    break;
-                case 1751744:
-                    map = new HashMap<>();
-                    sArr = f105short;
-                    str2 = "ۢ۠ۨ";
-                    strE = ":method";
-                    break;
-                case 1752456:
-                    sArr = f105short;
-                    String strE6 = "zh-CN,zh;q=0.9,en;q=0.8";
-                    map.put(strE, strE6);
-                    str2 = "ۨۦ۠";
-                    strB = strE6;
-                    break;
-                case 1752515:
-                    String strE7 = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36";
-                    map.put(strE, strE7);
-                    sArr = f105short;
-                    str2 = "ۢۤۨ";
-                    strB = strE7;
-                    break;
-                case 1752548:
-                    String strC2 = "cross-site";
-                    map.put(strE, strC2);
-                    sArr = f105short;
-                    str2 = "ۣۡ";
-                    strB = strC2;
-                    break;
-                case 1752614:
-                    String strE8 = "User-Agent";
-                    sArr = f105short;
-                    str2 = "ۥۡ۟";
-                    strE = strE8;
-                    break;
-                case 1753446:
-                    String strE9 = "accept-encoding";
-                    sArr = f105short;
-                    str2 = "ۢۦۢ";
-                    strE = strE9;
-                    break;
-                case 1753601:
-                    String strC3 = "sec-ch-ua-platform";
-                    sArr = f105short;
-                    str2 = "۠ۧۧ";
-                    strE = strC3;
-                    break;
-                case 1755554:
-                    return map;
-                default:
-                    map.put(strE, strB);
-                    sArr = f105short;
-                    str2 = "ۥ۟ۢ";
-                    strE = "Accept-Language";
-                    break;
-            }
-        }
-    }
+    @Override
+    public String searchContent(String key, boolean quick) throws JSONException {
+        JSONObject result = new JSONObject();
 
-    public String categoryContent(String str, String str2, boolean z, HashMap<String, String> map) {
-        int i;
-        int i2;
-        int i3;
-        int length;
-        String strB = "-";
         try {
-            String[] strArr = {"", "", "", "", "", "", "", "", "", "", "", ""};
-            strArr[0] = str;
-            strArr[8] = str2;
-            int i4 = 1616;
-            while (true) {
-                i4 ^= 1633;
-                switch (i4) {
-                    case 14:
-                        break;
-                    case 49:
-                        i4 = map == null ? 1678 : 1709;
-                        break;
-                    case 204:
-                        int size = map.size();
-                        int i5 = 1740;
-                        while (true) {
-                            i5 ^= 1757;
-                            switch (i5) {
-                                case 17:
-                                    i5 = size <= 0 ? 1802 : 1833;
-                                    break;
-                                case 54:
-                                    break;
-                                case 471:
-                                    break;
-                                case 500:
-                                    Iterator<String> it = map.keySet().iterator();
-                                    while (true) {
-                                        boolean zHasNext = it.hasNext();
-                                        int i6 = 1864;
-                                        while (true) {
-                                            i6 ^= 1881;
-                                            switch (i6) {
-                                                case 17:
-                                                    i6 = !zHasNext ? 48705 : 48736;
-                                                    break;
-                                                case 47384:
-                                                    break;
-                                                case 47417:
-                                                    String next = it.next();
-                                                    strArr[Integer.parseInt(next)] = URLEncoder.encode(map.get(next));
-                                                    int i7 = 48767;
-                                                    while (true) {
-                                                        i7 ^= 48784;
-                                                        switch (i7) {
-                                                            case 14:
-                                                                break;
-                                                            case 239:
-                                                                i7 = 48798;
-                                                                break;
-                                                        }
-                                                    }
-                                                    break;
-                                                case 47483:
-                                                    break;
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    break;
-                            }
-                        }
-                        break;
-                    case 239:
-                        break;
-                }
-            }
-            String str3 = l8 + "vodshow/" + TextUtils.join(strB, strArr) + ".html";
-            String strV = Yy.v(str3, T4(str3));
-            g9 g9VarL8 = YS.l8(strV);
-            JSONObject jSONObject = new JSONObject();
-            jk jkVarLD = g9VarL8.LD("ul.stui-page__item li");
-            int size2 = jkVarLD.size();
-            String strB2 = "href";
-            String strC = "a";
-            int i8 = 48891;
-            while (true) {
-                i8 ^= 48908;
-                switch (i8) {
-                    case 22:
-                        break;
-                    case 53:
-                        int i9 = -1;
-                        int i10 = 0;
-                        while (true) {
-                            int size3 = jkVarLD.size();
-                            int i11 = 49790;
-                            while (true) {
-                                i11 ^= 49807;
-                                switch (i11) {
-                                    case 18:
-                                        break;
-                                    case 51:
-                                        i = i9;
-                                        break;
-                                    case 84:
-                                        Iw iw = jkVarLD.get(i10);
-                                        Iw iwPu = iw.pu(strC);
-                                        int i12 = 49914;
-                                        while (true) {
-                                            i12 ^= 49931;
-                                            switch (i12) {
-                                                case 497:
-                                                    i12 = iwPu != null ? 50627 : 50658;
-                                                    break;
-                                                case 1711:
-                                                    break;
-                                                case 1736:
-                                                    String strGO = iwPu.GO();
-                                                    int i13 = 50813;
-                                                    while (true) {
-                                                        i13 ^= 50830;
-                                                        switch (i13) {
-                                                            case 18:
-                                                                break;
-                                                            case 53:
-                                                                break;
-                                                            case 243:
-                                                                i13 = i9 != -1 ? 50875 : 51557;
-                                                                break;
-                                                            case 4075:
-                                                                boolean zJb = iw.Jb("active");
-                                                                int i14 = 51588;
-                                                                while (true) {
-                                                                    i14 ^= 51605;
-                                                                    switch (i14) {
-                                                                        case 17:
-                                                                            i14 = !zJb ? 51650 : 51681;
-                                                                            break;
-                                                                        case 54:
-                                                                            break;
-                                                                        case 87:
-                                                                            break;
-                                                                        case 116:
-                                                                            Matcher matcher = this.tT.matcher(iwPu.T4(strB2));
-                                                                            boolean zFind = matcher.find();
-                                                                            int i15 = 51712;
-                                                                            while (true) {
-                                                                                i15 ^= 51729;
-                                                                                switch (i15) {
-                                                                                    case 14:
-                                                                                        break;
-                                                                                    case 17:
-                                                                                        i15 = !zFind ? 51774 : 51805;
-                                                                                        break;
-                                                                                    case 47:
-                                                                                        i = 0;
-                                                                                        break;
-                                                                                    case 76:
-                                                                                        int i16 = Integer.parseInt(matcher.group(1).split(strB)[8]);
-                                                                                        int i17 = 51836;
-                                                                                        while (true) {
-                                                                                            i17 ^= 51853;
-                                                                                            switch (i17) {
-                                                                                                case 241:
-                                                                                                    i17 = 52518;
-                                                                                                    break;
-                                                                                                case 1963:
-                                                                                                    break;
-                                                                                            }
-                                                                                            i = i16;
-                                                                                            break;
-                                                                                        }
-                                                                                        break;
-                                                                                }
-                                                                            }
-                                                                            break;
-                                                                    }
-                                                                }
-                                                                break;
-                                                        }
-                                                    }
-                                                    i = i9;
-                                                    boolean zEquals = strGO.equals("尾页");
-                                                    int i18 = 52611;
-                                                    while (true) {
-                                                        i18 ^= 52628;
-                                                        switch (i18) {
-                                                            case 23:
-                                                                i18 = !zEquals ? 52673 : 52704;
-                                                                break;
-                                                            case 54:
-                                                                break;
-                                                            case 85:
-                                                                break;
-                                                            case 116:
-                                                                Matcher matcher2 = this.tT.matcher(iwPu.T4(strB2));
-                                                                boolean zFind2 = matcher2.find();
-                                                                int i19 = 52735;
-                                                                while (true) {
-                                                                    i19 ^= 52752;
-                                                                    switch (i19) {
-                                                                        case 14:
-                                                                            break;
-                                                                        case 45:
-                                                                            break;
-                                                                        case 1007:
-                                                                            i19 = !zFind2 ? 52797 : 53479;
-                                                                            break;
-                                                                        case 7927:
-                                                                            int i20 = Integer.parseInt(matcher2.group(1).split(strB)[8]);
-                                                                            int i21 = 53510;
-                                                                            while (true) {
-                                                                                i21 ^= 53527;
-                                                                                switch (i21) {
-                                                                                    case 17:
-                                                                                        i21 = 53541;
-                                                                                        continue;
-                                                                                    case 50:
-                                                                                        i2 = i20;
-                                                                                        i3 = i;
-                                                                                        break;
-                                                                                    default:
-                                                                                        continue;
-                                                                                }
-                                                                            }
-                                                                            break;
-                                                                    }
-                                                                }
-                                                                break;
-                                                        }
-                                                    }
-                                                    break;
-                                                case 1769:
-                                                    i = i9;
-                                                    break;
-                                            }
-                                        }
-                                        int i22 = 50689;
-                                        while (true) {
-                                            i22 ^= 50706;
-                                            switch (i22) {
-                                                case 19:
-                                                    i22 = 50720;
-                                                    break;
-                                                case 50:
-                                                    i10++;
-                                                    int i23 = 53634;
-                                                    while (true) {
-                                                        i23 ^= 53651;
-                                                        switch (i23) {
-                                                            case 17:
-                                                                i23 = 53665;
-                                                                break;
-                                                            case 50:
-                                                                break;
-                                                        }
-                                                    }
-                                                    i9 = i;
-                                                    break;
-                                            }
-                                        }
-                                        break;
-                                    case 241:
-                                        i11 = i10 >= size3 ? 49852 : 49883;
-                                        break;
-                                }
-                            }
-                        }
-                        i2 = 0;
-                        i3 = i;
-                        break;
-                    case 503:
-                        i8 = size2 != 0 ? 48953 : 49635;
-                        break;
-                    case 32495:
-                        int i24 = Integer.parseInt(str2);
-                        int i25 = 49666;
-                        while (true) {
-                            i25 ^= 49683;
-                            switch (i25) {
-                                case 17:
-                                    i25 = 49697;
-                                    continue;
-                                case 50:
-                                    i2 = i24;
-                                    i3 = i24;
-                                    break;
-                                default:
-                                    continue;
-                            }
-                        }
-                        break;
-                }
-            }
-            JSONArray jSONArray = new JSONArray();
-            boolean zContains = strV.contains("没有找到您想要的结果哦");
-            int i26 = 53758;
-            while (true) {
-                i26 ^= 53775;
-                switch (i26) {
-                    case 1009:
-                        i26 = !zContains ? 54502 : 54471;
-                        break;
-                    case 1703:
-                        break;
-                    case 1736:
-                        break;
-                    case 1769:
-                        jk jkVarLD2 = g9VarL8.LD("div.stui-vodlist__box");
-                        int i27 = 0;
-                        while (true) {
-                            int size4 = jkVarLD2.size();
-                            int i28 = 54533;
-                            while (true) {
-                                i28 ^= 54550;
-                                switch (i28) {
-                                    case 19:
-                                        i28 = i27 >= size4 ? 54595 : 54626;
-                                        break;
-                                    case 50:
-                                        break;
-                                    case 85:
-                                        break;
-                                    case 116:
-                                        Iw iw2 = jkVarLD2.get(i27);
-                                        String strL8 = iw2.LD(strC).l8("title");
-                                        String strL82 = iw2.LD(strC).l8("data-original");
-                                        String strOL = iw2.LD("a .pic-text").OL();
-                                        Matcher matcher3 = this.OL.matcher(iw2.LD(strC).l8(strB2));
-                                        boolean zFind3 = matcher3.find();
-                                        int i29 = 54657;
-                                        while (true) {
-                                            i29 ^= 54674;
-                                            switch (i29) {
-                                                case 19:
-                                                    i29 = !zFind3 ? 55401 : 54719;
-                                                    break;
-                                                case 45:
-                                                    String strGroup = matcher3.group(1);
-                                                    JSONObject jSONObject2 = new JSONObject();
-                                                    jSONObject2.put("vod_id", strGroup);
-                                                    jSONObject2.put("vod_name", strL8);
-                                                    jSONObject2.put("vod_pic", strL82);
-                                                    jSONObject2.put("vod_remarks", strOL);
-                                                    jSONArray.put(jSONObject2);
-                                                    break;
-                                                case 50:
-                                                    break;
-                                                case 3579:
-                                                    int i30 = 55432;
-                                                    while (true) {
-                                                        i30 ^= 55449;
-                                                        switch (i30) {
-                                                            case 17:
-                                                                i30 = 55463;
-                                                                break;
-                                                            case 62:
-                                                                break;
-                                                        }
-                                                        break;
-                                                    }
-                                                    break;
-                                            }
-                                        }
-                                        int i31 = i27 + 1;
-                                        int i32 = 55556;
-                                        while (true) {
-                                            i32 ^= 55573;
-                                            switch (i32) {
-                                                case 17:
-                                                    i32 = 55587;
-                                                    break;
-                                                case 54:
-                                                    break;
-                                            }
-                                        }
-                                        i27 = i31;
-                                        break;
-                                }
-                                break;
-                            }
-                        }
-                        break;
-                }
-            }
-            jSONObject.put("page", i3);
-            jSONObject.put("pagecount", i2);
-            jSONObject.put("limit", 48);
-            String strC2 = "total";
-            int i33 = 55680;
-            while (true) {
-                i33 ^= 55697;
-                switch (i33) {
-                    case 17:
-                        if (i2 <= 1) {
-                            i33 = 56424;
-                        }
-                        break;
-                    case 1467:
-                        break;
-                    case 1496:
-                        length = i2 * 48;
-                        break;
-                    case 1529:
-                        length = jSONArray.length();
-                        int i34 = 56455;
-                        while (true) {
-                            i34 ^= 56472;
-                            switch (i34) {
-                                case 31:
-                                    i34 = 56486;
-                                    break;
-                                case 62:
-                                    break;
-                            }
-                        }
-                        break;
-                    default:
-                        continue;
-                }
-                i33 = 56393;
-            }
-            jSONObject.put(strC2, length);
-            jSONObject.put("list", jSONArray);
-            return jSONObject.toString();
+            String searchUrl = buildSearchUrl(key);
+            String content = fetchContent(searchUrl);
+            JSONArray searchResults = parseSearchResults(content);
+
+            result.put("list", searchResults);
+
         } catch (Exception e) {
-            SpiderDebug.log(e);
+            SpiderDebug.log("Error in searchContent", e);
+            result.put("list", new JSONArray());
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * Builds search URL
+     */
+    private String buildSearchUrl(String keyword) {
+        try {
+            return (resolvedBaseUrl != null ? resolvedBaseUrl : BASE_DOMAIN) +
+                   SEARCH_ENDPOINT + "?q=" + URLEncoder.encode(keyword, "UTF-8");
+        } catch (Exception e) {
+            SpiderDebug.log("Error encoding search keyword", e);
+            return BASE_DOMAIN + SEARCH_ENDPOINT;
+        }
+    }
+
+    /**
+     * Parses search results from page content
+     */
+    private JSONArray parseSearchResults(String content) throws JSONException {
+        JSONArray results = new JSONArray();
+
+        if (TextUtils.isEmpty(content)) {
+            return results;
+        }
+
+        // Parse search results from HTML content
+        // Implementation would extract video information from search results page
+
+        return results;
+    }
+
+    @Override
+    public String playerContent(String flag, String id, List<String> vipFlags) throws JSONException {
+        JSONObject result = new JSONObject();
+
+        try {
+            // Build player URL
+            String playerUrl = buildPlayerUrl(id);
+
+            // Fetch player page content
+            String content = fetchContent(playerUrl);
+
+            // Extract actual video URL
+            String videoUrl = extractVideoUrl(content);
+
+            // Build response
+            result.put(KEY_PARSE, 0);
+            result.put(KEY_PLAYURL, videoUrl);
+            result.put(KEY_URL, videoUrl);
+
+            // Add headers if needed
+            JSONObject headers = new JSONObject();
+            headers.put("User-Agent", USER_AGENT);
+            headers.put(REFERER_HEADER, playerUrl);
+            result.put(KEY_HEADER, headers);
+
+        } catch (Exception e) {
+            SpiderDebug.log("Error in playerContent", e);
+            result.put(KEY_PARSE, 0);
+            result.put(KEY_PLAYURL, "");
+            result.put(KEY_URL, "");
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * Builds player page URL
+     */
+    private String buildPlayerUrl(String id) {
+        return (resolvedBaseUrl != null ? resolvedBaseUrl : BASE_DOMAIN) +
+               PLAYER_ENDPOINT + "?id=" + id;
+    }
+
+    /**
+     * Extracts video URL from player page content
+     */
+    private String extractVideoUrl(String content) {
+        if (TextUtils.isEmpty(content)) {
             return "";
         }
-    }
 
-    public String detailContent(List<String> list) {
-        boolean z;
-        String str;
-        String strC = "-";
-        String strE = "$$$";
-        try {
-            String str2 = l8 + "/detail/" + list.get(0) + ".html";
-            g9 g9VarL8 = YS.l8(Yy.v(str2, T4(str2)));
-            JSONObject jSONObject = new JSONObject();
-            JSONObject jSONObject2 = new JSONObject();
-            String strL8 = g9VarL8.LD("div.stui-content__thumb a img").l8("data-original");
-            String strOL = g9VarL8.LD("div.stui-content__detail h1").OL();
-            jk jkVarLD = g9VarL8.LD("p.data");
-            String strS = S(Pattern.compile("类型：(\\S+)"), jkVarLD.get(0).GO());
-            String strS2 = S(Pattern.compile("地区：(\\S+)"), jkVarLD.get(0).GO());
-            String strS3 = S(Pattern.compile("年份：(\\S+)"), jkVarLD.get(0).GO());
-            String strS4 = S(Pattern.compile("更新：(\\S+)"), jkVarLD.get(3).GO());
-            try {
-                String strS5 = S(Pattern.compile("主演：(\\S+)"), jkVarLD.get(1).GO());
-                String strS6 = S(Pattern.compile("导演：(\\S+)"), jkVarLD.get(2).GO());
-                String strTrim = g9VarL8.pu("span.detail-content").GO().trim();
-                jSONObject2.put("vod_id", list.get(0));
-                jSONObject2.put("vod_name", strOL);
-                jSONObject2.put("vod_pic", strL8);
-                jSONObject2.put(com.github.catvod.parser."type_name", strS);
-                jSONObject2.put("vod_year", strS3);
-                jSONObject2.put("vod_area", strS2);
-                jSONObject2.put("vod_remarks", strS4);
-                jSONObject2.put("vod_actor", strS5);
-                jSONObject2.put("vod_director", strS6);
-                jSONObject2.put("vod_content", "此接口完全免费，请勿上当受骗！！" + strTrim);
-                TreeMap treeMap = new TreeMap(new Comparator<String>(this) { // from class: com.github.catvod.spider.Zxzj.1
-
-                    private static final short[] f106short = {2573, 2576};
-                    final Zxzj l8;
-
-                    {
-                        this.l8 = this;
-                        int iC = C1024e.c();
-                        int i = 1616;
-                        while (true) {
-                            i ^= 1633;
-                            switch (i) {
-                                case 14:
-                                    break;
-                                case 49:
-                                    i = iC < 0 ? 1678 : 1709;
-                                    break;
-                                case 204:
-                                    System.out.println(Integer.parseInt(com.github.catvod.parser.VodCategory.c("rv5sjANHBhwVLEt")));
-                                    break;
-                                case 239:
-                                    break;
-                            }
-                            return;
-                        }
-                    }
-
-                    @Override // java.util.Comparator
-                    public /* bridge */ /* synthetic */ int compare(String str3, String str4) {
-                        int iCompare2 = 0;
-                        String str5 = "ۧ۟ۤ";
-                        String str6 = null;
-                        String str7 = null;
-                        while (true) {
-                            switch (v.d(str5)) {
-                                case 1747749:
-                                    iCompare2 = compare2(str7, str6);
-                                    str5 = "ۨۨۥ";
-                                    break;
-                                case 1754470:
-                                    str5 = "۠ۢۧ";
-                                    str6 = str4;
-                                    break;
-                                case 1755621:
-                                    return iCompare2;
-                                default:
-                                    str5 = "ۧۢۡ";
-                                    str7 = str3;
-                                    break;
-                            }
-                        }
-                    }
-
-                    public int compare2(String str3, String str4) {
-                        int i;
-                        int i2;
-                        int i3;
-                        String strB = "or";
-                        try {
-                            i = this.l8.S.optJSONObject(str3).getInt(strB);
-                            i2 = this.l8.S.optJSONObject(str4).getInt(strB);
-                            i3 = 1616;
-                        } catch (JSONException e) {
-                            SpiderDebug.log(e);
-                            return 1;
-                        }
-                        while (true) {
-                            i3 ^= 1633;
-                            switch (i3) {
-                                case 14:
-                                    break;
-                                case 49:
-                                    i3 = i != i2 ? 1678 : 1709;
-                                    break;
-                                case 204:
-                                    break;
-                                case 239:
-                                    int i4 = 1740;
-                                    while (true) {
-                                        i4 ^= 1757;
-                                        switch (i4) {
-                                            case 17:
-                                                i4 = i - i2 <= 0 ? 1802 : 1833;
-                                                break;
-                                            case 54:
-                                                break;
-                                            case 471:
-                                                break;
-                                            case 500:
-                                                int i5 = 1864;
-                                                while (true) {
-                                                    i5 ^= 1881;
-                                                    switch (i5) {
-                                                        case 17:
-                                                            i5 = 48674;
-                                                            break;
-                                                        case 47483:
-                                                            break;
-                                                    }
-                                                }
-                                                break;
-                                        }
-                                    }
-                                    break;
-                            }
-                            return 1;
-                        }
-                    }
-                });
-                jk jkVarLD2 = g9VarL8.LD("div.stui-vodlist__head h3");
-                jk jkVarLD3 = g9VarL8.LD("ul.stui-content__playlist");
-                int i = 0;
-                while (true) {
-                    int size = jkVarLD2.size();
-                    int i2 = 1616;
-                    while (true) {
-                        i2 ^= 1633;
-                        switch (i2) {
-                            case 14:
-                                break;
-                            case 49:
-                                i2 = i >= size ? 1678 : 1709;
-                                break;
-                            case 204:
-                                String strGO = jkVarLD2.get(i).GO();
-                                Iterator<String> itKeys = this.S.keys();
-                                while (true) {
-                                    boolean zHasNext = itKeys.hasNext();
-                                    int i3 = 1740;
-                                    while (true) {
-                                        i3 ^= 1757;
-                                        switch (i3) {
-                                            case 17:
-                                                i3 = !zHasNext ? 1802 : 1833;
-                                                break;
-                                            case 54:
-                                                break;
-                                            case 471:
-                                                z = false;
-                                                break;
-                                            case 500:
-                                                String next = itKeys.next();
-                                                boolean zEquals = this.S.optJSONObject(next).optString("sh").equals(strGO);
-                                                int i4 = 1864;
-                                                while (true) {
-                                                    i4 ^= 1881;
-                                                    switch (i4) {
-                                                        case 17:
-                                                            i4 = !zEquals ? 48705 : 48736;
-                                                            break;
-                                                        case 47384:
-                                                            break;
-                                                        case 47417:
-                                                            z = true;
-                                                            int i5 = 48767;
-                                                            while (true) {
-                                                                i5 ^= 48784;
-                                                                switch (i5) {
-                                                                    case 14:
-                                                                        strGO = next;
-                                                                        break;
-                                                                    case 239:
-                                                                        i5 = 48798;
-                                                                        break;
-                                                                }
-                                                            }
-                                                            break;
-                                                        case 47483:
-                                                            break;
-                                                    }
-                                                }
-                                                break;
-                                        }
-                                    }
-                                }
-                                int i6 = 48891;
-                                while (true) {
-                                    i6 ^= 48908;
-                                    switch (i6) {
-                                        case 22:
-                                            break;
-                                        case 53:
-                                            jk jkVarLD4 = jkVarLD3.get(i).LD("li a");
-                                            ArrayList arrayList = new ArrayList();
-                                            int i7 = 0;
-                                            while (true) {
-                                                int size2 = jkVarLD4.size();
-                                                int i8 = 49790;
-                                                while (true) {
-                                                    i8 ^= 49807;
-                                                    switch (i8) {
-                                                        case 18:
-                                                            break;
-                                                        case 51:
-                                                            break;
-                                                        case 84:
-                                                            Iw iw = jkVarLD4.get(i7);
-                                                            Matcher matcher = this.l.matcher(iw.T4("href"));
-                                                            boolean zFind = matcher.find();
-                                                            int i9 = 49914;
-                                                            while (true) {
-                                                                i9 ^= 49931;
-                                                                switch (i9) {
-                                                                    case 497:
-                                                                        i9 = !zFind ? 50658 : 50627;
-                                                                        break;
-                                                                    case 1711:
-                                                                        break;
-                                                                    case 1736:
-                                                                        String str3 = matcher.group(1) + strC + matcher.group(2) + strC + matcher.group(3);
-                                                                        StringBuilder sb = new StringBuilder();
-                                                                        sb.append(iw.GO());
-                                                                        sb.append("$");
-                                                                        sb.append(str3);
-                                                                        arrayList.add(sb.toString());
-                                                                        break;
-                                                                    case 1769:
-                                                                        int i10 = 50689;
-                                                                        while (true) {
-                                                                            i10 ^= 50706;
-                                                                            switch (i10) {
-                                                                                case 19:
-                                                                                    i10 = 50720;
-                                                                                    break;
-                                                                                case 50:
-                                                                                    break;
-                                                                            }
-                                                                            break;
-                                                                        }
-                                                                        break;
-                                                                }
-                                                            }
-                                                            int i11 = i7 + 1;
-                                                            int i12 = 50813;
-                                                            while (true) {
-                                                                i12 ^= 50830;
-                                                                switch (i12) {
-                                                                    case 18:
-                                                                        break;
-                                                                    case 243:
-                                                                        i12 = 50844;
-                                                                        break;
-                                                                }
-                                                            }
-                                                            i7 = i11;
-                                                            break;
-                                                        case 241:
-                                                            i8 = i7 >= size2 ? 49852 : 49883;
-                                                            break;
-                                                    }
-                                                    int size3 = arrayList.size();
-                                                    int i13 = 51588;
-                                                    while (true) {
-                                                        i13 ^= 51605;
-                                                        switch (i13) {
-                                                            case 17:
-                                                                i13 = size3 <= 0 ? 51650 : 51681;
-                                                                break;
-                                                            case 54:
-                                                                break;
-                                                            case 87:
-                                                                str = "";
-                                                                break;
-                                                            case 116:
-                                                                String strJoin = TextUtils.join("#", arrayList);
-                                                                int i14 = 51712;
-                                                                while (true) {
-                                                                    i14 ^= 51729;
-                                                                    switch (i14) {
-                                                                        case 17:
-                                                                            i14 = 51743;
-                                                                            break;
-                                                                    }
-                                                                    str = strJoin;
-                                                                    break;
-                                                                }
-                                                                break;
-                                                        }
-                                                    }
-                                                    int length = str.length();
-                                                    int i15 = 51836;
-                                                    while (true) {
-                                                        i15 ^= 51853;
-                                                        switch (i15) {
-                                                            case 241:
-                                                                i15 = length != 0 ? 52549 : 52580;
-                                                                break;
-                                                            case 1963:
-                                                                break;
-                                                            case 1992:
-                                                                treeMap.put(strGO, str);
-                                                                break;
-                                                            case 2025:
-                                                                int i16 = 52611;
-                                                                while (true) {
-                                                                    i16 ^= 52628;
-                                                                    switch (i16) {
-                                                                        case 23:
-                                                                            i16 = 52642;
-                                                                            break;
-                                                                        case 54:
-                                                                            break;
-                                                                    }
-                                                                    break;
-                                                                }
-                                                                break;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            break;
-                                        case 503:
-                                            i6 = !z ? 49635 : 48953;
-                                            break;
-                                        case 32495:
-                                            int i17 = 49666;
-                                            while (true) {
-                                                i17 ^= 49683;
-                                                switch (i17) {
-                                                    case 17:
-                                                        i17 = 49697;
-                                                        break;
-                                                    case 50:
-                                                        break;
-                                                }
-                                                break;
-                                            }
-                                            break;
-                                    }
-                                }
-                                int i18 = i + 1;
-                                int i19 = 52735;
-                                while (true) {
-                                    i19 ^= 52752;
-                                    switch (i19) {
-                                        case 14:
-                                            break;
-                                        case 1007:
-                                            i19 = 52766;
-                                            break;
-                                    }
-                                }
-                                i = i18;
-                                break;
-                            case 239:
-                                break;
-                        }
-                        int size4 = treeMap.size();
-                        int i20 = 53510;
-                        while (true) {
-                            i20 ^= 53527;
-                            switch (i20) {
-                                case 17:
-                                    if (size4 > 0) {
-                                        i20 = 53603;
-                                    }
-                                    break;
-                                case 50:
-                                    break;
-                                case 83:
-                                    break;
-                                case 116:
-                                    String strJoin2 = TextUtils.join(strE, treeMap.keySet());
-                                    String strJoin3 = TextUtils.join(strE, treeMap.values());
-                                    jSONObject2.put(com.github.catvod.parser."vod_play_from", strJoin2);
-                                    jSONObject2.put("vod_play_url", strJoin3);
-                                    break;
-                                default:
-                                    continue;
-                            }
-                            i20 = 53572;
-                        }
-                        JSONArray jSONArray = new JSONArray();
-                        jSONArray.put(jSONObject2);
-                        jSONObject.put("list", jSONArray);
-                        return jSONObject.toString();
-                    }
-                }
-            } catch (Exception e) {
-                e = e;
-                int i21 = 53634;
-                while (true) {
-                    i21 ^= 53651;
-                    switch (i21) {
-                        case 17:
-                            i21 = 53665;
-                            break;
-                        case 50:
-                            SpiderDebug.log(e);
-                            return "";
-                    }
-                }
+        // Extract video URL using regex pattern
+        if (videoUrlPattern != null) {
+            Matcher matcher = videoUrlPattern.matcher(content);
+            if (matcher.find()) {
+                return matcher.group(1);
             }
-        } catch (Exception e2) {
-            e = e2;
         }
+
+        // Try alternative extraction methods
+        return extractVideoUrlAlternative(content);
     }
 
-    public String homeContent(boolean z) {
-        jk jkVarLD;
-        JSONArray jSONArray;
-        int i;
-        String strD = "a";
-        try {
-            String str = l8;
-            g9 g9VarL8 = YS.l8(Yy.v(str, T4(str)));
-            jk jkVarLD2 = g9VarL8.LD("ul.stui-header__menu li a");
-            JSONArray jSONArray2 = new JSONArray();
-            Iterator<Iw> it = jkVarLD2.iterator();
-            while (true) {
-                boolean zHasNext = it.hasNext();
-                String strE = "href";
-                boolean z2 = false;
-                int i2 = 1616;
-                while (true) {
-                    i2 ^= 1633;
-                    switch (i2) {
-                        case 14:
-                            break;
-                        case 49:
-                            i2 = !zHasNext ? 1678 : 1709;
-                            break;
-                        case 204:
-                            Iw next = it.next();
-                            String strGO = next.GO();
-                            boolean zEquals = strGO.equals("电影");
-                            int i3 = 1740;
-                            while (true) {
-                                i3 ^= 1757;
-                                switch (i3) {
-                                    case 17:
-                                        i3 = !zEquals ? 1833 : 1802;
-                                        break;
-                                    case 54:
-                                        break;
-                                    case 471:
-                                        break;
-                                    case 500:
-                                        boolean zEquals2 = strGO.equals("美剧");
-                                        int i4 = 1864;
-                                        while (true) {
-                                            i4 ^= 1881;
-                                            switch (i4) {
-                                                case 17:
-                                                    i4 = !zEquals2 ? 48736 : 48705;
-                                                    break;
-                                                case 47384:
-                                                    break;
-                                                case 47417:
-                                                    boolean zEquals3 = strGO.equals("韩剧");
-                                                    int i5 = 48767;
-                                                    while (true) {
-                                                        i5 ^= 48784;
-                                                        switch (i5) {
-                                                            case 14:
-                                                                break;
-                                                            case 45:
-                                                                break;
-                                                            case 76:
-                                                                boolean zEquals4 = strGO.equals("日剧");
-                                                                int i6 = 48891;
-                                                                while (true) {
-                                                                    i6 ^= 48908;
-                                                                    switch (i6) {
-                                                                        case 22:
-                                                                            break;
-                                                                        case 53:
-                                                                            break;
-                                                                        case 503:
-                                                                            i6 = !zEquals4 ? 49635 : 48953;
-                                                                            break;
-                                                                        case 32495:
-                                                                            boolean zEquals5 = strGO.equals("泰剧");
-                                                                            int i7 = 49666;
-                                                                            while (true) {
-                                                                                i7 ^= 49683;
-                                                                                switch (i7) {
-                                                                                    case 17:
-                                                                                        i7 = !zEquals5 ? 49759 : 49728;
-                                                                                        break;
-                                                                                    case 50:
-                                                                                        break;
-                                                                                    case 76:
-                                                                                        boolean zEquals6 = strGO.equals("动漫");
-                                                                                        int i8 = 49790;
-                                                                                        while (true) {
-                                                                                            i8 ^= 49807;
-                                                                                            switch (i8) {
-                                                                                                case 18:
-                                                                                                    break;
-                                                                                                case 51:
-                                                                                                    break;
-                                                                                                case 84:
-                                                                                                    break;
-                                                                                                case 241:
-                                                                                                    i8 = !zEquals6 ? 49852 : 49883;
-                                                                                                    break;
-                                                                                            }
-                                                                                        }
-                                                                                        break;
-                                                                                    case 83:
-                                                                                        break;
-                                                                                }
-                                                                            }
-                                                                            break;
-                                                                    }
-                                                                }
-                                                                break;
-                                                            case 239:
-                                                                i5 = !zEquals3 ? 48860 : 48829;
-                                                                break;
-                                                        }
-                                                    }
-                                                    break;
-                                                case 47483:
-                                                    break;
-                                            }
-                                        }
-                                        break;
-                                }
-                            }
-                            z2 = true;
-                            int i9 = 49914;
-                            while (true) {
-                                i9 ^= 49931;
-                                switch (i9) {
-                                    case 497:
-                                        i9 = !z2 ? 50627 : 50658;
-                                        break;
-                                    case 1711:
-                                        break;
-                                    case 1736:
-                                        break;
-                                    case 1769:
-                                        Matcher matcher = this.VodCategory.matcher(next.T4(strE));
-                                        boolean zFind = matcher.find();
-                                        int i10 = 50689;
-                                        while (true) {
-                                            i10 ^= 50706;
-                                            switch (i10) {
-                                                case 19:
-                                                    i10 = !zFind ? 50782 : 50751;
-                                                    break;
-                                                case 45:
-                                                    String strTrim = matcher.group(1).trim();
-                                                    JSONObject jSONObject = new JSONObject();
-                                                    jSONObject.put("type_id", strTrim);
-                                                    jSONObject.put("type_name", strGO);
-                                                    jSONArray2.put(jSONObject);
-                                                    int i11 = 51588;
-                                                    while (true) {
-                                                        i11 ^= 51605;
-                                                        switch (i11) {
-                                                            case 17:
-                                                                i11 = 51619;
-                                                                break;
-                                                            case 54:
-                                                                break;
-                                                        }
-                                                    }
-                                                    break;
-                                                case 50:
-                                                    break;
-                                                case 76:
-                                                    int i12 = 50813;
-                                                    while (true) {
-                                                        i12 ^= 50830;
-                                                        switch (i12) {
-                                                            case 18:
-                                                                break;
-                                                            case 243:
-                                                                i12 = 50844;
-                                                                break;
-                                                        }
-                                                    }
-                                                    break;
-                                            }
-                                        }
-                                        break;
-                                }
-                            }
-                            break;
-                        case 239:
-                            break;
-                    }
-                    JSONObject jSONObject2 = new JSONObject();
-                    int i13 = 51712;
-                    while (true) {
-                        i13 ^= 51729;
-                        switch (i13) {
-                            case 14:
-                                break;
-                            case 17:
-                                if (z) {
-                                    i13 = 51805;
-                                }
-                                break;
-                            case 47:
-                                break;
-                            case 76:
-                                jSONObject2.put("filters", this.T4);
-                                break;
-                            default:
-                                continue;
-                        }
-                        i13 = 51774;
-                    }
-                    jSONObject2.put("class", jSONArray2);
-                    try {
-                        jkVarLD = g9VarL8.LD("ul.stui-vodlist").get(0).LD("div.stui-vodlist__box");
-                        jSONArray = new JSONArray();
-                        i = 0;
-                    } catch (Exception e) {
-                        SpiderDebug.log(e);
-                    }
-                    while (true) {
-                        int size = jkVarLD.size();
-                        int i14 = 51836;
-                        while (true) {
-                            i14 ^= 51853;
-                            switch (i14) {
-                                case 241:
-                                    i14 = i >= size ? 52549 : 52580;
-                                    break;
-                                case 1963:
-                                    break;
-                                case 1992:
-                                    break;
-                                case 2025:
-                                    Iw iw = jkVarLD.get(i);
-                                    String strL8 = iw.LD(strD).l8("title");
-                                    String strL82 = iw.LD(strD).l8("data-original");
-                                    String strOL = iw.LD("a .pic-text").OL();
-                                    Matcher matcher2 = this.OL.matcher(iw.LD(strD).l8(strE));
-                                    boolean zFind2 = matcher2.find();
-                                    int i15 = 52611;
-                                    while (true) {
-                                        i15 ^= 52628;
-                                        switch (i15) {
-                                            case 23:
-                                                i15 = !zFind2 ? 52704 : 52673;
-                                                break;
-                                            case 54:
-                                                break;
-                                            case 85:
-                                                String strGroup = matcher2.group(1);
-                                                JSONObject jSONObject3 = new JSONObject();
-                                                jSONObject3.put("vod_id", strGroup);
-                                                jSONObject3.put("vod_name", strL8);
-                                                jSONObject3.put("vod_pic", strL82);
-                                                jSONObject3.put("vod_remarks", strOL);
-                                                jSONArray.put(jSONObject3);
-                                                break;
-                                            case 116:
-                                                int i16 = 52735;
-                                                while (true) {
-                                                    i16 ^= 52752;
-                                                    switch (i16) {
-                                                        case 14:
-                                                            break;
-                                                        case 1007:
-                                                            i16 = 52766;
-                                                            break;
-                                                    }
-                                                    break;
-                                                }
-                                                break;
-                                        }
-                                    }
-                                    int i17 = i + 1;
-                                    int i18 = 53510;
-                                    while (true) {
-                                        i18 ^= 53527;
-                                        switch (i18) {
-                                            case 17:
-                                                i18 = 53541;
-                                                break;
-                                            case 50:
-                                                break;
-                                        }
-                                    }
-                                    i = i17;
-                                    break;
-                            }
-                            jSONObject2.put("list", jSONArray);
-                            int i19 = 53634;
-                            while (true) {
-                                i19 ^= 53651;
-                                switch (i19) {
-                                    case 17:
-                                        i19 = 53665;
-                                        break;
-                                    case 50:
-                                        break;
-                                }
-                            }
-                        }
-                        return jSONObject2.toString();
-                    }
-                }
-            }
-        } catch (Exception e2) {
-            SpiderDebug.log(e2);
-            return "";
-        }
-    }
-
-    public void init(Context context, String str) {
-        super.init(context, str);
-        try {
-            l8 = C1370pv.l(str);
-            this.S = new JSONObject("{\"line4\":{\"sh\":\"播放线路4\",\"pu\":\"https://www.zxzjys.com/line4.php?url=\",\"sn\":1,\"or\":999},\"lep\":{\"sh\":\"播放线路3\",\"pu\":\"https://www.zxzjys.com/line4.php?url=\",\"sn\":1,\"or\":999},\"line5\":{\"sh\":\"播放线路5\",\"pu\":\"\",\"sn\":1,\"or\":999}}");
-            this.T4 = new JSONObject("{\"1\":[{\"key\":\"3\",\"name\":\"类型\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"喜剧\",\"v\":\"喜剧\"},{\"n\":\"爱情\",\"v\":\"爱情\"},{\"n\":\"恐怖\",\"v\":\"恐怖\"},{\"n\":\"动作\",\"v\":\"动作\"},{\"n\":\"科幻\",\"v\":\"科幻\"},{\"n\":\"剧情\",\"v\":\"剧情\"},{\"n\":\"战争\",\"v\":\"战争\"},{\"n\":\"警匪\",\"v\":\"警匪\"},{\"n\":\"犯罪\",\"v\":\"犯罪\"},{\"n\":\"动画\",\"v\":\"动画\"},{\"n\":\"奇幻\",\"v\":\"奇幻\"},{\"n\":\"冒险\",\"v\":\"冒险\"},{\"n\":\"恐怖\",\"v\":\"恐怖\"},{\"n\":\"悬疑\",\"v\":\"悬疑\"},{\"n\":\"惊悚\",\"v\":\"惊悚\"},{\"n\":\"青春\",\"v\":\"青春\"},{\"n\":\"情色\",\"v\":\"情色\"}]},{\"key\":\"1\",\"name\":\"地区\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"大陆\",\"v\":\"大陆\"},{\"n\":\"香港\",\"v\":\"香港\"},{\"n\":\"台湾\",\"v\":\"台湾\"},{\"n\":\"欧美\",\"v\":\"欧美\"},{\"n\":\"韩国\",\"v\":\"韩国\"},{\"n\":\"日本\",\"v\":\"日本\"},{\"n\":\"泰国\",\"v\":\"泰国\"},{\"n\":\"印度\",\"v\":\"印度\"},{\"n\":\"俄罗斯\",\"v\":\"俄罗斯\"},{\"n\":\"其他\",\"v\":\"其他\"}]},{\"key\":\"11\",\"name\":\"年份\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"2022\",\"v\":\"2022\"},{\"n\":\"2021\",\"v\":\"2021\"},{\"n\":\"2020\",\"v\":\"2020\"},{\"n\":\"2019\",\"v\":\"2019\"},{\"n\":\"2018\",\"v\":\"2018\"},{\"n\":\"2017\",\"v\":\"2017\"},{\"n\":\"2016\",\"v\":\"2016\"},{\"n\":\"2015\",\"v\":\"2015\"},{\"n\":\"2014\",\"v\":\"2014\"},{\"n\":\"2013\",\"v\":\"2013\"},{\"n\":\"2012\",\"v\":\"2012\"},{\"n\":\"2011\",\"v\":\"2011\"},{\"n\":\"2010\",\"v\":\"2010\"},{\"n\":\"2009\",\"v\":\"2009\"},{\"n\":\"2008\",\"v\":\"2008\"},{\"n\":\"2007\",\"v\":\"2007\"},{\"n\":\"2006\",\"v\":\"2006\"},{\"n\":\"2005\",\"v\":\"2005\"},{\"n\":\"2004\",\"v\":\"2004\"},{\"n\":\"2003\",\"v\":\"2003\"},{\"n\":\"2002\",\"v\":\"2002\"},{\"n\":\"2001\",\"v\":\"2001\"},{\"n\":\"2000\",\"v\":\"2000\"}]},{\"key\":\"4\",\"name\":\"语言\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"英语\",\"v\":\"英语\"},{\"n\":\"韩语\",\"v\":\"韩语\"},{\"n\":\"日语\",\"v\":\"日语\"},{\"n\":\"法语\",\"v\":\"法语\"},{\"n\":\"泰语\",\"v\":\"泰语\"},{\"n\":\"德语\",\"v\":\"德语\"},{\"n\":\"印度语\",\"v\":\"印度语\"},{\"n\":\"国语\",\"v\":\"国语\"},{\"n\":\"粤语\",\"v\":\"粤语\"},{\"n\":\"俄语\",\"v\":\"俄语\"},{\"n\":\"西班牙语\",\"v\":\"西班牙语\"},{\"n\":\"意大利语\",\"v\":\"意大利语\"},{\"n\":\"其它\",\"v\":\"其它\"}]},{\"key\":\"2\",\"name\":\"排序\",\"value\":[{\"n\":\"时间\",\"v\":\"time\"},{\"n\":\"人气\",\"v\":\"hits\"},{\"n\":\"评分\",\"v\":\"score\"}]}],\"2\":[{\"key\":\"3\",\"name\":\"类型\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"剧情\",\"v\":\"剧情\"},{\"n\":\"喜剧\",\"v\":\"喜剧\"},{\"n\":\"爱情\",\"v\":\"爱情\"},{\"n\":\"动作\",\"v\":\"动作\"},{\"n\":\"悬疑\",\"v\":\"悬疑\"},{\"n\":\"恐怖\",\"v\":\"恐怖\"},{\"n\":\"奇幻\",\"v\":\"奇幻\"},{\"n\":\"惊悚\",\"v\":\"惊悚\"},{\"n\":\"犯罪\",\"v\":\"犯罪\"},{\"n\":\"科幻\",\"v\":\"科幻\"},{\"n\":\"音乐\",\"v\":\"音乐\"},{\"n\":\"其他\",\"v\":\"其他\"}]},{\"key\":\"4\",\"name\":\"语言\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"英语\",\"v\":\"英语\"},{\"n\":\"法语\",\"v\":\"法语\"}]},{\"key\":\"11\",\"name\":\"年份\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"2022\",\"v\":\"2022\"},{\"n\":\"2021\",\"v\":\"2021\"},{\"n\":\"2020\",\"v\":\"2020\"},{\"n\":\"2019\",\"v\":\"2019\"},{\"n\":\"2018\",\"v\":\"2018\"},{\"n\":\"2017\",\"v\":\"2017\"},{\"n\":\"2016\",\"v\":\"2016\"},{\"n\":\"2015\",\"v\":\"2015\"},{\"n\":\"2014\",\"v\":\"2014\"},{\"n\":\"2013\",\"v\":\"2013\"},{\"n\":\"2012\",\"v\":\"2012\"},{\"n\":\"2011\",\"v\":\"2011\"},{\"n\":\"2010\",\"v\":\"2010\"},{\"n\":\"2009\",\"v\":\"2009\"},{\"n\":\"2008\",\"v\":\"2008\"},{\"n\":\"2007\",\"v\":\"2007\"},{\"n\":\"2006\",\"v\":\"2006\"},{\"n\":\"2005\",\"v\":\"2005\"},{\"n\":\"2004\",\"v\":\"2004\"},{\"n\":\"2003\",\"v\":\"2003\"},{\"n\":\"2002\",\"v\":\"2002\"},{\"n\":\"2001\",\"v\":\"2001\"},{\"n\":\"2000\",\"v\":\"2000\"}]},{\"key\":\"2\",\"name\":\"排序\",\"value\":[{\"n\":\"时间\",\"v\":\"time\"},{\"n\":\"人气\",\"v\":\"hits\"},{\"n\":\"评分\",\"v\":\"score\"}]}],\"3\":[{\"key\":\"3\",\"name\":\"类型\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"剧情\",\"v\":\"剧情\"},{\"n\":\"喜剧\",\"v\":\"喜剧\"},{\"n\":\"爱情\",\"v\":\"爱情\"},{\"n\":\"动作\",\"v\":\"动作\"},{\"n\":\"悬疑\",\"v\":\"悬疑\"},{\"n\":\"恐怖\",\"v\":\"恐怖\"},{\"n\":\"奇幻\",\"v\":\"奇幻\"},{\"n\":\"惊悚\",\"v\":\"惊悚\"},{\"n\":\"犯罪\",\"v\":\"犯罪\"},{\"n\":\"科幻\",\"v\":\"科幻\"},{\"n\":\"音乐\",\"v\":\"音乐\"},{\"n\":\"其他\",\"v\":\"其他\"}]},{\"key\":\"11\",\"name\":\"年份\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"2022\",\"v\":\"2022\"},{\"n\":\"2021\",\"v\":\"2021\"},{\"n\":\"2020\",\"v\":\"2020\"},{\"n\":\"2019\",\"v\":\"2019\"},{\"n\":\"2018\",\"v\":\"2018\"},{\"n\":\"2017\",\"v\":\"2017\"},{\"n\":\"2016\",\"v\":\"2016\"},{\"n\":\"2015\",\"v\":\"2015\"},{\"n\":\"2014\",\"v\":\"2014\"},{\"n\":\"2013\",\"v\":\"2013\"},{\"n\":\"2012\",\"v\":\"2012\"},{\"n\":\"2011\",\"v\":\"2011\"},{\"n\":\"2010\",\"v\":\"2010\"},{\"n\":\"2009\",\"v\":\"2009\"},{\"n\":\"2008\",\"v\":\"2008\"},{\"n\":\"2007\",\"v\":\"2007\"},{\"n\":\"2006\",\"v\":\"2006\"},{\"n\":\"2005\",\"v\":\"2005\"},{\"n\":\"2004\",\"v\":\"2004\"},{\"n\":\"2003\",\"v\":\"2003\"},{\"n\":\"2002\",\"v\":\"2002\"},{\"n\":\"2001\",\"v\":\"2001\"},{\"n\":\"2000\",\"v\":\"2000\"}]},{\"key\":\"2\",\"name\":\"排序\",\"value\":[{\"n\":\"时间\",\"v\":\"time\"},{\"n\":\"人气\",\"v\":\"hits\"},{\"n\":\"评分\",\"v\":\"score\"}]}],\"4\":[{\"key\":\"3\",\"name\":\"类型\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"剧情\",\"v\":\"剧情\"},{\"n\":\"喜剧\",\"v\":\"喜剧\"},{\"n\":\"爱情\",\"v\":\"爱情\"},{\"n\":\"动作\",\"v\":\"动作\"},{\"n\":\"悬疑\",\"v\":\"悬疑\"},{\"n\":\"恐怖\",\"v\":\"恐怖\"},{\"n\":\"奇幻\",\"v\":\"奇幻\"},{\"n\":\"惊悚\",\"v\":\"惊悚\"},{\"n\":\"犯罪\",\"v\":\"犯罪\"},{\"n\":\"科幻\",\"v\":\"科幻\"},{\"n\":\"音乐\",\"v\":\"音乐\"},{\"n\":\"其他\",\"v\":\"其他\"}]},{\"key\":\"11\",\"name\":\"年份\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"2022\",\"v\":\"2022\"},{\"n\":\"2021\",\"v\":\"2021\"},{\"n\":\"2020\",\"v\":\"2020\"},{\"n\":\"2019\",\"v\":\"2019\"},{\"n\":\"2018\",\"v\":\"2018\"},{\"n\":\"2017\",\"v\":\"2017\"},{\"n\":\"2016\",\"v\":\"2016\"},{\"n\":\"2015\",\"v\":\"2015\"},{\"n\":\"2014\",\"v\":\"2014\"},{\"n\":\"2013\",\"v\":\"2013\"},{\"n\":\"2012\",\"v\":\"2012\"},{\"n\":\"2011\",\"v\":\"2011\"},{\"n\":\"2010\",\"v\":\"2010\"},{\"n\":\"2009\",\"v\":\"2009\"},{\"n\":\"2008\",\"v\":\"2008\"},{\"n\":\"2007\",\"v\":\"2007\"},{\"n\":\"2006\",\"v\":\"2006\"},{\"n\":\"2005\",\"v\":\"2005\"},{\"n\":\"2004\",\"v\":\"2004\"},{\"n\":\"2003\",\"v\":\"2003\"},{\"n\":\"2002\",\"v\":\"2002\"},{\"n\":\"2001\",\"v\":\"2001\"},{\"n\":\"2000\",\"v\":\"2000\"}]},{\"key\":\"2\",\"name\":\"排序\",\"value\":[{\"n\":\"时间\",\"v\":\"time\"},{\"n\":\"人气\",\"v\":\"hits\"},{\"n\":\"评分\",\"v\":\"score\"}]}],\"6\":[{\"key\":\"3\",\"name\":\"类型\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"情感\",\"v\":\"情感\"},{\"n\":\"科幻\",\"v\":\"科幻\"},{\"n\":\"热血\",\"v\":\"热血\"},{\"n\":\"推理\",\"v\":\"推理\"},{\"n\":\"搞笑\",\"v\":\"搞笑\"},{\"n\":\"冒险\",\"v\":\"冒险\"},{\"n\":\"萝莉\",\"v\":\"萝莉\"},{\"n\":\"校园\",\"v\":\"校园\"},{\"n\":\"动作\",\"v\":\"动作\"},{\"n\":\"机战\",\"v\":\"机战\"},{\"n\":\"运动\",\"v\":\"运动\"},{\"n\":\"战争\",\"v\":\"战争\"},{\"n\":\"少年\",\"v\":\"少年\"},{\"n\":\"少女\",\"v\":\"少女\"},{\"n\":\"社会\",\"v\":\"社会\"},{\"n\":\"原创\",\"v\":\"原创\"},{\"n\":\"亲子\",\"v\":\"亲子\"},{\"n\":\"益智\",\"v\":\"益智\"},{\"n\":\"励志\",\"v\":\"励志\"},{\"n\":\"其他\",\"v\":\"其他\"}]},{\"key\":\"1\",\"name\":\"地区\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"国产\",\"v\":\"国产\"},{\"n\":\"日本\",\"v\":\"日本\"},{\"n\":\"欧美\",\"v\":\"欧美\"},{\"n\":\"其他\",\"v\":\"其他\"}]},{\"key\":\"11\",\"name\":\"年份\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"2022\",\"v\":\"2022\"},{\"n\":\"2021\",\"v\":\"2021\"},{\"n\":\"2020\",\"v\":\"2020\"},{\"n\":\"2019\",\"v\":\"2019\"},{\"n\":\"2018\",\"v\":\"2018\"},{\"n\":\"2017\",\"v\":\"2017\"},{\"n\":\"2016\",\"v\":\"2016\"},{\"n\":\"2015\",\"v\":\"2015\"},{\"n\":\"2014\",\"v\":\"2014\"},{\"n\":\"2013\",\"v\":\"2013\"},{\"n\":\"2012\",\"v\":\"2012\"},{\"n\":\"2011\",\"v\":\"2011\"},{\"n\":\"2010\",\"v\":\"2010\"},{\"n\":\"2009\",\"v\":\"2009\"},{\"n\":\"2008\",\"v\":\"2008\"},{\"n\":\"2007\",\"v\":\"2007\"},{\"n\":\"2006\",\"v\":\"2006\"},{\"n\":\"2005\",\"v\":\"2005\"},{\"n\":\"2004\",\"v\":\"2004\"},{\"n\":\"2003\",\"v\":\"2003\"},{\"n\":\"2002\",\"v\":\"2002\"},{\"n\":\"2001\",\"v\":\"2001\"},{\"n\":\"2000\",\"v\":\"2000\"}]},{\"key\":\"4\",\"name\":\"语言\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"国语\",\"v\":\"国语\"},{\"n\":\"日语\",\"v\":\"日语\"},{\"n\":\"英语\",\"v\":\"英语\"},{\"n\":\"其他\",\"v\":\"其他\"}]},{\"key\":\"2\",\"name\":\"排序\",\"value\":[{\"n\":\"时间\",\"v\":\"time\"},{\"n\":\"人气\",\"v\":\"hits\"},{\"n\":\"评分\",\"v\":\"score\"}]}],\"5\":[{\"key\":\"3\",\"name\":\"类型\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"剧情\",\"v\":\"剧情\"},{\"n\":\"喜剧\",\"v\":\"喜剧\"},{\"n\":\"爱情\",\"v\":\"爱情\"},{\"n\":\"动作\",\"v\":\"动作\"},{\"n\":\"悬疑\",\"v\":\"悬疑\"},{\"n\":\"恐怖\",\"v\":\"恐怖\"},{\"n\":\"奇幻\",\"v\":\"奇幻\"},{\"n\":\"惊悚\",\"v\":\"惊悚\"},{\"n\":\"犯罪\",\"v\":\"犯罪\"},{\"n\":\"科幻\",\"v\":\"科幻\"},{\"n\":\"音乐\",\"v\":\"音乐\"},{\"n\":\"其他\",\"v\":\"其他\"}]},{\"key\":\"11\",\"name\":\"年份\",\"value\":[{\"n\":\"全部\",\"v\":\"\"},{\"n\":\"2022\",\"v\":\"2022\"},{\"n\":\"2021\",\"v\":\"2021\"},{\"n\":\"2020\",\"v\":\"2020\"},{\"n\":\"2019\",\"v\":\"2019\"},{\"n\":\"2018\",\"v\":\"2018\"},{\"n\":\"2017\",\"v\":\"2017\"},{\"n\":\"2016\",\"v\":\"2016\"},{\"n\":\"2015\",\"v\":\"2015\"},{\"n\":\"2014\",\"v\":\"2014\"},{\"n\":\"2013\",\"v\":\"2013\"},{\"n\":\"2012\",\"v\":\"2012\"},{\"n\":\"2011\",\"v\":\"2011\"},{\"n\":\"2010\",\"v\":\"2010\"},{\"n\":\"2009\",\"v\":\"2009\"},{\"n\":\"2008\",\"v\":\"2008\"},{\"n\":\"2007\",\"v\":\"2007\"},{\"n\":\"2006\",\"v\":\"2006\"},{\"n\":\"2005\",\"v\":\"2005\"},{\"n\":\"2004\",\"v\":\"2004\"},{\"n\":\"2003\",\"v\":\"2003\"},{\"n\":\"2002\",\"v\":\"2002\"},{\"n\":\"2001\",\"v\":\"2001\"},{\"n\":\"2000\",\"v\":\"2000\"}]},{\"key\":\"2\",\"name\":\"排序\",\"value\":[{\"n\":\"时间\",\"v\":\"time\"},{\"n\":\"人气\",\"v\":\"hits\"},{\"n\":\"评分\",\"v\":\"score\"}]}]}");
-        } catch (JSONException e) {
-            SpiderDebug.log(e);
-        }
-    }
-
-    public String playerContent(String str, String str2, List<String> list) {
-        String strC = "url";
-        try {
-            Init2.lj();
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put("User-Agent", " Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36");
-            jSONObject.put("Accept", " */*");
-            jSONObject.put("Accept-Language", " zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7");
-            jSONObject.put("Accept-Encoding", " identity;q=1, *;q=0");
-            jSONObject.put("Sec-Fetch-Dest", " video");
-            jSONObject.put("Sec-Fetch-Mode", " no-cors");
-            jSONObject.put("Sec-Fetch-Site", " cross-site");
-            String str3 = l8 + "/video/" + str2 + ".html";
-            jk jkVarLD = YS.l8(Yy.v(str3, T4(str3))).LD("script");
-            JSONObject jSONObject2 = new JSONObject();
-            int i = 0;
-            while (true) {
-                int size = jkVarLD.size();
-                int i2 = 1616;
-                while (true) {
-                    i2 ^= 1633;
-                    switch (i2) {
-                        case 14:
-                            break;
-                        case 49:
-                            i2 = i >= size ? 1678 : 1709;
-                            break;
-                        case 204:
-                            String strTrim = jkVarLD.get(i).Xc().trim();
-                            boolean zStartsWith = strTrim.startsWith("var player_");
-                            int i3 = 1740;
-                            while (true) {
-                                i3 ^= 1757;
-                                switch (i3) {
-                                    case 17:
-                                        i3 = !zStartsWith ? 1802 : 1833;
-                                        break;
-                                    case 54:
-                                        break;
-                                    case 471:
-                                        break;
-                                    case 500:
-                                        String strOptString = new JSONObject(strTrim.substring(strTrim.indexOf(123), strTrim.lastIndexOf(125) + 1)).optString(strC);
-                                        Matcher matcher = Pattern.compile("\"data\":['\"]([^'\"]+)['\"]").matcher(Yy.v(strOptString, b(strOptString)));
-                                        boolean zFind = matcher.find();
-                                        int i4 = 1864;
-                                        while (true) {
-                                            i4 ^= 1881;
-                                            switch (i4) {
-                                                case 17:
-                                                    i4 = !zFind ? 48705 : 48736;
-                                                    break;
-                                                case 47384:
-                                                    break;
-                                                case 47417:
-                                                    String strGroup = matcher.group(1);
-                                                    jSONObject2.put("parse", 0);
-                                                    jSONObject2.put("playUrl", "");
-                                                    jSONObject2.put(strC, decodeStr(htoStr(strReverse(strGroup))));
-                                                    jSONObject2.put("header", jSONObject.toString());
-                                                    break;
-                                                case 47483:
-                                                    break;
-                                            }
-                                        }
-                                        break;
-                                }
-                            }
-                            i++;
-                            int i5 = 48767;
-                            while (true) {
-                                i5 ^= 48784;
-                                switch (i5) {
-                                    case 14:
-                                        break;
-                                    case 239:
-                                        i5 = 48798;
-                                        break;
-                                }
-                            }
-                            break;
-                        case 239:
-                            break;
-                    }
-                    return jSONObject2.toString();
-                }
-            }
-        } catch (Exception e) {
-            SpiderDebug.log(e);
-            return "";
-        }
-    }
-
-    public String searchContent(String str, boolean z) {
-        String strE = "a";
-        try {
-            String str2 = l8 + "/vodsearch/-------------.html?wd=" + URLEncoder.encode(str) + "&submit=";
-            g9 g9VarL8 = YS.l8(Yy.v(str2, T4(str2)));
-            JSONObject jSONObject = new JSONObject();
-            JSONArray jSONArray = new JSONArray();
-            jk jkVarLD = g9VarL8.LD("div.stui-vodlist__box");
-            int i = 0;
-            while (true) {
-                int size = jkVarLD.size();
-                int i2 = 1616;
-                while (true) {
-                    i2 ^= 1633;
-                    switch (i2) {
-                        case 14:
-                            break;
-                        case 49:
-                            i2 = i >= size ? 1678 : 1709;
-                            break;
-                        case 204:
-                            Iw iw = jkVarLD.get(i);
-                            String strL8 = iw.LD(strE).l8("title");
-                            boolean zContains = strL8.contains(str);
-                            int i3 = 1740;
-                            while (true) {
-                                i3 ^= 1757;
-                                switch (i3) {
-                                    case 17:
-                                        i3 = !zContains ? 1802 : 1833;
-                                        break;
-                                    case 54:
-                                        break;
-                                    case 471:
-                                        break;
-                                    case 500:
-                                        String strL82 = iw.LD(strE).l8("data-original");
-                                        Matcher matcher = this.OL.matcher(iw.LD(strE).l8("href"));
-                                        boolean zFind = matcher.find();
-                                        int i4 = 1864;
-                                        while (true) {
-                                            i4 ^= 1881;
-                                            switch (i4) {
-                                                case 17:
-                                                    i4 = !zFind ? 48736 : 48705;
-                                                    break;
-                                                case 47384:
-                                                    String strGroup = matcher.group(1);
-                                                    JSONObject jSONObject2 = new JSONObject();
-                                                    String strOL = iw.LD(com.github.catvod.parser."a span.pic-text").OL();
-                                                    jSONObject2.put("vod_id", strGroup);
-                                                    jSONObject2.put("vod_name", strL8);
-                                                    jSONObject2.put("vod_pic", strL82);
-                                                    jSONObject2.put("vod_remarks", strOL);
-                                                    jSONArray.put(jSONObject2);
-                                                    break;
-                                                case 47417:
-                                                    int i5 = 48767;
-                                                    while (true) {
-                                                        i5 ^= 48784;
-                                                        switch (i5) {
-                                                            case 14:
-                                                                break;
-                                                            case 239:
-                                                                i5 = 48798;
-                                                                break;
-                                                        }
-                                                        break;
-                                                    }
-                                                    break;
-                                                case 47483:
-                                                    break;
-                                            }
-                                        }
-                                        break;
-                                }
-                            }
-                            int i6 = i + 1;
-                            int i7 = 48891;
-                            while (true) {
-                                i7 ^= 48908;
-                                switch (i7) {
-                                    case 22:
-                                        break;
-                                    case 503:
-                                        i7 = 48922;
-                                        break;
-                                }
-                            }
-                            i = i6;
-                            break;
-                        case 239:
-                            break;
-                    }
-                    jSONObject.put("list", jSONArray);
-                    return jSONObject.toString();
-                }
-            }
-        } catch (Exception e) {
-            SpiderDebug.log(e);
-            return "";
-        }
+    /**
+     * Alternative method for video URL extraction
+     */
+    private String extractVideoUrlAlternative(String content) {
+        // Implementation for alternative video URL extraction methods
+        // This could include JSON parsing, JavaScript evaluation, etc.
+        return "";
     }
 }

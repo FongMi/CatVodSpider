@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.github.catvod.spider.Douban;
-import com.github.catvod.spider.NanGua;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

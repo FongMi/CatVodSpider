@@ -1,13 +1,12 @@
 package com.github.catvod.crawler;
 
-import android.content.Context;
+import okhttp3.Dns;
+import okhttp3.OkHttpClient;
 
+import android.content.Context;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import okhttp3.Dns;
-import okhttp3.OkHttpClient;
 
 public abstract class Spider {
 

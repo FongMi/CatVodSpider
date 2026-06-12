@@ -1,5 +1,5 @@
 # Merge
--flattenpackagehierarchy com.github.catvod.spider.merge
+#-flattenpackagehierarchy com.github.catvod.spider.merge
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
 # Spider

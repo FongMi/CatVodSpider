@@ -246,8 +246,8 @@ public class XPath extends Spider {
         String webUrl = rule.getPlayUrl().isEmpty() ? id : rule.getPlayUrl().replace("{playUrl}", id);
         SpiderDebug.log(webUrl);
         HashMap<String, String> headers = new HashMap<>();
-        if (rule.getPlayUa().length() > 0) headers.put("User-Agent", rule.getPlayUa());
-        if (rule.getPlayReferer().length() > 0) headers.put("Referer", rule.getPlayReferer());
+        if (!rule.getPlayUa().isEmpty()) headers.put("User-Agent", rule.getPlayUa());
+        if (!rule.getPlayReferer().isEmpty()) headers.put("Referer", rule.getPlayReferer());
         return Result.get().parse().url(webUrl).header(headers).string();
     }
 

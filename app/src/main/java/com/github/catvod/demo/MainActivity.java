@@ -3,14 +3,11 @@ package com.github.catvod.demo;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.github.catvod.spider.Aidi;
-import com.github.catvod.spider.AppYsV2;
 import com.github.catvod.spider.Douban;
 import com.github.catvod.spider.XPath;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;

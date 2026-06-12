@@ -2,13 +2,11 @@ package com.github.catvod.en;
 
 import android.content.Context;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.spider.merge.J.k;
-import com.github.catvod.spider.merge.K.i;
+import com.github.catvod.spider.*;
 import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
@@ -20,7 +18,6 @@ public class NetPan extends Spider {
     public static YunPan189 e = new YunPan189();
     public static YunPan123 f = new YunPan123();
     public static Yun115 g = new Yun115();
-    public static k h = new k();
     public static XunleiSpider i = new XunleiSpider();
     public static GuangYaPan j = new GuangYaPan();
     public static JSONObject k;
@@ -34,8 +31,6 @@ public class NetPan extends Spider {
     public static native boolean containPuHua();
 
     private static native void d(JSONObject jSONObject);
-
-    private native i e(String str, String str2, Matcher matcher, String str3);
 
     public static native String extractNetName(String str);
 
