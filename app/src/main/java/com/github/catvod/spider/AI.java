@@ -74,7 +74,7 @@ public class AI extends Spider {
         }
     }
 
-    public void init(Context context, String config) {
+    public void init(Context context, String config) throws Exception {
         super.init(context, config);
         String[] configParts = C1370pv.l(config).split("\\|");
         this.apiHost = configParts[0];
