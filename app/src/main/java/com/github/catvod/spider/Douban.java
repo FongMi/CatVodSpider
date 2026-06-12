@@ -1,149 +1,112 @@
 package com.github.catvod.spider;
 
 import android.content.Context;
-
-import com.github.catvod.bean.Class;
-import com.github.catvod.bean.Result;
-import com.github.catvod.bean.Vod;
-import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Json;
-import com.github.catvod.utils.Util;
-import com.google.gson.JsonElement;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.net.URLEncoder;
+import com.github.catvod.en.NetPan;
+import com.github.catvod.spider.merge.B.JsonUtils;
+import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.K.VodItem;
+import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class Douban extends Spider {
+public class Douban extends NetPan {
+    private String filterUrl;
 
-    private final String siteUrl = "https://frodo.douban.com/api/v2";
-    private final String apikey = "?apikey=0ac44ae016490db2204ce0a042db2916";
-    private String extend;
-
-    private Map<String, String> getHeader() {
-        Map<String, String> header = new HashMap<>();
-        header.put("Host", "frodo.douban.com");
-        header.put("Connection", "Keep-Alive");
-        header.put("Referer", "https://servicewechat.com/wx2f9b06c1de1ccfca/84/page-frame.html");
-        header.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat");
-        return header;
+    private Map<String, String> buildHeaders() {
+        HashMap headers = com.github.catvod.spider.merge.B.MapBuilder.b("Host", "frodo.douban.com", "Connection", "Keep-Alive");
+        headers.put("Referer", "https://servicewechat.com/wx2f9b06c1de1ccfca/84/page-frame.html");
+        headers.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat");
+        return headers;
     }
 
-    @Override
-    public void init(Context context, String extend) throws Exception {
-        this.extend = extend;
-    }
-
-    @Override
-    public String homeContent(boolean filter) throws Exception {
-        List<Class> classes = new ArrayList<>();
-        List<String> typeIds = Arrays.asList("hot_gaia", "tv_hot", "show_hot", "movie", "tv", "rank_list_movie", "rank_list_tv");
-        List<String> typeNames = Arrays.asList("热门电影", "热播剧集", "热播综艺", "电影筛选", "电视筛选", "电影榜单", "电视剧榜单");
-        for (int i = 0; i < typeIds.size(); i++)
-            classes.add(new Class(typeIds.get(i), typeNames.get(i)));
-        String recommendUrl = siteUrl + "/subject_collection/subject_real_time_hotest/items" + apikey;
-        JSONObject jsonObject = new JSONObject(OkHttp.string(recommendUrl, getHeader()));
-        JSONArray items = jsonObject.optJSONArray("subject_collection_items");
-        JsonElement file = null;
-        if (null != extend) {
-            String string = OkHttp.string(extend);
-            file = Json.parse(string);
+    private List<VodItem> parseVodItems(JSONArray jsonArray) throws JSONException {
+        String coverUrl;
+        String ratingText;
+        ArrayList vodItems = new ArrayList();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject item = jsonArray.getJSONObject(i);
+            item.optString("id");
+            String title = item.optString("title");
+            try {
+                coverUrl = item.getJSONObject("pic").optString("normal") + "@Referer=https://api.douban.com/@User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
+            } catch (Exception unused) {
+                coverUrl = "";
+            }
+            if (!com.github.catvod.spider.merge.P0.StringUtils.b(coverUrl)) {
+                try {
+                    ratingText = "评分：" + item.getJSONObject("rating").optString("value");
+                } catch (Exception unused2) {
+                    ratingText = "";
+                }
+                StringBuilder titleBuilder = com.github.catvod.spider.merge.C1.a.a(title, "%%");
+                titleBuilder.append(item.optString("card_subtitle"));
+                vodItems.add(new VodItem(titleBuilder.toString(), title, coverUrl, ratingText));
+            }
         }
-        return Result.string(classes, parseVodListFromJSONArray(items), filter ? file : null);
+        return vodItems;
     }
 
-    @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        String sort = extend.get("sort") == null ? "T" : extend.get("sort");
-        String tags = URLEncoder.encode(getTags(extend));
-        int start = (Integer.parseInt(pg) - 1) * 20;
-        String cateUrl;
-        String itemKey = "items";
-        switch (tid) {
-            case "hot_gaia":
-                sort = extend.get("sort") == null ? "recommend" : extend.get("sort");
-                String area = extend.get("area") == null ? "全部" : extend.get("area");
-                sort = sort + "&area=" + URLEncoder.encode(area);
-                cateUrl = siteUrl + "/movie/hot_gaia" + apikey + "&sort=" + sort + "&start=" + start + "&count=20";
-                break;
-            case "tv_hot":
-                String type = extend.get("type") == null ? "tv_hot" : extend.get("type");
-                cateUrl = siteUrl + "/subject_collection/" + type + "/items" + apikey + "&start=" + start + "&count=20";
-                itemKey = "subject_collection_items";
-                break;
-            case "show_hot":
-                String showType = extend.get("type") == null ? "show_hot" : extend.get("type");
-                cateUrl = siteUrl + "/subject_collection/" + showType + "/items" + apikey + "&start=" + start + "&count=20";
-                itemKey = "subject_collection_items";
-                break;
-            case "tv":
-                cateUrl = siteUrl + "/tv/recommend" + apikey + "&sort=" + sort + "&tags=" + tags + "&start=" + start + "&count=20";
-                break;
-            case "rank_list_movie":
-                String rankMovieType = extend.get("榜单") == null ? "movie_real_time_hotest" : extend.get("榜单");
-                cateUrl = siteUrl + "/subject_collection/" + rankMovieType + "/items" + apikey + "&start=" + start + "&count=20";
-                itemKey = "subject_collection_items";
-                break;
-            case "rank_list_tv":
-                String rankTVType = extend.get("榜单") == null ? "tv_real_time_hotest" : extend.get("榜单");
-                cateUrl = siteUrl + "/subject_collection/" + rankTVType + "/items" + apikey + "&start=" + start + "&count=20";
-                itemKey = "subject_collection_items";
-                break;
-            default:
-                cateUrl = siteUrl + "/movie/recommend" + apikey + "&sort=" + sort + "&tags=" + tags + "&start=" + start + "&count=20";
-                break;
-        }
-        JSONObject object = new JSONObject(OkHttp.string(cateUrl, getHeader()));
-        JSONArray array = object.getJSONArray(itemKey);
-        List<Vod> list = parseVodListFromJSONArray(array);
-        int page = Integer.parseInt(pg), count = Integer.MAX_VALUE, limit = 20, total = Integer.MAX_VALUE;
-        return Result.get().vod(list).page(page, count, limit, total).string();
-    }
-
-    private List<Vod> parseVodListFromJSONArray(JSONArray items) throws Exception {
-        List<Vod> list = new ArrayList<>();
-        for (int i = 0; i < items.length(); i++) {
-            JSONObject item = items.getJSONObject(i);
-            String vodId = "msearch:" + item.optString("id");
-            String name = item.optString("title");
-            String pic = getPic(item);
-            String remark = getRating(item);
-            list.add(new Vod(vodId, name, pic, remark));
-        }
-        return list;
-    }
-
-    private String getRating(JSONObject item) {
+    public String categoryContent(String typeId, String filterId, boolean filterGenre, HashMap<String, String> extend) throws JSONException {
         try {
-            return "评分：" + item.getJSONObject("rating").optString("value");
-        } catch (Exception e) {
-            return "";
+            String url;
+            if ("movie".equals(typeId) || "tv".equals(typeId)) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("https://frodo.douban.com/api/v2/");
+                sb.append(typeId);
+                sb.append("/recommend?");
+                if (extend != null && extend.containsKey("sort")) {
+                    sb.append("sort=").append(extend.get("sort"));
+                }
+                if (extend != null && extend.containsKey("tags")) {
+                    sb.append("&tags=").append(extend.get("tags"));
+                }
+                if (extend != null && extend.containsKey("genre")) {
+                    sb.append("&genres=").append(extend.get("genre"));
+                }
+                if (extend != null && extend.containsKey("year")) {
+                    sb.append("&year=").append(extend.get("year"));
+                }
+                sb.append("&start=0&count=50&apikey=0ac44ae016490db2204ce0a042db2916");
+                url = sb.toString();
+            } else if ("rank_list_movie".equals(typeId)) {
+                url = "https://frodo.douban.com/api/v2/movie/recommend?sort=U&start=0&count=50&apikey=0ac44ae016490db2204ce0a042db2916";
+            } else if ("rank_list_tv".equals(typeId)) {
+                url = "https://frodo.douban.com/api/v2/tv/recommend?sort=U&start=0&count=50&apikey=0ac44ae016490db2204ce0a042db2916";
+            } else {
+                url = "https://frodo.douban.com/api/v2/subject_collection/" + typeId + "/items?start=0&count=50&apikey=0ac44ae016490db2204ce0a042db2916";
+            }
+            JSONObject response = new JSONObject(com.github.catvod.spider.merge.f0.HttpClient.m(url, buildHeaders(), null));
+            JSONArray items = response.optJSONArray("items");
+            if (items == null) {
+                items = response.optJSONArray("subject_collection_items");
+            }
+            ArrayList<VodCategory> categories = new ArrayList<>();
+            categories.add(new VodCategory(typeId, typeId));
+            return VodResult.r(categories, parseVodItems(items), null);
+        } catch (Exception exception) {
+            return VodResult.c("分类获取失败: " + exception.getMessage());
         }
     }
 
-    private String getPic(JSONObject item) {
-        try {
-            return item.getJSONObject("pic").optString("normal") + "@Referer=https://api.douban.com/@User-Agent=" + Util.CHROME;
-        } catch (Exception e) {
-            return "";
+    public String homeContent(boolean filterGenre) {
+        ArrayList categories = new ArrayList();
+        List categoryIds = Arrays.asList("hot_gaia", "tv_hot", "show_hot", "movie", "tv", "rank_list_movie", "rank_list_tv");
+        List categoryNames = Arrays.asList("热门电影", "热播剧集", "热播综艺", "电影筛选", "电视筛选", "电影榜单", "电视剧榜单");
+        for (int i = 0; i < categoryIds.size(); i++) {
+            categories.add(new com.github.catvod.spider.merge.K.VodCategory((String) categoryIds.get(i), (String) categoryNames.get(i)));
         }
+        return VodResult.r(categories, parseVodItems(new JSONObject(com.github.catvod.spider.merge.f0.HttpClient.m("http://api.douban.com/api/v2/subject_collection/subject_real_time_hotest/items?apikey=0ac44ae016490db2204ce0a042db2916", buildHeaders(), null)).optJSONArray("subject_collection_items")), filterGenre ? JsonUtils.c(com.github.catvod.spider.merge.f0.HttpClient.l(this.filterUrl)) : null);
     }
 
-    private String getTags(HashMap<String, String> extend) {
-        try {
-            StringBuilder tags = new StringBuilder();
-            for (String key : extend.keySet())
-                if (!key.equals("sort")) tags.append(extend.get(key)).append(",");
-            return Util.substring(tags.toString());
-        } catch (Exception e) {
-            return "";
-        }
+    @Override // com.github.catvod.en.NetPan
+    public void init(Context context, String config) {
+        super.init(context, config);
+        this.filterUrl = JsonParser.parseString(config).getAsJsonObject().get("filter").getAsString();
     }
 }

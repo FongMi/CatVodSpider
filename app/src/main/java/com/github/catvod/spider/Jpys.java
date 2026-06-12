@@ -4,19 +4,15 @@ import android.content.Context;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.parser.C0165;
-import com.github.catvod.parser.C0166;
-import com.github.catvod.spider.merge.C0106ZJ;
-import com.github.catvod.spider.merge.C0118ga;
-import com.github.catvod.spider.merge.C0152vp;
-import com.github.catvod.spider.merge.C0168;
-import com.github.catvod.spider.merge.C0169;
-import com.github.catvod.spider.merge.C0170;
-import com.github.catvod.spider.merge.C0171;
-import com.github.catvod.spider.merge.C0172;
-import com.github.catvod.spider.merge.C0174;
-import com.github.catvod.spider.merge.C0175;
-import com.github.catvod.spider.merge.C0176;
+import com.github.catvod.parser.g;
+import com.github.catvod.spider.merge.C0948d;
+import com.github.catvod.spider.merge.C1024e;
+import com.github.catvod.spider.merge.C1080f;
+import com.github.catvod.spider.merge.C1200g;
+import com.github.catvod.spider.merge.C1228h;
+import com.github.catvod.spider.merge.C1370pv;
+import com.github.catvod.spider.merge.Yy;
+import com.github.catvod.spider.merge.ZP;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -26,514 +22,155 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: C:\Users\pengj\Downloads\jadx-gui-1.5.3-win\classes.dex */
 public class Jpys extends Spider {
 
-    /* renamed from: short, reason: not valid java name */
-    private static final short[] f832short = {2326, 2322, 2321, 2317, 2317, 2313, 2390, 2380, 2391, 2377, 2391, 2377, 2388, 2328, 2325, 2313, 2321, 2328, 2391, 2376, 2381, 1803, 1805, 1819, 1804, 1875, 1823, 1817, 1819, 1808, 1802, 1854, 1855, 1836, 1843, 1849, 1855, 1843, 1854, 1069, 1036, 1055, 1024, 1034, 1036, 1024, 1037, 1370, 1376, 1390, 1383, 2360, 1485, 1480, 1490, 1493, 1673, 1735, 1750, 1743, 1673, 1739, 1745, 1675, 1739, 1737, 1744, 1743, 1731, 1673, 1735, 1736, 1737, 1736, 1759, 1739, 1737, 1747, 1749, 1673, 1744, 1743, 1730, 1731, 1737, 1673, 1738, 1743, 1749, 1746, 1689, 1746, 1759, 1750, 1731, 1687, 1691, 2177, 2263, 2246, 2240, 2242, 2281, 2258, 2250, 2202, 1284, 1347, 1360, 1351, 1347, 1311, 1284, 1371, 1351, 1347, 1360, 1311, 2910, 2893, 2906, 2910, 2818, 2841, 2895, 2910, 2904, 2906, 2929, 2890, 2898, 2818, 542, 588, 577, 584, 605, 521, 517, 3064, 2983, 3003, 3007, 2988, 3043, 3064, 2997, 3003, 2983, 3043, 3005, 3004, 3046, 3054, 3046, 3051, 3052, 3047, 3004, 3007, 3003, 3048, 3004, 3048, 3004, 3003, 3050, 3051, 3003, 3005, 3000, 3007, 3004, 3052, 3047, 3007, 3050, 3046, 3046, 3047, 3004, 3005, 3064, 2986, 3043, 1338, 1343, 1322, 1343, 1470, 1447, 1452, 1431, 1441, 1452, 1769, 1776, 1787, 1750, 1787, 2222, 2231, 2236, 2183, 2230, 2233, 2229, 2237, 1167, 1174, 1181, 1207, 1176, 1172, 1180, 2396, 2373, 2382, 2421, 2394, 2371, 2377, 1682, 1675, 1664, 1716, 1677, 1671, 2579, 2570, 2561, 2615, 2560, 2568, 2564, 2583, 2574, 2582, 618, 625, 616, 616, 2521, 2496, 2507, 2544, 2525, 2506, 2498, 2510, 2525, 2500, 2524, 1306, 1291, 1293, 1295, 3093, 3076, 3074, 3072, 3078, 3082, 3088, 3083, 3089, 2855, 2850, 2854, 2850, 2879, 1038, 1045, 1038, 1051, 1046, 491, 496, 489, 489, 855, 793, 776, 785, 855, 789, 783, 853, 789, 791, 782, 785, 797, 855, 793, 790, 791, 790, 769, 789, 791, 781, 779, 855, 782, 785, 796, 797, 791, 855, 796, 797, 780, 793, 785, 788, 839, 785, 796, 837, 3006, 2995, 3050, 1798, 1867, 1861, 1881, 1821, 1859, 1858, 1816, 1808, 1816, 1813, 1810, 1817, 1858, 1857, 1861, 1814, 1858, 1814, 1858, 1861, 1812, 1813, 1861, 1859, 1862, 1857, 1858, 1810, 1817, 1857, 1812, 1816, 1816, 1817, 1858, 1859, 1798, 1876, 1821, 807, 802, 823, 802, 1292, 1301, 1310, 1317, 1299, 1310, 436, 429, 422, 395, 422, 2627, 2650, 2641, 2666, 2651, 2644, 2648, 2640, 1740, 1749, 1758, 1780, 1755, 1751, 1759, 1559, 1550, 1541, 1598, 1553, 1544, 1538, 1688, 1665, 1674, 1726, 1671, 1677, 1098, 1095, 1102, 1115, 1121, 1104, 1119, 1107, 1115, 2628, 2633, 2624, 2645, 2686, 2641, 2653, 2645, 430, 439, 444, 391, 417, 445, 441, 426, 1370, 1347, 1352, 1397, 1353, 1357, 1374, 1617, 1608, 1603, 1656, 1606, 1621, 1602, 1606, 2466, 2491, 2480, 2453, 2470, 2481, 2485, 545, 568, 563, 517, 562, 570, 566, 549, 572, 548, 2036, 2029, 2022, 2013, 2032, 2023, 2031, 2019, 2032, 2025, 2033, 440, 417, 426, 401, 431, 429, 442, 417, 444, 823, 814, 805, 768, 802, 821, 814, 819, 1702, 1727, 1716, 1679, 1716, 1721, 1698, 1717, 1715, 1700, 1727, 1698, 825, 800, 811, 779, 806, 829, 810, 812, 827, 800, 829, 1798, 1823, 1812, 1843, 1823, 1822, 1796, 1813, 1822, 1796, 1470, 1447, 1452, 1431, 1451, 1447, 1446, 1468, 1453, 1446, 1468, 27949, 26092, 21930, 24005, 22305, 22276, -29840, -1723, -29250, 21686, 18499, 22810, 21918, -25378, -1720, -1720, 437, 416, 441, 419, 447, 436, 437, 412, 441, 419, 420, 734, 721, 733, 725, 1807, 950, 945, 956, 2469, 3070, 2330, 2330, 2330, 2450, 2443, 2432, 2491, 2452, 2440, 2437, 2461, 2491, 2434, 2454, 2443, 2441, -32568, 21852, 32199, 24760, 1043, 1034, 1025, 1082, 1045, 1033, 1028, 1052, 1082, 1040, 1047, 1033, 1044, 1041, 1035, 1036, 2395, 2427, 2338, 2420, 2425, 2416, 2405, 2399, 2409, 2404, 2338, 2362, 2338, 2353, 2338, 2348, 2338, 2420, 2425, 2416, 2405, 2399, 2414, 2401, 2413, 2405, 2338, 2362, 2338, 31797, 22129, 2338, 2429, 2348, 2427, 2338, 2420, 2425, 2416, 2405, 2399, 2409, 2404, 2338, 2362, 2338, 2354, 2338, 2348, 2338, 2420, 2425, 2416, 2405, 2399, 2414, 2401, 2413, 2405, 2338, 2362, 2338, 31797, -32570, 23399, 2338, 2429, 2348, 2427, 2338, 2420, 2425, 2416, 2405, 2399, 2409, 2404, 2338, 2362, 2338, 2355, 2338, 2348, 2338, 2420, 2425, 2416, 2405, 2399, 2414, 2401, 2413, 2405, 2338, 2362, 2338, 30716, -29830, 2338, 2429, 2348, 2427, 2338, 2420, 2425, 2416, 2405, 2399, 2409, 2404, 2338, 2362, 2338, 2356, 2338, 2348, 2338, 2420, 2425, 2416, 2405, 2399, 2414, 2401, 2413, 2405, 2338, 2362, 2338, 23464, 26155, 2338, 2429, 2397, 2804, 2811, 2806, 2788, 2788, 1032, 1094, 1111, 1102, 1032, 1098, 1104, 1034, 1098, 1096, 1105, 1102, 1090, 1032, 1094, 1097, 1096, 1097, 1118, 1098, 1096, 1106, 1108, 1032, 1103, 1096, 1098, 1090, 1032, 1103, 1096, 1107, 1140, 1090, 1094, 1109, 1092, 1103, 747, 741, 761, 701, 739, 738, 696, 688, 696, 693, 690, 697, 738, 737, 741, 694, 738, 694, 738, 741, 692, 693, 741, 739, 742, 737, 738, 690, 697, 737, 692, 696, 696, 697, 738, 739, 678, 756, 701, 830, 827, 814, 827, 807, 830, 821, 792, 821, 3307, 3314, 3321, 3283, 3324, 3312, 3320, 1303, 1294, 1285, 1329, 1288, 1282, 1881, 1856, 1867, 1917, 1866, 1858, 1870, 1885, 1860, 1884, 1922, 1947, 1936, 1963, 1949, 1936, 3288, 3265, 3274, 3313, 3264, 3279, 3267, 3275, 2408, 2417, 2426, 2369, 2414, 2423, 2429, 2304, 2329, 2322, 2345, 2308, 2323, 2331, 2327, 2308, 2333, 2309, 1257, 1260, 1270, 1265, 2600, 2605, 2616, 2605, 1037, 1093, 1090, 1103, 1046, 1317, 1314, 1340, 647, 679, 2082, 2156, 2173, 2148, 2082, 2144, 2170, 2080, 2144, 2146, 2171, 2148, 2152, 2082, 2156, 2147, 2146, 2147, 2164, 2144, 2146, 2168, 2174, 2082, 2171, 2111, 2082, 2171, 2148, 2153, 2152, 2146, 2082, 2152, 2173, 2148, 2174, 2146, 2153, 2152, 2082, 2168, 2175, 2145, 2098, 2158, 2145, 2148, 2152, 2147, 2169, 2137, 2164, 2173, 2152, 2096, 2110, 2091, 2148, 2153, 2096, 1181, 1170, 1175, 1179, 1168, 1162, 1194, 1159, 1166, 1179, 1219, 1229, 1240, 1175, 1178, 1219, 446, 499, 509, 481, 421, 507, 506, 416, 424, 416, 429, 426, 417, 506, 505, 509, 430, 
-    506, 430, 506, 509, 428, 429, 509, 507, 510, 505, 506, 426, 417, 505, 428, 416, 416, 417, 506, 507, 446, 492, 421, 1493, 1488, 1482, 1485, 1051, 1034, 1049, 1048, 1038, 696, 676, 681, 689, 669, 698, 676, 580, 577, 603, 604, 1441, 1519, 1534, 1511, 1441, 1507, 1529, 1443, 1507, 1505, 1528, 1511, 1515, 1441, 1519, 1504, 1505, 1504, 1527, 1507, 1505, 1531, 1533, 1441, 1528, 1511, 1514, 1515, 1505, 1441, 1533, 1515, 1519, 1532, 1517, 1510, 1484, 1527, 1497, 1505, 1532, 1514, 1457, 1509, 1515, 1527, 1529, 1505, 1532, 1514, 1459, 1177, 1231, 1246, 1240, 1242, 1265, 1226, 1234, 1154, 1166, 1177, 1231, 1246, 1240, 1242, 1260, 1238, 1221, 1242, 1154, 1159, 632, 630, 618, 612, 636, 609, 631, 558, 2172, 2090, 2107, 2109, 2111, 2068, 2095, 2103, 2151, 2155, 2172, 2090, 2107, 2109, 2111, 2057, 2099, 2080, 2111, 2151, 2146, 2172, 2097, 2111, 2083, 2151, 2105, 2104, 2146, 2154, 2146, 2159, 2152, 2147, 2104, 2107, 2111, 2156, 2104, 2156, 2104, 2111, 2158, 2159, 2111, 2105, 2108, 2107, 2104, 2152, 2147, 2107, 2158, 2146, 2146, 2147, 2104, 2105, 2172, 2094, 2151, 2709, 2704, 2693, 2704, 3080, 3103, 3081, 3087, 3094, 3086, 1676, 1685, 1694, 1701, 1683, 1694, 2463, 2438, 2445, 2464, 2445, 1361, 1352, 1347, 1400, 1353, 1350, 1354, 1346, 1077, 1068, 1063, 1037, 1058, 1070, 1062, 3306, 3315, 3320, 3267, 3308, 3317, 3327, 3076, 3101, 3094, 3106, 3099, 3089, 2111, 2086, 2093, 2075, 2092, 2084, 2088, 2107, 2082, 2106, 2926, 2933, 2924, 2924, 1297, 1288, 1283, 1336, 1301, 1282, 1290, 1286, 1301, 1292, 1300};
-
-    /* renamed from: q */
-    private String f124q = "";
-
-    /* renamed from: xC */
-    private String f125xC = C0172.m820(f832short, 0, 21, 2425);
-
-    /* renamed from: QU */
-    private String f123QU = "";
+    private static final short[] f33short = {512, 516, 519, 539, 539, 543, 576, 602, 577, 607, 577, 607, 578, 526, 515, 543, 519, 526, 577, 606, 603, 2175, 2169, 2159, 2168, 2087, 2155, 2157, 2159, 2148, 2174, 2445, 2444, 2463, 2432, 2442, 2444, 2432, 2445, 646, 679, 692, 683, 673, 679, 683, 678, 2673, 2635, 2629, 2636, 1563, 2118, 2115, 2137, 2142, 2612, 2682, 2667, 2674, 2612, 2678, 2668, 2614, 2678, 2676, 2669, 2674, 2686, 2612, 2682, 2677, 2676, 2677, 2658, 2678, 2676, 2670, 2664, 2612, 2669, 2674, 2687, 2686, 2676, 2612, 2679, 2674, 2664, 2671, 2596, 2671, 2658, 2667, 2686, 2602, 2598, 846, 792, 777, 783, 781, 806, 797, 773, 853, 1728, 1671, 1684, 1667, 1671, 1755, 1728, 1695, 1667, 1671, 1684, 1755, 2461, 2446, 2457, 2461, 2497, 2522, 2444, 2461, 2459, 2457, 2482, 2441, 2449, 2497, 2711, 2757, 2760, 2753, 2772, 2688, 2700, 1646, 1585, 1581, 1577, 1594, 1653, 1646, 1571, 1581, 1585, 1653, 1579, 1578, 1648, 1656, 1648, 1661, 1658, 1649, 1578, 1577, 1581, 1662, 1578, 1662, 1578, 1581, 1660, 1661, 1581, 1579, 1582, 1577, 1578, 1658, 1649, 1577, 1660, 1648, 1648, 1649, 1578, 1579, 1646, 1596, 1653, 2480, 2485, 2464, 2485, 785, 776, 771, 824, 782, 771, 2621, 2596, 2607, 2562, 2607, 2966, 2959, 2948, 3007, 2958, 2945, 2957, 2949, 784, 777, 770, 808, 775, 779, 771, 2959, 2966, 2973, 2982, 2953, 2960, 2970, 2346, 2355, 2360, 2316, 2357, 2367, 2890, 2899, 2904, 2926, 2905, 2897, 2909, 2894, 2903, 2895, 3101, 3078, 3103, 3103, 2401, 2424, 2419, 2376, 2405, 2418, 2426, 2422, 2405, 2428, 2404, 2872, 2857, 2863, 2861, 1385, 1400, 1406, 1404, 1402, 1398, 1388, 1399, 1389, 2159, 2154, 2158, 2154, 2167, 767, 740, 767, 746, 743, 1657, 1634, 1659, 1659, 395, 453, 468, 461, 395, 457, 467, 393, 457, 459, 466, 461, 449, 395, 453, 458, 459, 458, 477, 457, 459, 465, 471, 395, 466, 461, 448, 449, 459, 395, 448, 449, 464, 453, 461, 456, 411, 461, 448, 409, 2642, 2655, 2566, 1071, 1122, 1132, 1136, 1076, 1130, 1131, 1073, 1081, 1073, 1084, 1083, 1072, 1131, 1128, 1132, 1087, 1131, 1087, 1131, 1132, 1085, 1084, 1132, 1130, 1135, 1128, 1131, 1083, 1072, 1128, 1085, 1073, 1073, 1072, 1131, 1130, 1071, 1149, 1076, 946, 951, 930, 951, 275, 266, 257, 314, 268, 257, 2284, 2293, 2302, 2259, 2302, 913, 904, 899, 952, 905, 902, 906, 898, 1926, 1951, 1940, 1982, 1937, 1949, 1941, 3122, 3115, 3104, 3099, 3124, 3117, 3111, 1992, 2001, 2010, 2030, 2007, 2013, 622, 611, 618, 639, 581, 628, 635, 631, 639, 1930, 1927, 1934, 1947, 1968, 1951, 1939, 1947, 1539, 1562, 1553, 1578, 1548, 1552, 1556, 1543, 3159, 3150, 3141, 3192, 3140, 3136, 3155, 2132, 2125, 2118, 2173, 2115, 2128, 2119, 2115, 410, 387, 392, 429, 414, 393, 397, 1891, 1914, 1905, 1863, 1904, 1912, 1908, 1895, 1918, 1894, 2918, 2943, 2932, 2895, 2914, 2933, 2941, 2929, 2914, 2939, 2915, 1013, 1004, 999, 988, 994, 992, 1015, 1004, 1009, 2684, 2661, 2670, 2635, 2665, 2686, 2661, 2680, 3128, 3105, 3114, 3089, 3114, 3111, 3132, 3115, 3117, 3130, 3105, 3132, 821, 812, 807, 775, 810, 817, 806, 800, 823, 812, 817, 2992, 2985, 2978, 2949, 2985, 2984, 2994, 2979, 2984, 2994, 799, 774, 781, 822, 778, 774, 775, 797, 780, 775, 797, 27968, 25985, 21959, 23976, 22348, 22377, -29923, -1752, -29229, 21723, 18478, 22903, 22003, -25421, -1755, -1755, 257, 276, 269, 279, 267, 256, 257, 296, 269, 279, 272, 862, 849, 861, 853, 1915, 1098, 1101, 1088, 1558, 1188, 994, 994, 994, 1267, 1258, 1249, 1242, 1269, 1257, 1252, 1276, 1242, 1251, 1271, 1258, 1256, -28855, 23261, 29254, 28473, 1736, 1745, 1754, 1761, 1742, 1746, 1759, 1735, 1761, 1739, 1740, 1746, 1585, 1588, 1582, 1577, 768, 800, 889, 815, 802, 811, 830, 772, 818, 831, 889, 865, 889, 874, 889, 887, 889, 815, 802, 811, 830, 772, 821, 826, 822, 830, 889, 865, 889, 30318, 23594, 889, 806, 887, 800, 889, 815, 802, 811, 830, 772, 818, 831, 889, 865, 889, 873, 889, 887, 889, 815, 802, 811, 830, 772, 821, 826, 822, 830, 889, 865, 889, 30318, -30051, 20796, 889, 806, 887, 800, 889, 815, 802, 811, 830, 772, 818, 831, 889, 865, 889, 872, 889, 887, 889, 815, 802, 811, 830, 772, 821, 826, 822, 830, 889, 865, 889, 32167, -32479, 889, 806, 887, 800, 889, 815, 802, 811, 830, 772, 818, 831, 889, 865, 889, 879, 889, 887, 889, 815, 802, 811, 830, 772, 821, 826, 822, 830, 889, 865, 889, 20979, 27760, 889, 806, 774, 2230, 2233, 2228, 2214, 2214, 1134, 1056, 1073, 1064, 1134, 1068, 1078, 1132, 1068, 1070, 1079, 1064, 1060, 1134, 1056, 1071, 1070, 1071, 1080, 1068, 1070, 1076, 1074, 1134, 1065, 1070, 1068, 1060, 1134, 1065, 1070, 1077, 1042, 1060, 1056, 1075, 1058, 1065, 1965, 1955, 1983, 2043, 1957, 1956, 2046, 2038, 2046, 2035, 2036, 2047, 1956, 1959, 1955, 2032, 1956, 2032, 1956, 1955, 2034, 2035, 1955, 1957, 1952, 1959, 1956, 2036, 2047, 1959, 2034, 2046, 2046, 2047, 1956, 1957, 2016, 1970, 2043, 461, 456, 477, 456, 2684, 2661, 2670, 2627, 2670, 2183, 2206, 2197, 2239, 2192, 2204, 2196, 1638, 1663, 1652, 1600, 1657, 1651, 2647, 2638, 2629, 2675, 2628, 2636, 2624, 2643, 2634, 2642, 696, 673, 682, 657, 679, 682, 1325, 1332, 1343, 1284, 1333, 1338, 1334, 1342, 2965, 2956, 2951, 3004, 2963, 2954, 2944, 1239, 1230, 1221, 1278, 1235, 1220, 1228, 1216, 1235, 1226, 1234, 1148, 1145, 1123, 1124, 2943, 2938, 2927, 2938, 755, 699, 700, 689, 744, 2875, 2876, 2850, 1960, 1928, 1120, 1070, 1087, 1062, 1120, 1058, 1080, 1122, 1058, 1056, 1081, 1062, 1066, 1120, 1070, 1057, 1056, 1057, 1078, 1058, 1056, 1082, 1084, 1120, 1081, 1149, 1120, 1081, 1062, 1067, 1066, 1056, 1120, 1066, 1087, 1062, 1084, 1056, 1067, 1066, 1120, 1082, 1085, 1059, 1136, 1068, 1059, 1062, 1066, 1057, 1083, 1051, 1078, 1087, 1066, 1138, 1148, 1129, 1062, 1067, 1138, 979, 988, 985, 981, 990, 964, 996, 969, 960, 981, 909, 899, 918, 985, 980, 909, 1207, 1274, 1268, 1256, 1196, 1266, 1267, 1193, 1185, 1193, 1188, 1187, 1192, 1267, 1264, 1268, 1191,
+    1267, 1191, 1267, 1268, 1189, 1188, 1268, 1266, 1271, 1264, 1267, 1187, 1192, 1264, 1189, 1193, 1193, 1192, 1267, 1266, 1207, 1253, 1196, 390, 387, 409, 414, 2714, 2699, 2712, 2713, 2703, 802, 830, 819, 811, 775, 800, 830, 2840, 2845, 2823, 2816, 2361, 2423, 2406, 2431, 2361, 2427, 2401, 2363, 2427, 2425, 2400, 2431, 2419, 2361, 2423, 2424, 2425, 2424, 2415, 2427, 2425, 2403, 2405, 2361, 2400, 2431, 2418, 2419, 2425, 2361, 2405, 2419, 2423, 2404, 2421, 2430, 2388, 2415, 2369, 2425, 2404, 2418, 2345, 2429, 2419, 2415, 2401, 2425, 2404, 2418, 2347, 3259, 3309, 3324, 3322, 3320, 3283, 3304, 3312, 3232, 3244, 3259, 3309, 3324, 3322, 3320, 3278, 3316, 3303, 3320, 3232, 3237, 1877, 1883, 1863, 1865, 1873, 1868, 1882, 1795, 3217, 3271, 3286, 3280, 3282, 3321, 3266, 3290, 3210, 3206, 3217, 3271, 3286, 3280, 3282, 3300, 3294, 3277, 3282, 3210, 3215, 3217, 3292, 3282, 3278, 3210, 3284, 3285, 3215, 3207, 3215, 3202, 3205, 3214, 3285, 3286, 3282, 3201, 3285, 3201, 3285, 3282, 3203, 3202, 3282, 3284, 3281, 3286, 3285, 3205, 3214, 3286, 3203, 3215, 3215, 3214, 3285, 3284, 3217, 3267, 3210, 1092, 1089, 1108, 1089, 1498, 1485, 1499, 1501, 1476, 1500, 2108, 2085, 2094, 2069, 2083, 2094, 1335, 1326, 1317, 1288, 1317, 2647, 2638, 2629, 2686, 2639, 2624, 2636, 2628, 2131, 2122, 2113, 2155, 2116, 2120, 2112, 698, 675, 680, 659, 700, 677, 687, 1686, 1679, 1668, 1712, 1673, 1667, 690, 683, 672, 662, 673, 681, 677, 694, 687, 695, 1772, 1783, 1774, 1774, 2692, 2717, 2710, 2733, 2688, 2711, 2719, 2707, 2688, 2713, 2689};
+    private String l8 = "";
+    private String S = "okhttp/5.0.0-alpha.14";
+    private String T4 = "";
 
     public Jpys() {
-        int iM833 = C0175.m833();
-        int i = 1616;
-        while (true) {
-            i ^= 1633;
-            switch (i) {
-                case 14:
-                case 49:
-                    i = iM833 <= 0 ? 1709 : 1678;
-                case 204:
-                    System.out.println(Integer.parseInt(C0179.m847("w2RHeSLyNdxwCLnv71mPw9gDy")));
-                    break;
-                case 239:
-                    break;
-            }
-            return;
-        }
     }
 
-    /* renamed from: q */
-    private void m49q() {
-        this.f124q = C0152vp.m724Mo(this.f123QU);
+    private HashMap<String, String> S(String str, String str2) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("user-agent", this.S);
+        map.put("deviceid", "Deviceid");
+        map.put("t", str2);
+        return map;
     }
 
-    /* renamed from: xC */
-    private HashMap<String, String> m50xC(String str, String str2) {
-        String str3 = "ۥ۠ۢ";
-        Charset charset = null;
-        HashMap<String, String> map = null;
-        String strM851 = null;
-        String strM604q = null;
-        short[] sArr = null;
-        while (true) {
-            switch (C0174.m829(str3)) {
-                case 56350:
-                    str3 = "ۡۢۧ";
-                    sArr = f832short;
-                    break;
-                case 56388:
-                    charset = C0118ga.f677xC;
-                    str3 = "ۥۦ";
-                    break;
-                case 1746788:
-                    map.put(strM604q, str2);
-                    str3 = "ۦۦۨ";
-                    break;
-                case 1746812:
-                    str3 = "ۧۦۡ";
-                    sArr = f832short;
-                    break;
-                case 1748710:
-                    str3 = "۟ۢۧ";
-                    strM604q = C0181.m856(sArr, 51, 1, 2380);
-                    break;
-                case 1748771:
-                    str3 = "ۢ۠ۤ";
-                    sArr = f832short;
-                    break;
-                case 1748828:
-                    str3 = "ۨۨۤ";
-                    strM851 = C0166.m801(sArr, 47, 4, 1289);
-                    break;
-                case 1749606:
-                    str3 = "ۨۧۥ";
-                    strM851 = C0180.m851(sArr, 31, 8, 1882);
-                    break;
-                case 1750563:
-                    map.put(strM851, strM604q);
-                    str3 = "ۡۤۦ";
-                    break;
-                case 1750658:
-                    str = C0118ga.m606xC(strM604q);
-                    str3 = "ۨۦۦ";
-                    break;
-                case 1752487:
-                    str3 = "ۢۦ";
-                    map = new HashMap<>();
-                    break;
-                case 1752488:
-                    map.put(strM851, strM604q);
-                    str3 = "ۨۦۡ";
-                    break;
-                case 1753640:
-                    return map;
-                case 1754594:
-                    str3 = "ۣ۠۠";
-                    strM851 = C0177.m841(sArr, 21, 10, 1918);
-                    break;
-                case 1755435:
-                    str3 = "ۥۣ۠";
-                    strM604q = C0180.m851(sArr, 39, 8, 1129);
-                    break;
-                case 1755555:
-                    str3 = "ۡۦۡ";
-                    sArr = f832short;
-                    break;
-                case 1755560:
-                    str3 = "ۣ۟۠";
-                    strM604q = this.f125xC;
-                    break;
-                case 1755590:
-                    str3 = "ۨۢۥ";
-                    sArr = f832short;
-                    break;
-                case 1755620:
-                    map.put(strM851, str);
-                    str3 = "ۡ۟";
-                    break;
-                default:
-                    str3 = "ۣۣۢ";
-                    strM604q = C0118ga.m604q(str, charset);
-                    break;
-            }
-        }
+    private void l8() {
+        this.l8 = C1370pv.l(this.T4);
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:22:0x00ef. Please report as an issue. */
-    public String categoryContent(String str, String str2, boolean z, HashMap<String, String> map) throws JSONException, NumberFormatException {
-        String strM836 = C0176.m836(f832short, 52, 4, 1441);
+    public String categoryContent(String str, String str2, boolean z, HashMap<String, String> map) {
         try {
-            boolean zIsEmpty = this.f124q.isEmpty();
-            int i = 1616;
-            while (true) {
-                i ^= 1633;
-                switch (i) {
-                    case 14:
-                    case 49:
-                        i = zIsEmpty ? 1709 : 1678;
-                    case 204:
-                        m49q();
-                        break;
-                    case 239:
-                        break;
-                }
+            if (this.l8.isEmpty()) {
+                l8();
             }
-            int i2 = Integer.parseInt(str2);
-            int i3 = 1740;
-            while (true) {
-                i3 ^= 1757;
-                switch (i3) {
-                    case 17:
-                        i3 = i2 == 0 ? 1833 : 1802;
-                    case 54:
-                    case 471:
-                        break;
-                    case 500:
-                        i2 = 1;
-                        break;
-                }
+            int page = Integer.parseInt(str2);
+            if (page == 0) {
+                page = 1;
             }
-            String str3 = this.f124q + C0165.m798(f832short, 56, 41, 1702) + str + C0175.m834(f832short, 97, 9, 2215) + str2 + C0182.m861(f832short, 106, 12, 1314);
+            String url = this.l8 + "/api/mw-movie/anonymous/video/list?type1=" + str + "&pageNum=" + str2 + "&area=&year=";
             JSONArray jSONArray = new JSONArray();
-            String strValueOf = String.valueOf(System.currentTimeMillis());
-            JSONArray jSONArray2 = new JSONObject(C0106ZJ.m484FN(str3, m50xC(C0172.m820(f832short, 118, 14, 2879) + str2 + C0178.m845(f832short, 132, 7, 568) + str + C0172.m820(f832short, 139, 46, 3038) + strValueOf, strValueOf))).optJSONObject(C0180.m851(f832short, 185, 4, 1374)).getJSONArray(strM836);
-            int i4 = 0;
-            while (true) {
-                int length = jSONArray2.length();
-                int i5 = 1864;
-                while (true) {
-                    i5 ^= 1881;
-                    switch (i5) {
-                        case 17:
-                            i5 = i4 < length ? 48736 : 48705;
-                        case 47384:
-                            break;
-                        case 47417:
-                            JSONObject jSONObjectOptJSONObject = jSONArray2.optJSONObject(i4);
-                            JSONObject jSONObject = new JSONObject();
-                            jSONObject.put(C0180.m851(f832short, 189, 6, 1480), jSONObjectOptJSONObject.optString(C0178.m845(f832short, 195, 5, 1695)));
-                            jSONObject.put(C0174.m828(f832short, 200, 8, 2264), jSONObjectOptJSONObject.optString(C0170.m814(f832short, 208, 7, 1273)));
-                            jSONObject.put(C0179.m849(f832short, 215, 7, 2346), jSONObjectOptJSONObject.optString(C0171.m816(f832short, 222, 6, 1764)));
-                            String strOptString = jSONObjectOptJSONObject.optString(C0178.m845(f832short, 228, 10, 2661));
-                            boolean zEquals = strOptString.equals(C0165.m798(f832short, 238, 4, 516));
-                            int i6 = 48767;
-                            while (true) {
-                                i6 ^= 48784;
-                                switch (i6) {
-                                    case 14:
-                                    case 45:
-                                        break;
-                                    case 76:
-                                        strOptString = "";
-                                        break;
-                                    case 239:
-                                        i6 = zEquals ? 48860 : 48829;
-                                }
-                            }
-                            jSONObject.put(C0172.m820(f832short, 242, 11, 2479), strOptString);
-                            jSONArray.put(jSONObject);
-                            int i7 = i4 + 1;
-                            int i8 = 48891;
-                            while (true) {
-                                i8 ^= 48908;
-                                switch (i8) {
-                                    case 22:
-                                        break;
-                                    case 503:
-                                        i8 = 48922;
-                                        break;
-                                }
-                            }
-                            i4 = i7;
-                            break;
-                        case 47483:
-                    }
-                    JSONObject jSONObject2 = new JSONObject();
-                    jSONObject2.put(C0179.m849(f832short, 253, 4, 1386), i2);
-                    int length2 = jSONArray.length();
-                    int i9 = 49666;
-                    while (true) {
-                        i9 ^= 49683;
-                        switch (i9) {
-                            case 17:
-                                if (length2 != 48) {
-                                    break;
-                                } else {
-                                    i9 = 49759;
-                                }
-                            case 50:
-                                break;
-                            case 76:
-                                i2++;
-                                break;
-                            case 83:
-                                break;
-                            default:
-                                continue;
-                        }
-                        i9 = 49728;
-                    }
-                    jSONObject2.put(C0179.m849(f832short, 257, 9, 3173), i2);
-                    jSONObject2.put(C0182.m861(f832short, 266, 5, 2891), 48);
-                    jSONObject2.put(C0183.m866(f832short, 271, 5, 1146), Integer.MAX_VALUE);
-                    jSONObject2.put(strM836, jSONArray);
-                    return jSONObject2.toString();
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            JSONArray list = new JSONObject(Yy.v(url, S("area=&pageNum=" + str2 + "&type1=" + str + "&year=&key=cb808529bae6b6be45ecfab29a4889bc&t=" + timestamp, timestamp))).optJSONObject("data").getJSONArray("list");
+            for (int i = 0; i < list.length(); i++) {
+                JSONObject item = list.optJSONObject(i);
+                JSONObject vod = new JSONObject();
+                vod.put("vod_id", item.optString("vodId"));
+                vod.put("vod_name", item.optString("vodName"));
+                vod.put("vod_pic", item.optString("vodPic"));
+                String remarks = item.optString("vodRemarks");
+                if (remarks.equals("null")) {
+                    remarks = "";
                 }
+                vod.put("vod_remarks", remarks);
+                jSONArray.put(vod);
             }
+            JSONObject result = new JSONObject();
+            result.put("page", page);
+            if (jSONArray.length() == 48) {
+                page++;
+            }
+            result.put("pagecount", page);
+            result.put("limit", 48);
+            result.put("total", Integer.MAX_VALUE);
+            result.put("list", jSONArray);
+            return result.toString();
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:34:0x0253. Please report as an issue. */
-    public String detailContent(List<String> list) throws JSONException {
+    public String detailContent(List<String> list) {
         int i = 0;
-        String strM845 = C0178.m845(f832short, 276, 4, 389);
+        String strE = "null";
         try {
-            boolean zIsEmpty = this.f124q.isEmpty();
-            int i2 = 1616;
-            while (true) {
-                i2 ^= 1633;
-                switch (i2) {
-                    case 14:
-                    case 49:
-                        i2 = zIsEmpty ? 1709 : 1678;
-                    case 204:
-                        m49q();
-                        break;
-                    case 239:
-                        break;
-                }
+            if (this.l8.isEmpty()) {
+                l8();
             }
-            Init.m46lj();
-            ArrayList arrayList = new ArrayList();
-            String str = this.f124q + C0181.m856(f832short, 280, 40, 888) + list.get(0);
-            JSONObject jSONObject = new JSONObject();
-            String strValueOf = String.valueOf(System.currentTimeMillis());
-            JSONObject jSONObjectOptJSONObject = new JSONObject(C0106ZJ.m484FN(str, m50xC(C0181.m856(f832short, 320, 3, 3031) + list.get(0) + C0172.m820(f832short, 323, 40, 1824) + strValueOf, strValueOf))).optJSONObject(C0166.m801(f832short, 363, 4, 835));
-            jSONObject.put(C0171.m816(f832short, 367, 6, 1402), jSONObjectOptJSONObject.optString(C0178.m845(f832short, 373, 5, 450)));
-            jSONObject.put(C0175.m834(f832short, 378, 8, 2613), jSONObjectOptJSONObject.optString(C0169.m809(f832short, 386, 7, 1722)));
-            jSONObject.put(C0168.m805(f832short, 393, 7, 1633), jSONObjectOptJSONObject.optString(C0179.m849(f832short, 400, 6, 1774)));
-            jSONObject.put(C0181.m856(f832short, 406, 9, 1086), jSONObjectOptJSONObject.optString(C0179.m849(f832short, 415, 8, 2608)));
-            jSONObject.put(C0176.m836(f832short, 423, 8, 472), jSONObjectOptJSONObject.optString(C0168.m805(f832short, 431, 7, 1324)));
-            jSONObject.put(C0177.m841(f832short, 438, 8, 1575), jSONObjectOptJSONObject.optString(C0182.m861(f832short, 446, 7, 2516)));
-            String strOptString = jSONObjectOptJSONObject.optString(C0169.m809(f832short, 453, 10, 599));
-            boolean zEquals = strOptString.equals(strM845);
-            String str2 = "";
-            int i3 = 1740;
-            while (true) {
-                i3 ^= 1757;
-                switch (i3) {
-                    case 17:
-                        i3 = zEquals ? 1833 : 1802;
-                    case 54:
-                    case 471:
-                        break;
-                    case 500:
-                        strOptString = "";
-                        break;
-                }
+            ArrayList<String> episodes = new ArrayList<>();
+            String url = this.l8 + "/api/mw-movie/anonymous/video/detail?id=" + list.get(0);
+            JSONObject vod = new JSONObject();
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            JSONObject data = new JSONObject(Yy.v(url, S("id=" + list.get(0) + "&key=cb808529bae6b6be45ecfab29a4889bc&t=" + timestamp, timestamp))).optJSONObject("data");
+            vod.put("vod_id", data.optString("vodId"));
+            vod.put("vod_name", data.optString("vodName"));
+            vod.put("vod_pic", data.optString("vodPic"));
+            vod.put("type_name", data.optString("typeName"));
+            vod.put("vod_year", data.optString("vodYear"));
+            vod.put("vod_area", data.optString("vodArea"));
+            String remarks = data.optString("vodRemarks");
+            if (remarks.equals(strE)) {
+                remarks = "";
             }
-            jSONObject.put(C0179.m849(f832short, 463, 11, 1922), strOptString);
-            jSONObject.put(C0179.m849(f832short, 474, 9, 462), jSONObjectOptJSONObject.optString(C0170.m814(f832short, 483, 8, 833)));
-            jSONObject.put(C0181.m856(f832short, 491, 12, 1744), jSONObjectOptJSONObject.optString(C0175.m834(f832short, 503, 11, 847)));
-            String strOptString2 = jSONObjectOptJSONObject.optString(C0169.m809(f832short, 514, 10, 1904));
-            boolean zEquals2 = strOptString2.equals(strM845);
-            int i4 = 1864;
-            while (true) {
-                i4 ^= 1881;
-                switch (i4) {
-                    case 17:
-                        i4 = zEquals2 ? 48736 : 48705;
-                    case 47384:
-                        str2 = strOptString2;
-                        break;
-                    case 47417:
-                        int i5 = 48767;
-                        while (true) {
-                            i5 ^= 48784;
-                            switch (i5) {
-                                case 14:
-                                    break;
-                                case 239:
-                                    i5 = 48798;
-                                    continue;
-                                default:
-                                    continue;
-                            }
-                        }
-                    case 47483:
-                }
+            vod.put("vod_remarks", remarks);
+            vod.put("vod_actor", data.optString("vodActor"));
+            vod.put("vod_director", data.optString("vodDirector"));
+            String content = data.optString("vodContent");
+            if (content.equals(strE)) {
+                content = "";
             }
-            jSONObject.put(C0177.m841(f832short, 524, 11, 1480), C0180.m851(f832short, 535, 16, 1609) + str2);
-            JSONArray jSONArray = jSONObjectOptJSONObject.getJSONArray(C0170.m814(f832short, 551, 11, 464));
-            ArrayList arrayList2 = new ArrayList();
-            while (true) {
-                int length = jSONArray.length();
-                int i6 = 48891;
-                while (true) {
-                    i6 ^= 48908;
-                    switch (i6) {
-                        case 22:
-                        case 53:
-                            break;
-                        case 503:
-                            i6 = i < length ? 49635 : 48953;
-                        case 32495:
-                            JSONObject jSONObjectOptJSONObject2 = jSONArray.optJSONObject(i);
-                            arrayList2.add(jSONObjectOptJSONObject2.optString(C0183.m866(f832short, 562, 4, 688)) + C0174.m828(f832short, 566, 1, 1835) + jSONObjectOptJSONObject2.optString(C0179.m849(f832short, 567, 3, 984)) + C0180.m851(f832short, 570, 1, 2521) + list.get(0));
-                            int i7 = i + 1;
-                            int i8 = 49666;
-                            while (true) {
-                                i8 ^= 49683;
-                                switch (i8) {
-                                    case 17:
-                                        i8 = 49697;
-                                        break;
-                                    case 50:
-                                        break;
-                                }
-                            }
-                            i = i7;
-                            break;
-                    }
-                    arrayList.add(TextUtils.join(C0174.m828(f832short, 571, 1, 3037), arrayList2));
-                    String strJoin = TextUtils.join(C0171.m816(f832short, 572, 3, 2366), arrayList);
-                    jSONObject.put(C0169.m809(f832short, 575, 13, 2532), C0182.m861(f832short, 588, 4, 1045));
-                    jSONObject.put(C0166.m801(f832short, 592, 12, 1125), strJoin);
-                    JSONObject jSONObject2 = new JSONObject();
-                    JSONArray jSONArray2 = new JSONArray();
-                    jSONArray2.put(jSONObject);
-                    jSONObject2.put(C0170.m814(f832short, 604, 4, 1144), jSONArray2);
-                    return jSONObject2.toString();
-                }
+            vod.put("vod_content", "此接口完全免费，请勿上当受骗！！" + content);
+            JSONArray episodeList = data.getJSONArray("episodeList");
+            ArrayList<String> episodeUrls = new ArrayList<>();
+            for (i = 0; i < episodeList.length(); i++) {
+                JSONObject ep = episodeList.optJSONObject(i);
+                episodeUrls.add(ep.optString("name") + "$" + ep.optString("nid") + "|" + list.get(0));
             }
+            episodes.add(TextUtils.join("#", episodeUrls));
+            String playUrl = TextUtils.join("$$$", episodes);
+            vod.put("vod_play_from", "蓝光秒播");
+            vod.put("vod_play_url", playUrl);
+            JSONObject result = new JSONObject();
+            JSONArray list2 = new JSONArray();
+            list2.put(vod);
+            result.put("list", list2);
+            return result.toString();
         } catch (JSONException e) {
-            RuntimeException runtimeException = new RuntimeException(e);
-            int i9 = 49790;
-            while (true) {
-                i9 ^= 49807;
-                switch (i9) {
-                    case 18:
-                        int i10 = 49914;
-                        while (true) {
-                            i10 ^= 49931;
-                            switch (i10) {
-                                case 497:
-                                    i10 = 50596;
-                                    break;
-                                case 1711:
-                                    throw runtimeException;
-                            }
-                        }
-                        break;
-                    case 241:
-                        i9 = 49821;
-                        break;
-                }
-            }
+            throw new RuntimeException(e);
         }
     }
 
     public String homeContent(boolean z) {
         try {
-            boolean zIsEmpty = this.f124q.isEmpty();
-            int i = 1616;
-            while (true) {
-                i ^= 1633;
-                switch (i) {
-                    case 14:
-                        break;
-                    case 49:
-                        if (!zIsEmpty) {
-                            break;
-                        } else {
-                            i = 1709;
-                        }
-                    case 204:
-                        m49q();
-                        break;
-                    case 239:
-                        break;
-                    default:
-                        continue;
-                }
-                i = 1678;
+            if (this.l8.isEmpty()) {
+                l8();
             }
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put(C0175.m834(f832short, 742, 5, 2711), new JSONArray(C0172.m820(f832short, 608, 134, 2304)));
-            return jSONObject.toString();
+            JSONObject result = new JSONObject();
+            result.put("class", new JSONArray("[{\"type_id\":\"1\",\"type_name\":\"电影\"},{\"type_id\":\"2\",\"type_name\":\"电视剧\"},{\"type_id\":\"3\",\"type_name\":\"综艺\"},{\"type_id\":\"4\",\"type_name\":\"动漫\"}]"));
+            return result.toString();
         } catch (Throwable th) {
             return "";
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:13:0x0084. Please report as an issue. */
-    public String homeVideoContent() throws JSONException {
+    public String homeVideoContent() {
         try {
-            boolean zIsEmpty = this.f124q.isEmpty();
-            int i = 1616;
-            while (true) {
-                i ^= 1633;
-                switch (i) {
-                    case 14:
-                    case 49:
-                        i = zIsEmpty ? 1709 : 1678;
-                    case 204:
-                        m49q();
-                        break;
-                    case 239:
-                        break;
-                }
+            if (this.l8.isEmpty()) {
+                l8();
             }
             JSONArray jSONArray = new JSONArray();
-            String str = this.f124q + C0182.m861(f832short, 747, 38, 1063);
-            String strValueOf = String.valueOf(System.currentTimeMillis());
-            JSONArray jSONArray2 = new JSONObject(C0106ZJ.m484FN(str, m50xC(C0175.m834(f832short, 785, 39, 640) + strValueOf, strValueOf))).getJSONArray(C0170.m814(f832short, 824, 4, 858));
-            int i2 = 0;
-            while (true) {
-                int length = jSONArray2.length();
-                int i3 = 1740;
-                while (true) {
-                    i3 ^= 1757;
-                    switch (i3) {
-                        case 17:
-                            i3 = i2 < length ? 1833 : 1802;
-                        case 54:
-                        case 471:
-                            break;
-                        case 500:
-                            JSONObject jSONObjectOptJSONObject = jSONArray2.optJSONObject(i2);
-                            String strOptString = jSONObjectOptJSONObject.optString(C0175.m834(f832short, 828, 5, 849));
-                            String strOptString2 = jSONObjectOptJSONObject.optString(C0168.m805(f832short, 833, 7, 3229));
-                            String strOptString3 = jSONObjectOptJSONObject.optString(C0178.m845(f832short, 840, 6, 1377));
-                            String strOptString4 = jSONObjectOptJSONObject.optString(C0172.m820(f832short, 846, 10, 1839));
-                            JSONObject jSONObject = new JSONObject();
-                            jSONObject.put(C0181.m856(f832short, 856, 6, 2036), strOptString);
-                            jSONObject.put(C0166.m801(f832short, 862, 8, 3246), strOptString2);
-                            jSONObject.put(C0179.m849(f832short, 870, 7, 2334), strOptString3);
-                            jSONObject.put(C0180.m851(f832short, 877, 11, 2422), strOptString4);
-                            jSONArray.put(jSONObject);
-                            int i4 = i2 + 1;
-                            int i5 = 1864;
-                            while (true) {
-                                i5 ^= 1881;
-                                switch (i5) {
-                                    case 17:
-                                        i5 = 48674;
-                                        break;
-                                    case 47483:
-                                        break;
-                                }
-                            }
-                            i2 = i4;
-                            break;
-                    }
-                    JSONObject jSONObject2 = new JSONObject();
-                    jSONObject2.put(C0178.m845(f832short, 888, 4, 1157), jSONArray);
-                    return jSONObject2.toString();
-                }
+            String url = this.l8 + "/api/mw-movie/anonymous/home/hotSearch";
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            JSONArray list = new JSONObject(Yy.v(url, S("key=cb808529bae6b6be45ecfab29a4889bc&t=" + timestamp, timestamp))).getJSONArray("data");
+            for (int i = 0; i < list.length(); i++) {
+                JSONObject item = list.optJSONObject(i);
+                JSONObject vod = new JSONObject();
+                vod.put("vod_id", item.optString("vodId"));
+                vod.put("vod_name", item.optString("vodName"));
+                vod.put("vod_pic", item.optString("vodPic"));
+                vod.put("vod_remarks", item.optString("vodRemarks"));
+                jSONArray.put(vod);
             }
+            JSONObject result = new JSONObject();
+            result.put("list", jSONArray);
+            return result.toString();
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
@@ -541,147 +178,65 @@ public class Jpys extends Spider {
     }
 
     public void init(Context context, String str) {
-        String str2 = "ۦۦۡ";
-        while (true) {
-            switch (C0174.m829(str2)) {
-                case 1748765:
-                    return;
-                case 1753633:
-                    super.init(context);
-                    str2 = "۠ۨۢ";
-                    break;
-                default:
-                    this.f123QU = str;
-                    str2 = "ۡۤ۠";
-                    break;
-            }
-        }
+        super.init(context);
+        this.T4 = str;
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:6:0x00cf. Please report as an issue. */
-    public String playerContent(String str, String str2, List<String> list) throws JSONException {
-        String string;
-        String strM861 = C0182.m861(f832short, 892, 4, 2636);
-        String strM816 = C0171.m816(f832short, 896, 5, 1067);
-        String strM845 = C0178.m845(f832short, 901, 3, 1360);
+    public String playerContent(String str, String str2, List<String> list) {
+        String result;
         try {
-            String[] strArrSplit = str2.split(C0179.m849(f832short, 904, 2, 731));
-            String str3 = strArrSplit[0];
-            String str4 = strArrSplit[1];
-            String str5 = this.f124q + C0180.m851(f832short, 906, 61, 2061) + str4 + strM816 + str3;
-            String strValueOf = String.valueOf(System.currentTimeMillis());
-            JSONObject jSONObject = new JSONObject(C0106ZJ.m484FN(str5, m50xC(C0177.m841(f832short, 967, 16, 1278) + str4 + strM816 + str3 + C0179.m849(f832short, 983, 40, 408) + strValueOf, strValueOf))).getJSONObject(strM861).optJSONArray(C0175.m834(f832short, 1023, 4, 1465)).getJSONObject(0);
-            boolean zHas = jSONObject.has(strM845);
-            String strM805 = C0168.m805(f832short, 1027, 5, 1131);
-            int i = 1616;
-            while (true) {
-                i ^= 1633;
-                switch (i) {
-                    case 14:
-                    case 49:
-                        i = zHas ? 1709 : 1678;
-                    case 204:
-                        String strOptString = jSONObject.optString(strM845);
-                        JSONObject jSONObject2 = new JSONObject();
-                        jSONObject2.put(strM845, strOptString);
-                        jSONObject2.put(strM805, 0);
-                        string = jSONObject2.toString();
-                        break;
-                    case 239:
-                        String strOptString2 = jSONObject.optJSONObject(strM861).optString(C0181.m856(f832short, 1032, 7, 712));
-                        JSONObject jSONObject3 = new JSONObject();
-                        jSONObject3.put(strM845, strOptString2);
-                        jSONObject3.put(strM805, 0);
-                        string = jSONObject3.toString();
-                        break;
-                }
+            Init2.lj();
+            String[] parts = str2.split("\\|");
+            String nid = parts[0];
+            String id = parts[1];
+            String url = this.l8 + "/api/mw-movie/anonymous/v2/video/episode/url?clientType=3&id=" + id + "&nid=" + nid;
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            JSONObject episodeData = new JSONObject(Yy.v(url, S("clientType=3&id=" + id + "&nid=" + nid + "&key=cb808529bae6b6be45ecfab29a4889bc&t=" + timestamp, timestamp))).getJSONObject("data").optJSONArray("list").getJSONObject(0);
+            if (episodeData.has("url")) {
+                String videoUrl = episodeData.optString("url");
+                JSONObject playResult = new JSONObject();
+                playResult.put("url", videoUrl);
+                playResult.put("parse", 0);
+                result = playResult.toString();
+            } else {
+                String videoUrl = episodeData.optJSONObject("data").optString("playUrl");
+                JSONObject playResult = new JSONObject();
+                playResult.put("url", videoUrl);
+                playResult.put("parse", 0);
+                result = playResult.toString();
             }
-            return string;
+            return result;
         } catch (Exception e) {
             SpiderDebug.log(e);
             return null;
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:14:0x00ca. Please report as an issue. */
-    /* JADX WARN: Failed to find 'out' block for switch in B:29:0x0185. Please report as an issue. */
-    public String searchContent(String str, boolean z) throws JSONException {
-        String strM856 = C0181.m856(f832short, 1039, 4, 552);
+    public String searchContent(String str, boolean z) {
         try {
             JSONArray jSONArray = new JSONArray();
-            boolean zIsEmpty = this.f124q.isEmpty();
-            int i = 1616;
-            while (true) {
-                i ^= 1633;
-                switch (i) {
-                    case 14:
-                    case 49:
-                        i = zIsEmpty ? 1709 : 1678;
-                    case 204:
-                        m49q();
-                        break;
-                    case 239:
-                        break;
-                }
+            if (this.l8.isEmpty()) {
+                l8();
             }
-            String str2 = this.f124q + C0174.m828(f832short, 1043, 51, 1422) + URLEncoder.encode(str) + C0175.m834(f832short, 1094, 21, 1215);
-            String strValueOf = String.valueOf(System.currentTimeMillis());
-            JSONArray jSONArray2 = new JSONObject(C0106ZJ.m484FN(str2, m50xC(C0181.m856(f832short, 1115, 8, 531) + str + C0165.m798(f832short, 1123, 61, 2138) + strValueOf, strValueOf))).optJSONObject(C0168.m805(f832short, 1184, 4, 2801)).optJSONObject(C0165.m798(f832short, 1188, 6, 3194)).getJSONArray(strM856);
-            int i2 = 0;
-            while (true) {
-                int length = jSONArray2.length();
-                int i3 = 1740;
-                while (true) {
-                    i3 ^= 1757;
-                    switch (i3) {
-                        case 17:
-                            i3 = i2 < length ? 1833 : 1802;
-                        case 54:
-                        case 471:
-                            break;
-                        case 500:
-                            JSONObject jSONObjectOptJSONObject = jSONArray2.optJSONObject(i2);
-                            JSONObject jSONObject = new JSONObject();
-                            jSONObject.put(C0177.m841(f832short, 1194, 6, 1786), jSONObjectOptJSONObject.optString(C0168.m805(f832short, 1200, 5, 2537)));
-                            jSONObject.put(C0166.m801(f832short, 1205, 8, 1319), jSONObjectOptJSONObject.optString(C0181.m856(f832short, 1213, 7, 1091)));
-                            jSONObject.put(C0170.m814(f832short, 1220, 7, 3228), jSONObjectOptJSONObject.optString(C0171.m816(f832short, 1227, 6, 3186)));
-                            String strOptString = jSONObjectOptJSONObject.optString(C0180.m851(f832short, 1233, 10, 2121));
-                            boolean zEquals = strOptString.equals(C0180.m851(f832short, 1243, 4, 2816));
-                            int i4 = 1864;
-                            while (true) {
-                                i4 ^= 1881;
-                                switch (i4) {
-                                    case 17:
-                                        i4 = zEquals ? 48736 : 48705;
-                                    case 47384:
-                                        break;
-                                    case 47417:
-                                        strOptString = "";
-                                        break;
-                                    case 47483:
-                                }
-                            }
-                            jSONObject.put(C0183.m866(f832short, 1247, 11, 1383), strOptString);
-                            jSONArray.put(jSONObject);
-                            int i5 = i2 + 1;
-                            int i6 = 48767;
-                            while (true) {
-                                i6 ^= 48784;
-                                switch (i6) {
-                                    case 14:
-                                        break;
-                                    case 239:
-                                        i6 = 48798;
-                                }
-                            }
-                            i2 = i5;
-                            break;
-                    }
-                    JSONObject jSONObject2 = new JSONObject();
-                    jSONObject2.put(strM856, jSONArray);
-                    return jSONObject2.toString();
+            String url = this.l8 + "/api/mw-movie/anonymous/video/searchByWord?keyword=" + URLEncoder.encode(str) + "&pageNum=1&pageSize=8";
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            JSONArray list = new JSONObject(Yy.v(url, S("keyword=" + str + "&pageNum=1&pageSize=8&key=cb808529bae6b6be45ecfab29a4889bc&t=" + timestamp, timestamp))).optJSONObject("data").optJSONObject("result").getJSONArray("list");
+            for (int i = 0; i < list.length(); i++) {
+                JSONObject item = list.optJSONObject(i);
+                JSONObject vod = new JSONObject();
+                vod.put("vod_id", item.optString("vodId"));
+                vod.put("vod_name", item.optString("vodName"));
+                vod.put("vod_pic", item.optString("vodPic"));
+                String remarks = item.optString("vodRemarks");
+                if (remarks.equals("null")) {
+                    remarks = "";
                 }
+                vod.put("vod_remarks", remarks);
+                jSONArray.put(vod);
             }
+            JSONObject result = new JSONObject();
+            result.put("list", jSONArray);
+            return result.toString();
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";

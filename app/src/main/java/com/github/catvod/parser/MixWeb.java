@@ -2,29 +2,26 @@ package com.github.catvod.parser;
 
 import android.util.Base64;
 import com.github.catvod.crawler.SpiderDebug;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-/* loaded from: C:\Users\pengj\Downloads\jadx-gui-1.5.3-win\classes.dex */
+/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
 public class MixWeb {
-
-    /* renamed from: q */
-    public static HashMap<String, ArrayList<String>> f5q = new HashMap<>();
-
-    /* renamed from: xC */
-    static HashMap<String, ArrayList<String>> f6xC = null;
+    public static HashMap<String, ArrayList<String>> l8 = new HashMap<>();
+    static HashMap<String, ArrayList<String>> S = null;
 
     public static Object[] loadHtml(String str, String str2) {
         try {
             String str3 = new String(Base64.decode(str2, 10), "UTF-8");
             StringBuilder sb = new StringBuilder();
-            if (f5q.containsKey(str)) {
-                ArrayList<String> arrayList = f5q.get(str);
+            if (l8.containsKey(str)) {
+                ArrayList<String> arrayList = l8.get(str);
                 for (int i = 0; i < arrayList.size(); i++) {
                     sb.append("\"");
                     sb.append(arrayList.get(i));
@@ -43,8 +40,8 @@ public class MixWeb {
 
     public static JSONObject parse(LinkedHashMap<String, HashMap<String, String>> linkedHashMap, String str, String str2, String str3) {
         try {
-            if (f6xC == null) {
-                f6xC = new HashMap<>();
+            if (S == null) {
+                S = new HashMap<>();
                 for (String str4 : linkedHashMap.keySet()) {
                     HashMap<String, String> map = linkedHashMap.get(str4);
                     if (map.get("type").equals("0")) {
@@ -52,10 +49,10 @@ public class MixWeb {
                             JSONArray jSONArray = new JSONObject(map.get("ext")).getJSONArray("flag");
                             for (int i = 0; i < jSONArray.length(); i++) {
                                 String strOptString = jSONArray.optString(i);
-                                ArrayList<String> arrayList = f6xC.get(strOptString);
+                                ArrayList<String> arrayList = S.get(strOptString);
                                 if (arrayList == null) {
                                     arrayList = new ArrayList<>();
-                                    f6xC.put(strOptString, arrayList);
+                                    S.put(strOptString, arrayList);
                                 }
                                 arrayList.add(str4);
                             }
@@ -65,7 +62,7 @@ public class MixWeb {
                 }
             }
             ArrayList<String> arrayList2 = new ArrayList<>();
-            ArrayList<String> arrayList3 = f6xC.get(str2);
+            ArrayList<String> arrayList3 = S.get(str2);
             if (arrayList3 == null || arrayList3.isEmpty()) {
                 Iterator<String> it = linkedHashMap.keySet().iterator();
                 while (it.hasNext()) {
@@ -83,7 +80,7 @@ public class MixWeb {
                 }
             }
             if (!arrayList2.isEmpty()) {
-                f5q.put(str2, arrayList2);
+                l8.put(str2, arrayList2);
             }
             if (!arrayList2.isEmpty()) {
                 JSONObject jSONObject = new JSONObject();

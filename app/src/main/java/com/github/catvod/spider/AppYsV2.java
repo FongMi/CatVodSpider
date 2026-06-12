@@ -2,16 +2,11 @@ package com.github.catvod.spider;
 
 import android.content.Context;
 import android.text.TextUtils;
-
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Util;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.github.catvod.spider.merge.C0284;
+import com.github.catvod.spider.merge.C0295;
+import com.github.catvod.spider.merge.SOY;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,337 +15,58 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-/**
- * M浏览器中的App影视
- * Author: 群友 不负此生
- */
+/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
 public class AppYsV2 extends Spider {
 
-    @Override
-    public void init(Context context, String extend) throws Exception {
-        super.init(context, extend);
-        try {
-            extInfos = extend.split("###");
-        } catch (Exception ignored) {
-        }
+    /* JADX INFO: renamed from: Ϳ, reason: contains not printable characters */
+    private static final Pattern f15 = Pattern.compile("api\\.php/.*?/vod");
+
+    /* JADX INFO: renamed from: Ԩ, reason: contains not printable characters */
+    private static final Pattern f16 = Pattern.compile("api\\.php/.+?\\.vod");
+
+    /* JADX INFO: renamed from: ԩ, reason: contains not printable characters */
+    private static final Pattern f17 = Pattern.compile("/.+\\?.+=");
+
+    /* JADX INFO: renamed from: Ԫ, reason: contains not printable characters */
+    private static final Pattern f18 = Pattern.compile(".*(url|v|vid|php\\?id)=");
+
+    /* JADX INFO: renamed from: ԫ, reason: contains not printable characters */
+    private static final Pattern f19 = Pattern.compile("https?://[^/]*");
+
+    /* JADX INFO: renamed from: Ԭ, reason: contains not printable characters */
+    private static final Pattern[] f20 = {Pattern.compile("player=new"), Pattern.compile("<div id=\"video\""), Pattern.compile("<div id=\"[^\"]*?player\""), Pattern.compile("//视频链接"), Pattern.compile("HlsJsPlayer\\("), Pattern.compile("<iframe[\\s\\S]*?src=\"[^\"]+?\""), Pattern.compile("<video[\\s\\S]*?src=\"[^\"]+?\"")};
+
+    /* JADX INFO: renamed from: ԭ, reason: contains not printable characters */
+    private final HashMap<String, ArrayList<String>> f21 = new HashMap<>();
+
+    /* JADX INFO: renamed from: Ԯ, reason: contains not printable characters */
+    private String[] f22 = null;
+
+    /* JADX INFO: renamed from: Ϳ, reason: contains not printable characters */
+    private String m17(String str) {
+        return (str.contains("api.php/app") || str.contains("xgapp") || str.contains("freekan")) ? "Dart/2.14 (dart:io)" : (str.contains("zsb") || str.contains("fkxs") || str.contains("xays") || str.contains("xcys") || str.contains("szys") || str.contains("dxys") || str.contains("ytys") || str.contains("qnys")) ? "Dart/2.15 (dart:io)" : str.contains(".vod") ? "okhttp/4.1.0" : "Dalvik/2.1.0";
     }
 
-    @Override
-    public String homeContent(boolean filter) throws Exception {
-        String url = getCateUrl(getApiUrl());
-        JSONArray jsonArray = null;
-        if (!url.isEmpty()) {
-            SpiderDebug.log(url);
-            String json = OkHttp.string(url, getHeaders(url));
-            JSONObject obj = new JSONObject(json);
-            if (obj.has("list") && obj.get("list") instanceof JSONArray) {
-                jsonArray = obj.getJSONArray("list");
-            } else if (obj.has("data") && obj.get("data") instanceof JSONObject && obj.getJSONObject("data").has("list") && obj.getJSONObject("data").get("list") instanceof JSONArray) {
-                jsonArray = obj.getJSONObject("data").getJSONArray("list");
-            } else if (obj.has("data") && obj.get("data") instanceof JSONArray) {
-                jsonArray = obj.getJSONArray("data");
-            }
-        } else { // 通过filter列表读分类
-            String filterStr = getFilterTypes(url, null);
-            String[] classes = filterStr.split("\n")[0].split("\\+");
-            jsonArray = new JSONArray();
-            for (int i = 1; i < classes.length; i++) {
-                String[] kv = classes[i].trim().split("=");
-                if (kv.length < 2) continue;
-                JSONObject newCls = new JSONObject();
-                newCls.put("type_name", kv[0].trim());
-                newCls.put("type_id", kv[1].trim());
-                jsonArray.put(newCls);
-            }
-        }
-        JSONObject result = new JSONObject();
-        JSONArray classes = new JSONArray();
-        if (jsonArray != null) {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jObj = jsonArray.getJSONObject(i);
-                String typeName = jObj.getString("type_name");
-                String typeId = jObj.getString("type_id");
-                JSONObject newCls = new JSONObject();
-                newCls.put("type_id", typeId);
-                newCls.put("type_name", typeName);
-                JSONObject typeExtend = jObj.optJSONObject("type_extend");
-                if (filter) {
-                    String filterStr = getFilterTypes(url, typeExtend);
-                    String[] filters = filterStr.split("\n");
-                    JSONArray filterArr = new JSONArray();
-                    for (int k = url.isEmpty() ? 1 : 0; k < filters.length; k++) {
-                        String l = filters[k].trim();
-                        if (l.isEmpty()) continue;
-                        String[] oneLine = l.split("\\+");
-                        String type = oneLine[0].trim();
-                        String typeN = type;
-                        if (type.contains("筛选")) {
-                            type = type.replace("筛选", "");
-                            switch (type) {
-                                case "class":
-                                    typeN = "类型";
-                                    break;
-                                case "area":
-                                    typeN = "地区";
-                                    break;
-                                case "lang":
-                                    typeN = "语言";
-                                    break;
-                                case "year":
-                                    typeN = "年份";
-                                    break;
-                            }
-                        }
-                        JSONObject jOne = new JSONObject();
-                        jOne.put("key", type);
-                        jOne.put("name", typeN);
-                        JSONArray valueArr = new JSONArray();
-                        for (int j = 1; j < oneLine.length; j++) {
-                            JSONObject kvo = new JSONObject();
-                            String kv = oneLine[j].trim();
-                            int sp = kv.indexOf("=");
-                            if (sp == -1) {
-                                kvo.put("n", kv);
-                                kvo.put("v", kv);
-                            } else {
-                                String n = kv.substring(0, sp);
-                                kvo.put("n", n.trim());
-                                kvo.put("v", kv.substring(sp + 1).trim());
-                            }
-                            valueArr.put(kvo);
-                        }
-                        jOne.put("value", valueArr);
-                        filterArr.put(jOne);
-                    }
-                    if (!result.has("filters")) {
-                        result.put("filters", new JSONObject());
-                    }
-                    result.getJSONObject("filters").put(typeId, filterArr);
-                }
-                classes.put(newCls);
-            }
-        }
-        result.put("class", classes);
-        return result.toString();
-    }
-
-    @Override
-    public String homeVideoContent() throws Exception {
-        String apiUrl = getApiUrl();
-        String url = getRecommendUrl(apiUrl);
-        boolean isTV = false;
-        if (url.isEmpty()) {
-            url = getCateFilterUrlPrefix(apiUrl) + "movie&page=1&area=&type=&start=";
-            isTV = true;
-        }
-        SpiderDebug.log(url);
-        String json = OkHttp.string(url, getHeaders(url));
-        JSONObject obj = new JSONObject(json);
-        JSONArray videos = new JSONArray();
-        if (isTV) {
-            JSONArray jsonArray = obj.getJSONArray("data");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject vObj = jsonArray.getJSONObject(i);
-                JSONObject v = new JSONObject();
-                v.put("vod_id", vObj.getString("nextlink"));
-                v.put("vod_name", vObj.getString("title"));
-                v.put("vod_pic", vObj.getString("pic"));
-                v.put("vod_remarks", vObj.getString("state"));
-                videos.put(v);
-            }
-        } else {
-            ArrayList<JSONArray> arrays = new ArrayList<>();
-            findJsonArray(obj, "vlist", arrays);
-            if (arrays.isEmpty()) {
-                findJsonArray(obj, "vod_list", arrays);
-            }
-            List<String> ids = new ArrayList<>();
-            for (JSONArray jsonArray : arrays) {
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject vObj = jsonArray.getJSONObject(i);
-                    String vid = vObj.getString("vod_id");
-                    if (ids.contains(vid)) continue;
-                    ids.add(vid);
-                    JSONObject v = new JSONObject();
-                    v.put("vod_id", vid);
-                    v.put("vod_name", vObj.getString("vod_name"));
-                    v.put("vod_pic", vObj.getString("vod_pic"));
-                    v.put("vod_remarks", vObj.getString("vod_remarks"));
-                    videos.put(v);
-                }
-            }
-        }
-        JSONObject result = new JSONObject();
-        result.put("list", videos);
-        return result.toString();
-    }
-
-    @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        String apiUrl = getApiUrl();
-        String url = getCateFilterUrlPrefix(apiUrl) + tid + getCateFilterUrlSuffix(apiUrl);
-        url = url.replace("#PN#", pg);
-        url = url.replace("筛选class", (extend != null && extend.containsKey("class")) ? extend.get("class") : "");
-        url = url.replace("筛选area", (extend != null && extend.containsKey("area")) ? extend.get("area") : "");
-        url = url.replace("筛选lang", (extend != null && extend.containsKey("lang")) ? extend.get("lang") : "");
-        url = url.replace("筛选year", (extend != null && extend.containsKey("year")) ? extend.get("year") : "");
-        url = url.replace("排序", (extend != null && extend.containsKey("排序")) ? extend.get("排序") : "");
-        SpiderDebug.log(url);
-        String json = OkHttp.string(url, getHeaders(url));
-        JSONObject obj = new JSONObject(json);
-        int totalPg = Integer.MAX_VALUE;
-        try {
-            if (obj.has("totalpage") && obj.get("totalpage") instanceof Integer) {
-                totalPg = obj.getInt("totalpage");
-            } else if (obj.has("pagecount") && obj.get("pagecount") instanceof Integer) {
-                totalPg = obj.getInt("pagecount");
-            } else if (obj.has("data") && obj.get("data") instanceof JSONObject && (obj.getJSONObject("data").has("total") && obj.getJSONObject("data").get("total") instanceof Integer && obj.getJSONObject("data").has("limit") && obj.getJSONObject("data").get("limit") instanceof Integer)) {
-                int limit = obj.getJSONObject("data").getInt("limit");
-                int total = obj.getJSONObject("data").getInt("total");
-                totalPg = total % limit == 0 ? (total / limit) : (total / limit + 1);
-            }
-        } catch (Exception e) {
-            SpiderDebug.log(e);
-        }
-
-        JSONArray jsonArray = null;
-        JSONArray videos = new JSONArray();
-        if (obj.has("list") && obj.get("list") instanceof JSONArray) {
-            jsonArray = obj.getJSONArray("list");
-        } else if (obj.has("data") && obj.get("data") instanceof JSONObject && obj.getJSONObject("data").has("list") && obj.getJSONObject("data").get("list") instanceof JSONArray) {
-            jsonArray = obj.getJSONObject("data").getJSONArray("list");
-        } else if (obj.has("data") && obj.get("data") instanceof JSONArray) {
-            jsonArray = obj.getJSONArray("data");
-        }
-        if (jsonArray != null) {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject vObj = jsonArray.getJSONObject(i);
-                if (vObj.has("vod_id")) {
-                    JSONObject v = new JSONObject();
-                    v.put("vod_id", vObj.getString("vod_id"));
-                    v.put("vod_name", vObj.getString("vod_name"));
-                    v.put("vod_pic", vObj.getString("vod_pic"));
-                    v.put("vod_remarks", vObj.getString("vod_remarks"));
-                    videos.put(v);
-                } else {
-                    JSONObject v = new JSONObject();
-                    v.put("vod_id", vObj.getString("nextlink"));
-                    v.put("vod_name", vObj.getString("title"));
-                    v.put("vod_pic", vObj.getString("pic"));
-                    v.put("vod_remarks", vObj.getString("state"));
-                    videos.put(v);
-                }
-            }
-        }
-        JSONObject result = new JSONObject();
-        result.put("page", pg);
-        result.put("pagecount", totalPg);
-        result.put("limit", 90);
-        result.put("total", Integer.MAX_VALUE);
-        result.put("list", videos);
-        return result.toString();
-    }
-
-    @Override
-    public String detailContent(List<String> ids) throws Exception {
-        String apiUrl = getApiUrl();
-        String url = getPlayUrlPrefix(apiUrl) + ids.get(0);
-        SpiderDebug.log(url);
-        String json = OkHttp.string(url, getHeaders(url));
-        JSONObject obj = new JSONObject(json);
-        JSONObject result = new JSONObject();
-        JSONObject vod = new JSONObject();
-        genPlayList(apiUrl, obj, json, vod, ids.get(0));
-        JSONArray list = new JSONArray();
-        list.put(vod);
-        result.put("list", list);
-        return result.toString();
-    }
-
-    @Override
-    public String searchContent(String key, boolean quick) throws Exception {
-        String apiUrl = getApiUrl();
-        String url = getSearchUrl(apiUrl, URLEncoder.encode(key));
-        String json = OkHttp.string(url, getHeaders(url));
-        JSONObject obj = new JSONObject(json);
-        JSONArray jsonArray = null;
-        JSONArray videos = new JSONArray();
-        if (obj.has("list") && obj.get("list") instanceof JSONArray) {
-            jsonArray = obj.getJSONArray("list");
-        } else if (obj.has("data") && obj.get("data") instanceof JSONObject && obj.getJSONObject("data").has("list") && obj.getJSONObject("data").get("list") instanceof JSONArray) {
-            jsonArray = obj.getJSONObject("data").getJSONArray("list");
-        } else if (obj.has("data") && obj.get("data") instanceof JSONArray) {
-            jsonArray = obj.getJSONArray("data");
-        }
-        if (jsonArray != null) {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject vObj = jsonArray.getJSONObject(i);
-                if (vObj.has("vod_id")) {
-                    JSONObject v = new JSONObject();
-                    v.put("vod_id", vObj.getString("vod_id"));
-                    v.put("vod_name", vObj.getString("vod_name"));
-                    v.put("vod_pic", vObj.getString("vod_pic"));
-                    v.put("vod_remarks", vObj.getString("vod_remarks"));
-                    videos.put(v);
-                } else {
-                    JSONObject v = new JSONObject();
-                    v.put("vod_id", vObj.getString("nextlink"));
-                    v.put("vod_name", vObj.getString("title"));
-                    v.put("vod_pic", vObj.getString("pic"));
-                    v.put("vod_remarks", vObj.getString("state"));
-                    videos.put(v);
-                }
-            }
-        }
-        JSONObject result = new JSONObject();
-        result.put("list", videos);
-        return result.toString();
-    }
-
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
-        if (flag.contains("fanqie") && Util.isVideoFormat(id)) {
-            JSONObject result = new JSONObject();
-            result.put("parse", 0);
-            result.put("playUrl", "");
-            result.put("url", id);
-            return result.toString();
-        }
-        ArrayList<String> parseUrls = parseUrlMap.get(flag);
-        if (parseUrls == null) parseUrls = new ArrayList<>();
-        if (!parseUrls.isEmpty()) {
-            JSONObject result = getFinalVideo(flag, parseUrls, id);
-            if (result != null) return result.toString();
-        }
-        if (Util.isVideoFormat(id)) {
-            JSONObject result = new JSONObject();
-            result.put("parse", 0);
-            result.put("playUrl", "");
-            result.put("url", id);
-            return result.toString();
-        } else {
-            JSONObject result = new JSONObject();
-            result.put("parse", 1);
-            result.put("jx", "1");
-            result.put("url", id);
-            return result.toString();
-        }
-    }
-
-    private void findJsonArray(JSONObject obj, String match, ArrayList<JSONArray> result) {
-        Iterator<String> keys = obj.keys();
-        while (keys.hasNext()) {
-            String k = keys.next();
+    /* JADX INFO: renamed from: ԩ, reason: contains not printable characters */
+    private void m18(JSONObject jSONObject, String str, ArrayList<JSONArray> arrayList) {
+        Iterator<String> itKeys = jSONObject.keys();
+        while (itKeys.hasNext()) {
+            String next = itKeys.next();
             try {
-                Object o = obj.get(k);
-                if (k.equals(match) && o instanceof JSONArray) result.add((JSONArray) o);
-                if (o instanceof JSONObject) {
-                    findJsonArray((JSONObject) o, match, result);
-                } else if (o instanceof JSONArray) {
-                    JSONArray array = (JSONArray) o;
-                    for (int i = 0; i < array.length(); i++) {
-                        findJsonArray(array.getJSONObject(i), match, result);
+                Object obj = jSONObject.get(next);
+                if (next.equals(str) && (obj instanceof JSONArray)) {
+                    arrayList.add((JSONArray) obj);
+                }
+                if (obj instanceof JSONObject) {
+                    m18((JSONObject) obj, str, arrayList);
+                } else if (obj instanceof JSONArray) {
+                    JSONArray jSONArray = (JSONArray) obj;
+                    for (int i = 0; i < jSONArray.length(); i++) {
+                        m18(jSONArray.getJSONObject(i), str, arrayList);
                     }
                 }
             } catch (JSONException e) {
@@ -359,462 +75,1015 @@ public class AppYsV2 extends Spider {
         }
     }
 
-    private String jsonArr2Str(JSONArray array) {
-        try {
-            ArrayList<String> strings = new ArrayList<>();
-            for (int i = 0; i < array.length(); i++) {
-                strings.add(array.getString(i));
-            }
-            return TextUtils.join(",", strings);
-        } catch (JSONException e) {
-            return "";
-        }
-    }
-
-    private HashMap<String, String> getHeaders(String URL) {
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", UA(URL));
-        return headers;
-    }
-
-    // M 扩展方法
-    // ######重组搜索
-    private String getSearchUrl(String URL, String KEY) {
-        if (URL.contains(".vod")) {
-            if (URL.contains("iopenyun.com")) {
-                return URL + "/list?wd=" + KEY + "&page=";
-            } else {
-                return URL + "?wd=" + KEY + "&page=";
-            }
-        } else if (URL.contains("api.php/app") || URL.contains("xgapp")) {
-            return URL + "search?text=" + KEY + "&pg=";
-        } else if (urlPattern1.matcher(URL).find()) {
-            if (URL.contains("esellauto") || URL.contains("1.14.63.101") || URL.contains("zjys") || URL.contains("dcd") || URL.contains("lxue") || URL.contains("weetai.cn") || URL.contains("haokanju1") || URL.contains("fit:8") || URL.contains("zjj.life") || URL.contains("love9989") || URL.contains("8d8q") || URL.contains("lk.pxun") || URL.contains("hgyx") || URL.contains("521x5") || URL.contains("lxyyy") || URL.contains("0818tv") || URL.contains("diyoui") || URL.contains("diliktv") || URL.contains("ppzhu") || URL.contains("aitesucai") || URL.contains("zz.ci") || URL.contains("chxjon") || URL.contains("watchmi") || URL.contains("vipbp") || URL.contains("bhtv") || URL.contains("xfykl")) {
-                return URL + "?ac=list&" + "wd=" + KEY + "&page=";
-            } else {
-                return URL + "?ac=list&" + "zm=" + KEY + "&page=";
-            }
-        }
-        return "";
-    }
-
-    // ######UA
-    private static final Pattern urlPattern1 = Pattern.compile("api\\.php/.*?/vod");
-    private static final Pattern urlPattern2 = Pattern.compile("api\\.php/.+?\\.vod");
-    private static final Pattern parsePattern = Pattern.compile("/.+\\?.+=");
-    private static final Pattern parsePattern1 = Pattern.compile(".*(url|v|vid|php\\?id)=");
-    private static final Pattern parsePattern2 = Pattern.compile("https?://[^/]*");
-
-    protected static final Pattern[] htmlVideoKeyMatch = new Pattern[]{Pattern.compile("player=new"), Pattern.compile("<div id=\"video\""), Pattern.compile("<div id=\"[^\"]*?player\""), Pattern.compile("//视频链接"), Pattern.compile("HlsJsPlayer\\("), Pattern.compile("<iframe[\\s\\S]*?src=\"[^\"]+?\""), Pattern.compile("<video[\\s\\S]*?src=\"[^\"]+?\"")};
-
-    private String UA(String URL) {
-        if (URL.contains("vod.9e03.com")) {
-            return "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Mobile Safari/537.36";
-        } else if (URL.contains("api.php/app") || URL.contains("xgapp") || URL.contains("freekan")) {
-            return "Dart/2.14 (dart:io)";
-        } else if (URL.contains("zsb") || URL.contains("fkxs") || URL.contains("xays") || URL.contains("xcys") || URL.contains("szys") || URL.contains("dxys") || URL.contains("ytys") || URL.contains("qnys")) {
-            return "Dart/2.15 (dart:io)";
-        } else if (URL.contains(".vod")) {
-            return "okhttp/4.1.0";
-        } else {
-            return "Dalvik/2.1.0";
-        }
-    }
-
-    // ######获取分类地址
-    String getCateUrl(String URL) {
-        if (URL.contains("api.php/app") || URL.contains("xgapp")) {
-            return URL + "nav?token=";
-        } else if (URL.contains(".vod")) {
-            if (URL.contains("iopenyun.com")) {
-                return URL + "/list?type";
-            } else {
-                return URL + "/types";
-            }
-        } else {
-            return "";
-        }
-    }
-
-    // ######分类筛选前缀地址
-    String getCateFilterUrlPrefix(String URL) {
-        if (URL.contains("api.php/app") || URL.contains("xgapp")) {
-            if (URL.contains("dijiaxia")) {
-                URL = "http://www.dijiaxia.com/api.php/app/";
-                return URL + "video?tid=";
-            } else {
-                return URL + "video?tid=";
-            }
-        } else if (URL.contains(".vod")) {
-            if (URL.contains("tv.bulei.cc")) {
-                return "https://tv.bulei.cc/api2.php/v1.vod?type=";
-            }
-            if (URL.contains("iopenyun")) {
-                return URL + "/list?type=";
-            } else {
-                return URL + "?type=";
-            }
-        } else {
-            return URL + "?ac=list&class=";
-        }
-    }
-
-    // ######分类筛选后缀地址
-    String getCateFilterUrlSuffix(String URL) {
-        if (URL.contains("api.php/app") || URL.contains("xgapp")) {
-            return "&class=筛选class&area=筛选area&lang=筛选lang&year=筛选year&limit=18&pg=#PN#";
-        } else if (URL.contains(".vod")) {
-            return "&class=筛选class&area=筛选area&lang=筛选lang&year=筛选year&by=排序&limit=18&page=#PN#";
-        } else {
-            return "&page=#PN#&area=筛选area&type=筛选class&start=筛选year";
-        }
-    }
-
-    // ######筛选内容
-    String getFilterTypes(String URL, JSONObject typeExtend) {
-        String str = "";
-        if (typeExtend != null) {
-            Iterator<String> typeExtendKeys = typeExtend.keys();
-            while (typeExtendKeys.hasNext()) {
-                String key = typeExtendKeys.next();
-                if (key.equals("class") || key.equals("area") || key.equals("lang") || key.equals("year")) {
-                    try {
-                        str = str + "筛选" + key + "+全部=+" + typeExtend.getString(key).replace(",", "+") + "\n";
-                    } catch (JSONException e) {
-                    }
+    /* JADX INFO: renamed from: Ԫ, reason: contains not printable characters */
+    private void m19(String str, JSONObject jSONObject, String str2, JSONObject jSONObject2, String str3) throws JSONException {
+        ArrayList arrayList;
+        ArrayList arrayList2;
+        ArrayList<String> arrayList3;
+        String str4;
+        String str5;
+        ArrayList arrayList4 = new ArrayList();
+        ArrayList arrayList5 = new ArrayList();
+        boolean zContains = str.contains("api.php/app/");
+        String strD = "name";
+        String strD2 = "parse_api";
+        String strD3 = "code";
+        String strD4 = "vod_url_with_player";
+        String strD5 = "vod_class";
+        String strD6 = "data";
+        String strD7 = "url";
+        String strD8 = "type_name";
+        String strD9 = "vod_content";
+        String strD10 = "vod_director";
+        String str6 = strD2;
+        String strD11 = "vod_actor";
+        ArrayList arrayList6 = arrayList4;
+        String strD12 = "vod_remarks";
+        String str7 = strD7;
+        String strD13 = "vod_area";
+        ArrayList arrayList7 = arrayList5;
+        String strD14 = "vod_year";
+        String str8 = strD;
+        String strD15 = "vod_pic";
+        String str9 = strD3;
+        String strD16 = "vod_name";
+        String strD17 = "vod_id";
+        if (zContains) {
+            JSONObject jSONObject3 = jSONObject.getJSONObject(strD6);
+            jSONObject2.put(strD17, jSONObject3.optString(strD17, str3));
+            jSONObject2.put(strD16, jSONObject3.getString(strD16));
+            jSONObject2.put(strD15, jSONObject3.getString(strD15));
+            jSONObject2.put(strD8, jSONObject3.optString(strD5));
+            jSONObject2.put(strD14, jSONObject3.optString(strD14));
+            jSONObject2.put(strD13, jSONObject3.optString(strD13));
+            jSONObject2.put(strD12, jSONObject3.optString(strD12));
+            jSONObject2.put(strD11, jSONObject3.optString(strD11));
+            jSONObject2.put(strD10, jSONObject3.optString(strD10));
+            jSONObject2.put(strD9, jSONObject3.optString(strD9));
+            JSONArray jSONArray = jSONObject3.getJSONArray(strD4);
+            int i = 0;
+            while (i < jSONArray.length()) {
+                JSONObject jSONObject4 = jSONArray.getJSONObject(i);
+                String str10 = str9;
+                String strTrim = jSONObject4.optString(str10).trim();
+                if (strTrim.isEmpty()) {
+                    str5 = str8;
+                    strTrim = jSONObject4.getString(str5).trim();
+                } else {
+                    str5 = str8;
                 }
-            }
-        }
-        if (URL.contains(".vod")) {
-            str += "\n" + "排序+全部=+最新=time+最热=hits+评分=score";
-        } else if (URL.contains("api.php/app") || URL.contains("xgapp")) {
-        } else {
-            str = "分类+全部=+电影=movie+连续剧=tvplay+综艺=tvshow+动漫=comic+4K=movie_4k+体育=tiyu\n筛选class+全部=+喜剧+爱情+恐怖+动作+科幻+剧情+战争+警匪+犯罪+动画+奇幻+武侠+冒险+枪战+恐怖+悬疑+惊悚+经典+青春+文艺+微电影+古装+历史+运动+农村+惊悚+惊悚+伦理+情色+福利+三级+儿童+网络电影\n筛选area+全部=+大陆+香港+台湾+美国+英国+法国+日本+韩国+德国+泰国+印度+西班牙+加拿大+其他\n筛选year+全部=+2023+2022+2021+2020+2019+2018+2017+2016+2015+2014+2013+2012+2011+2010+2009+2008+2007+2006+2005+2004+2003+2002+2001+2000";
-        }
-        return str;
-    }
-
-    // ######推荐地址
-    String getRecommendUrl(String URL) {
-        if (URL.contains("api.php/app") || URL.contains("xgapp")) {
-            return URL + "index_video?token=";
-        } else if (URL.contains(".vod")) {
-            return URL + "/vodPhbAll";
-        } else {
-            return "";
-        }
-    }
-
-    // ######播放器前缀地址
-    String getPlayUrlPrefix(String URL) {
-        if (URL.contains("api.php/app") || URL.contains("xgapp")) {
-            if (URL.contains("dijiaxia")) {
-                URL = "https://www.dijiaxia.com/api.php/app/";
-                return URL + "video_detail?id=";
-            } else if (URL.contains("1010dy")) {
-                URL = "http://www.1010dy.cc/api.php/app/";
-                return URL + "video_detail?id=";
-            } else {
-                return URL + "video_detail?id=";
-            }
-        } else if (URL.contains(".vod")) {
-            if (URL.contains("iopenyun")) {
-                return URL + "/detailID?vod_id=";
-            } else {
-                return URL + "/detail?vod_id=";
-            }
-        } else {
-            return "";
-        }
-    }
-
-    // ######选集
-    protected final HashMap<String, ArrayList<String>> parseUrlMap = new HashMap<>();
-
-    private void genPlayList(String URL, JSONObject object, String json, JSONObject vod, String vid) throws JSONException {
-        ArrayList<String> playUrls = new ArrayList<>();
-        ArrayList<String> playFlags = new ArrayList<>();
-        if (URL.contains("api.php/app/")) {
-            JSONObject data = object.getJSONObject("data");
-            vod.put("vod_id", data.optString("vod_id", vid));
-            vod.put("vod_name", data.getString("vod_name"));
-            vod.put("vod_pic", data.getString("vod_pic"));
-            vod.put("type_name", data.optString("vod_class"));
-            vod.put("vod_year", data.optString("vod_year"));
-            vod.put("vod_area", data.optString("vod_area"));
-            vod.put("vod_remarks", data.optString("vod_remarks"));
-            vod.put("vod_actor", data.optString("vod_actor"));
-            vod.put("vod_director", data.optString("vod_director"));
-            vod.put("vod_content", data.optString("vod_content"));
-            JSONArray vodUrlWithPlayer = data.getJSONArray("vod_url_with_player");
-            for (int i = 0; i < vodUrlWithPlayer.length(); i++) {
-                JSONObject from = vodUrlWithPlayer.getJSONObject(i);
-                String flag = from.optString("code").trim();
-                if (flag.isEmpty()) flag = from.getString("name").trim();
-                playFlags.add(flag);
-                playUrls.add(from.getString("url"));
-                String purl = from.optString("parse_api").trim();
-                ArrayList<String> parseUrls = parseUrlMap.get(flag);
-                if (parseUrls == null) {
-                    parseUrls = new ArrayList<>();
-                    parseUrlMap.put(flag, parseUrls);
+                ArrayList arrayList8 = arrayList7;
+                arrayList8.add(strTrim);
+                String str11 = str7;
+                ArrayList arrayList9 = arrayList6;
+                arrayList9.add(jSONObject4.getString(str11));
+                String str12 = str6;
+                String strTrim2 = jSONObject4.optString(str12).trim();
+                ArrayList<String> arrayList10 = this.f21.get(strTrim);
+                if (arrayList10 == null) {
+                    arrayList10 = new ArrayList<>();
+                    this.f21.put(strTrim, arrayList10);
                 }
-                if (!purl.isEmpty() && !parseUrls.contains(purl)) parseUrls.add(purl);
-            }
-        } else if (URL.contains("xgapp")) {
-            JSONObject data = object.getJSONObject("data").getJSONObject("vod_info");
-            vod.put("vod_id", data.optString("vod_id", vid));
-            vod.put("vod_name", data.getString("vod_name"));
-            vod.put("vod_pic", data.getString("vod_pic"));
-            vod.put("type_name", data.optString("vod_class"));
-            vod.put("vod_year", data.optString("vod_year"));
-            vod.put("vod_area", data.optString("vod_area"));
-            vod.put("vod_remarks", data.optString("vod_remarks"));
-            vod.put("vod_actor", data.optString("vod_actor"));
-            vod.put("vod_director", data.optString("vod_director"));
-            vod.put("vod_content", data.optString("vod_content"));
-            JSONArray vodUrlWithPlayer = data.getJSONArray("vod_url_with_player");
-            for (int i = 0; i < vodUrlWithPlayer.length(); i++) {
-                JSONObject from = vodUrlWithPlayer.getJSONObject(i);
-                String flag = from.optString("code").trim();
-                if (flag.isEmpty()) flag = from.getString("name").trim();
-                playFlags.add(flag);
-                playUrls.add(from.getString("url"));
-                String purl = from.optString("parse_api").trim();
-                ArrayList<String> parseUrls = parseUrlMap.get(flag);
-                if (parseUrls == null) {
-                    parseUrls = new ArrayList<>();
-                    parseUrlMap.put(flag, parseUrls);
+                if (!strTrim2.isEmpty() && !arrayList10.contains(strTrim2)) {
+                    arrayList10.add(strTrim2);
                 }
-                if (!purl.isEmpty() && !parseUrls.contains(purl)) parseUrls.add(purl);
+                i++;
+                str9 = str10;
+                str8 = str5;
+                arrayList7 = arrayList8;
+                str7 = str11;
+                str6 = str12;
+                arrayList6 = arrayList9;
             }
-        } else if (/*urlPattern2.matcher(URL).find()*/URL.contains(".vod")) {
-            JSONObject data = object.getJSONObject("data");
-            vod.put("vod_id", data.optString("vod_id", vid));
-            vod.put("vod_name", data.getString("vod_name"));
-            vod.put("vod_pic", data.getString("vod_pic"));
-            vod.put("type_name", data.optString("vod_class"));
-            vod.put("vod_year", data.optString("vod_year"));
-            vod.put("vod_area", data.optString("vod_area"));
-            vod.put("vod_remarks", data.optString("vod_remarks"));
-            vod.put("vod_actor", data.optString("vod_actor"));
-            vod.put("vod_director", data.optString("vod_director"));
-            vod.put("vod_content", data.optString("vod_content"));
-            JSONArray vodUrlWithPlayer = data.getJSONArray("vod_play_list");
-            for (int i = 0; i < vodUrlWithPlayer.length(); i++) {
-                JSONObject from = vodUrlWithPlayer.getJSONObject(i);
-                String flag = from.getJSONObject("player_info").optString("from").trim();
-                if (flag.isEmpty()) flag = from.getJSONObject("player_info").optString("show").trim();
-                playFlags.add(flag);
-                playUrls.add(from.getString("url"));
-                try {
-                    ArrayList<String> parses = new ArrayList<>();
-                    String[] parse1 = from.getJSONObject("player_info").optString("parse").split(",");
-                    String[] parse2 = from.getJSONObject("player_info").optString("parse2").split(",");
-                    parses.addAll(Arrays.asList(parse1));
-                    parses.addAll(Arrays.asList(parse2));
-                    ArrayList<String> parseUrls = parseUrlMap.get(flag);
-                    if (parseUrls == null) {
-                        parseUrls = new ArrayList<>();
-                        parseUrlMap.put(flag, parseUrls);
-                    }
-                    for (String purl : parses) {
-                        if (purl.contains("http")) {
-                            Matcher matcher = parsePattern1.matcher(purl);
-                            if (matcher.find()) {
-                                purl = matcher.group(0);
+        } else {
+            String str13 = str6;
+            String str14 = str7;
+            if (!str.contains("xgapp")) {
+                ArrayList arrayList11 = arrayList6;
+                ArrayList arrayList12 = arrayList7;
+                String str15 = str14;
+                if (str.contains(".vod")) {
+                    JSONObject jSONObject5 = jSONObject.getJSONObject(strD6);
+                    jSONObject2.put(strD17, jSONObject5.optString(strD17, str3));
+                    jSONObject2.put(strD16, jSONObject5.getString(strD16));
+                    jSONObject2.put(strD15, jSONObject5.getString(strD15));
+                    jSONObject2.put(strD8, jSONObject5.optString(strD5));
+                    jSONObject2.put(strD14, jSONObject5.optString(strD14));
+                    jSONObject2.put(strD13, jSONObject5.optString(strD13));
+                    jSONObject2.put(strD12, jSONObject5.optString(strD12));
+                    jSONObject2.put(strD11, jSONObject5.optString(strD11));
+                    jSONObject2.put(strD10, jSONObject5.optString(strD10));
+                    jSONObject2.put(strD9, jSONObject5.optString(strD9));
+                    JSONArray jSONArray2 = jSONObject5.getJSONArray("vod_play_list");
+                    int i2 = 0;
+                    while (i2 < jSONArray2.length()) {
+                        JSONObject jSONObject6 = jSONArray2.getJSONObject(i2);
+                        String strD18 = "player_info";
+                        String strTrim3 = jSONObject6.getJSONObject(strD18).optString("from").trim();
+                        if (strTrim3.isEmpty()) {
+                            strTrim3 = jSONObject6.getJSONObject(strD18).optString("show").trim();
+                        }
+                        ArrayList arrayList13 = arrayList12;
+                        arrayList13.add(strTrim3);
+                        String str16 = str15;
+                        ArrayList arrayList14 = arrayList11;
+                        arrayList14.add(jSONObject6.getString(str16));
+                        try {
+                            arrayList3 = new ArrayList();
+                            String[] strArrSplit = jSONObject6.getJSONObject(strD18).optString("parse").split(",");
+                            String[] strArrSplit2 = jSONObject6.getJSONObject(strD18).optString("parse2").split(",");
+                            arrayList3.addAll(Arrays.asList(strArrSplit));
+                            arrayList3.addAll(Arrays.asList(strArrSplit2));
+                        } catch (Exception e) {
+                            e = e;
+                        }
+                        try {
+                            ArrayList<String> arrayList15 = this.f21.get(strTrim3);
+                            if (arrayList15 == null) {
+                                arrayList15 = new ArrayList<>();
+                                this.f21.put(strTrim3, arrayList15);
                             }
-                        } else if (purl.contains("//")) {
-                            Matcher matcher = parsePattern1.matcher(purl);
-                            if (matcher.find()) {
-                                purl = "http:" + matcher.group(0);
-                            }
-                        } else {
-                            Matcher matcher = parsePattern2.matcher(URL);
-                            if (matcher.find()) {
-                                Matcher matcher1 = parsePattern1.matcher(URL);
-                                if (matcher1.find()) {
-                                    purl = matcher.group(0) + matcher1.group(0);
+                            for (String strGroup : arrayList3) {
+                                if (strGroup.contains("http")) {
+                                    Matcher matcher = f18.matcher(strGroup);
+                                    if (matcher.find()) {
+                                        strGroup = matcher.group(0);
+                                    }
+                                } else if (strGroup.contains("//")) {
+                                    Matcher matcher2 = f18.matcher(strGroup);
+                                    if (matcher2.find()) {
+                                        strGroup = "http:" + matcher2.group(0);
+                                    }
+                                } else {
+                                    Matcher matcher3 = f19.matcher(str);
+                                    if (matcher3.find()) {
+                                        Matcher matcher4 = f18.matcher(str);
+                                        if (matcher4.find()) {
+                                            strGroup = matcher3.group(0) + matcher4.group(0);
+                                        }
+                                    }
+                                }
+                                String strTrim4 = strGroup.replace("..", ".").trim();
+                                if (!strTrim4.isEmpty() && !arrayList15.contains(strTrim4)) {
+                                    arrayList15.add(strTrim4);
                                 }
                             }
+                        } catch (Exception e2) {
+                            e = e2;
+                            SpiderDebug.log(e);
                         }
-                        purl = purl.replace("..", ".").trim();
-                        if (!purl.isEmpty() && !parseUrls.contains(purl)) parseUrls.add(purl);
+                        i2++;
+                        arrayList11 = arrayList14;
+                        arrayList12 = arrayList13;
+                        str15 = str16;
                     }
-                } catch (Exception e) {
-                    SpiderDebug.log(e);
+                    arrayList2 = arrayList11;
+                    arrayList = arrayList12;
+                } else {
+                    String str17 = str15;
+                    if (f15.matcher(str).find()) {
+                        jSONObject2.put(strD17, jSONObject.optString(strD17, str3));
+                        String strD19 = "title";
+                        jSONObject2.put(strD16, jSONObject.getString(strD19));
+                        jSONObject2.put(strD15, jSONObject.getString("img_url"));
+                        jSONObject2.put(strD8, m25(jSONObject.optJSONArray("type")));
+                        jSONObject2.put(strD14, jSONObject.optString("pubtime"));
+                        jSONObject2.put(strD13, m25(jSONObject.optJSONArray("area")));
+                        jSONObject2.put(strD12, jSONObject.optString("trunk"));
+                        jSONObject2.put(strD11, m25(jSONObject.optJSONArray("actor")));
+                        jSONObject2.put(strD10, m25(jSONObject.optJSONArray("director")));
+                        jSONObject2.put(strD9, jSONObject.optString("intro"));
+                        JSONObject jSONObject7 = jSONObject.getJSONObject("videolist");
+                        Iterator<String> itKeys = jSONObject7.keys();
+                        while (itKeys.hasNext()) {
+                            String next = itKeys.next();
+                            ArrayList<String> arrayList16 = this.f21.get(next);
+                            if (arrayList16 == null) {
+                                arrayList16 = new ArrayList<>();
+                                this.f21.put(next, arrayList16);
+                            }
+                            JSONArray jSONArray3 = jSONObject7.getJSONArray(next);
+                            ArrayList arrayList17 = new ArrayList();
+                            int i3 = 0;
+                            while (i3 < jSONArray3.length()) {
+                                JSONObject jSONObject8 = jSONArray3.getJSONObject(i3);
+                                String str18 = str17;
+                                String string = jSONObject8.getString(str18);
+                                if (string.contains("url=")) {
+                                    int iIndexOf = string.indexOf("url=") + 4;
+                                    String strTrim5 = string.substring(0, iIndexOf).trim();
+                                    if (!strTrim5.isEmpty() && !arrayList16.contains(strTrim5)) {
+                                        arrayList16.add(strTrim5);
+                                    }
+                                    arrayList17.add(jSONObject8.getString(strD19) + "$" + string.substring(iIndexOf).trim());
+                                } else {
+                                    arrayList17.add(jSONObject8.getString(strD19) + "$" + string);
+                                }
+                                i3++;
+                                str17 = str18;
+                            }
+                            arrayList12.add(next);
+                            arrayList11.add(TextUtils.join("#", arrayList17));
+                        }
+                    }
+                    arrayList = arrayList12;
+                    arrayList2 = arrayList11;
                 }
+                String strD20 = "$$$";
+                jSONObject2.put("vod_play_from", TextUtils.join(strD20, arrayList));
+                jSONObject2.put("vod_play_url", TextUtils.join(strD20, arrayList2));
             }
-        } else if (urlPattern1.matcher(URL).find()) {
-            JSONObject data = object;
-            vod.put("vod_id", data.optString("vod_id", vid));
-            vod.put("vod_name", data.getString("title"));
-            vod.put("vod_pic", data.getString("img_url"));
-            vod.put("type_name", jsonArr2Str(data.optJSONArray("type")));
-            vod.put("vod_year", data.optString("pubtime"));
-            vod.put("vod_area", jsonArr2Str(data.optJSONArray("area")));
-            vod.put("vod_remarks", data.optString("trunk"));
-            vod.put("vod_actor", jsonArr2Str(data.optJSONArray("actor")));
-            vod.put("vod_director", jsonArr2Str(data.optJSONArray("director")));
-            vod.put("vod_content", data.optString("intro"));
-            JSONObject playList = data.getJSONObject("videolist");
-            Iterator<String> playListKeys = playList.keys();
-            while (playListKeys.hasNext()) {
-                String flag = playListKeys.next();
-                ArrayList<String> parseUrls = parseUrlMap.get(flag);
-                if (parseUrls == null) {
-                    parseUrls = new ArrayList<>();
-                    parseUrlMap.put(flag, parseUrls);
+            JSONObject jSONObject9 = jSONObject.getJSONObject(strD6).getJSONObject("vod_info");
+            jSONObject2.put(strD17, jSONObject9.optString(strD17, str3));
+            jSONObject2.put(strD16, jSONObject9.getString(strD16));
+            jSONObject2.put(strD15, jSONObject9.getString(strD15));
+            jSONObject2.put(strD8, jSONObject9.optString(strD5));
+            jSONObject2.put(strD14, jSONObject9.optString(strD14));
+            jSONObject2.put(strD13, jSONObject9.optString(strD13));
+            jSONObject2.put(strD12, jSONObject9.optString(strD12));
+            jSONObject2.put(strD11, jSONObject9.optString(strD11));
+            jSONObject2.put(strD10, jSONObject9.optString(strD10));
+            jSONObject2.put(strD9, jSONObject9.optString(strD9));
+            JSONArray jSONArray4 = jSONObject9.getJSONArray(strD4);
+            int i4 = 0;
+            while (i4 < jSONArray4.length()) {
+                JSONObject jSONObject10 = jSONArray4.getJSONObject(i4);
+                String str19 = str9;
+                String strTrim6 = jSONObject10.optString(str19).trim();
+                if (strTrim6.isEmpty()) {
+                    str4 = str8;
+                    strTrim6 = jSONObject10.getString(str4).trim();
+                } else {
+                    str4 = str8;
                 }
-                JSONArray playListUrls = playList.getJSONArray(flag);
-                ArrayList<String> urls = new ArrayList<>();
-                for (int j = 0; j < playListUrls.length(); j++) {
-                    JSONObject urlObj = playListUrls.getJSONObject(j);
-                    String url = urlObj.getString("url");
-                    if (url.contains("url=")) {
-                        int spIdx = url.indexOf("url=") + 4;
-                        String pUrl = url.substring(0, spIdx).trim();
-                        if (!pUrl.isEmpty() && !parseUrls.contains(pUrl)) parseUrls.add(pUrl);
-                        urls.add(urlObj.getString("title") + "$" + url.substring(spIdx).trim());
-                    } else {
-                        urls.add(urlObj.getString("title") + "$" + url);
-                    }
+                ArrayList arrayList18 = arrayList7;
+                arrayList18.add(strTrim6);
+                String str20 = str14;
+                ArrayList arrayList19 = arrayList6;
+                arrayList19.add(jSONObject10.getString(str20));
+                String str21 = str13;
+                String strTrim7 = jSONObject10.optString(str21).trim();
+                ArrayList<String> arrayList20 = this.f21.get(strTrim6);
+                if (arrayList20 == null) {
+                    arrayList20 = new ArrayList<>();
+                    this.f21.put(strTrim6, arrayList20);
                 }
-                playFlags.add(flag);
-                playUrls.add(TextUtils.join("#", urls));
+                if (!strTrim7.isEmpty() && !arrayList20.contains(strTrim7)) {
+                    arrayList20.add(strTrim7);
+                }
+                i4++;
+                str9 = str19;
+                str8 = str4;
+                str14 = str20;
+                str13 = str21;
+                arrayList6 = arrayList19;
+                arrayList7 = arrayList18;
             }
         }
-        vod.put("vod_play_from", TextUtils.join("$$$", playFlags));
-        vod.put("vod_play_url", TextUtils.join("$$$", playUrls));
+        arrayList2 = arrayList6;
+        arrayList = arrayList7;
+        String strD202 = "$$$";
+        jSONObject2.put("vod_play_from", TextUtils.join(strD202, arrayList));
+        jSONObject2.put("vod_play_url", TextUtils.join(strD202, arrayList2));
     }
 
-    // ######视频地址
-    protected JSONObject getFinalVideo(String flag, ArrayList<String> parseUrls, String url) throws JSONException {
-        String htmlPlayUrl = "";
-        for (String parseUrl : parseUrls) {
-            if (parseUrl.isEmpty() || parseUrl.equals("null")) continue;
-            String playUrl = parseUrl + url;
-            String content = OkHttp.string(playUrl);
-            JSONObject tryJson = null;
+    /* JADX INFO: renamed from: ԫ, reason: contains not printable characters */
+    private String m20() {
+        String[] strArr = this.f22;
+        return (strArr == null || strArr.length < 1) ? "" : strArr[0].trim();
+    }
+
+    /* JADX INFO: renamed from: ֏, reason: contains not printable characters */
+    private JSONObject m21(String str, ArrayList<String> arrayList, String str2) throws JSONException {
+        Iterator<String> it = arrayList.iterator();
+        String str3 = "";
+        while (true) {
+            boolean zHasNext = it.hasNext();
+            String strD = "url";
+            boolean z = true;
+            JSONObject jSONObjectM1046 = null;
+            if (!zHasNext) {
+                if (str3.isEmpty()) {
+                    return null;
+                }
+                JSONObject jSONObject = new JSONObject();
+                jSONObject.put("parse", 1);
+                jSONObject.put("playUrl", str3);
+                jSONObject.put(strD, str2);
+                return jSONObject;
+            }
+            String next = it.next();
+            if (!next.isEmpty() && !next.equals("null")) {
+                String strM26 = m26(C0295.m1089(next + str2, null), (byte) 4);
+                try {
+                    jSONObjectM1046 = C0284.m1046(str2, strM26);
+                } catch (Throwable unused) {
+                }
+                if (jSONObjectM1046 != null && jSONObjectM1046.has(strD)) {
+                    String strD2 = "header";
+                    if (jSONObjectM1046.has(strD2)) {
+                        jSONObjectM1046.put(strD2, jSONObjectM1046.getJSONObject(strD2).toString());
+                        return jSONObjectM1046;
+                    }
+                }
+                if (strM26.contains("<html")) {
+                    Pattern[] patternArr = f20;
+                    int length = patternArr.length;
+                    int i = 0;
+                    while (true) {
+                        if (i >= length) {
+                            z = false;
+                            break;
+                        }
+                        if (patternArr[i].matcher(strM26).find()) {
+                            break;
+                        }
+                        i++;
+                    }
+                    if (z) {
+                        str3 = next;
+                    }
+                }
+            }
+        }
+    }
+
+    /* JADX INFO: renamed from: ؠ, reason: contains not printable characters */
+    private HashMap<String, String> m22(String str) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("User-Agent", m17(str));
+        return map;
+    }
+
+    /* JADX INFO: renamed from: ނ, reason: contains not printable characters */
+    private String m23(String str, String str2) {
+        boolean zContains = str.contains(".vod");
+        String strD = "&page=";
+        if (zContains) {
+            if (str.contains("iopenyun.com")) {
+                return str + "/list?wd=" + str2 + strD;
+            }
+            return str + "?wd=" + str2 + strD;
+        }
+        if (str.contains("api.php/app") || str.contains("xgapp")) {
+            return str + "search?text=" + str2 + "&pg=";
+        }
+        if (!f15.matcher(str).find()) {
+            return "";
+        }
+        if (str.contains("esellauto") || str.contains("1.14.63.101") || str.contains("zjys") || str.contains("dcd") || str.contains("lxue") || str.contains("weetai.cn") || str.contains("haokanju1") || str.contains("fit:8") || str.contains("zjj.life") || str.contains("love9989") || str.contains("8d8q") || str.contains("lk.pxun") || str.contains("hgyx") || str.contains("521x5") || str.contains("lxyyy") || str.contains("0818tv") || str.contains("diyoui") || str.contains("diliktv") || str.contains("ppzhu") || str.contains("aitesucai") || str.contains("zz.ci") || str.contains("chxjon") || str.contains("watchmi") || str.contains("vipbp") || str.contains("bhtv") || str.contains("xfykl")) {
+            return str + "?ac=list&wd=" + str2 + strD;
+        }
+        return str + "?ac=list&zm=" + str2 + strD;
+    }
+
+    /* JADX INFO: renamed from: ރ, reason: contains not printable characters */
+    private boolean m24(String str) {
+        return str.equals("伦理") || str.equals("情色") || str.equals("福利");
+    }
+
+    /* JADX INFO: renamed from: ބ, reason: contains not printable characters */
+    private String m25(JSONArray jSONArray) {
+        try {
+            ArrayList arrayList = new ArrayList();
+            for (int i = 0; i < jSONArray.length(); i++) {
+                arrayList.add(jSONArray.getString(i));
+            }
+            return TextUtils.join(",", arrayList);
+        } catch (JSONException unused) {
+            return "";
+        }
+    }
+
+    public String categoryContent(String str, String str2, boolean z, HashMap<String, String> map) {
+        String str3;
+        String strM20;
+        int i;
+        String strD = "year";
+        String strD2 = "lang";
+        String strD3 = "area";
+        String strD4 = "class";
+        String strD5 = "totalpage";
+        String strD6 = "limit";
+        String strD7 = "vod_id";
+        String strD8 = "total";
+        String strD9 = "pagecount";
+        String strD10 = "list";
+        String strD11 = "data";
+        try {
+            strM20 = m20();
+            str3 = "";
+        } catch (Exception e) {
+            e = e;
+            str3 = "";
+        }
+        try {
+            StringBuilder sb = new StringBuilder();
+            String str4 = strD7;
+            sb.append(m27(strM20));
+            sb.append(str);
+            sb.append(m28(strM20));
+            String strReplace = sb.toString().replace("#PN#", str2).replace("筛选class", (map == null || !map.containsKey(strD4)) ? str3 : map.get(strD4)).replace("筛选area", (map == null || !map.containsKey(strD3)) ? str3 : map.get(strD3)).replace("筛选lang", (map == null || !map.containsKey(strD2)) ? str3 : map.get(strD2)).replace("筛选year", (map == null || !map.containsKey(strD)) ? str3 : map.get(strD));
+            String strD12 = "排序";
+            String strReplace2 = strReplace.replace(strD12, (map == null || !map.containsKey(strD12)) ? str3 : map.get(strD12));
+            SpiderDebug.log(strReplace2);
+            JSONObject jSONObject = new JSONObject(m26(C0295.m1089(strReplace2, m22(strReplace2)), (byte) 2));
             try {
-                tryJson = jsonParse(url, content);
-            } catch (Throwable th) {
-
+            } catch (Exception e2) {
+                SpiderDebug.log(e2);
             }
-            if (tryJson != null && tryJson.has("url") && tryJson.has("header")) {
-                tryJson.put("header", tryJson.getJSONObject("header").toString());
-                return tryJson;
+            if (jSONObject.has(strD5) && (jSONObject.get(strD5) instanceof Integer)) {
+                i = jSONObject.getInt(strD5);
+            } else if (jSONObject.has(strD9) && (jSONObject.get(strD9) instanceof Integer)) {
+                i = jSONObject.getInt(strD9);
+            } else if (jSONObject.has(strD11) && (jSONObject.get(strD11) instanceof JSONObject) && jSONObject.getJSONObject(strD11).has(strD8) && (jSONObject.getJSONObject(strD11).get(strD8) instanceof Integer) && jSONObject.getJSONObject(strD11).has(strD6) && (jSONObject.getJSONObject(strD11).get(strD6) instanceof Integer)) {
+                int i2 = jSONObject.getJSONObject(strD11).getInt(strD6);
+                int i3 = jSONObject.getJSONObject(strD11).getInt(strD8);
+                i = i3 % i2 == 0 ? i3 / i2 : (i3 / i2) + 1;
+            } else {
+                i = Integer.MAX_VALUE;
             }
-            if (content.contains("<html")) {
-                boolean sniffer = false;
-                for (Pattern p : htmlVideoKeyMatch) {
-                    if (p.matcher(content).find()) {
-                        sniffer = true;
-                        break;
+            JSONArray jSONArray = null;
+            JSONArray jSONArray2 = new JSONArray();
+            if (jSONObject.has(strD10) && (jSONObject.get(strD10) instanceof JSONArray)) {
+                jSONArray = jSONObject.getJSONArray(strD10);
+            } else if (jSONObject.has(strD11) && (jSONObject.get(strD11) instanceof JSONObject) && jSONObject.getJSONObject(strD11).has(strD10) && (jSONObject.getJSONObject(strD11).get(strD10) instanceof JSONArray)) {
+                jSONArray = jSONObject.getJSONObject(strD11).getJSONArray(strD10);
+            } else if (jSONObject.has(strD11) && (jSONObject.get(strD11) instanceof JSONArray)) {
+                jSONArray = jSONObject.getJSONArray(strD11);
+            }
+            if (jSONArray != null) {
+                int i4 = 0;
+                while (i4 < jSONArray.length()) {
+                    JSONObject jSONObject2 = jSONArray.getJSONObject(i4);
+                    String str5 = str4;
+                    boolean zHas = jSONObject2.has(str5);
+                    String strD13 = "vod_remarks";
+                    String strD14 = "vod_pic";
+                    String strD15 = "vod_name";
+                    if (zHas) {
+                        JSONObject jSONObject3 = new JSONObject();
+                        jSONObject3.put(str5, jSONObject2.getString(str5));
+                        jSONObject3.put(strD15, jSONObject2.getString(strD15));
+                        jSONObject3.put(strD14, jSONObject2.getString(strD14));
+                        jSONObject3.put(strD13, jSONObject2.getString(strD13));
+                        jSONArray2.put(jSONObject3);
+                    } else {
+                        JSONObject jSONObject4 = new JSONObject();
+                        jSONObject4.put(str5, jSONObject2.getString("nextlink"));
+                        jSONObject4.put(strD15, jSONObject2.getString("title"));
+                        jSONObject4.put(strD14, jSONObject2.getString("pic"));
+                        jSONObject4.put(strD13, jSONObject2.getString("state"));
+                        jSONArray2.put(jSONObject4);
                     }
-                }
-                if (sniffer) {
-                    htmlPlayUrl = parseUrl;
+                    i4++;
+                    str4 = str5;
                 }
             }
+            JSONObject jSONObject5 = new JSONObject();
+            jSONObject5.put("page", str2);
+            jSONObject5.put(strD9, i);
+            jSONObject5.put(strD6, 90);
+            jSONObject5.put(strD8, Integer.MAX_VALUE);
+            jSONObject5.put(strD10, jSONArray2);
+            return jSONObject5.toString();
+        } catch (Exception e3) {
+            e = e3;
+            SpiderDebug.log(e);
+            return str3;
         }
-        if (!htmlPlayUrl.isEmpty()) {
-            JSONObject result = new JSONObject();
-            result.put("parse", 1);
-            result.put("playUrl", htmlPlayUrl);
-            result.put("url", url);
-            return result;
-        }
-        return null;
     }
 
-    @Override
+    public String detailContent(List<String> list) {
+        try {
+            String strM20 = m20();
+            String str = m31(strM20) + list.get(0);
+            SpiderDebug.log(str);
+            String strM26 = m26(C0295.m1089(str, m22(str)), (byte) 3);
+            JSONObject jSONObject = new JSONObject(strM26);
+            JSONObject jSONObject2 = new JSONObject();
+            JSONObject jSONObject3 = new JSONObject();
+            m19(strM20, jSONObject, strM26, jSONObject3, list.get(0));
+            JSONArray jSONArray = new JSONArray();
+            jSONArray.put(jSONObject3);
+            jSONObject2.put("list", jSONArray);
+            return jSONObject2.toString();
+        } catch (Exception e) {
+            SpiderDebug.log(e);
+            return "";
+        }
+    }
+
+    public String homeContent(boolean z) {
+        String str;
+        int i;
+        String str2;
+        String str3;
+        String str4;
+        String str5;
+        String str6;
+        String str7;
+        String str8;
+        String str9;
+        String str10;
+        JSONObject jSONObject;
+        JSONArray jSONArray;
+        String str11;
+        String str12;
+        String[] strArr;
+        Object obj;
+        String str13;
+        String str14;
+        JSONObject jSONObject2;
+        String str15;
+        String str16;
+        String str17;
+        JSONObject jSONObject3;
+        String strD = "筛选";
+        String str18 = "";
+        String strD2 = "filters";
+        String strD3 = "list";
+        String strD4 = "data";
+        try {
+            String strM29 = m29(m20());
+            boolean zIsEmpty = strM29.isEmpty();
+            String strD5 = "=";
+            String strD6 = "\\+";
+            String strD7 = "\n";
+            JSONArray jSONArray2 = null;
+            String strD8 = "type_id";
+            String strD9 = "type_name";
+            if (zIsEmpty) {
+                String[] strArrSplit = m30(strM29, null).split(strD7)[0].split(strD6);
+                jSONArray2 = new JSONArray();
+                for (int i2 = 1; i2 < strArrSplit.length; i2++) {
+                    String[] strArrSplit2 = strArrSplit[i2].trim().split(strD5);
+                    if (strArrSplit2.length >= 2) {
+                        JSONObject jSONObject4 = new JSONObject();
+                        jSONObject4.put(strD9, strArrSplit2[0].trim());
+                        jSONObject4.put(strD8, strArrSplit2[1].trim());
+                        jSONArray2.put(jSONObject4);
+                    }
+                }
+            } else {
+                SpiderDebug.log(strM29);
+                JSONObject jSONObject5 = new JSONObject(m26(C0295.m1089(strM29, m22(strM29)), (byte) 0));
+                if (jSONObject5.has(strD3) && (jSONObject5.get(strD3) instanceof JSONArray)) {
+                    jSONArray2 = jSONObject5.getJSONArray(strD3);
+                } else if (jSONObject5.has(strD4) && (jSONObject5.get(strD4) instanceof JSONObject) && jSONObject5.getJSONObject(strD4).has(strD3) && (jSONObject5.getJSONObject(strD4).get(strD3) instanceof JSONArray)) {
+                    jSONArray2 = jSONObject5.getJSONObject(strD4).getJSONArray(strD3);
+                } else if (jSONObject5.has(strD4) && (jSONObject5.get(strD4) instanceof JSONArray)) {
+                    jSONArray2 = jSONObject5.getJSONArray(strD4);
+                }
+            }
+            JSONObject jSONObject6 = new JSONObject();
+            JSONArray jSONArray3 = new JSONArray();
+            String strD10 = "class";
+            if (jSONArray2 != null) {
+                int i3 = 0;
+                while (i3 < jSONArray2.length()) {
+                    JSONObject jSONObject7 = jSONArray2.getJSONObject(i3);
+                    JSONArray jSONArray4 = jSONArray2;
+                    String string = jSONObject7.getString(strD9);
+                    if (m24(string)) {
+                        str2 = strD;
+                        str3 = str18;
+                        jSONArray = jSONArray3;
+                        str4 = strM29;
+                        str5 = strD10;
+                        str6 = strD5;
+                        str7 = strD6;
+                        str8 = strD7;
+                        str9 = strD8;
+                        str10 = strD9;
+                        i = i3;
+                    } else {
+                        i = i3;
+                        String string2 = jSONObject7.getString(strD8);
+                        JSONArray jSONArray5 = jSONArray3;
+                        JSONObject jSONObject8 = new JSONObject();
+                        jSONObject8.put(strD8, string2);
+                        jSONObject8.put(strD9, string);
+                        JSONObject jSONObjectOptJSONObject = jSONObject7.optJSONObject("type_extend");
+                        if (z) {
+                            String[] strArrSplit3 = m30(strM29, jSONObjectOptJSONObject).split(strD7);
+                            JSONArray jSONArray6 = new JSONArray();
+                            str4 = strM29;
+                            int i4 = strM29.isEmpty() ? 1 : 0;
+                            str8 = strD7;
+                            while (i4 < strArrSplit3.length) {
+                                String strTrim = strArrSplit3[i4].trim();
+                                if (strTrim.isEmpty()) {
+                                    str12 = strD;
+                                    str14 = str18;
+                                    jSONObject2 = jSONObject8;
+                                    str15 = strD10;
+                                    str16 = strD5;
+                                    str11 = strD6;
+                                    strArr = strArrSplit3;
+                                    str13 = strD8;
+                                    str17 = strD9;
+                                } else {
+                                    String[] strArrSplit4 = strTrim.split(strD6);
+                                    str11 = strD6;
+                                    String strTrim2 = strArrSplit4[0].trim();
+                                    if (strTrim2.contains(strD)) {
+                                        strArr = strArrSplit3;
+                                        String strReplace = strTrim2.replace(strD, str18);
+                                        if (strReplace.equals(strD10)) {
+                                            strTrim2 = "类型";
+                                            str12 = strD;
+                                        } else {
+                                            str12 = strD;
+                                            if (strReplace.equals("area")) {
+                                                strTrim2 = "地区";
+                                            } else if (strReplace.equals("lang")) {
+                                                strTrim2 = "语言";
+                                            } else if (strReplace.equals("year")) {
+                                                strTrim2 = "年份";
+                                            }
+                                        }
+                                        obj = strTrim2;
+                                        strTrim2 = strReplace;
+                                    } else {
+                                        str12 = strD;
+                                        strArr = strArrSplit3;
+                                        obj = strTrim2;
+                                    }
+                                    JSONObject jSONObject9 = new JSONObject();
+                                    str13 = strD8;
+                                    jSONObject9.put("key", strTrim2);
+                                    jSONObject9.put("name", obj);
+                                    JSONArray jSONArray7 = new JSONArray();
+                                    int i5 = 1;
+                                    while (i5 < strArrSplit4.length) {
+                                        JSONObject jSONObject10 = new JSONObject();
+                                        String[] strArr2 = strArrSplit4;
+                                        String strTrim3 = strArrSplit4[i5].trim();
+                                        String str19 = strD9;
+                                        int iIndexOf = strTrim3.indexOf(strD5);
+                                        String str20 = strD5;
+                                        str = str18;
+                                        String strD11 = "v";
+                                        String str21 = strD10;
+                                        String strD12 = "n";
+                                        if (iIndexOf == -1) {
+                                            try {
+                                                if (m24(strTrim3)) {
+                                                    jSONObject3 = jSONObject8;
+                                                } else {
+                                                    jSONObject10.put(strD12, strTrim3);
+                                                    jSONObject10.put(strD11, strTrim3);
+                                                    jSONObject3 = jSONObject8;
+                                                    jSONArray7.put(jSONObject10);
+                                                }
+                                            } catch (Exception e) {
+                                                e = e;
+                                                SpiderDebug.log(e);
+                                                return str;
+                                            }
+                                        } else {
+                                            jSONObject3 = jSONObject8;
+                                            String strSubstring = strTrim3.substring(0, iIndexOf);
+                                            if (!m24(strSubstring)) {
+                                                jSONObject10.put(strD12, strSubstring.trim());
+                                                jSONObject10.put(strD11, strTrim3.substring(iIndexOf + 1).trim());
+                                                jSONArray7.put(jSONObject10);
+                                            }
+                                        }
+                                        i5++;
+                                        jSONObject8 = jSONObject3;
+                                        strD9 = str19;
+                                        strArrSplit4 = strArr2;
+                                        strD5 = str20;
+                                        str18 = str;
+                                        strD10 = str21;
+                                    }
+                                    str14 = str18;
+                                    jSONObject2 = jSONObject8;
+                                    str15 = strD10;
+                                    str16 = strD5;
+                                    str17 = strD9;
+                                    jSONObject9.put("value", jSONArray7);
+                                    jSONArray6.put(jSONObject9);
+                                }
+                                i4++;
+                                jSONObject8 = jSONObject2;
+                                strArrSplit3 = strArr;
+                                strD6 = str11;
+                                strD = str12;
+                                strD8 = str13;
+                                strD9 = str17;
+                                strD5 = str16;
+                                str18 = str14;
+                                strD10 = str15;
+                            }
+                            str2 = strD;
+                            str3 = str18;
+                            JSONObject jSONObject11 = jSONObject8;
+                            str5 = strD10;
+                            str6 = strD5;
+                            str7 = strD6;
+                            str9 = strD8;
+                            str10 = strD9;
+                            if (!jSONObject6.has(strD2)) {
+                                jSONObject6.put(strD2, new JSONObject());
+                            }
+                            jSONObject6.getJSONObject(strD2).put(string2, jSONArray6);
+                            jSONObject = jSONObject11;
+                        } else {
+                            str2 = strD;
+                            str3 = str18;
+                            str4 = strM29;
+                            str5 = strD10;
+                            str6 = strD5;
+                            str7 = strD6;
+                            str8 = strD7;
+                            str9 = strD8;
+                            str10 = strD9;
+                            jSONObject = jSONObject8;
+                        }
+                        jSONArray = jSONArray5;
+                        jSONArray.put(jSONObject);
+                    }
+                    i3 = i + 1;
+                    jSONArray3 = jSONArray;
+                    jSONArray2 = jSONArray4;
+                    strD7 = str8;
+                    strM29 = str4;
+                    strD6 = str7;
+                    strD = str2;
+                    strD8 = str9;
+                    strD9 = str10;
+                    strD5 = str6;
+                    str18 = str3;
+                    strD10 = str5;
+                }
+            }
+            str = str18;
+            jSONObject6.put(strD10, jSONArray3);
+            return jSONObject6.toString();
+        } catch (Exception e2) {
+            e = e2;
+            str = str18;
+        }
+    }
+
+    public String homeVideoContent() {
+        boolean z;
+        try {
+            String strM20 = m20();
+            String strM32 = m32(strM20);
+            if (strM32.isEmpty()) {
+                strM32 = m27(strM20) + "movie&page=1&area=&type=&start=";
+                z = true;
+            } else {
+                z = false;
+            }
+            SpiderDebug.log(strM32);
+            JSONObject jSONObject = new JSONObject(m26(C0295.m1089(strM32, m22(strM32)), (byte) 1));
+            JSONArray jSONArray = new JSONArray();
+            String strD = "vod_remarks";
+            String strD2 = "vod_pic";
+            String strD3 = "vod_name";
+            String strD4 = "vod_id";
+            if (z) {
+                JSONArray jSONArray2 = jSONObject.getJSONArray("data");
+                for (int i = 0; i < jSONArray2.length(); i++) {
+                    JSONObject jSONObject2 = jSONArray2.getJSONObject(i);
+                    JSONObject jSONObject3 = new JSONObject();
+                    jSONObject3.put(strD4, jSONObject2.getString("nextlink"));
+                    jSONObject3.put(strD3, jSONObject2.getString("title"));
+                    jSONObject3.put(strD2, jSONObject2.getString("pic"));
+                    jSONObject3.put(strD, jSONObject2.getString("state"));
+                    jSONArray.put(jSONObject3);
+                }
+            } else {
+                ArrayList<JSONArray> arrayList = new ArrayList<>();
+                m18(jSONObject, "vlist", arrayList);
+                if (arrayList.isEmpty()) {
+                    m18(jSONObject, "vod_list", arrayList);
+                }
+                ArrayList arrayList2 = new ArrayList();
+                for (JSONArray jSONArray3 : arrayList) {
+                    for (int i2 = 0; i2 < jSONArray3.length(); i2++) {
+                        JSONObject jSONObject4 = jSONArray3.getJSONObject(i2);
+                        String string = jSONObject4.getString(strD4);
+                        if (!arrayList2.contains(string)) {
+                            arrayList2.add(string);
+                            JSONObject jSONObject5 = new JSONObject();
+                            jSONObject5.put(strD4, string);
+                            jSONObject5.put(strD3, jSONObject4.getString(strD3));
+                            jSONObject5.put(strD2, jSONObject4.getString(strD2));
+                            jSONObject5.put(strD, jSONObject4.getString(strD));
+                            jSONArray.put(jSONObject5);
+                        }
+                    }
+                }
+            }
+            JSONObject jSONObject6 = new JSONObject();
+            jSONObject6.put("list", jSONArray);
+            return jSONObject6.toString();
+        } catch (Exception e) {
+            SpiderDebug.log(e);
+            return "";
+        }
+    }
+
+    public void init(Context context, String str) {
+        super.init(context, str);
+        try {
+            this.f22 = str.split("###");
+        } catch (Throwable unused) {
+        }
+    }
+
+    public boolean isVideoFormat(String str) {
+        return C0284.m1044(str);
+    }
+
     public boolean manualVideoCheck() {
         return true;
     }
 
-    @Override
-    public boolean isVideoFormat(String url) {
-        return Util.isVideoFormat(url);
+    public String playerContent(String str, String str2, List<String> list) {
+        JSONObject jSONObjectM21;
+        try {
+            ArrayList<String> arrayList = this.f21.get(str);
+            if (arrayList == null) {
+                arrayList = new ArrayList<>();
+            }
+            if (!arrayList.isEmpty() && (jSONObjectM21 = m21(str, arrayList, str2)) != null) {
+                return jSONObjectM21.toString();
+            }
+            boolean zM1044 = C0284.m1044(str2);
+            String strD = "url";
+            String strD2 = "parse";
+            if (zM1044) {
+                JSONObject jSONObject = new JSONObject();
+                jSONObject.put(strD2, 0);
+                jSONObject.put("playUrl", "");
+                jSONObject.put(strD, str2);
+                return jSONObject.toString();
+            }
+            JSONObject jSONObject2 = new JSONObject();
+            jSONObject2.put(strD2, 1);
+            jSONObject2.put("jx", "1");
+            jSONObject2.put(strD, str2);
+            return jSONObject2.toString();
+        } catch (Exception e) {
+            SpiderDebug.log(e);
+            return "";
+        }
     }
 
-    private String getApiUrl() {
-        if (extInfos == null || extInfos.length < 1) return "";
-        return extInfos[0].trim();
+    public String searchContent(String str, boolean z) {
+        String strD = "vod_id";
+        String strD2 = "list";
+        String strD3 = "data";
+        try {
+            String strM23 = m23(m20(), URLEncoder.encode(str));
+            JSONObject jSONObject = new JSONObject(m26(C0295.m1089(strM23, m22(strM23)), (byte) 5));
+            JSONArray jSONArray = null;
+            JSONArray jSONArray2 = new JSONArray();
+            if (jSONObject.has(strD2) && (jSONObject.get(strD2) instanceof JSONArray)) {
+                jSONArray = jSONObject.getJSONArray(strD2);
+            } else if (jSONObject.has(strD3) && (jSONObject.get(strD3) instanceof JSONObject) && jSONObject.getJSONObject(strD3).has(strD2) && (jSONObject.getJSONObject(strD3).get(strD2) instanceof JSONArray)) {
+                jSONArray = jSONObject.getJSONObject(strD3).getJSONArray(strD2);
+            } else if (jSONObject.has(strD3) && (jSONObject.get(strD3) instanceof JSONArray)) {
+                jSONArray = jSONObject.getJSONArray(strD3);
+            }
+            if (jSONArray != null) {
+                for (int i = 0; i < jSONArray.length(); i++) {
+                    JSONObject jSONObject2 = jSONArray.getJSONObject(i);
+                    boolean zHas = jSONObject2.has(strD);
+                    String strD4 = "vod_remarks";
+                    String strD5 = "vod_pic";
+                    String strD6 = "vod_name";
+                    if (zHas) {
+                        JSONObject jSONObject3 = new JSONObject();
+                        jSONObject3.put(strD, jSONObject2.getString(strD));
+                        jSONObject3.put(strD6, jSONObject2.getString(strD6));
+                        jSONObject3.put(strD5, jSONObject2.getString(strD5));
+                        jSONObject3.put(strD4, jSONObject2.getString(strD4));
+                        jSONArray2.put(jSONObject3);
+                    } else {
+                        JSONObject jSONObject4 = new JSONObject();
+                        jSONObject4.put(strD, jSONObject2.getString("nextlink"));
+                        jSONObject4.put(strD6, jSONObject2.getString("title"));
+                        jSONObject4.put(strD5, jSONObject2.getString("pic"));
+                        jSONObject4.put(strD4, jSONObject2.getString("state"));
+                        jSONArray2.put(jSONObject4);
+                    }
+                }
+            }
+            JSONObject jSONObject5 = new JSONObject();
+            jSONObject5.put(strD2, jSONArray2);
+            return jSONObject5.toString();
+        } catch (Exception e) {
+            SpiderDebug.log(e);
+            return "";
+        }
     }
 
-    private String[] extInfos = null;
+    /* JADX INFO: renamed from: Ԩ, reason: contains not printable characters */
+    protected String m26(String str, byte b) {
+        String[] strArr = this.f22;
+        if (strArr.length > 1) {
+            strArr[1].equals("nftv");
+        }
+        return str;
+    }
 
-    public static JSONObject jsonParse(String input, String json) throws JSONException {
-        //处理解析接口返回的报文，如果返回的报文中包含header信息，就加到返回值中
-        JSONObject jsonPlayData = new JSONObject(json);
-        if (jsonPlayData.has("data") && jsonPlayData.get("data") instanceof JSONObject && !jsonPlayData.has("url")) {
-            jsonPlayData = jsonPlayData.getJSONObject("data");
+    /* JADX INFO: renamed from: Ԭ, reason: contains not printable characters */
+    String m27(String str) {
+        if (str.contains("api.php/app") || str.contains("xgapp")) {
+            boolean zContains = str.contains("dijiaxia");
+            String strD = "video?tid=";
+            if (zContains) {
+                return "http://www.dijiaxia.com/api.php/app/" + strD;
+            }
+            return str + strD;
         }
-        String url = jsonPlayData.getString("url");
-        if (url.startsWith("//")) {
-            url = "https:" + url;
+        if (!str.contains(".vod")) {
+            return str + "?ac=list&class=";
         }
-        if (!url.trim().startsWith("http")) {
-            return null;
+        if (str.contains("iopenyun")) {
+            return str + "/list?type=";
         }
-        if (url.equals(input)) {
-            if (Util.isVip(url) || !Util.isVideoFormat(url)) {
-                return null;
+        return str + "?type=";
+    }
+
+    /* JADX INFO: renamed from: ԭ, reason: contains not printable characters */
+    String m28(String str) {
+        return (str.contains("api.php/app") || str.contains("xgapp")) ? "&class=筛选class&area=筛选area&lang=筛选lang&year=筛选year&limit=18&pg=#PN#" : str.contains(".vod") ? "&class=筛选class&area=筛选area&lang=筛选lang&year=筛选year&by=排序&limit=18&page=#PN#" : "&page=#PN#&area=筛选area&type=筛选class&start=筛选year";
+    }
+
+    /* JADX INFO: renamed from: Ԯ, reason: contains not printable characters */
+    String m29(String str) {
+        if (str.contains("api.php/app") || str.contains("xgapp")) {
+            return str + "nav?token=";
+        }
+        if (!str.contains(".vod")) {
+            return "";
+        }
+        if (str.contains("iopenyun.com")) {
+            return str + "/list?type";
+        }
+        return str + "/types";
+    }
+
+    /* JADX INFO: renamed from: ԯ, reason: contains not printable characters */
+    String m30(String str, JSONObject jSONObject) {
+        String str2 = "";
+        if (jSONObject != null) {
+            Iterator<String> itKeys = jSONObject.keys();
+            while (itKeys.hasNext()) {
+                String next = itKeys.next();
+                if (next.equals("class") || next.equals("area") || next.equals("lang") || next.equals("year")) {
+                    try {
+                        str2 = str2 + "筛选" + next + "+全部=+" + jSONObject.getString(next).replace(",", "+") + "\n";
+                    } catch (JSONException unused) {
+                    }
+                }
             }
         }
-        if (Util.isBlackVodUrl(url)) {
-            return null;
+        if (!str.contains(".vod")) {
+            return (str.contains("api.php/app") || str.contains("xgapp")) ? str2 : "分类+全部=+电影=movie+连续剧=tvplay+综艺=tvshow+动漫=comic+4K=movie_4k+体育=tiyu\n筛选class+全部=+喜剧+爱情+恐怖+动作+科幻+剧情+战争+警匪+犯罪+动画+奇幻+武侠+冒险+枪战+恐怖+悬疑+惊悚+经典+青春+文艺+微电影+古装+历史+运动+农村+惊悚+惊悚+伦理+情色+福利+三级+儿童+网络电影\n筛选area+全部=+大陆+香港+台湾+美国+英国+法国+日本+韩国+德国+泰国+印度+西班牙+加拿大+其他\n筛选year+全部=+2022+2021+2020+2019+2018+2017+2016+2015+2014+2013+2012+2011+2010+2009+2008+2007+2006+2005+2004+2003+2002+2001+2000";
         }
-        JSONObject headers = new JSONObject();
-        if (jsonPlayData.has("header")) {
-            headers = jsonPlayData.optJSONObject("header");
-        } else if (jsonPlayData.has("Header")) {
-            headers = jsonPlayData.optJSONObject("Header");
-        } else if (jsonPlayData.has("headers")) {
-            headers = jsonPlayData.optJSONObject("headers");
-        } else if (jsonPlayData.has("Headers")) {
-            headers = jsonPlayData.optJSONObject("Headers");
-        }
-        String ua = "";
-        if (jsonPlayData.has("user-agent")) {
-            ua = jsonPlayData.optString("user-agent", "");
-        } else if (jsonPlayData.has("User-Agent")) {
-            ua = jsonPlayData.optString("User-Agent", "");
-        }
-        if (ua.trim().length() > 0) {
-            headers.put("User-Agent", " " + ua);
-        }
-        String referer = "";
-        if (jsonPlayData.has("referer")) {
-            referer = jsonPlayData.optString("referer", "");
-        } else if (jsonPlayData.has("Referer")) {
-            referer = jsonPlayData.optString("Referer", "");
-        }
-        if (referer.trim().length() > 0) {
-            headers.put("Referer", " " + referer);
-        }
-
-        headers = fixJsonVodHeader(headers, input, url);
-        JSONObject taskResult = new JSONObject();
-        taskResult.put("header", headers);
-        taskResult.put("url", url);
-        taskResult.put("parse", "0");
-        return taskResult;
+        return str2 + "\n排序+全部=+最新=time+最热=hits+评分=score";
     }
 
-    public static JSONObject fixJsonVodHeader(JSONObject headers, String input, String url) throws JSONException {
-        if (headers == null) headers = new JSONObject();
-        if (input.contains("www.mgtv.com")) {
-            headers.put("Referer", " ");
-            headers.put("User-Agent", " Mozilla/5.0");
-        } else if (url.contains("titan.mgtv")) {
-            headers.put("Referer", " ");
-            headers.put("User-Agent", " Mozilla/5.0");
-        } else if (input.contains("bilibili")) {
-            headers.put("Referer", " https://www.bilibili.com/");
-            headers.put("User-Agent", " " + Util.CHROME);
+    /* JADX INFO: renamed from: ހ, reason: contains not printable characters */
+    String m31(String str) {
+        if (!str.contains("api.php/app") && !str.contains("xgapp")) {
+            if (!str.contains(".vod")) {
+                return "";
+            }
+            if (str.contains("iopenyun")) {
+                return str + "/detailID?vod_id=";
+            }
+            return str + "/detail?vod_id=";
         }
-        return headers;
+        boolean zContains = str.contains("dijiaxia");
+        String strD = "video_detail?id=";
+        if (zContains) {
+            return "https://www.dijiaxia.com/api.php/app/" + strD;
+        }
+        if (str.contains("1010dy")) {
+            return "http://www.1010dy.cc/api.php/app/" + strD;
+        }
+        return str + strD;
+    }
+
+    /* JADX INFO: renamed from: ށ, reason: contains not printable characters */
+    String m32(String str) {
+        if (str.contains("api.php/app") || str.contains("xgapp")) {
+            return str + "index_video?token=";
+        }
+        if (!str.contains(".vod")) {
+            return "";
+        }
+        return str + "/vodPhbAll";
     }
 }
