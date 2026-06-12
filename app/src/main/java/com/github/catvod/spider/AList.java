@@ -3,304 +3,314 @@ package com.github.catvod.spider;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
-
-import com.github.catvod.bean.Class;
-import com.github.catvod.bean.Filter;
-import com.github.catvod.bean.Result;
-import com.github.catvod.bean.Sub;
-import com.github.catvod.bean.Vod;
-import com.github.catvod.bean.alist.Drive;
-import com.github.catvod.bean.alist.Item;
-import com.github.catvod.bean.alist.Sorter;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.net.OkHttp;
-import com.github.catvod.utils.Util;
-
-import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
+import com.github.catvod.spider.merge.K.Subtitle;
+import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.spider.merge.M.g;
+import com.github.catvod.spider.merge.i0.GeneralUtils;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.json.JSONObject;
 
 public class AList extends Spider {
+    private List<com.github.catvod.spider.merge.M.b> serverConfigs;
+    private String configJson;
 
-    private List<Drive> drives;
-    private String vodPic;
-    private String ext;
+    class Job implements Callable<List<VodItem>> {
+        private final com.github.catvod.spider.merge.M.VodCategory a;
+        private final String b;
 
-    private List<Filter> getFilter() {
-        List<Filter> items = new ArrayList<>();
-        items.add(new Filter("type", "排序類型", Arrays.asList(new Filter.Value("預設", ""), new Filter.Value("名稱", "name"), new Filter.Value("大小", "size"), new Filter.Value("修改時間", "date"))));
-        items.add(new Filter("order", "排序方式", Arrays.asList(new Filter.Value("預設", ""), new Filter.Value("⬆", "asc"), new Filter.Value("⬇", "desc"))));
-        return items;
+        public Job(com.github.catvod.spider.merge.M.VodCategory bVar, String str) {
+            this.a = bVar;
+            this.b = str;
+        }
+
+        @Override // java.util.concurrent.Callable
+        public List<VodItem> call() {
+            try {
+                ArrayList arrayList = new ArrayList();
+                AList aList = AList.this;
+                com.github.catvod.spider.merge.M.VodCategory bVar = this.a;
+                StringBuilder sb = new StringBuilder();
+                sb.append(bVar.e());
+                sb.append(bVar.j() ? "/api/fs/search" : "/api/public/search");
+                String strA = AList.a(aList, bVar, sb.toString(), this.a.k(this.b));
+                AList aList2 = AList.this;
+                boolean zJ = this.a.j();
+                aList2.getClass();
+                for (com.github.catvod.spider.merge.M.FilterGroup dVar : com.github.catvod.spider.merge.M.FilterGroup.a((zJ ? new JSONObject(strA).getJSONObject("data").getJSONArray("content") : new JSONObject(strA).getJSONArray("data")).toString())) {
+                    if (!dVar.j(this.a.j())) {
+                        arrayList.add(dVar.g(this.a));
+                    }
+                }
+                return arrayList;
+            } catch (Exception unused) {
+                return Collections.emptyList();
+            }
+        }
     }
 
-    private void fetchRule() {
-        if (drives != null && !drives.isEmpty()) return;
-        if (ext.startsWith("http")) ext = OkHttp.string(ext);
-        Drive drive = Drive.objectFrom(ext);
-        drives = drive.getDrives();
-        vodPic = drive.getVodPic();
+    static String a(AList alist, com.github.catvod.spider.merge.M.VodCategory server, String apiUrl, String body) {
+        return alist.requestWithAuth(server, apiUrl, body, true);
     }
 
-    private Drive getDrive(String name) {
-        return drives.get(drives.indexOf(new Drive(name))).check();
-    }
-
-    private String post(Drive drive, String url, String param) {
-        return post(drive, url, param, true);
-    }
-
-    private String post(Drive drive, String url, String param, boolean retry) {
-        String response = OkHttp.post(url, param, drive.getHeader()).getBody();
-        SpiderDebug.log(response);
-        if (retry && response.contains("Guest user is disabled") && login(drive)) return post(drive, url, param, false);
-        return response;
-    }
-
-    @Override
-    public void init(Context context, String extend) {
+    private com.github.catvod.spider.merge.M.FilterGroup getFileEntry(String path) {
         try {
-            ext = extend;
-            fetchRule();
-        } catch (Exception ignored) {
+            String serverName = path.contains("/") ? path.substring(0, path.indexOf("/")) : path;
+            String filePath = path.contains("/") ? path.substring(path.indexOf("/")) : "";
+            com.github.catvod.spider.merge.M.VodCategory server = getServer(serverName);
+            if (!filePath.startsWith(server.h())) {
+                filePath = server.h() + filePath;
+            }
+            JSONObject body = new JSONObject();
+            body.put("path", filePath);
+            body.put("password", server.c(filePath));
+            StringBuilder apiUrl = new StringBuilder();
+            apiUrl.append(server.e());
+            apiUrl.append(server.j() ? "/api/fs/get" : "/api/public/path");
+            String response = requestWithAuth(server, apiUrl.toString(), body.toString(), true);
+            return (com.github.catvod.spider.merge.M.d) new Gson().fromJson((server.j() ? new JSONObject(response).getJSONObject("data") : new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0)).toString(), com.github.catvod.spider.merge.M.FilterGroup.class);
+        } catch (Exception unused) {
+            return new com.github.catvod.spider.merge.M.d();
         }
     }
 
-    @Override
-    public String homeContent(boolean filter) throws Exception {
-        fetchRule();
-        List<Class> classes = new ArrayList<>();
-        LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
-        for (Drive drive : drives) if (!drive.hidden()) classes.add(drive.toType());
-        for (Class item : classes) filters.put(item.getTypeId(), getFilter());
-        return Result.string(classes, filters);
+    private com.github.catvod.spider.merge.M.VodCategory getServer(String serverName) {
+        List<com.github.catvod.spider.merge.M.b> configs = this.serverConfigs;
+        com.github.catvod.spider.merge.M.VodCategory server = configs.get(configs.indexOf(new com.github.catvod.spider.merge.M.b(serverName)));
+        server.b();
+        return server;
     }
 
-    @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        fetchRule();
-        String type = extend.containsKey("type") ? extend.get("type") : "";
-        String order = extend.containsKey("order") ? extend.get("order") : "";
-        List<Item> folders = new ArrayList<>();
-        List<Item> files = new ArrayList<>();
-        List<Vod> list = new ArrayList<>();
-
-        for (Item item : getList(tid, true)) {
-            if (item.isFolder()) folders.add(item);
-            else files.add(item);
-        }
-        if (!TextUtils.isEmpty(type) && !TextUtils.isEmpty(order)) {
-            Sorter.sort(type, order, folders);
-            Sorter.sort(type, order, files);
-        }
-
-        for (Item item : folders) list.add(item.getVod(tid, vodPic));
-        for (Item item : files) list.add(item.getVod(tid, vodPic));
-        return Result.get().vod(list).page().string();
-    }
-
-    @Override
-    public String detailContent(List<String> ids) throws Exception {
-        fetchRule();
-        String id = ids.get(0);
-        String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
-        String path = id.substring(0, id.lastIndexOf("/"));
-        String name = path.substring(path.lastIndexOf("/") + 1);
-        Drive drive = getDrive(key);
-        List<Item> parents = getList(path, false);
-        Sorter.sort("name", "asc", parents);
-        Vod vod = new Vod();
-        vod.setVodPlayFrom(key);
-        vod.setVodId(id);
-        vod.setVodName(name);
-        vod.setVodPic(vodPic);
-        List<String> playUrls = new ArrayList<>();
-        for (Item item : parents) if (item.isMedia(drive.isNew())) playUrls.add(item.getName() + "$" + item.getVodId(path) + findSubs(path, parents));
-        vod.setVodPlayUrl(TextUtils.join("#", playUrls));
-        return Result.string(vod);
-    }
-
-    @Override
-    public String searchContent(String keyword, boolean quick) throws Exception {
-        fetchRule();
-        List<Vod> list = new ArrayList<>();
-        List<Job> jobs = new ArrayList<>();
-        ExecutorService executor = Executors.newCachedThreadPool();
-        for (Drive drive : drives) if (drive.search()) jobs.add(new Job(drive.check(), keyword));
-        for (Future<List<Vod>> future : executor.invokeAll(jobs, 15, TimeUnit.SECONDS)) list.addAll(future.get());
-        return Result.string(list);
-    }
-
-    @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) {
-        String[] ids = id.split("~~~");
-        String url = getDetail(ids[0]).getUrl();
-        return Result.get().url(url).header(getPlayHeader(url)).subs(getSub(ids)).string();
-    }
-
-    private Map<String, String> getPlayHeader(String url) {
+    private List<com.github.catvod.spider.merge.M.d> listFiles(String path, boolean filterDirs) {
+        JSONObject dataObj;
+        String arrayKey;
         try {
-            Uri uri = Uri.parse(url);
-            Map<String, String> header = new HashMap<>();
-            if (uri.getHost().contains("115.com")) header.put("User-Agent", Util.CHROME);
-            else if (uri.getHost().contains("baidupcs.com")) header.put("User-Agent", "pan.baidu.com");
-            return header;
-        } catch (Exception e) {
-            return new HashMap<>();
-        }
-    }
-
-    private boolean login(Drive drive) {
-        try {
-            JSONObject params = new JSONObject();
-            params.put("username", drive.getLogin().getUsername());
-            params.put("password", drive.getLogin().getPassword());
-            String response = OkHttp.post(drive.loginApi(), params.toString());
-            drive.setToken(new JSONObject(response).getJSONObject("data").getString("token"));
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private Item getDetail(String id) {
-        try {
-            String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
-            String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
-            Drive drive = getDrive(key);
-            path = path.startsWith(drive.getPath()) ? path : drive.getPath() + path;
-            JSONObject params = new JSONObject();
-            params.put("path", path);
-            params.put("password", drive.findPass(path));
-            String response = post(drive, drive.getApi(), params.toString());
-            return Item.objectFrom(getDetailJson(drive.isNew(), response));
-        } catch (Exception e) {
-            return new Item();
-        }
-    }
-
-    private List<Item> getList(String id, boolean filter) {
-        try {
-            String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
-            String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
-            Drive drive = getDrive(key);
-            path = path.startsWith(drive.getPath()) ? path : drive.getPath() + path;
-            JSONObject params = new JSONObject();
-            params.put("path", path);
-            params.put("password", drive.findPass(path));
-            String response = post(drive, drive.listApi(), params.toString());
-            List<Item> items = Item.arrayFrom(getListJson(drive.isNew(), response));
-            Iterator<Item> iterator = items.iterator();
-            if (filter) while (iterator.hasNext()) if (iterator.next().ignore(drive.isNew())) iterator.remove();
-            return items;
-        } catch (Exception e) {
+            String serverName = path.contains("/") ? path.substring(0, path.indexOf("/")) : path;
+            String filePath = path.contains("/") ? path.substring(path.indexOf("/")) : "";
+            com.github.catvod.spider.merge.M.VodCategory server = getServer(serverName);
+            if (!filePath.startsWith(server.h())) {
+                filePath = server.h() + filePath;
+            }
+            JSONObject body = new JSONObject();
+            body.put("path", filePath);
+            body.put("password", server.c(filePath));
+            StringBuilder apiUrl = new StringBuilder();
+            apiUrl.append(server.e());
+            apiUrl.append(server.j() ? "/api/fs/list" : "/api/public/path");
+            String response = requestWithAuth(server, apiUrl.toString(), body.toString(), true);
+            if (server.j()) {
+                dataObj = new JSONObject(response).getJSONObject("data");
+                arrayKey = "content";
+            } else {
+                dataObj = new JSONObject(response).getJSONObject("data");
+                arrayKey = "files";
+            }
+            List<com.github.catvod.spider.merge.M.d> fileList = com.github.catvod.spider.merge.M.FilterGroup.a(dataObj.getJSONArray(arrayKey).toString());
+            Iterator<com.github.catvod.spider.merge.M.d> it = fileList.iterator();
+            if (filterDirs) {
+                while (it.hasNext()) {
+                    if (it.next().j(server.j())) {
+                        it.remove();
+                    }
+                }
+            }
+            return fileList;
+        } catch (Exception unused) {
             return Collections.emptyList();
         }
     }
 
-    private String getListJson(boolean isNew, String response) throws Exception {
-        if (isNew) {
-            return new JSONObject(response).getJSONObject("data").getJSONArray("content").toString();
-        } else {
-            return new JSONObject(response).getJSONObject("data").getJSONArray("files").toString();
-        }
-    }
-
-    private String getDetailJson(boolean isNew, String response) throws Exception {
-        if (isNew) {
-            return new JSONObject(response).getJSONObject("data").toString();
-        } else {
-            return new JSONObject(response).getJSONObject("data").getJSONArray("files").getJSONObject(0).toString();
-        }
-    }
-
-    private String getSearchJson(boolean isNew, String response) throws Exception {
-        if (isNew) {
-            return new JSONObject(response).getJSONObject("data").getJSONArray("content").toString();
-        } else {
-            return new JSONObject(response).getJSONArray("data").toString();
-        }
-    }
-
-    private String findSubs(String path, List<Item> items) {
-        StringBuilder sb = new StringBuilder();
-        for (Item item : items) if (Util.isSub(item.getExt())) sb.append("~~~").append(item.getName()).append("@@@").append(item.getExt()).append("@@@").append(item.getVodId(path));
-        return sb.toString();
-    }
-
-    private List<Sub> getSub(String[] ids) {
-        List<Sub> sub = new ArrayList<>();
-        for (String text : ids) {
-            if (!text.contains("@@@")) continue;
-            String[] split = text.split("@@@");
-            String name = split[0];
-            String ext = split[1];
-            String url = getDetail(split[2]).getUrl();
-            sub.add(Sub.create().name(name).ext(ext).url(url));
-        }
-        return sub;
-    }
-
-    class Job implements Callable<List<Vod>> {
-
-        private final Drive drive;
-        private final String keyword;
-
-        public Job(Drive drive, String keyword) {
-            this.drive = drive;
-            this.keyword = keyword;
-        }
-
-        @Override
-        public List<Vod> call() {
-            List<Vod> alist = alist();
-            return alist.size() > 0 ? alist : xiaoya();
-        }
-
-        private List<Vod> xiaoya() {
-            List<Vod> list = new ArrayList<>();
-            Document doc = Jsoup.parse(OkHttp.string(drive.searchApi(keyword)));
-            for (Element a : doc.select("ul > a")) {
-                String[] splits = a.text().split("#");
-                if (!splits[0].contains("/")) continue;
-                int index = splits[0].lastIndexOf("/");
-                boolean file = Util.isMedia(splits[0]);
-                Item item = new Item();
-                item.setType(file ? 0 : 1);
-                item.setThumb(splits.length > 3 ? splits[4] : "");
-                item.setPath("/" + splits[0].substring(0, index));
-                item.setName(splits[0].substring(index + 1));
-                list.add(item.getVod(drive, vodPic));
-            }
-            return list;
-        }
-
-        private List<Vod> alist() {
+    private String requestWithAuth(com.github.catvod.spider.merge.M.VodCategory server, String url, String body, boolean retryOnGuestDisabled) {
+        boolean authSucceeded;
+        String response = com.github.catvod.spider.merge.f0.HttpClient.f(url, body, server.d()).a();
+        SpiderDebug.log(response);
+        if (retryOnGuestDisabled && response.contains("Guest user is disabled")) {
             try {
-                List<Vod> list = new ArrayList<>();
-                String response = post(drive, drive.searchApi(), drive.params(keyword));
-                List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
-                for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive, vodPic));
-                return list;
+                JSONObject loginBody = new JSONObject();
+                loginBody.put("username", server.f().b());
+                loginBody.put("password", server.f().a());
+                server.m(new JSONObject(com.github.catvod.spider.merge.f0.HttpClient.f(server.e() + "/api/auth/login", loginBody.toString(), null).a()).getJSONObject("data").getString("token"));
+                authSucceeded = true;
             } catch (Exception e) {
-                return Collections.emptyList();
+                StringUtils.printStackTrace();
+                authSucceeded = false;
+            }
+            if (authSucceeded) {
+                return requestWithAuth(server, url, body, false);
             }
         }
+        return response;
+    }
+
+    public String categoryContent(String typeId, String filterId, boolean filterGenre, HashMap<String, String> extend) {
+        String sortType = extend.containsKey("type") ? extend.get("type") : "";
+        String sortOrder = extend.containsKey("order") ? extend.get("order") : "";
+        ArrayList<com.github.catvod.spider.merge.M.FilterGroup> folders = new ArrayList<>();
+        ArrayList<com.github.catvod.spider.merge.M.FilterGroup> files = new ArrayList<>();
+        ArrayList<com.github.catvod.spider.merge.K.VodItem> vodItems = new ArrayList<>();
+        for (com.github.catvod.spider.merge.M.FilterGroup entry : listFiles(typeId, true)) {
+            if (entry.k()) {
+                folders.add(entry);
+            } else {
+                files.add(entry);
+            }
+        }
+        if (!TextUtils.isEmpty(sortType) && !TextUtils.isEmpty(sortOrder)) {
+            Collections.sort(folders, new VodResult(sortType, sortOrder));
+            Collections.sort(files, new VodResult(sortType, sortOrder));
+        }
+        for (com.github.catvod.spider.merge.M.d folder : folders) {
+            vodItems.add(folder.h(typeId));
+        }
+        for (com.github.catvod.spider.merge.M.d file : files) {
+            vodItems.add(file.h(typeId));
+        }
+        com.github.catvod.spider.merge.K.VodResult result = new com.github.catvod.spider.merge.K.VodResult();
+        result.y(vodItems);
+        result.j(1, 1, 0, 1);
+        return result.toString();
+    }
+
+    public String detailContent(List<String> ids) {
+        String fullPath = ids.get(0);
+        String serverName = fullPath.contains("/") ? fullPath.substring(0, fullPath.indexOf("/")) : fullPath;
+        String parentPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
+        String itemName = parentPath.substring(parentPath.lastIndexOf("/") + 1);
+        com.github.catvod.spider.merge.M.VodCategory server = getServer(serverName);
+        VodItem vodItem = new VodItem();
+        vodItem.o(serverName);
+        vodItem.l(fullPath);
+        vodItem.m(itemName);
+        ArrayList<String> playParts = new ArrayList<>();
+        List<com.github.catvod.spider.merge.M.d> siblings = listFiles(parentPath, false);
+        for (com.github.catvod.spider.merge.M.FilterGroup entry : siblings) {
+            if (entry.l(server.j())) {
+                StringBuilder playLine = new StringBuilder();
+                playLine.append(entry.c());
+                playLine.append("$");
+                StringBuilder playUrl = new StringBuilder();
+                playUrl.append(entry.i(parentPath));
+                StringBuilder subtitles = new StringBuilder();
+                for (com.github.catvod.spider.merge.M.FilterGroup sibling : siblings) {
+                    String subtitleExt = GeneralUtils.j(sibling.c());
+                    if (GeneralUtils.r(subtitleExt)) {
+                        subtitles.append("~~~");
+                        subtitles.append(sibling.c());
+                        subtitles.append("@@@");
+                        subtitles.append(subtitleExt);
+                        subtitles.append("@@@");
+                        subtitles.append(sibling.i(parentPath));
+                    }
+                }
+                playUrl.append(subtitles.toString());
+                String urlStr = playUrl.toString();
+                if (urlStr.contains("#")) {
+                    urlStr = urlStr.replace("#", "***");
+                }
+                playLine.append(urlStr);
+                playParts.add(playLine.toString());
+            }
+        }
+        vodItem.p(TextUtils.join("#", playParts));
+        return com.github.catvod.spider.merge.K.VodResult.m(vodItem);
+    }
+
+    public String homeContent(boolean filterGenre) {
+        ArrayList<com.github.catvod.spider.merge.K.VodCategory> categories = new ArrayList<>();
+        LinkedHashMap<String, List<com.github.catvod.spider.merge.K.FilterGroup>> filterMap = new LinkedHashMap<>();
+        for (com.github.catvod.spider.merge.M.VodCategory server : this.serverConfigs) {
+            if (!server.i().booleanValue()) {
+                categories.add(new com.github.catvod.spider.merge.K.VodCategory(server.g(), server.g(), "1"));
+            }
+        }
+        for (com.github.catvod.spider.merge.K.VodCategory category : categories) {
+            String categoryId = category.b();
+            ArrayList<com.github.catvod.spider.merge.K.FilterGroup> filters = new ArrayList<>();
+            filters.add(new com.github.catvod.spider.merge.K.FilterGroup("type", "排序類型", Arrays.asList(new com.github.catvod.spider.merge.K.FilterValue("預設", ""), new com.github.catvod.spider.merge.K.FilterValue("名稱", "name"), new com.github.catvod.spider.merge.K.FilterValue("大小", "size"), new com.github.catvod.spider.merge.K.FilterValue("修改時間", "date"))));
+            filters.add(new com.github.catvod.spider.merge.K.FilterGroup("order", "排序方式", Arrays.asList(new com.github.catvod.spider.merge.K.FilterValue("預設", ""), new com.github.catvod.spider.merge.K.FilterValue("⬆", "asc"), new com.github.catvod.spider.merge.K.FilterValue("⬇", "desc"))));
+            filterMap.put(categoryId, filters);
+        }
+        return com.github.catvod.spider.merge.K.VodResult.p(categories, filterMap);
+    }
+
+    public void init(Context context, String config) {
+        this.configJson = config;
+        List<com.github.catvod.spider.merge.M.b> configs = this.serverConfigs;
+        if (configs == null || configs.isEmpty()) {
+            if (this.configJson.startsWith("http")) {
+                this.configJson = com.github.catvod.spider.merge.f0.HttpClient.l(this.configJson);
+            }
+            this.serverConfigs = com.github.catvod.spider.merge.M.VodCategory.a(this.configJson);
+        }
+    }
+
+    public String playerContent(String key, String playFlag, List<String> playFrom) {
+        HashMap<String, String> headerMap;
+        if (playFlag.contains("***")) {
+            playFlag = playFlag.replace("***", "#");
+        }
+        String[] parts = playFlag.split("~~~");
+        String playUrl = getFileEntry(parts[0]).f();
+        com.github.catvod.spider.merge.K.VodResult result = new com.github.catvod.spider.merge.K.VodResult();
+        result.w(playUrl);
+        try {
+            Uri uri = Uri.parse(playUrl);
+            headerMap = new HashMap<>();
+            if (uri.getHost().contains("115")) {
+                headerMap.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
+            }
+            if (uri.getHost().contains("baidupcs.com")) {
+                headerMap.put("User-Agent", "pan.baidu.com");
+            }
+        } catch (Exception unused) {
+            headerMap = new HashMap<>();
+        }
+        result.g(headerMap);
+        ArrayList<Subtitle> subtitles = new ArrayList<>();
+        for (String part : parts) {
+            if (part.contains("@@@")) {
+                String[] subParts = part.split("@@@");
+                String subName = subParts[0];
+                String subExt = subParts[1];
+                String subUrl = getFileEntry(subParts[2]).f();
+                Subtitle subtitle = new Subtitle();
+                subtitle.b(subName);
+                Subtitle subWithExt = subtitle.a(subExt);
+                subWithExt.c(subUrl);
+                subtitles.add(subWithExt);
+            }
+        }
+        result.v(subtitles);
+        return result.toString();
+    }
+
+    public String searchContent(String keyword, boolean quick) {
+        ArrayList<VodItem> results = new ArrayList<>();
+        ArrayList<Job> jobs = new ArrayList<>();
+        ExecutorService executor = Executors.newCachedThreadPool();
+        for (com.github.catvod.spider.merge.M.VodCategory server : this.serverConfigs) {
+            if (server.l().booleanValue()) {
+                server.b();
+                jobs.add(new Job(server, keyword));
+            }
+        }
+        for (Future<List<VodItem>> future : executor.invokeAll(jobs, 15L, TimeUnit.SECONDS)) {
+            results.addAll(future.get());
+        }
+        return com.github.catvod.spider.merge.K.VodResult.n(results);
     }
 }
