@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.spider.merge.q1.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -60,7 +61,7 @@ public class LocalFile extends Spider {
             jSONObject2.put("list", jSONArray);
             return jSONObject2.toString();
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            StringUtils.printStackTrace(e);
             return "";
         }
     }
@@ -118,12 +119,12 @@ public class LocalFile extends Spider {
             }
             return jSONObject2.toString();
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            StringUtils.printStackTrace(e);
             return "";
         }
     }
 
-    public void init(Context context) {
+    public void init(Context context) throws Exception {
         super.init(context);
     }
 

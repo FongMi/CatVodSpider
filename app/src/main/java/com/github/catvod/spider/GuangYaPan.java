@@ -8,6 +8,7 @@ import com.github.catvod.spider.merge.I.BuilderUtils;
 import com.github.catvod.spider.merge.I.O;
 import com.github.catvod.spider.merge.K.VodItem;
 import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.q1.StringUtils;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class GuangYaPan extends Spider {
         oL.getClass();
         try {
             String strN = oL.n(strArrSplit[0], strArrSplit[1], strArrSplit.length > 2 ? strArrSplit[2] : "");
-            if (!com.github.catvod.spider.merge.P0.StringUtils.d(strN)) {
+            if (!StringUtils.isnotNull(strN)) {
                 return "";
             }
             JSONObject jSONObject = new JSONObject();

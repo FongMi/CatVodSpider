@@ -12,6 +12,7 @@ import com.github.catvod.spider.merge.K.VodResult;
 import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.L1.l;
 import com.github.catvod.spider.merge.e1.JsoupElements;
+import org.antlr.v4.runtime.misc.Utils;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -19,15 +20,19 @@ import java.util.regex.Pattern;
 
 
 public class PTT extends Spider {
-    private String a = "https://ptt.red/";
+    private String baseUrl = "https://ptt.red/";
     private String b;
 
-    private Map<String, String> a() {
-        return com.github.catvod.spider.merge.B.MapBuilder.b("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36", "Accept-Language", "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7");
+    private Map<String, String> buildHeader() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
+        map.put("Accept-Language", "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7");
+        return map;
+
     }
 
     public String categoryContent(String str, String str2, boolean z, HashMap<String, String> map) {
-        Uri.Builder builderBuildUpon = Uri.parse(this.a + "p/" + str).buildUpon();
+        Uri.Builder builderBuildUpon = Uri.parse(baseUrl + "p/" + str).buildUpon();
         if (!TextUtils.isEmpty(map.get("c"))) {
             StringBuilder sbB = BuilderUtils.b("c/");
             sbB.append(map.get("c"));
@@ -43,7 +48,7 @@ public class PTT extends Spider {
             builderBuildUpon.appendQueryParameter("sort", map.get("sort"));
         }
         builderBuildUpon.appendQueryParameter("page", str2);
-        Subtitle hVarE = l.e(com.github.catvod.spider.merge.f0.HttpClient.m(builderBuildUpon.toString(), a(), null));
+        Subtitle hVarE = l.e(com.github.catvod.spider.merge.f0.HttpClient.m(builderBuildUpon.toString(), buildHeader(), null));
         ArrayList arrayList = new ArrayList();
         for (GeneralUtils mVar : hVarE.l0("div.card > div.embed-responsive")) {
             GeneralUtils mVar2 = mVar.l0("a").get(0);
@@ -61,7 +66,7 @@ public class PTT extends Spider {
     public String detailContent(List<String> list) {
         StringBuilder sb = new StringBuilder();
         sb.append(this.a);
-        Subtitle hVarE = l.e(com.github.catvod.spider.merge.f0.HttpClient.m(ConcatUtils.b(sb, list.get(0), "/1"), a(), null));
+        Subtitle hVarE = l.e(com.github.catvod.spider.merge.f0.HttpClient.m(ConcatUtils.b(sb, list.get(0), "/1"), buildHeader(), null));
         LinkedHashMap linkedHashMap = new LinkedHashMap();
         ArrayList arrayList = new ArrayList();
         for (GeneralUtils mVar : hVarE.l0("ul#w1 > li > a")) {
@@ -89,7 +94,7 @@ public class PTT extends Spider {
     }
 
     public String homeContent(boolean z) {
-        Subtitle hVarE = l.e(com.github.catvod.spider.merge.f0.HttpClient.m(this.a, a(), null));
+        Subtitle hVarE = l.e(com.github.catvod.spider.merge.f0.HttpClient.m(baseUrl, a(), null));
         ArrayList arrayList = new ArrayList();
         for (GeneralUtils mVar : hVarE.l0("li > a.px-2.px-sm-3.py-2.nav-link")) {
             arrayList.add(new com.github.catvod.spider.merge.K.VodCategory(mVar.c("href").replace("/p/", ""), mVar.s0()));
@@ -102,7 +107,7 @@ public class PTT extends Spider {
     }
 
     public String playerContent(String str, String str2, List<String> list) {
-        Matcher matcher = Pattern.compile("contentUrl\":\"(.*?)\"").matcher(com.github.catvod.spider.merge.f0.HttpClient.l(this.a + str2));
+        Matcher matcher = Pattern.compile("contentUrl\":\"(.*?)\"").matcher(com.github.catvod.spider.merge.f0.HttpClient.l(baseUrl + str2));
         if (!matcher.find()) {
             return VodResult.c("");
         }
@@ -116,13 +121,13 @@ public class PTT extends Spider {
     }
 
     public String searchContent(String str, boolean z, String str2) {
-        Subtitle hVarE = l.e(com.github.catvod.spider.merge.f0.HttpClient.m(this.a + String.format("q/%s?page=%s", str, str2), a(), null));
+        Subtitle hVarE = l.e(Utils(baseUrl + String.format("q/%s?page=%s", str, str2), buildHeader(), null));
         ArrayList arrayList = new ArrayList();
         for (GeneralUtils mVar : hVarE.l0("div.card > div.embed-responsive")) {
             GeneralUtils mVar2 = mVar.l0("a").get(0);
             GeneralUtils mVar3 = mVar2.l0("img").get(0);
             String strS0 = mVar.l0("span.badge.badge-success").get(0).s0();
-            String strC = mVar3.c("src").startsWith("http") ? mVar3.c("src") : this.a + mVar3.c("src");
+            String strC = mVar3.c("src").startsWith("http") ? mVar3.c("src") : this.baseUrl + mVar3.c("src");
             String strC2 = mVar3.c("alt");
             if (!TextUtils.isEmpty(strC2)) {
                 arrayList.add(new VodItem(mVar2.c("href").substring(3), strC2, strC, strS0));

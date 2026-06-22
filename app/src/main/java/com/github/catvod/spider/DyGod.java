@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.spider.merge.*;
+import com.github.catvod.spider.merge.q1.StringUtils;
 import okhttp3.Call;
 import okhttp3.Response;
 import org.json.JSONArray;
@@ -234,12 +235,12 @@ public class DyGod extends Spider {
             }
             return jSONObject2.toString();
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            StringUtils.printStackTrace(e);
             return "";
         }
     }
 
-    public void init(Context context, String str) {
+    public void init(Context context, String str) throws Exception {
         super.init(context, str);
         if (str.isEmpty()) {
             return;

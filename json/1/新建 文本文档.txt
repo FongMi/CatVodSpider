@@ -1,0 +1,559 @@
+{
+    "warningText": "用户名:taojinma欢迎使用，祝您观影愉快",
+    "parses": [
+        {
+            "name": "定制接口",
+            "type": "1",
+            "url": "http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "ext": {
+                "flag": [
+                    "qq",
+                    "腾讯",
+                    "qiyi",
+                    "iqiyi",
+                    "爱奇艺",
+                    "奇艺",
+                    "youku",
+                    "yk",
+                    "优酷",
+                    "mgtv",
+                    "imgo",
+                    "芒果"
+                ]
+            }
+        }
+    ],
+    "spider": "http://app.69mini.com/tvbox/nb.jpg",
+    "sites": [
+        {
+            "key": "ttys",
+            "name": "🔥腾腾|4K①",
+            "type": 3,
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "api": "https://aaa.69mini.com/store/drpy_libs/drpy2.min.js",
+            "ext": "https://app.69mini.com/js/主线1.js"
+        },
+        {
+            "key": "mmmm",
+            "name": "🔥茫茫|4K②",
+            "type": 3,
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "api": "https://aaa.69mini.com/store/drpy_libs/drpy2.min.js",
+            "ext": "https://app.69mini.com/js/主线3.js"
+        },
+        {
+            "name": "🚀豆瓣｜嗷呜弹幕｜搜索自启",
+            "key": "GoConfig",
+            "type": 3,
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/awdm.png",
+            "api": "csp_GoConfigAmns",
+            "indexs": 1,
+            "searchable": 1,
+            "filterable": 0,
+            "quickSearch": 1,
+            "changeable": 0
+        },
+        {
+            "key": "wanjiaryi",
+            "name": "💖如意|2K",
+            "type": 1,
+            "api": "https://cj.rycjapi.com/api.php/provide/vod/",
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 0,
+            "categories": [
+                "科幻片",
+                "爱情片",
+                "国产剧",
+                "大陆综艺",
+                "国产动漫",
+                "动作片",
+                "动画电影"
+            ],
+            "ext": "https://cj.rycjapi.com/api.php/provide/vod/"
+        },
+        {
+            "key": "hipy_js_优酷[官]",
+            "name": "🔥酷酷|酷2k",
+            "type": 3,
+            "api": "https://gitee.com/zj521jj/little-tiger-spot/raw/master/drpy_libs/drpy2.min.js",
+            "ext": "https://app.69mini.com/lib1/优酷[官].js"
+        },
+        {
+            "key": "csp_如意资源",
+            "name": "🌀如意|2k",
+            "type": 1,
+            "api": "http://cj.rycjapi.com/api.php/provide/vod/",
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "categories": [
+                "喜剧片",
+                "动作片",
+                "爱情片",
+                "科幻片",
+                "恐怖片",
+                "剧情片",
+                "战争片",
+                "国产剧",
+                "香港剧",
+                "短剧",
+                "国产动漫",
+                "日韩动漫",
+                "欧美动漫",
+                "港台动漫",
+                "海外动漫",
+                "动画电影",
+                "记录片",
+                "电影解说",
+                "综艺片",
+                "大陆综艺"
+            ]
+        },
+        {
+            "key": "cjzy_暴风资源",
+            "name": "🌀暴风┃1920",
+            "type": 1,
+            "api": "https://bfzyapi.com/api.php/provide/vod/?ac=list",
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "categories": [
+                "国产剧",
+                "国产动漫",
+                "大陆综艺",
+                "港台综艺",
+                "香港剧",
+                "台湾剧",
+                "日本剧",
+                "欧美剧",
+                "泰国剧",
+                "日本动漫",
+                "日本综艺",
+                "综艺频道",
+                "新马泰综艺",
+                "纪录片",
+                "科幻片",
+                "喜剧片",
+                "战争片"
+            ]
+        },
+        {
+            "key": "量子",
+            "name": "🌀量子|2k",
+            "type": 1,
+            "api": "http://cj.lziapi.com/api.php/provide/vod/",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 0,
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "categories": [
+                "国产剧",
+                "国产动漫",
+                "泰国剧",
+                "台湾剧",
+                "香港剧",
+                "欧美剧",
+                "韩国剧",
+                "日本剧",
+                "动漫",
+                "体育",
+                "剧情片",
+                "动作片",
+                "爱情片",
+                "喜剧片"
+            ]
+        },
+        {
+            "key": "csp_非凡资源",
+            "name": "🌀非凡|2k",
+            "type": 1,
+            "api": "http://cj.ffzyapi.com/api.php/provide/vod/",
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "categories": [
+                "动作片",
+                "喜剧片",
+                "科幻片",
+                "恐怖片",
+                "爱情片",
+                "剧情片",
+                "战争片",
+                "记录片",
+                "国产剧",
+                "欧美剧",
+                "香港剧",
+                "韩国剧",
+                "台湾剧",
+                "日本剧",
+                "海外剧",
+                "泰国剧",
+                "国产动漫",
+                "日韩动漫",
+                "欧美动漫",
+                "港台动漫",
+                "海外动漫",
+                "大陆综艺",
+                "港台综艺",
+                "日韩综艺",
+                "欧美综艺"
+            ]
+        },
+        {
+            "key": "盘它",
+            "name": "♨️盘它｜4K视轨",
+            "type": 3,
+            "api": "csp_PanWebShareCloudPT",
+            "jar": "https://gitee.com/cpu-iy/lib/raw/master/spider.jar",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "changeable": 0,
+            "style": {
+                "type": "list"
+            }
+        },
+        {
+            "name": "♨️追忆｜4K线路",
+            "key": "NewNoxZy",
+            "type": 3,
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/awdm.png",
+            "api": "csp_NewNoxAmns",
+            "playerType": 2,
+            "searchable": 1,
+            "filterable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": {
+                "name": "",
+                "password": "",
+                "data": "4122288565eb2ea7fcb9caa81e70fa9b13ee58fa569055a61c8e99e0e685e59b23bfd2fede0c6909ed737ef5f8bf1ed059ee1222b4ed5608fdb3706b6c8b03f092e28a96fdc785c29b10433294465a2940ec80382950c7fd32775455e18dddb20ce680df1032820b7f3e36b58835e26cf64143caed9d3491f302adae503007d049243be56681fd3328c76f44393b3f01872abe86be7f6190a3b012ac28cbfb5ca81b45b5d85cf76347547bd3edfde4eb54261cda45b8469e2bef40d2dfc63d6f5846256de2fdc4e2c2e0a0c1dd0cd784a121243dec0d514eb59bdf76924637518d723c1561b3f6bb423494885708df5c753f9e7ec256bfc5d9d8c748e1bdced241b6c0a6b6c5cdfa7a8fafa9b0d743d8f1d95724a29fed43edb14aaa905eb92300d687b010d8f3adfc11e3616243777f6675840e93e68c442d9de777aa7d18f0fce1627b329b1d6e66675c32aab7de7a96504b8c25e3f6a30ca60a6ae20f7fd7c1706c1db935f2e37497f727943c1ac049464be2c61c21f99ab000e4086a62a114ac6af3d09e4500ed799cce1f20a223aeeb4864b24ddf1a9d3aeee7ded6f38b33a52a55a3c51df894c04f0a996c20270e86e9319a7e586ee0991902db1491e4e4f948dad5b46e6fd058cbe020c913c049fc20530bb2f4e5a28b09d4b7c7bb4d6d8f2f2dccbc6ec7ebe952eaf8cd5528888039e5e655af8d1924e4816df3ec2dd010ed71bc955d46e711fdafbeadc49a3bcf4932b4ff843c18866973cc3e48be3caf6033bc8d65ef12043d7d92ee9ea4ea411dbcb8d5dbe4c212ab4999d673697e6d1e1c41222ac199d2a961c4e43481eb4bbbc9154ac19499f238cd759bbd65c61a2b3d9a064f38587486b0d09ed5b4c240b3d9f565ead37985d17e2ceb2c71b0395e7cf2b7ce0245bc40ba9efe3e3176ddf9772c59dfa2d4d0e1d105b05cf06aa7dac6a72de85bdf20c646cba604f8a27374ad46d8dbec7c0d830801da0bae9a326673e2df4bb0ec9b0764d49c0dee8c2836d5ed2d206f5664a6e95002af8359763c03d9acae3580008bf0880ee173ce5023d3671939975b3c2c75f2277a69f8b3cac63fa37e476fb5d8a6c8c68b3c46dcd7c0476052981bc649ba18ca931c4d4eb5195388ed05cd2a8ec88f64704fdd409db0a647872448e4da8e172a0a9891127d33e48f8dbc7a55152ce45d976a8ef2f09f9fd69ddc6bd57ffbf005c14245bca8875d30823ab6c18190fffdd61adf98e9df0faa167e36150dfcd6dc73870bfe0884b7559f046fa752828d14890a353f7c73bcdf932c903ac6602ab38ebc54c4a7311a08a185c1c8290b23d17b17ef41d30023cb4bd6318f71b558080918a5d371052bdbcbd249149ba8407028f7ba31ce96058ae5837bdde1a1108a9574b0f98a10d1dc2bdf"
+            }
+        },
+        {
+            "name": "♨️爱电影｜4K线路",
+            "key": "NewNoxAdy",
+            "type": 3,
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/awdm.png",
+            "api": "csp_NewNoxAmns",
+            "playerType": 2,
+            "searchable": 1,
+            "filterable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": {
+                "name": "",
+                "password": "",
+                "data": "df3928858d5cb13bbeeb78e30e5a27f95c3ce61f7be9b4cd913aaca700a284c403ae3a55a38de53d0884a99f97ce437e3e0575d3855e6fe9d4187355c364282f3677dcce054027e1a2619e703aabe6d3d170ec0fc94e37194724a6e73661a89531bd2afbae4fc15abfe302249a2e1a4095423b1363cb9502871a3dc53579f0b51c1c1dd42fc1db7cb88b47f4e0efce4cdd523bdd6fa96e61c618fd3984e4862cd0e0a02124fb5e86a373641d99e62cc9335f539477939d1ccd78f6bf00804de66c05fbd795f69c72fe5b4b72baf5ac05e7b9a291dfdc5d46b57b4c54b9e5cefa723ffcff1e6a881cbf09b50fe99d0528f893590a8b8c955c95d0c7ae88bebe45854203c49d1c1168b83b8e368256814415ee5aea36d1c35a1fb6a2e7a66558bebca19848434a675155cca91989f65656e7c9c1f01ef86447458c091aeb0d41d059fc427a5a5a472e6077e4efb6f524d91b7ca4f9c06ec07486008388d7ec866c867a34dd25d38d4a25151bc2f537b03b6e47533a948e3b1f573c5e6a722bea23a69b09bcfedd0dcea9736cbb083ab84515268ce860a3345737055d4273c11578bee96843919e03a6a2b368235228986aae7364ab3629a20b17b4d2465b08115e872a2c8b173090faaaeb60b550a0fe2b2eb5e2e77031c2da59f48866ba659874c6b04044d156e18b21cd3143ab8595a4249f21a5b827783f8e4aa3619c840d16a551e3c7575a6761567c348de7e72ce992fa7093cf942d3156b6da0e91460fb06a2d4cd4ad8ffbad7abf90a0566a92f21abed076a2053187193c666b9a0e092e06cebfa7e89dbd4d5fcc89704ca8567e00164bfa7ed36bb11ce602249a1ef18b0396b7f1fe4fc16a200fdd0ec9fcd4bc64d757aa4092fd5badf32063f2a77c71b8590df21ef8eca5e4b1f0a9a8fda4f3a4733c1d8134d2e4da8a09225cd275bf3a8f670381343047bd71444a811ed15a9dfae05109209874c06876cd7541e9956ba590e830493999e36136b536c9839463a5024cb9b7f68b6b0705fc767152d0cb70b651c176d0ca51667e5bdb8ced33d07a9c2064d9854cc770b41153f2b6d51b669e3044a2bc9573fdb059e915e9437797a1a1a857b16b209fff1f9bfea43b16fcca764ad8cd84316d444a411809409d4a5392e7351260469ce9df5508d9faaa436bcd3f59a97330953935ac0d4fe01a7c263372c31536ee3be4ef70cbe5a3fc11dbf0f07f22c79330240d7b59f23bb053b3a145d3b3625eb4ea1f73d9ce0a7fee20c2e56df0c3a11bbc6952389a249012b51173b9f39b23cf778b07ca43ce99baef673260d04de0e9a879427098fc4267b4a948c8ee03f7e2c116d247f75348f4e83f64d9eba3b403f5f7b687753f8e588d4681be56e6823af67742f2367f687786a66089c5f2d2a0529227c1"
+            }
+        },
+        {
+            "name": "♨️幕悦｜4K线路",
+            "key": "NewNoxMy",
+            "type": 3,
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/awdm.png",
+            "api": "csp_NewNoxAmns",
+            "playerType": 2,
+            "searchable": 1,
+            "filterable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": {
+                "name": "",
+                "password": "",
+                "data": "a211288565eb2ea7fcb9caa81e70fa9b13ee58fa569055a61c76ec776a59bf4da5eb5012bb3792daab61de3834237a47b5cbc7d8c53c6a7ffe4133a5d056b92d98184dac50482fffd4786edb170247b6bcab8a30027288b42c2724d3956c7a79060e03ba90fea4b59282a9594b12b925d8689c882f8b2dbf92920954a9e78ee41cb622e3d8dc0d78ee2176eb2ed393aabc79d6bec0a4acb54486cf1e217b98c42317abf710a09c7cf093dfde2d7b50e67a9dcfe6560859e80a16d3de25791026d86864f3f8c7757ff0a9e2d1fd85b36d2e47456aba7db8dbdb528d0089cee5a31ca43805bbcd152e5064dc763433a2154f6c66e5e0bd1698c322fe1f5bf0a4bd84c80732ac1fa75bff11cb28c434fa0d57ac0214190881a432df3935ec05f71ddf82875e71811d68e6b3c8a8fe0771e102f4707dd4660a2070059d866763b053e7dbc78ec786bd737e0d150a711b9f44d5626ea5881e59beec6304cc6f2118e88282e13fa21767e164178d902fd905b61a36a6e168f91c1e358511e2f8bdcc1a7585c7f63ee34ef0faf9a0892dc1cbda4b9cc1304c48899c993aa411e9d575f99a52ab49e1afeef54cf4425ca947fffb529ed9b8d68423e95a7cd4a8d8aebe2568cdb73fcc4cbf3b46ac12fc18f2345f8fa06a437351e96b3895f107b33d22d1a981bfa9be47d7e2ec2186c687d40b7006be78db8dfc74499d9a319d45d09baa04d6197c7a8b2df93247cdeed03cba6576dd67e5a867a8038f98e9876dc9c5e40406138c6fa98ed4bb33c60e89347a77e6f172252ceb743f309fe70919f2ce8a8b3ab4f938d125f75a5e7b75c29e2509a50b85e0fe45dfbadae8d0a6964e1730a6f198c80f6a3821683dc4f840b89e5c6de7d8a048e07c7f8e0a9d36842c42fe5a563b5b7331480eb533d43662c95bb06c2deed74f622809ef99893e34cb93a424577dcb7593333ff663d4d6d57c2849975a25d52d7b4230a6d1a1374ad8ad1d9fb0827002c83db13ab79808f93530c1c15835835f4a2929b673847e82fec4ba846224dd05226261de4863e33883a535b8bbe897d744d1e26c9dd9c8d5942d696e95a9e140f8c4fa8aba2845fb4fa79b619dd10efb1fdfba922a94d07fa10c46779f4f822de9569ecb32e69177b9c47c9e3abe670c3a7ae73add7905bb65b855ad0b1bd2975cb183a12b262d729bb37d48e6a247831ca7cdcbc2396562c9dd3c9600e3d9b735f0ab8c1ac5191b69e0fb0a95115ca18754c6c1e08838ac5f2fd644ec18148336b70d97aa8a38193a47a6bc0b05dce835728793aa42223468c1daccf82815a31729deb9833115da2cea34001ebc56e1e52cf90bbed2566179789f03068de097f6cc551d3ebe398a0c776916ae1204030a810ce58bef499bf48e44f5298e682afbc462c8"
+            }
+        },
+        {
+            "key": "金牌",
+            "name": "♨️金牌｜4K线路",
+            "type": 3,
+            "api": "csp_AppQi",
+            "searchable": 1,
+            "changeable": 1,
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/spider.jar",
+            "ext": {
+                "url": "https://qj4.catbb.xyz",
+                "dataKey": "eecbio48dsq13kkk",
+                "dataIv": "eecbio48dsq13kkk",
+                "search": "searchList4",
+                "init": "initV122",
+                "ua": "okhttp/3.10.0"
+            }
+        },
+        {
+            "key": "奇奇",
+            "name": "♨️奇奇｜4K线路",
+            "type": 3,
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/ok.png",
+            "api": "csp_AweSomeGuard",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "filterable": 1,
+            "ext": {
+                "sp": "QiQi"
+            }
+        },
+        {
+            "key": "盘它",
+            "name": "♨️盘它｜4K视轨",
+            "type": 3,
+            "api": "csp_PanWebSharePT",
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/spider.jar",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "changeable": 0,
+            "style": {
+                "type": "list"
+            }
+        },
+        {
+            "key": "华数",
+            "name": "🌀华数｜1920",
+            "type": 3,
+            "api": "http://103.56.113.153:666/uploads/tvbox/add/华数.py",
+            "changeable": 1
+        },
+        {
+            "key": "韩圈",
+            "name": "🌀韩圈｜1920",
+            "type": 3,
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/ok.png",
+            "api": "csp_AweSomeGuard",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "filterable": 1,
+            "ext": {
+                "sp": "HanXiaoQuan"
+            }
+        },
+        {
+            "key": "热播影视1",
+            "name": "🌀热门｜1280",
+            "type": 3,
+            "api": "csp_AppRJ",
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/spider.jar",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 0,
+            "ext": {
+                "url": "http://v.rbotv.cn"
+            }
+        },
+        {
+            "key": "酷酷",
+            "name": "🌀酷炫｜1280",
+            "type": 3,
+            "api": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/js/drpy2.min.js",
+            "ext": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/js/酷酷.js",
+            "searchable": 0,
+            "quickSearch": 0,
+            "filterable": 0,
+            "changeable": 1
+        },
+        {
+            "key": "奇奇",
+            "name": "🌀奇异｜1280",
+            "type": 3,
+            "api": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/js/drpy2.min.js",
+            "ext": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/js/奇奇.js",
+            "searchable": 0,
+            "quickSearch": 0,
+            "filterable": 0,
+            "changeable": 1
+        },
+        {
+            "key": "剧王短剧",
+            "name": "🎬戏王｜短剧",
+            "type": 3,
+            "api": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/py/剧王短剧.py",
+            "searchable": 1,
+            "changeable": 1,
+            "quickSearch": 1,
+            "filterable": 1
+        },
+        {
+            "key": "py_嘶哩嘶哩",
+            "name": "🌈嘶啵｜动漫",
+            "type": 3,
+            "api": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/py/skapp.py",
+            "ext": {
+                "host": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/json/api.json",
+                "key": "ygcnbcznazmyrbdn",
+                "iv": "6571230062143708"
+            }
+        },
+        {
+            "key": "py_2k动漫",
+            "name": "🌈2k｜动漫",
+            "type": 3,
+            "api": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/py/skapp.py",
+            "ext": {
+                "host": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/json/dmapi.json",
+                "key": "ygcnbcobcegtgigg",
+                "iv": "4058263969143708"
+            }
+        },
+        {
+            "key": "方舟动漫",
+            "name": "🌈舟行丨动漫",
+            "type": 3,
+            "quickSearch": 1,
+            "api": "csp_AppGet",
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/spider.jar",
+            "ext": {
+                "url": "https://www.cyfz.vip",
+                "dataKey": "e72cdfd629e8895d",
+                "dataIv": "e72cdfd629e8895d"
+            }
+        },
+        {
+            "key": "漫国动漫",
+            "name": "🌈漫邦丨动漫",
+            "type": 3,
+            "api": "csp_AppSy",
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/spider.jar",
+            "ext": {
+                "site": "https://dm-1255775577.cos.ap-guangzhou.myqcloud.com/dmg/api.txt",
+                "siteKey": "rectangleadsadxa",
+                "listKey": "aassddwwxxllsx1x",
+                "parsesKey": "aassddwwxxllsx1x"
+            }
+        },
+        {
+            "key": "番薯动漫",
+            "name": "🌈薯蕃丨动漫",
+            "type": 3,
+            "quickSearch": 1,
+            "api": "csp_AppGet",
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/spider.jar",
+            "ext": {
+                "url": "https://new.app.bytegooty.com",
+                "dataKey": "N4yj7l7xKxHF4*gz",
+                "dataIv": "N4yj7l7xKxHF4*gz"
+            }
+        },
+        {
+            "key": "咕咕动漫",
+            "name": "🌈咕噜｜动漫",
+            "type": 3,
+            "quickSearch": 1,
+            "api": "csp_AppGet",
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/spider.jar",
+            "ext": {
+                "url": "https://www.gugu3.com",
+                "dataKey": "nKfZ8KX6JTNWRzTD",
+                "dataIv": "nKfZ8KX6JTNWRzTD"
+            }
+        },
+        {
+            "key": "New6v",
+            "name": "🧲New6V｜磁力",
+            "type": 3,
+            "api": "csp_New6v",
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/spider.jar",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "ext": "https://www.xb6v.com"
+        },
+        {
+            "key": "电影天堂",
+            "name": "🧲影殿｜磁力",
+            "type": 3,
+            "api": "csp_DyGod",
+            "jar": "http://117.50.201.231:666/uploads/tvbox/add/spider.jar",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1
+        },
+        {
+            "key": "100听书",
+            "name": "📻100┃听书",
+            "type": 3,
+            "api": "csp_XBPQ",
+            "ext": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/json/100听书.json",
+            "jar": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/jars/xbpq.webp"
+        },
+        {
+            "key": "DG音乐仓",
+            "name": "📚DG音乐台｜失败重进或刷新几次",
+            "type": 3,
+            "jar": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/jars/dg.webp",
+            "api": "csp_Bili",
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0,
+            "ext": "http://gh.llkk.cc/https://raw.githubusercontent.com/IY-CPU/IY/main/jars/dg.json"
+        }
+    ],
+    "doh": [
+        {
+            "name": "阿里DNS",
+            "url": "https://dns.alidns.com/dns-query",
+            "ips": [
+                "223.5.5.5",
+                "223.6.6.6"
+            ]
+        },
+        {
+            "name": "腾讯DNS",
+            "url": "https://doh.pub/dns-query",
+            "ips": [
+                "119.29.29.29",
+                "182.254.116.116"
+            ]
+        }
+    ],
+    "flags": [
+        "youku",
+        "qq",
+        "iqiyi",
+        "qiyi",
+        "letv",
+        "sohu",
+        "tudou",
+        "pptv",
+        "mgtv",
+        "cctv",
+        "cntv",
+        "wasu",
+        "bilibili",
+        "xigua",
+        "1905",
+        "1920i",
+        "1920l",
+        "mim3u8",
+        "laodim3u8",
+        "leduo",
+        "CL4K",
+        "ltnb",
+        "rx",
+        "renrenmi",
+        "wuduyun",
+        "xueren",
+        "naifeimi",
+        "miaoparty",
+        "miaoparty2",
+        "miaoparty3",
+        "xfy",
+        "xfyun",
+        "x1play",
+        "fuckapp",
+        "duoduozy",
+        "ftqp2",
+        "ftqp3",
+        "ftqp4",
+        "ftqp5"
+    ]
+}

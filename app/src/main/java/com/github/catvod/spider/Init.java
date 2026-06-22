@@ -16,6 +16,7 @@ import com.github.catvod.spider.merge.I0.GeneralUtils;
 import com.github.catvod.spider.merge.L.ConcatUtils;
 import com.github.catvod.spider.merge.g0.RunnableC1210f;
 import com.github.catvod.spider.merge.g0.RunnableC1214j;
+import com.github.catvod.spider.merge.q1.StringUtils;
 import com.github.catvod.spider.merge.y.z;
 import com.github.catvod.utils.server.ServerStart;
 import org.json.JSONObject;
@@ -99,7 +100,7 @@ public class Init {
                     System.out.println("POST Request URL: " + requestUrl);
                     System.out.println("POST Request Body: " + sb.toString());
                 } catch (IOException e) {
-                    StringUtils.printStackTrace();
+                    StringUtils.printStackTrace(e);
                 }
             }
             System.out.println("Request URL: " + requestUrl);

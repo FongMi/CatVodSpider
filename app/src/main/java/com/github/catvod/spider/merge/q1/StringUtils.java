@@ -46,4 +46,18 @@ public final class StringUtils extends Exception {
         String message2 = exc.getMessage();
         return message2 == null ? this.a.getClass().toString() : message2;
     }
+
+    public static void printStackTrace(Exception throwable) {
+        if (throwable == null) {
+            throwable.printStackTrace();
+            return;
+        }
+        synchronized (System.err) {
+            PrintStream printStream = System.err;
+            String stringBuffer = getMessage() +
+                    "; nested exception is:";
+            printStream.println(stringBuffer);
+            throwable.printStackTrace();
+        }
+    }
 }

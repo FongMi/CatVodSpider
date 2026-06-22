@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -36,7 +37,7 @@ public class Push extends NetPan {
         return null;
     }
 
-    private String f(String str) throws InterruptedException {
+    private String f(String str) throws InterruptedException, UnsupportedEncodingException {
         String strA = com.github.catvod.spider.merge.f0.HttpClient.j(ConcatUtils.b(new StringBuilder(), this.l, "/torrents"), String.format("{\"action\":\"add\",\"link\":\"%s\",\"title\":\"\",\"poster\":\"\",\"save_to_db\":true}", str), new HashMap()).a();
         SpiderDebug.log("torr1 Torrent added" + strA);
         try {

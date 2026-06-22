@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.spider.merge.*;
+import com.github.catvod.spider.merge.q1.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,7 +15,7 @@ import java.util.*;
 public class BLSGod extends Spider {
 
     /* JADX INFO: renamed from: Ϳ, reason: contains not printable characters */
-    private static String f23 = "https://www.80sgod.com";
+    private static String baseUrl = "https://www.80sgod.com";
 
     /* JADX INFO: renamed from: Ϳ, reason: contains not printable characters */
     private static String m33(String str) {
@@ -23,16 +24,16 @@ public class BLSGod extends Spider {
             jSONObject.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36");
             return str + "@Headers=" + jSONObject.toString();
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            StringUtils.printStackTrace(e);
             return str;
         }
     }
 
     /* JADX INFO: renamed from: Ԩ, reason: contains not printable characters */
-    private static HashMap<String, String> m34(String str) {
+    private static HashMap<String, String> buildHeader(String str) {
         HashMap<String, String> map = new HashMap<>();
         map.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36");
-        map.put("Referer", f23 + "/");
+        map.put("Referer", baseUrl + "/");
         return map;
     }
 
@@ -41,7 +42,7 @@ public class BLSGod extends Spider {
         try {
             JSONObject jSONObject = new JSONObject();
             JSONArray jSONArray = new JSONArray();
-            String strReplace = f23 + "/{cateId}--p/" + str2;
+            String strReplace = baseUrl + "/{cateId}--p/" + str2;
             if (z && map != null && map.size() > 0) {
                 for (String str3 : map.keySet()) {
                     String str4 = map.get(str3);
@@ -50,7 +51,7 @@ public class BLSGod extends Spider {
                     }
                 }
             }
-            C0035 c0035M884 = C0243.m884(C0287.m1052(strReplace.replaceAll("\\{cateId\\}", str), "utf-8", m34(f23)));
+            C0035 c0035M884 = C0243.m884(C0287.m1052(strReplace.replaceAll("\\{cateId\\}", str), "utf-8", buildHeader(baseUrl)));
             String[] strArrSplit = ".me1||.me3&&li".split("&&");
             C0011 c0011M1061 = C0287.m1061(strArrSplit[0], c0035M884);
             for (int i = 1; i < strArrSplit.length - 1; i++) {
@@ -98,8 +99,8 @@ public class BLSGod extends Spider {
         String strD4 = "utf-8";
         String str3 = "";
         try {
-            String str4 = f23 + list.get(0);
-            C0035 c0035M884 = C0243.m884(C0287.m1052(str4, strD4, m34(f23)));
+            String str4 = baseUrl + list.get(0);
+            C0035 c0035M884 = C0243.m884(C0287.m1052(str4, strD4, buildHeader(baseUrl)));
             try {
                 strM1686 = c0035M884.m199("div.img img").m1686("src");
                 try {
@@ -135,7 +136,7 @@ public class BLSGod extends Spider {
                     sb.append("/");
                     sb.append(strArr[i2]);
                     sb.append("-1");
-                    C0455 c0455M1992 = C0243.m884(C0287.m1052(sb.toString(), strD4, m34(f23))).m199("li:has([rel])");
+                    C0455 c0455M1992 = C0243.m884(C0287.m1052(sb.toString(), strD4, buildHeader(baseUrl))).m199("li:has([rel])");
                     if (!strArr[i2].equals(strD3)) {
                         Collections.reverse(c0455M1992);
                     }
@@ -194,9 +195,10 @@ public class BLSGod extends Spider {
             jSONObject.put("list", jSONArray);
             return jSONObject.toString();
         } catch (Exception e2) {
-            e = e2;
             str = str3;
+            StringUtils.printStackTrace(e2);
         }
+        return "";
     }
 
     public String homeContent(boolean z) {
@@ -225,8 +227,7 @@ public class BLSGod extends Spider {
 
     public String homeVideoContent() {
         try {
-            String str = f23;
-            C0035 c0035M884 = C0243.m884(C0287.m1052(str, "utf-8", m34(str)));
+            C0035 c0035M884 = C0243.m884(C0287.m1052(baseUrl, "utf-8", buildHeader(baseUrl)));
             JSONObject jSONObject = new JSONObject();
             JSONArray jSONArray = new JSONArray();
             C0455 c0455M199 = c0035M884.m199("div.left li");
@@ -251,12 +252,12 @@ public class BLSGod extends Spider {
         }
     }
 
-    public void init(Context context, String str) {
+    public void init(Context context, String str) throws Exception {
         super.init(context, str);
         if (str.isEmpty()) {
             return;
         }
-        f23 = str;
+        baseUrl = str;
     }
 
     public String playerContent(String str, String str2, List<String> list) {
@@ -276,10 +277,10 @@ public class BLSGod extends Spider {
         String strD = "a";
         try {
             JSONArray jSONArray = new JSONArray();
-            String str2 = f23 + "/search";
+            String str2 = baseUrl + "/search";
             LinkedHashMap linkedHashMap = new LinkedHashMap();
             linkedHashMap.put("keyword", str);
-            C0455 c0455M199 = C0243.m884(C0287.m1053(str2, linkedHashMap, "utf-8", m34(f23))).m199("ul.search_list li");
+            C0455 c0455M199 = C0243.m884(C0287.m1053(str2, linkedHashMap, "utf-8", buildHeader(baseUrl))).m199("ul.search_list li");
             for (int i = 0; i < c0455M199.size(); i++) {
                 C0011 c0011 = c0455M199.get(i);
                 String strM1693 = c0011.m199(strD).m1693();

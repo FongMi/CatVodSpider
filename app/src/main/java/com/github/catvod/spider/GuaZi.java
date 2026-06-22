@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -29,16 +30,22 @@ public class GuaZi extends NetPan {
 
     private String decryptAes(String hexCipher, String key, String iv) {
         try {
-            int length = str.length() / 2;
-            byte[] bArr = new byte[length];
+            // Hex 字符串转字节数组
+            int length = hexCipher.length() / 2;
+            byte[] cipherBytes = new byte[length];
             for (int i = 0; i < length; i++) {
-                int i2 = i * 2;
-                bArr[i] = (byte) Integer.parseInt(str.substring(i2, i2 + 2), 16);
+                int offset = i * 2;
+                cipherBytes[i] = (byte) Integer.parseInt(hexCipher.substring(offset, offset + 2), 16);
             }
+
+            // AES/CBC 解密
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(2, new SecretKeySpec(str2.getBytes(), "AES"), new IvParameterSpec(str3.getBytes()));
-            return new String(cipher.doFinal(bArr), "UTF-8");
-        } catch (Exception unused) {
+            cipher.init(Cipher.DECRYPT_MODE,
+                    new SecretKeySpec(key.getBytes(), "AES"),
+                    new IvParameterSpec(iv.getBytes()));
+
+            return new String(cipher.doFinal(cipherBytes), StandardCharsets.UTF_8);
+        } catch (Exception e) {
             return "";
         }
     }

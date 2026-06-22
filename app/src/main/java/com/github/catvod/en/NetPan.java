@@ -12,15 +12,15 @@ import java.util.regex.Pattern;
 
 public class NetPan extends Spider {
     public static final Pattern a = Pattern.compile("(www.aliyundrive.com|www.alipan.com)/s/([^/]+)(/folder/([^/]+))?");
-    public static Quark b = new Quark();
-    public static Uc c = new Uc();
-    public static YunPan139 d = new YunPan139();
-    public static YunPan189 e = new YunPan189();
-    public static YunPan123 f = new YunPan123();
-    public static Yun115 g = new Yun115();
-    public static XunleiSpider i = new XunleiSpider();
-    public static GuangYaPan j = new GuangYaPan();
-    public static JSONObject k;
+    public static Quark quark = new Quark();
+    public static Uc uc = new Uc();
+    public static YunPan139 yunPan139 = new YunPan139();
+    public static YunPan189 yunPan189 = new YunPan189();
+    public static YunPan123 yunPan123 = new YunPan123();
+    public static Yun115 yun115 = new Yun115();
+    public static XunleiSpider xunleiSpider = new XunleiSpider();
+    public static GuangYaPan guangYaPan = new GuangYaPan();
+    public static JSONObject jsonObject;
 
     public static native /* synthetic */ void a(NetPan netPan, String str, Map map, String str2);
 

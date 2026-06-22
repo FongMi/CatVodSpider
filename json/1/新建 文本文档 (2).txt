@@ -1,0 +1,396 @@
+{
+    "homepage": "https://github.com/hjdhnx/hipy-server",
+    "homeLogo": "https://github.moeyy.xyz/https://github.com/leiyou-li/photo/blob/main/img.png?raw=true",
+    "warningText": "shiyan",
+    "spider": "http://app.69mini.com/tvbox/nb.jpg",
+    "parses": [
+        {
+            "name": "定制接口",
+            "type": "1",
+            "url": "http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "ext": {
+                "flag": [
+                    "qq",
+                    "腾讯",
+                    "qiyi",
+                    "iqiyi",
+                    "爱奇艺",
+                    "奇艺",
+                    "youku",
+                    "yk",
+                    "优酷",
+                    "mgtv",
+                    "imgo",
+                    "芒果"
+                ]
+            }
+        }
+    ],
+    "sites": [
+        {
+            "key": "ttys",
+            "name": "🔥腾腾|4K①",
+            "type": 3,
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "api": "https://aaa.69mini.com/store/drpy_libs/drpy2.min.js",
+            "ext": "https://app.69mini.com/js/主线1.js"
+        },
+        {
+            "key": "mmmm",
+            "name": "🔥茫茫|4K②",
+            "type": 3,
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "api": "https://aaa.69mini.com/store/drpy_libs/drpy2.min.js",
+            "ext": "https://app.69mini.com/js/主线3.js"
+        },
+        {
+            "key": "网盘",
+            "name": "❤网盘丨4K测试",
+            "type": 3,
+            "api": "https://gitee.com/cpu-iy/iy/raw/master/lib/观影.py",
+            "changeable": 1,
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1
+        },
+        {
+            "key": "人人影视",
+            "name": "❤人人｜4K测试",
+            "type": 3,
+            "api": "https://gitee.com/cpu-iy/lib/raw/master/lib/人人影视.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "filterable": 1
+        },
+        {
+            "key": "wanji",
+            "name": "极速|综合4K",
+            "type": 1,
+            "api": "https://gz.aidianying.sbs/api.php/provide/vod/",
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 0,
+            "categories": [
+                "电视剧",
+                "电影类",
+                "综艺类",
+                "海外剧",
+                "日韩剧",
+                "动漫类",
+                "少儿类",
+                "纪录片",
+                "B站类",
+                "经典片"
+            ],
+            "ext": "https://gz.aidianying.sbs/api.php/provide/vod/"
+        },
+        {
+            "key": "wanjia",
+            "name": "爱酷哔|综合2K",
+            "type": 1,
+            "api": "https://api.aidianying.sbs/api.php/provide/vod/",
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 0,
+            "categories": [
+                "电视剧",
+                "电影类",
+                "综艺类",
+                "海外剧",
+                "日韩剧",
+                "动漫类",
+                "少儿类",
+                "纪录片",
+                "B站类",
+                "经典片"
+            ],
+            "ext": "https://api.aidianying.sbs/api.php/provide/vod/"
+        },
+        {
+            "name": "嗷呜弹幕｜以上维护，以下收集",
+            "key": "嗷嗚彈幕",
+            "type": 3,
+            "api": "csp_GoConfigAmns",
+            "jar": "https://cnb.cool/aooooowuuuuu/FreeSpider/-/git/raw/main/bfdb--cvdvds.png",
+            "indexs": 1,
+            "searchable": 1,
+            "filterable": 0,
+            "quickSearch": 1,
+            "changeable": 0
+        },
+        {
+            "key": "cjzy_暴风资源",
+            "name": "暴风┃2K",
+            "type": 1,
+            "api": "https://bfzyapi.com/api.php/provide/vod/?ac=list",
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "categories": [
+                "国产剧",
+                "国产动漫",
+                "大陆综艺",
+                "港台综艺",
+                "香港剧",
+                "台湾剧",
+                "日本剧",
+                "欧美剧",
+                "泰国剧",
+                "日本动漫",
+                "日本综艺",
+                "综艺频道",
+                "新马泰综艺",
+                "纪录片",
+                "科幻片",
+                "喜剧片",
+                "战争片"
+            ]
+        },
+        {
+            "key": "瓜子影视",
+            "name": "瓜子┃秒播",
+            "type": 3,
+            "api": "csp_Gz360",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "jar": "https://gitee.com/LCHXM0812/zhijianbox/raw/master/jar/dhys.jar"
+        },
+        {
+            "key": "量子",
+            "name": "量子|2k",
+            "type": 1,
+            "api": "http://cj.lziapi.com/api.php/provide/vod/",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 0,
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "categories": [
+                "国产剧",
+                "国产动漫",
+                "泰国剧",
+                "台湾剧",
+                "香港剧",
+                "欧美剧",
+                "韩国剧",
+                "日本剧",
+                "动漫",
+                "体育",
+                "剧情片",
+                "动作片",
+                "爱情片",
+                "喜剧片"
+            ]
+        },
+        {
+            "jar": "https://gitee.com/dicosboy/02_2/raw/master/jar/spider.jar",
+            "key": "金牌影视",
+            "name": "🌀金牌｜影视",
+            "type": 3,
+            "api": "csp_Jpys",
+            "ext": "https://m.hkybqufgh.com,https://m.sizhengxt.com,https://m.9zhoukj.com,https://m.sizhengxt.com,https://m.jiabaide.cn"
+        },
+        {
+            "key": "csp_如意资源",
+            "name": "如意|2k",
+            "type": 1,
+            "api": "http://cj.rycjapi.com/api.php/provide/vod/",
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "categories": [
+                "国产动漫",
+                "日韩动漫",
+                "欧美动漫",
+                "港台动漫",
+                "海外动漫",
+                "动画电影",
+                "记录片",
+                "电影解说",
+                "综艺片",
+                "大陆综艺",
+                "港台综艺",
+                "日韩综艺",
+                "欧美综艺",
+                "短剧",
+                "体育",
+                "足球",
+                "篮球",
+                "网球",
+                "斯诺克",
+                "电影片",
+                "连续剧",
+                "喜剧片",
+                "动作片",
+                "爱情片",
+                "科幻片",
+                "恐怖片",
+                "剧情片",
+                "战争片",
+                "国产剧",
+                "香港剧",
+                "韩国剧",
+                "欧美剧",
+                "台湾剧",
+                "日本剧",
+                "海外剧",
+                "泰国剧",
+                "伦理片",
+                "预告片"
+            ]
+        },
+        {
+            "key": "csp_非凡资源",
+            "name": "非凡|2k",
+            "type": 1,
+            "api": "http://cj.ffzyapi.com/api.php/provide/vod/",
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "categories": [
+                "动作片",
+                "喜剧片",
+                "科幻片",
+                "恐怖片",
+                "爱情片",
+                "剧情片",
+                "战争片",
+                "记录片",
+                "国产剧",
+                "欧美剧",
+                "香港剧",
+                "韩国剧",
+                "台湾剧",
+                "日本剧",
+                "海外剧",
+                "泰国剧",
+                "国产动漫",
+                "日韩动漫",
+                "欧美动漫",
+                "港台动漫",
+                "海外动漫",
+                "大陆综艺",
+                "港台综艺",
+                "日韩综艺",
+                "欧美综艺"
+            ]
+        },
+        {
+            "key": "永乐影视",
+            "name": "玉米花|2k",
+            "type": 3,
+            "api": "csp_XBPQ",
+            "jar": "http://110.42.36.65:2345/spider.jar",
+            "ext": "http://110.42.36.65:2345/XBPQ/永乐影视.json"
+        },
+        {
+            "key": "蓝光影院",
+            "name": "🚗综合线路|2K",
+            "type": 2,
+            "api": "https://qpcj.69mini.com/api.php/provide/vod/?ac=list",
+            "playUrl": "json:http://vip.aidianying.sbs/Smdy/Baomihua?token=gDMJKdfu&url=",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "categories": [
+                "电影",
+                "国产电视",
+                "国产综艺",
+                "国产动漫",
+                "动画片",
+                "短剧",
+                "其他电视",
+                "其他综艺",
+                "其他动漫"
+            ]
+        }
+    ],
+    "doh": [
+        {
+            "name": "阿里DNS",
+            "url": "https://dns.alidns.com/dns-query",
+            "ips": [
+                "223.5.5.5",
+                "223.6.6.6"
+            ]
+        },
+        {
+            "name": "腾讯DNS",
+            "url": "https://doh.pub/dns-query",
+            "ips": [
+                "119.29.29.29",
+                "182.254.116.116"
+            ]
+        },
+        {
+            "name": "Google",
+            "url": "https://dns.google/dns-query",
+            "ips": [
+                "8.8.4.4",
+                "8.8.8.8"
+            ]
+        },
+        {
+            "name": "Cloudflare",
+            "url": "https://cloudflare-dns.com/dns-query",
+            "ips": [
+                "1.1.1.1",
+                "1.0.0.1",
+                "2606:4700:4700::1111",
+                "2606:4700:4700::1001"
+            ]
+        },
+        {
+            "name": "AdGuard",
+            "url": "https://dns.adguard.com/dns-query",
+            "ips": [
+                "94.140.14.140",
+                "94.140.14.141"
+            ]
+        },
+        {
+            "name": "DNSWatch",
+            "url": "https://resolver2.dns.watch/dns-query",
+            "ips": [
+                "84.200.69.80",
+                "84.200.70.40"
+            ]
+        },
+        {
+            "name": "Quad9",
+            "url": "https://dns.quad9.net/dns-quer",
+            "ips": [
+                "9.9.9.9",
+                "149.112.112.112"
+            ]
+        }
+    ],
+    "flags": [
+        "imgo",
+        "youku",
+        "qq",
+        "qq 预告及花絮",
+        "iqiyi",
+        "qiyi",
+        "fun",
+        "letv",
+        "leshi",
+        "sohu",
+        "tudou",
+        "xigua",
+        "cntv",
+        "1905",
+        "pptv",
+        "mgtv",
+        "wasu",
+        "bilibili",
+        "renrenmi"
+    ]
+}

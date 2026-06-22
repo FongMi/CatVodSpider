@@ -20,6 +20,10 @@ public class TgYunDouBanPan extends NetPan {
     private boolean r;
     private final Douban s;
 
+    public TgYunDouBanPan(Douban s) {
+        this.s = s;
+    }
+
     public static native void f(TgYunDouBanPan tgYunDouBanPan);
 
     public static native void g(TgYunDouBanPan tgYunDouBanPan);
