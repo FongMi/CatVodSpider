@@ -2,25 +2,20 @@ package com.github.catvod.spider;
 
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.I0.GeneralUtils;
 import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.L1.l;
-import com.github.catvod.spider.merge.c1.JsoupDocument;
-import com.github.catvod.spider.merge.c1.JsoupElement;
 import com.github.catvod.spider.merge.e1.JsoupElements;
-import com.github.catvod.spider.merge.l.ConcatUtils;
+import com.github.catvod.spider.merge.L.ConcatUtils;
+
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class FourKZN extends NetPan {
     private Map<String, String> f() {
         return com.github.catvod.spider.merge.B.MapBuilder.b("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36", "Referer", "https://4kzn.com/");

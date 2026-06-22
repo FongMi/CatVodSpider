@@ -7,26 +7,14 @@ import com.github.catvod.en.BaseApi;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.merge.I.BilibiliApi;
 import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.K.VodCategory;
 import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.O.h;
+import com.github.catvod.spider.merge.K.VodResult;
 import com.github.catvod.spider.merge.d1.JsoupParser;
 import com.github.catvod.spider.merge.l.ConcatUtils;
 import com.github.catvod.utils.server.Server;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -34,6 +22,11 @@ import okhttp3.RequestBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.URLEncoder;
+import java.util.*;
 
 public class Bili extends NetPan {
     private JsonObject config;
@@ -413,7 +406,7 @@ public class Bili extends NetPan {
             vodItem4.p(TextUtils.join("$$$", playMap4.values()));
             return VodResult.m(vodItem4);
         }
-        com.github.catvod.spider.merge.O.VodCategory vodDetail = Subtitle.b(com.github.catvod.spider.merge.f0.HttpClient.m(ConcatUtils.a("https://api.bilibili.com/x/web-interface/view?aid=", aid), k(), null)).a();
+        VodCategory vodDetail = Subtitle.b(com.github.catvod.spider.merge.f0.HttpClient.m(ConcatUtils.a("https://api.bilibili.com/x/web-interface/view?aid=", aid), k(), null)).a();
         VodItem vodItem5 = new VodItem();
         vodItem5.l(ids.get(0));
         vodItem5.n(vodDetail.g());

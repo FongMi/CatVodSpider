@@ -4,29 +4,18 @@ import android.content.Context;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.AbstractC0291;
-import com.github.catvod.spider.merge.C0011;
-import com.github.catvod.spider.merge.C0035;
-import com.github.catvod.spider.merge.C0243;
-import com.github.catvod.spider.merge.C0287;
-import com.github.catvod.spider.merge.C0295;
-import com.github.catvod.spider.merge.C0455;
-import com.github.catvod.spider.merge.SOY;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.github.catvod.spider.merge.*;
 import okhttp3.Call;
 import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
 public class DyGod extends Spider {
 
     /* JADX INFO: renamed from: Ϳ, reason: contains not printable characters */
@@ -217,14 +206,13 @@ public class DyGod extends Spider {
                 jSONObject.put("list", jSONArray);
                 return jSONObject.toString();
             } catch (Exception e2) {
-                e = e2;
-                SpiderDebug.log(e);
+                SpiderDebug.log(e2);
                 return str;
             }
         } catch (Exception e3) {
-            e = e3;
             str = "";
         }
+        return str;
     }
 
     public String homeContent(boolean z) {

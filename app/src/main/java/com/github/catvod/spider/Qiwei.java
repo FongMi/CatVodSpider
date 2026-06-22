@@ -5,30 +5,25 @@ import android.util.Base64;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.I0.GeneralUtils;
 import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.L1.l;
-import com.github.catvod.spider.merge.c1.JsoupElement;
+import com.github.catvod.spider.merge.K.VodResult;
 import com.github.catvod.spider.merge.d1.JsoupParser;
 import com.github.catvod.spider.merge.e1.JsoupElements;
-import com.github.catvod.spider.merge.l.ConcatUtils;
 import com.google.gson.JsonParser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONObject;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.util.*;
+
+
 public class Qiwei extends NetPan {
     public String l = "https://www.qwnull.com";
     public String m = "PHPSESSID=mhru8eqqsqll0odfgtgbua4uug; path=/";
@@ -47,7 +42,7 @@ public class Qiwei extends NetPan {
             }
             if (com.github.catvod.spider.merge.Q0.a.b(strH)) {
                 SpiderDebug.log("ocr Response ocr data: " + strH);
-                String strM = com.github.catvod.spider.merge.f0.HttpClient.m(this.l + "/index.php/ajax/verify_check?type=search&verify=" + strH, getHeader(), null);
+                String strM = HttpClient.m(this.l + "/index.php/ajax/verify_check?type=search&verify=" + strH, getHeader(), null);
                 StringBuilder sb = new StringBuilder();
                 sb.append("ocr Response data: ");
                 sb.append(strM);

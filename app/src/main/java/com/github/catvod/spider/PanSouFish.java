@@ -3,22 +3,19 @@ package com.github.catvod.spider;
 import android.content.Context;
 import android.text.TextUtils;
 import com.github.catvod.en.NetPan;
-import com.github.catvod.spider.merge.K.VodResult;
 import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.q1.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+
 public class PanSouFish extends NetPan {
     private static Gson p = new Gson();
     private static final Map<String, String> q;

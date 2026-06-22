@@ -15,17 +15,15 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.C0948d;
-import com.github.catvod.spider.merge.C1024e;
-import com.github.catvod.spider.merge.C1228h;
 import com.github.catvod.spider.merge.W;
 import com.github.catvod.spider.merge.eE;
 import com.github.catvod.spider.merge.fS;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Map;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Init2 {
     private static EditText activationCodeInput;

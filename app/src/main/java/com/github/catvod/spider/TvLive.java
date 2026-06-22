@@ -149,7 +149,7 @@ public class TvLive extends Spider {
                     ArrayList arrayList4 = new ArrayList();
                     for (String str3 : linkedHashMap2.keySet()) {
                         try {
-                            com.github.catvod.spider.merge.KI.FilterGroup dVar3 = (com.github.catvod.spider.merge.KI.d) ((List) linkedHashMap2.get(str3)).get(i2);
+                            com.github.catvod.spider.merge.KI.FilterGroup dVar3 = (com.github.catvod.spider.merge.KI.FilterGroup) ((List) linkedHashMap2.get(str3)).get(i2);
                             StringBuilder sb = new StringBuilder();
                             sb.append(str3);
                             byte[] bArr = new byte[i];

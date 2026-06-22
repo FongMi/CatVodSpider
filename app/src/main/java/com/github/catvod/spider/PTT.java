@@ -6,22 +6,18 @@ import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.spider.merge.B.JsonUtils;
 import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.I0.GeneralUtils;
 import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.L1.l;
-import com.github.catvod.spider.merge.c1.JsoupDocument;
-import com.github.catvod.spider.merge.c1.JsoupElement;
 import com.github.catvod.spider.merge.e1.JsoupElements;
-import com.github.catvod.spider.merge.l.ConcatUtils;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class PTT extends Spider {
     private String a = "https://ptt.red/";
     private String b;

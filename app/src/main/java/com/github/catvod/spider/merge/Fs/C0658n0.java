@@ -1,0 +1,14 @@
+package com.github.catvod.spider.merge.Fs;
+
+/* JADX INFO: renamed from: com.github.catvod.spider.merge.Fs.n0, reason: case insensitive filesystem */
+/* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
+enum C0658n0 extends h1 {
+    C0658n0() {
+        super("CharacterReferenceInData", 1, null);
+    }
+
+    @Override // com.github.catvod.spider.merge.Fs.h1
+    final void g(Q q, C0631a c0631a) {
+        h1.a(q, h1.c);
+    }
+}

@@ -2,18 +2,13 @@ package com.github.catvod.spider;
 
 import android.content.Context;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.parser.g;
-import com.github.catvod.spider.merge.C0948d;
-import com.github.catvod.spider.merge.C1024e;
-import com.github.catvod.spider.merge.C1080f;
-import com.github.catvod.spider.merge.C1200g;
-import com.github.catvod.spider.merge.C1228h;
 import com.github.catvod.spider.merge.C1370pv;
 import com.github.catvod.spider.merge.Yy;
-import java.util.HashMap;
-import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class AI extends Spider {
 

@@ -13,4 +13,8 @@ public class SpiderDebug {
     public static void log(String msg) {
         Log.d(TAG, msg);
     }
+
+    public static void log(String errorInHomeContent, Exception e) {
+        Log.d(TAG, errorInHomeContent + "\n" + e.getMessage());
+    }
 }

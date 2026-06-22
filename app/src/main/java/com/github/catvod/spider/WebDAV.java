@@ -3,23 +3,16 @@ package com.github.catvod.spider;
 import android.content.Context;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.spider.merge.K.VodResult;
-import com.github.catvod.spider.merge.K.Subtitle;
+import com.github.catvod.spider.merge.I0.GeneralUtils;
 import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.i0.GeneralUtils;
-import com.github.catvod.spider.merge.l.ConcatUtils;
+import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.KI.Subtitle;
 import com.thegrizzlylabs.sardineandroid.DavResource;
 import com.thegrizzlylabs.sardineandroid.Sardine;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+import java.util.*;
+
+
 public class WebDAV extends Spider {
     private static List<com.github.catvod.spider.merge.V.b> c;
     private List<String> a;

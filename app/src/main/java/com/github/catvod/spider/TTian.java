@@ -283,7 +283,7 @@ public class TTian extends Spider {
     }
 
     @Override
-    public void init(Context context, String extend) {
+    public void init(Context context, String extend) throws Exception {
         super.init(context, extend);
         this.baseUrl = C1370pv.l(extend);
     }

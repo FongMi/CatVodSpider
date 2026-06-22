@@ -4,21 +4,13 @@ import android.content.Context;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.C0011;
-import com.github.catvod.spider.merge.C0035;
-import com.github.catvod.spider.merge.C0243;
-import com.github.catvod.spider.merge.C0287;
-import com.github.catvod.spider.merge.C0455;
-import com.github.catvod.spider.merge.SOY;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import com.github.catvod.spider.merge.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+import java.util.*;
+
+
 public class BLSGod extends Spider {
 
     /* JADX INFO: renamed from: Ϳ, reason: contains not printable characters */
@@ -98,7 +90,7 @@ public class BLSGod extends Spider {
         String str;
         String strM1686;
         String strM1693;
-        String strM16932;
+        String strM16932 = null;
         String str2;
         String strD = "li";
         String strD2 = "$$$";

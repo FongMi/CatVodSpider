@@ -1,6 +1,6 @@
 package com.github.catvod.utils.server;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class ServerStart {
     private Server a;
     private int b = 8877;

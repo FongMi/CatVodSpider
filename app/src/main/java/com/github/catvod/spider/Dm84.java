@@ -2,9 +2,11 @@ package com.github.catvod.spider;
 
 import android.content.Context;
 import android.text.TextUtils;
+import com.github.catvod.bean.dm84.FilterValue;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.spider.merge.Bk.l;
 import com.github.catvod.spider.merge.HR.C0724g;
+import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.KI.k;
 import com.github.catvod.spider.merge.Mp.P;
 import com.github.catvod.spider.merge.UY.m;
@@ -15,6 +17,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.json.JSONObject;
+
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
@@ -31,7 +34,7 @@ public class Dm84 extends Spider {
         return matcher.find() ? matcher.group(1) : null;
     }
 
-    private com.github.catvod.spider.merge.KI.FilterValue buildFilter(String label, String key, List<String> options) {
+    private com.github.catvod.bean.dm84.FilterValue buildFilter(String label, String key, List<String> options) {
         ArrayList<com.github.catvod.spider.merge.KI.b> items = new ArrayList<>();
         for (String option : options) {
             if (!option.isEmpty()) {
@@ -43,7 +46,7 @@ public class Dm84 extends Spider {
                 items.add(new com.github.catvod.spider.merge.KI.b(display, value));
             }
         }
-        return new com.github.catvod.spider.merge.KI.c(key, label, items);
+        return new FilterValue(key, label, items);
     }
 
     private HashMap<String, String> createHeaders() {
@@ -86,7 +89,7 @@ public class Dm84 extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
-        ArrayList<Object> videoList = new ArrayList<>();
+        ArrayList<k> videoList = new ArrayList<>();
         if (extend.get("type") == null) extend.put("type", "");
         if (extend.get("year") == null) extend.put("year", "");
         if (extend.get("by") == null) extend.put("by", "time");
@@ -164,13 +167,13 @@ public class Dm84 extends Spider {
 
     @Override
     public String homeContent(boolean filter) {
-        ArrayList<Object> videoList = new ArrayList<>();
+        ArrayList<k> videoList = new ArrayList<>();
         ArrayList<com.github.catvod.spider.merge.KI.a> categories = new ArrayList<>();
         LinkedHashMap<String, List<?>> filters = new LinkedHashMap<>();
 
         HashMap<String, String> headers = createHeaders();
         headers.put("Referer", this.baseUrl);
-        com.github.catvod.spider.merge.nU.StringUtils resp = com.github.catvod.spider.merge.nU.FilterValue.b(this.baseUrl, headers);
+        com.github.catvod.spider.merge.nU.e resp = com.github.catvod.spider.merge.nU.c.b(this.baseUrl, headers);
         List<String> cookies = resp.c().get("set-cookie");
         if (cookies != null && !cookies.isEmpty()) {
             this.cookie = cookies.get(0);
@@ -200,10 +203,10 @@ public class Dm84 extends Spider {
             String categoryUrl = C0925t.a(
                 new byte[]{-94, 116, -76, -13, -62},
                 new byte[]{-116, 28, -64, -98, -82, 50, -6, -12}, urlBuilder);
-            m catDoc = l.e(com.github.catvod.spider.merge.nU.FilterValue.l(categoryUrl, createHeaders()));
+            m catDoc = l.e(com.github.catvod.spider.merge.nU.c.l(categoryUrl, createHeaders()));
 
             C0724g filterDivs = catDoc.o0("ul.list_filter > li > div");
-            ArrayList<com.github.catvod.spider.merge.KI.FilterValue> filterList = new ArrayList<>();
+            ArrayList<FilterValue> filterList = new ArrayList<>();
             filterList.add(buildFilter("類型", "type", filterDivs.get(0).o0(".type").c()));
             filterList.add(buildFilter("時間", "year", filterDivs.get(1).o0("a").c()));
             filterList.add(buildFilter("排序", "by", filterDivs.get(2).o0("a").c()));
@@ -230,10 +233,10 @@ public class Dm84 extends Spider {
 
     @Override
     public String playerContent(String flag, String id, List<String> vodFlags) {
-        String iframeSrc = l.e(com.github.catvod.spider.merge.nU.FilterValue.l(
+        String iframeSrc = l.e(com.github.catvod.spider.merge.nU.c.l(
             this.baseUrl + id, createHeaders())).o0("iframe").a("src");
         try {
-            C0724g scripts = l.e(com.github.catvod.spider.merge.nU.FilterValue.k(iframeSrc)).o0("script");
+            C0724g scripts = l.e(com.github.catvod.spider.merge.nU.c.k(iframeSrc)).o0("script");
             String videoUrl = "", t = "", key = "", act = "", play = "";
             for (int i = 0; i < scripts.size(); i++) {
                 String script = scripts.get(i).toString();
@@ -302,7 +305,7 @@ public class Dm84 extends Spider {
         Iterator<?> items = C0925t.c(
             new byte[]{-76, -85, -70, 117, 73, 82, 60, 1},
             new byte[]{-48, -62, -52, 91, 32, 38, 89, 108},
-            l.e(com.github.catvod.spider.merge.nU.FilterValue.l(
+            l.e(com.github.catvod.spider.merge.nU.c.l(
                 this.baseUrl + "/s----------.html?wd=" + keyword, createHeaders())));
         while (items.hasNext()) {
             m item = (m) items.next();

@@ -3,18 +3,20 @@ package com.github.catvod.spider;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+import com.github.catvod.spider.merge.I0.GeneralUtils;
+import com.github.catvod.spider.merge.K.VodResult;
 import com.github.catvod.spider.merge.dp.n;
-import com.github.catvod.spider.merge.fb.g;
-import com.github.catvod.spider.merge.nz.m;
 import com.github.catvod.spider.merge.nz.o;
+import com.github.catvod.spider.merge.q1.StringUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class XBPQPA extends XBPQAli {
-    private List<com.github.catvod.spider.merge.fb.e> a(String str) {
+    private List<com.github.catvod.spider.merge.fb.StringUtils> a(String str) {
         ArrayList arrayList = new ArrayList();
         if (str.startsWith("file://")) {
             File file = new File(str.replace("file://", ""));
@@ -24,7 +26,7 @@ public class XBPQPA extends XBPQAli {
                 for (File file2 : fileArrListFiles) {
                     String strB = o.b(file2.getName());
                     if (o.d(strB)) {
-                        com.github.catvod.spider.merge.fb.StringUtils eVar = new com.github.catvod.spider.merge.fb.e();
+                        com.github.catvod.spider.merge.fb.StringUtils eVar = new com.github.catvod.spider.merge.fb.StringUtils();
                         eVar.c(o.e(file2.getName()));
                         com.github.catvod.spider.merge.fb.StringUtils eVarA = eVar.a(strB);
                         StringBuilder sbB = com.github.catvod.spider.merge.ka.FilterGroup.b("file://");
@@ -44,7 +46,7 @@ public class XBPQPA extends XBPQAli {
                         String strConcat = o.e(str).concat(".").concat(str2);
                         if (com.github.catvod.spider.merge.lq.VodCategory.a(strConcat).code() == 200) {
                             String lastPathSegment = Uri.parse(strConcat).getLastPathSegment();
-                            com.github.catvod.spider.merge.fb.StringUtils eVar2 = new com.github.catvod.spider.merge.fb.e();
+                            com.github.catvod.spider.merge.fb.StringUtils eVar2 = new com.github.catvod.spider.merge.fb.StringUtils();
                             eVar2.c(lastPathSegment);
                             com.github.catvod.spider.merge.fb.StringUtils eVarA2 = eVar2.a(str2);
                             eVarA2.d(strConcat);
@@ -95,18 +97,18 @@ public class XBPQPA extends XBPQAli {
     public String playerContent(String str, String str2, List<String> list) {
         try {
             if (str2.contains("youtube.com")) {
-                com.github.catvod.spider.merge.fb.FilterGroup dVar = new com.github.catvod.spider.merge.fb.d();
+                com.github.catvod.spider.merge.fb.FilterGroup dVar = new com.github.catvod.spider.merge.fb.FilterGroup();
                 dVar.i(Youtube.fetch(str2));
                 return dVar.toString();
             }
             if (str.equals("直连")) {
-                com.github.catvod.spider.merge.fb.FilterGroup dVar2 = new com.github.catvod.spider.merge.fb.d();
+                com.github.catvod.spider.merge.fb.FilterGroup dVar2 = new com.github.catvod.spider.merge.fb.FilterGroup();
                 dVar2.i(str2);
                 dVar2.h(a(str2));
                 return dVar2.toString();
             }
             if (str.equals("嗅探")) {
-                com.github.catvod.spider.merge.fb.FilterGroup dVar3 = new com.github.catvod.spider.merge.fb.d();
+                com.github.catvod.spider.merge.fb.FilterGroup dVar3 = new com.github.catvod.spider.merge.fb.FilterGroup();
                 dVar3.d();
                 dVar3.i(str2);
                 return dVar3.toString();
@@ -114,7 +116,7 @@ public class XBPQPA extends XBPQAli {
             if (!str.equals("解析")) {
                 return super.playerContent(str, str2, list);
             }
-            com.github.catvod.spider.merge.fb.FilterGroup dVar4 = new com.github.catvod.spider.merge.fb.d();
+            com.github.catvod.spider.merge.fb.FilterGroup dVar4 = new com.github.catvod.spider.merge.fb.FilterGroup();
             dVar4.d();
             dVar4.b();
             dVar4.i(str2);

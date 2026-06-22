@@ -2,7 +2,9 @@ package com.github.catvod.en;
 
 import android.util.Base64;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -14,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class TimeBasedEncryption {
     private static PublicKey a;
 
@@ -30,7 +32,7 @@ public class TimeBasedEncryption {
         }
     }
 
-    public static String encrypt(String str) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public static String encrypt(String str) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmm");
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         byte[] bytes = (str + ":" + simpleDateFormat.format(new Date())).getBytes();
@@ -40,7 +42,7 @@ public class TimeBasedEncryption {
         return Base64.encodeToString(cipher.doFinal(bytes), 0);
     }
 
-    public static String extracted(String str) {
+    public static String extracted(String str) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         return encrypt(str);
     }
 }

@@ -3,16 +3,19 @@ package com.github.catvod.spider;
 import android.content.Context;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.spider.merge.dp.p;
+import com.github.catvod.spider.merge.fb.FilterGroup;
+
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class XBPQAli extends Spider {
     public static final Pattern a = Pattern.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?");
 
-    public static Object[] proxy(Map<String, String> map) {
+    public static Object[] proxy(Map<String, String> map) throws UnsupportedEncodingException {
         String str = map.get("type");
         if (str.equals("sub")) {
             return p.o().H(map);
@@ -51,7 +54,7 @@ public class XBPQAli extends Spider {
             }
             p pVarO = p.o();
             pVarO.getClass();
-            com.github.catvod.spider.merge.fb.FilterGroup dVar = new com.github.catvod.spider.merge.fb.d();
+            FilterGroup dVar = new FilterGroup();
             dVar.i(pVarO.p(strArrSplit[0]));
             dVar.h(pVarO.v(strArrSplit));
             dVar.a(pVarO.q());

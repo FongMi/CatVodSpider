@@ -4,45 +4,26 @@ import android.content.Context;
 import android.os.Build;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.NetPan;
-import com.github.catvod.spider.C0594;
 import com.github.catvod.spider.JuheShortDrama;
-import com.github.catvod.spider.merge.F1.h;
-import com.github.catvod.spider.merge.I.QuarkDriveApi;
-import com.github.catvod.spider.merge.I.C0758h0;
-import com.github.catvod.spider.merge.I.AliDriveApi;
-import com.github.catvod.spider.merge.I.C0783y;
-import com.github.catvod.spider.merge.I.E0;
-import com.github.catvod.spider.merge.I.O;
-import com.github.catvod.spider.merge.I.Q;
-import com.github.catvod.spider.merge.I.Q0;
-import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.I.v0;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.I.*;
+import com.github.catvod.spider.merge.K.JsonUtils;
 import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.K.j;
+import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.L.k;
 import com.github.catvod.spider.merge.b0.C0902a;
 import com.google.gson.JsonParser;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+
 /* JADX INFO: renamed from: com.github.catvod.spider.网盘集合, reason: contains not printable characters */
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class C0594 extends NetPan {
     public static final /* synthetic */ int m = 0;
     public List<k> l = new ArrayList();

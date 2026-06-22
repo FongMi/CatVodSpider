@@ -1,0 +1,8 @@
+package com.github.catvod.spider.merge.Wb;
+
+/* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
+public interface d {
+    f a(e eVar);
+
+    String name();
+}

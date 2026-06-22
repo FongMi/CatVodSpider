@@ -4,17 +4,13 @@ import android.content.Context;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.parser.g;
-import com.github.catvod.spider.merge.C0948d;
-import com.github.catvod.spider.merge.C1024e;
-import com.github.catvod.spider.merge.C1080f;
-import com.github.catvod.spider.merge.C1200g;
-import com.github.catvod.spider.merge.C1228h;
 import com.github.catvod.spider.merge.Iw;
 import com.github.catvod.spider.merge.YS;
 import com.github.catvod.spider.merge.Yy;
-import com.github.catvod.spider.merge.g9;
-import com.github.catvod.spider.merge.jk;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,9 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Dygang extends Spider {
 
@@ -35,7 +28,7 @@ public class Dygang extends Spider {
     private Pattern T4 = Pattern.compile("/(\\S+)/");
     private Pattern b = Pattern.compile("(\\S+)");
     private Pattern OL = Pattern.compile("/play/(\\S+)/");
-    private Pattern l = Pattern.compile(com.github.catvod.parser."/ys/index_(\\d+).htm");
+    private Pattern l = Pattern.compile("/ys/index_(\\d+).htm");
 
     public Dygang() {
     }
@@ -210,7 +203,7 @@ public class Dygang extends Spider {
         }
     }
 
-    public void init(Context context) {
+    public void init(Context context) throws Exception {
         super.init(context);
         try {
             this.l8 = new JSONObject("{\"xg_app_player\":{\"show\":\"app全局解析\",\"des\":\"\",\"ps\":\"1\",\"parse\":\"https:\\/\\/www.x-n.cc\\/api.php?url=\"},\"ppayun2\":{\"show\":\"专线ぁ\",\"des\":\"pp云\",\"ps\":\"0\",\"parse\":\"https:\\/\\/app.banwl.com\\/static\\/player\\/?url=\"},\"ppayun\":{\"show\":\"一线ぁ\",\"des\":\"pp云\",\"ps\":\"0\",\"parse\":\"https:\\/\\/app.banwl.com\\/static\\/player\\/?url=\"},\"index\":{\"show\":\"啊班云\",\"des\":\"http:\\/\\/yun.banwl.com\",\"ps\":\"1\",\"parse\":\"https:\\/\\/app.banwl.com\\/static\\/player\\/?url=\"},\"dongmanmiao\":{\"show\":\"动漫喵\",\"des\":\"\",\"ps\":\"0\",\"parse\":\"\"},\"bilibili\":{\"show\":\"bilibili\",\"des\":\"\",\"ps\":\"0\",\"parse\":\"\"},\"cycp\":{\"show\":\"动漫ぁ\",\"des\":\"\",\"ps\":\"0\",\"parse\":\"\"},\"dp\":{\"show\":\"弹幕\",\"des\":\"\",\"ps\":\"0\",\"parse\":\"\"},\"qiyi\":{\"show\":\"爱奇艺视\",\"des\":\"\",\"ps\":\"0\",\"parse\":\"\"},\"qq\":{\"show\":\"腾讯视频\",\"des\":\"\",\"ps\":\"0\",\"parse\":\"\"}}");

@@ -4,10 +4,11 @@ import android.content.Context;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.merge.e1.JsoupElements;
 import com.google.gson.JsonObject;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class TgYunPanLocal extends NetPan {
     static Pattern p = Pattern.compile("background-image:url\\('([^']+)'\\)");
     private JsonObject l;

@@ -7,27 +7,23 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.NetPan;
-import com.github.catvod.spider.YiSo;
 import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K.VodResult;
 import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.spider.merge.K.VodResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * https://yiso.fun  20260612
  */
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class YiSo extends NetPan {
     private String l = "";
 
@@ -76,7 +72,7 @@ public class YiSo extends NetPan {
             dVar = (com.github.catvod.spider.merge.X.d) new Gson().fromJson(com.github.catvod.spider.merge.k0.StringUtils.d("https://miaosou.fun/api/search?name=4k " + URLEncoder.encode(str), mapC), com.github.catvod.spider.merge.X.FilterGroup.class);
         } catch (Exception e) {
             StringUtils.printStackTrace();
-            dVar = new com.github.catvod.spider.merge.X.d();
+            dVar = new com.github.catvod.spider.merge.X.FilterGroup();
         }
         arrayList.addAll(dVar.a().a(str));
         for (VodItem iVar : arrayList) {

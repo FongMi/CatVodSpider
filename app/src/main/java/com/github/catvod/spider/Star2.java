@@ -4,20 +4,16 @@ import android.content.Context;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.I0.GeneralUtils;
 import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.L1.l;
+import com.github.catvod.spider.merge.K.VodResult;
 import com.github.catvod.spider.merge.e1.JsoupElements;
-import com.github.catvod.spider.merge.i0.GeneralUtils;
 import com.google.gson.JsonParser;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+import java.net.URLEncoder;
+import java.util.*;
+
+
 public class Star2 extends NetPan {
     private static String m = "";
     public String l = "https://1.star2.cn/";

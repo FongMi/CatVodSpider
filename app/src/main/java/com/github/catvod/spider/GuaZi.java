@@ -3,28 +3,20 @@ package com.github.catvod.spider;
 import android.text.TextUtils;
 import android.util.Base64;
 import com.github.catvod.en.NetPan;
-import com.github.catvod.spider.GuaZi;
 import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K.VodResult;
 import com.github.catvod.spider.merge.K.VodItem;
-import java.security.KeyFactory;
-import java.security.MessageDigest;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import com.github.catvod.spider.merge.K.VodResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.KeyFactory;
+import java.security.MessageDigest;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.*;
 
 public class GuaZi extends NetPan {
     public static /* synthetic */ int compareDesc(GuaZi guaZi, String a, String b) {

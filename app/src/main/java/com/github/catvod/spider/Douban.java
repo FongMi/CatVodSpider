@@ -3,17 +3,15 @@ package com.github.catvod.spider;
 import android.content.Context;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.merge.B.JsonUtils;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.K.VodCategory;
 import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.spider.merge.K.VodResult;
 import com.google.gson.JsonParser;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.*;
 
 public class Douban extends NetPan {
     private String filterUrl;

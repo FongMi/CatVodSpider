@@ -4,19 +4,14 @@ import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.spider.merge.SOY;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+
 public class LocalFile extends Spider {
     public static boolean checkstring(String str) {
         String[] strArr = {".avi", ".wmv", ".rm", ".3gp", ".mov", ".mp", ".m4", ".vob", ".ts", ".webm", ".dat", ".m3u", ".mkv", ".flv", ".aac", ".wma", ".flac", ".ape"};

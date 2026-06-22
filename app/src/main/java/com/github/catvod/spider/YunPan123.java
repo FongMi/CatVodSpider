@@ -6,10 +6,11 @@ import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
 import com.github.catvod.spider.merge.I.J0;
 import com.github.catvod.spider.merge.K.VodResult;
+
 import java.util.Arrays;
 import java.util.List;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class YunPan123 extends Spider {
     public String detailContent(String str, List<String> list) {
         return VodResult.m(J0.a().g(list.get(0).trim()));

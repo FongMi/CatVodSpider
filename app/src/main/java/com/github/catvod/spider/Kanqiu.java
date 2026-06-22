@@ -6,23 +6,20 @@ import android.util.Base64;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.spider.merge.Bk.l;
 import com.github.catvod.spider.merge.HR.C0724g;
-import com.github.catvod.spider.merge.KI.h;
+import com.github.catvod.spider.merge.I0.GeneralUtils;
+import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.KI.k;
 import com.github.catvod.spider.merge.Mp.P;
-import com.github.catvod.spider.merge.UY.m;
 import com.github.catvod.spider.merge.ZrJ;
 import com.github.catvod.spider.merge.bY.C0924s;
 import com.github.catvod.spider.merge.bY.C0925t;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+import java.util.*;
+
+
 public class Kanqiu extends Spider {
     private static String a = "http://www.88kanqiu.one";
 

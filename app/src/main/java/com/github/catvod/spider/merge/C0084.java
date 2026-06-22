@@ -1,0 +1,18 @@
+package com.github.catvod.spider.merge;
+
+import java.util.List;
+
+/* JADX INFO: renamed from: com.github.catvod.spider.merge.ɪ, reason: contains not printable characters */
+/* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
+public class C0084 implements InterfaceC0174 {
+    @Override // com.github.catvod.spider.merge.InterfaceC0174
+    public String name() {
+        return SOY.d("092733050005133C365B15110E37235B18160926");
+    }
+
+    @Override // com.github.catvod.spider.merge.InterfaceC0174
+    /* JADX INFO: renamed from: Ϳ */
+    public C0367 mo343(C0019 c0019, List<C0367> list) {
+        return C0367.m1420(C0131.m455(list.get(0).m1427(), list.get(1).m1427()));
+    }
+}

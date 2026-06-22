@@ -16,7 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.*;
 import com.github.catvod.spider.Init;
-import com.github.catvod.spider.merge.K.i;
+import com.github.catvod.spider.merge.K.VodItem;
 import com.github.catvod.spider.merge.i0.m;
 import com.github.catvod.utils.server.Server;
 
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class BaseApi {
     public String a;
     private AlertDialog b;
@@ -99,7 +99,7 @@ public class BaseApi {
 
     public static native /* synthetic */ void f(Activity activity);
 
-    public static native i fakeVod(List list, String str);
+    public static native VodItem fakeVod(List list, String str);
 
     private static native void g(Activity activity);
 

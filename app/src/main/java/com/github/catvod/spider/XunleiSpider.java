@@ -5,18 +5,18 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
 import com.github.catvod.spider.merge.I.B0;
-import com.github.catvod.spider.merge.I.C0;
-import com.github.catvod.spider.merge.I.AliDriveApi;
 import com.github.catvod.spider.merge.I.BuilderUtils;
+import com.github.catvod.spider.merge.I.C0;
 import com.github.catvod.spider.merge.I.z0;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.I0.GeneralUtils;
 import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.i0.GeneralUtils;
+import com.github.catvod.spider.merge.K.VodResult;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class XunleiSpider extends Spider {
     private VodItem a(String str, String str2, z0 z0Var, List<B0> list) {
         int i;

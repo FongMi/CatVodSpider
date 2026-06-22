@@ -5,25 +5,14 @@ import android.net.Uri;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.K.Subtitle;
 import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.M.g;
-import com.github.catvod.spider.merge.i0.GeneralUtils;
+import com.github.catvod.spider.merge.I0.GeneralUtils;
+import com.github.catvod.spider.merge.K.VodResult;
 import com.google.gson.Gson;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
+
+import java.util.*;
+import java.util.concurrent.*;
 
 public class AList extends Spider {
     private List<com.github.catvod.spider.merge.M.b> serverConfigs;

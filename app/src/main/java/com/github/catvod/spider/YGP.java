@@ -6,20 +6,21 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.spider.merge.Bk.l;
 import com.github.catvod.spider.merge.HR.C0724g;
-import com.github.catvod.spider.merge.UY.h;
-import com.github.catvod.spider.merge.UY.m;
+import com.github.catvod.spider.merge.I0.GeneralUtils;
+import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.ZrJ;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class YGP extends Spider {
     private static final String b = "https://www.6huo.com/";
     private static final String c = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36";

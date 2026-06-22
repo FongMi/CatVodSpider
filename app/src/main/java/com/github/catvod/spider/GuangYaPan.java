@@ -4,17 +4,17 @@ import android.content.Context;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
-import com.github.catvod.spider.merge.B.LogUtils;
-import com.github.catvod.spider.merge.I.O;
 import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.spider.merge.I.O;
 import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.spider.merge.K.VodResult;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.json.JSONObject;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+
 public class GuangYaPan extends Spider {
     public static final Pattern a = Pattern.compile("www\\.guangyapan\\.com/s/([^/#?]*)(?:\\?code=([\\w]+))?(?:#/share/([\\w-]+))?");
 

@@ -6,26 +6,24 @@ import android.text.TextUtils;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K.VodResult;
-import com.github.catvod.spider.merge.K.Subtitle;
+
+import com.github.catvod.spider.merge.I0.GeneralUtils;
 import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.i0.GeneralUtils;
-import com.github.catvod.spider.merge.l.ConcatUtils;
+import com.github.catvod.spider.merge.K.VodResult;
+
+import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.y.z;
-import java.io.File;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* JADX INFO: loaded from: /tmp/decompiler/b6c77a94381e3ab8a4e2fa73d7b9922b/classes.dex */
+import java.io.File;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
 public class Push extends NetPan {
     public static final List<String> m = Arrays.asList("thunder", "magnet", "ed2k", "ftp");
     private String l = "http://127.0.0.1:8090";
