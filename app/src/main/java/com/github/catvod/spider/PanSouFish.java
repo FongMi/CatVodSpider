@@ -83,7 +83,6 @@
 //            map.put("referer", str2);
 //            map.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
 //            map.put("Content-Type", "application/json");
-//            f(com.github.catvod.spider.merge.f0.HttpClient.f(str2, json, map).a(), str, arrayList);
 //        } catch (Exception e) {
 //            StringUtils.printStackTrace(e);
 //        }

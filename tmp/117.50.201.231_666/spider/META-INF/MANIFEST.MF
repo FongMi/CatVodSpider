@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Built-By: Signflinger
+Created-By: Android Gradle 8.0.2
+
+Name: classes.dex
+SHA1-Digest: mTWoONn1eRPN8r93HSCqSrZrPTw=
+

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <title>小哥哥</title>
+    <style>body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: Arial, sans-serif; } .container { width: 90%; max-width: 500px; display: flex; flex-direction: column; align-items: center; } .title { font-size: 1.2em; margin-bottom: 30px; text-align: center; } .title span { color: red; font-weight: bold; } .input-wrapper { width: 100%; margin-bottom: 15px; } .input-wrapper textarea { width: 100%; height: 100px; box-sizing: border-box; padding: 10px; font-size: 1em; resize: none; } .select-container { width: 100%; margin-bottom: 15px; } .select-container select { width: 100%; height: 42px; box-sizing: border-box; padding: 0 10px; font-size: 1em; text-align: center; text-align-last: center; /* For modern browsers */ } .button { width: 100%; height: 42px; box-sizing: border-box; font-size: 1em; margin-bottom: 10px; cursor: pointer; } .button.push { background-color: #4CAF50; color: white; border: none; } .button.clear { background-color: #f44336; color: white; border: none; } .image-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 15px; } .image-wrapper img { width: 20%; }</style></head>
+
+<body>
+<div class="container">
+    <div class="image-wrapper">
+        <img src="https://fs-im-kefu.7moor-fs1.com/ly/4d2c3f00-7d4c-11e5-af15-41bf63ae4ea0/1729153771822/xiaocge.jpg" alt="图片"></div>
+    <div class="title">公众号【
+        <span>小哥哥</span>】</div>
+    <div class="title">备用号【
+        <span>小哥哥vip</span>】</div>
+    <div class="input-wrapper">
+        <textarea id="push_url" placeholder="请输入需要推送的UC、夸克Cookie、B站的Cookie或阿里32位Token(支持http)"></textarea>
+    </div>
+    <div class="select-container">
+        <select id="push_type">
+            <option value="1">UC Cookie</option>
+            <option value="2">夸克Cookie</option>
+            <option value="3">阿里Token</option>
+            <option value="4">B站Cookie</option>
+        </select>
+    </div>
+    <button class="button push" onclick="push()">推送</button>
+    <button class="button clear" onclick="clearInput()">清除</button></div>
+<script>
+    function clearInput() {
+     document.getElementById('push_url').value = '';
+   }
+
+   function push() {
+     var pushUrl = encodeURIComponent(document.getElementById('push_url').value);
+     var pushType = document.getElementById('push_type').value;
+     var apiUrl = '';
+
+     if (pushType === '1') {
+       apiUrl = '/proxy?do=pushinfo&type=uc&val=' + encodeURIComponent(pushUrl);
+     } else if (pushType === '2') {
+       apiUrl = '/proxy?do=pushinfo&type=quark&val=' + encodeURIComponent(pushUrl);
+     } else if (pushType === '3') {
+       apiUrl = '/proxy?do=pushinfo&type=ali&val=' + encodeURIComponent(pushUrl);
+     } else if (pushType === '4') {
+       apiUrl = '/proxy?do=pushinfo&type=bili&val=' + encodeURIComponent(pushUrl);
+     }
+
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', apiUrl, true);
+     xhr.onreadystatechange = function() {
+       if (xhr.readyState === XMLHttpRequest.DONE) {
+         if (xhr.status === 200) {
+           console.log('请求成功');
+           alert('请求成功');
+         } else {
+           console.log('请求失败');
+           alert('请求失败');
+         }
+       }
+     };
+     xhr.send();
+   }</script>
+</body>
+
+</html>

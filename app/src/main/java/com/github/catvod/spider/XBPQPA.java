@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import com.github.catvod.bean.VodResult;
+import com.github.catvod.spider.merge.fb.FilterGroup;
+import com.github.catvod.spider.merge.fb.StringUtils;
 import com.github.catvod.utils.OkHttpUtil;
 
 import java.io.File;
@@ -13,7 +15,7 @@ import java.util.List;
 
 
 public class XBPQPA extends XBPQAli {
-    private List<com.github.catvod.spider.merge.fb.StringUtils> a(String str) {
+    private List<StringUtils> a(String str) {
         ArrayList arrayList = new ArrayList();
         if (str.startsWith("file://")) {
             File file = new File(str.replace("file://", ""));
@@ -25,9 +27,9 @@ public class XBPQPA extends XBPQAli {
                     String strB = name.substring(name.lastIndexOf(".") + 1);
                     if (strB.equals("srt") || strB.equals("ass") || strB.equals("ssa")) {
                         String baseName = name.contains(".") ? name.substring(0, name.lastIndexOf(".")) : name;
-                        com.github.catvod.spider.merge.fb.StringUtils eVar = new com.github.catvod.spider.merge.fb.StringUtils();
+                        StringUtils eVar = new StringUtils();
                         eVar.c(baseName);
-                        com.github.catvod.spider.merge.fb.StringUtils eVarA = eVar.a(strB);
+                        StringUtils eVarA = eVar.a(strB);
                         StringBuilder sbB = new StringBuilder("file://");
                         sbB.append(file2.getAbsolutePath());
                         eVarA.d(sbB.toString());
@@ -45,9 +47,9 @@ public class XBPQPA extends XBPQAli {
                         String strConcat = (str.contains(".") ? str.substring(0, str.lastIndexOf(".")) : str).concat(".").concat(str2);
                         if (OkHttpUtil.string(strConcat) != null) {
                             String lastPathSegment = Uri.parse(strConcat).getLastPathSegment();
-                            com.github.catvod.spider.merge.fb.StringUtils eVar2 = new com.github.catvod.spider.merge.fb.StringUtils();
+                            StringUtils eVar2 = new StringUtils();
                             eVar2.c(lastPathSegment);
-                            com.github.catvod.spider.merge.fb.StringUtils eVarA2 = eVar2.a(str2);
+                            StringUtils eVarA2 = eVar2.a(str2);
                             eVarA2.d(strConcat);
                             arrayList.add(eVarA2);
                         }
@@ -81,7 +83,7 @@ public class XBPQPA extends XBPQAli {
             if (strTrim.contains("https://www.aliyundrive.com/s/") || strTrim.contains("https://www.alipan.com/s/")) {
                 strTrim = strTrim.replace("www.alipan.com", "www.aliyundrive.com").replaceAll("[\\S\\s]*(https://www\\.aliyundrive\\.com/s/\\S{11})[\\S\\s]*", "$1");
             }
-            return strTrim.contains("aliyundrive") ? super.detailContent(list) : com.github.catvod.spider.merge.fb.FilterGroup.e(b(strTrim));
+            return strTrim.contains("aliyundrive") ? super.detailContent(list) : FilterGroup.e(b(strTrim));
         } catch (Exception unused) {
             return "";
         }
@@ -96,18 +98,18 @@ public class XBPQPA extends XBPQAli {
     public String playerContent(String str, String str2, List<String> list) {
         try {
             if (str2.contains("youtube.com")) {
-                com.github.catvod.spider.merge.fb.FilterGroup dVar = new com.github.catvod.spider.merge.fb.FilterGroup();
+                FilterGroup dVar = new FilterGroup();
                 dVar.i(Youtube.fetch(str2));
                 return dVar.toString();
             }
             if (str.equals("直连")) {
-                com.github.catvod.spider.merge.fb.FilterGroup dVar2 = new com.github.catvod.spider.merge.fb.FilterGroup();
+                FilterGroup dVar2 = new FilterGroup();
                 dVar2.i(str2);
                 dVar2.h(a(str2));
                 return dVar2.toString();
             }
             if (str.equals("嗅探")) {
-                com.github.catvod.spider.merge.fb.FilterGroup dVar3 = new com.github.catvod.spider.merge.fb.FilterGroup();
+                FilterGroup dVar3 = new FilterGroup();
                 dVar3.d();
                 dVar3.i(str2);
                 return dVar3.toString();
@@ -115,7 +117,7 @@ public class XBPQPA extends XBPQAli {
             if (!str.equals("解析")) {
                 return super.playerContent(str, str2, list);
             }
-            com.github.catvod.spider.merge.fb.FilterGroup dVar4 = new com.github.catvod.spider.merge.fb.FilterGroup();
+            FilterGroup dVar4 = new FilterGroup();
             dVar4.d();
             dVar4.b();
             dVar4.i(str2);

@@ -21,23 +21,18 @@
 //                HashMap map = new HashMap();
 //                HashMap map2 = new HashMap();
 //                map2.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
-//                com.github.catvod.spider.merge.f0.HttpClient.o(this.l, map2, map);
 //                m = GeneralUtils.A(map, "");
 //                SpiderDebug.log("Star2 fetchCookie: " + m);
 //            } catch (Exception e) {
 //                SpiderDebug.log("Star2 fetchCookie error: " + e);
 //            }
 //        }
-//        return com.github.catvod.spider.merge.f0.HttpClient.m(str, getHeader(), null);
 //    }
 //
 //    private List<VodItem> g(String str, JsoupElements c1036g) {
 //        ArrayList arrayList = new ArrayList();
-//        Iterator<com.github.catvod.spider.merge.c1.JsoupElement> it = c1036g.iterator();
 //        while (it.hasNext()) {
-//            com.github.catvod.spider.merge.c1.JsoupElement mVarM0 = it.next().m0("a[href]");
 //            if (!mVarM0.c("href").startsWith("https")) {
-//                String strReplaceAll = com.github.catvod.spider.merge.P0.StringUtils.b(str) ? mVarM0.c("title").replaceAll("〖置顶〗", "") : str;
 //                VodItem iVar = new VodItem();
 //                iVar.r("file");
 //                iVar.l(mVarM0.c("href") + "#" + strReplaceAll);
@@ -67,7 +62,6 @@
 //        iVar.l(list.get(0).split("#")[0]);
 //        iVar.m(list.get(0).split("#")[1]);
 //        ArrayList arrayList = new ArrayList();
-//        Iterator<com.github.catvod.spider.merge.c1.JsoupElement> it = c1036gL0.iterator();
 //        while (it.hasNext()) {
 //            arrayList.add(it.next().c("href"));
 //        }

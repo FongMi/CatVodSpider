@@ -81,7 +81,7 @@ public class GuaZi extends NetPan {
             params.put("signature", signature);
             params.put("app_id", "1");
             params.put("ad_version", "1");
-            String response = com.github.catvod.spider.merge.f0.HttpClient.g("https://api.w32z7vtd.com" + apiPath, params, buildCommonHeaders());
+            String response = OkHttpUtil.postJsonString("https://api.w32z7vtd.com" + apiPath, new org.json.JSONObject(params).toString(), buildCommonHeaders());
             if (TextUtils.isEmpty(response)) {
                 return null;
             }
@@ -98,7 +98,7 @@ public class GuaZi extends NetPan {
     }
 
     private Map<String, String> buildCommonHeaders() {
-        HashMap mapB = com.github.catvod.spider.merge.B.MapBuilder.b("Version", "2406025", "PackageName", "com.uf076bf0c246.qe439f0d5e.m8aaf56b725a.ifeb647346f");
+        HashMap<String, String> mapB = new HashMap<>(); mapB.put("Version", "2406025"); mapB.put("PackageName", "com.uf076bf0c246.qe439f0d5e.m8aaf56b725a.ifeb647346f");
         mapB.put("Ver", "1.9.2");
         mapB.put("Referer", "https://api.w32z7vtd.com");
         mapB.put("Content-Type", "application/x-www-form-urlencoded");
@@ -283,7 +283,7 @@ public class GuaZi extends NetPan {
                         }
                     }
                     if (!arrayList2.isEmpty()) {
-                        Collections.sort(arrayList2, new Comparator() { // from class: com.github.catvod.spider.merge.g0.k
+                        Collections.sort(arrayList2, new Comparator() {
                             @Override // java.util.Comparator
                             public final int compare(Object obj, Object obj2) {
                                 return GuaZi.f(this.b, (String) obj, (String) obj2);
@@ -354,7 +354,7 @@ public class GuaZi extends NetPan {
             }
         }
         if (!arrayList.isEmpty()) {
-            Collections.sort(arrayList, new Comparator() { // from class: com.github.catvod.spider.merge.g0.l
+            Collections.sort(arrayList, new Comparator() {
                 @Override // java.util.Comparator
                 public final int compare(Object obj, Object obj2) {
                     return GuaZi.g(this.b, (String) obj, (String) obj2);
