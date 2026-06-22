@@ -12,12 +12,9 @@ import android.webkit.*;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
 import com.github.catvod.spider.merge.I.*;
-import com.github.catvod.spider.merge.I0.GeneralUtils;
-import com.github.catvod.spider.merge.L.ConcatUtils;
 import com.github.catvod.spider.merge.g0.RunnableC1210f;
 import com.github.catvod.spider.merge.g0.RunnableC1214j;
-import com.github.catvod.spider.merge.q1.StringUtils;
-import com.github.catvod.spider.merge.y.z;
+
 import com.github.catvod.utils.server.ServerStart;
 import org.json.JSONObject;
 
@@ -55,7 +52,7 @@ public class Init {
         @Override
         public void onLoadResource(WebView webView, String url) {
             if (url.contains(".mp3")) {
-                GeneralUtils.w("url:mp4" + url);
+                Log.w("Spider", "url:mp4" + url);
                 System.out.println("url:mp4" + url);
                 throw null;
             }
@@ -100,7 +97,7 @@ public class Init {
                     System.out.println("POST Request URL: " + requestUrl);
                     System.out.println("POST Request Body: " + sb.toString());
                 } catch (IOException e) {
-                    StringUtils.printStackTrace(e);
+                    e.printStackTrace();
                 }
             }
             System.out.println("Request URL: " + requestUrl);
@@ -122,21 +119,22 @@ public class Init {
             String binaryName = init.getArchBinary("tgsou-linux", "tgsou-arm64", "tgsou-armV7");
             init.extractBinary(binaryName, new File(context().getFilesDir().getAbsolutePath() + "/" + binaryName));
             String cmd;
-            if (jsonObj != null && jsonObj.has("proxy") && com.github.catvod.spider.merge.P0.StringUtils.d(jsonObj.getString("proxy"))) {
+            if (jsonObj != null && jsonObj.has("proxy") && (jsonObj.getString("proxy") != null && !jsonObj.getString("proxy".isEmpty())) {
                 cmd = "nohup ./" + binaryName + " -proxy " + jsonObj.getString("proxy");
             } else {
                 cmd = "nohup ./" + binaryName;
             }
             init.execCommand(binaryName, cmd, "my_tgsou.log", showOutput);
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            SpiderDebug.log("Error occurred");
             SpiderDebug.log("extract assets fail");
         }
     }
 
     public static void execGoProxyFallback(Init init, Context context, boolean showOutput) {
         init.execGoProxy(context, showOutput, "goProxy_arm64");
-        if (com.github.catvod.spider.merge.P0.StringUtils.b(com.github.catvod.spider.merge.f0.HttpClient.q(AliDriveApi.r().c + "/api/ping", 1L))) {
+        String pingResult = OkHttpUtil.string(AliDriveApi.r().c + "/api/ping", new HashMap<>());
+        if (pingResult == null || pingResult.isEmpty()) {
             init.execGoProxy(context, showOutput, "goProxy_armV7");
         }
     }
@@ -151,7 +149,7 @@ public class Init {
             init.execCommand(alistBinary, setAdminCmd, "my_alist.log", enabled.booleanValue());
             init.execCommand(alistBinary, serverCmd, "my_alist.log", enabled.booleanValue());
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            SpiderDebug.log("Error occurred");
             SpiderDebug.log("extract assets fail");
         }
     }
@@ -164,7 +162,7 @@ public class Init {
             }
             activity.requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 9999);
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            SpiderDebug.log("Error occurred");
         }
     }
 
@@ -180,7 +178,7 @@ public class Init {
             init.extractBinary(fileBrowserBinary, file);
             init.execCommand(fileBrowserBinary, "HOME=/Users/my_username " + file.getAbsolutePath() + " -a 0.0.0.0 -r /storage/emulated/0", "my_filebrowser.log", enabled.booleanValue());
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            SpiderDebug.log("Error occurred");
             SpiderDebug.log("extract assets fail");
         }
     }
@@ -195,7 +193,7 @@ public class Init {
             sb.append(allinOneBinary);
             init.execCommand(allinOneBinary, sb.toString(), "my_allinoneutput.log", enabled.booleanValue());
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            SpiderDebug.log("Error occurred");
             SpiderDebug.log("extract assets fail");
         }
     }
@@ -208,19 +206,19 @@ public class Init {
         String cmd;
         init.getClass();
         try {
-            if (new File(com.github.catvod.spider.merge.VodResult.VodCategory.a("tv", ".tgsou_api_session")).exists()) {
+            if (new File(context().getFilesDir().getAbsolutePath() + "/tv/.tgsou_api_session").exists()) {
                 return;
             }
             tgSouGoBinary = init.getArchBinary("tgsou-go-linux-amd64", "tgsou-go-linux-arm64", "tgsou-go-linux-arm");
             init.extractBinary(tgSouGoBinary, new File(context().getFilesDir().getAbsolutePath() + "/" + tgSouGoBinary));
-            if (jsonObj.has("proxy") && com.github.catvod.spider.merge.P0.StringUtils.d(jsonObj.getString("proxy"))) {
+            if (jsonObj.has("proxy") && (jsonObj.getString("proxy") != null && !jsonObj.getString("proxy".isEmpty())) {
                 cmd = "nohup ./" + tgSouGoBinary + " -proxy " + jsonObj.getString("proxy");
             } else {
                 cmd = "nohup ./" + tgSouGoBinary;
             }
             init.execCommand(tgSouGoBinary, cmd, "my_tgsou-go.log", enabled.booleanValue());
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            SpiderDebug.log("Error occurred");
             SpiderDebug.log("extract assets fail");
         }
     }
@@ -234,9 +232,9 @@ public class Init {
                 init.execCommand(singBoxBinary, "nohup ./" + singBoxBinary + " run ", "my_singboxoutput.log", true);
             }
         } catch (Exception e) {
-            StringBuilder sb = BuilderUtils.b("singbox start fail ");
-            sb.append(StringUtils.getMessage());
-            GeneralUtils.w(sb.toString());
+            StringBuilder sb = new StringBuilder("singbox start fail ");
+            sb.append(e.getMessage());
+            Log.w("Spider", sb.toString());
         }
     }
 
@@ -257,7 +255,7 @@ public class Init {
                 Field activityField = itemClass.getDeclaredField("activity");
                 activityField.setAccessible(true);
                 Activity activity = (Activity) activityField.get(obj);
-                StringBuilder sb = BuilderUtils.b("getActivity:");
+                StringBuilder sb = new StringBuilder("getActivity:");
                 sb.append(activity.getComponentName().getClassName());
                 SpiderDebug.log(sb.toString());
                 return activity;
@@ -289,12 +287,12 @@ public class Init {
 
     private void execGoProxy(Context context, boolean showOutput, String binaryName) {
         try {
-            if (!com.github.catvod.spider.merge.P0.StringUtils.d(binaryName)) {
+            if (!(binaryName) != null && !binaryName.isEmpty()) {
                 binaryName = getArchBinary("goProxy_linux", "goProxy_arm64", "goProxy_armV7");
             }
             goProxyBinary = binaryName;
             File file = new File(context().getFilesDir().getAbsolutePath() + "/" + goProxyBinary);
-            String localPath = com.github.catvod.spider.merge.VodResult.VodCategory.a("tv/lib", "goProxy55");
+            String localPath = context().getFilesDir().getAbsolutePath() + "/tv/lib/goProxy55";
             boolean existsLocally = new File(localPath).exists();
             if (existsLocally) {
                 write(file, new FileInputStream(localPath));
@@ -303,7 +301,7 @@ public class Init {
                 extractBinary(goProxyBinary, file);
             }
             String cmd = "nohup " + file.getAbsolutePath() + " --md5=ajdadywekgjjbwdasdasiwqcbbdg";
-            if (com.github.catvod.spider.merge.P0.StringUtils.d(this.proxyUrl)) {
+            if ((this.proxyUrl) != null && !this.proxyUrl.isEmpty()) {
                 cmd = cmd + " --proxy=" + this.proxyUrl;
             }
             String fullCmd = cmd + " --appPath=" + context.getPackageResourcePath();
@@ -347,12 +345,12 @@ public class Init {
     private void extractBinary(String binaryName, File targetFile) throws NoSuchAlgorithmException, IOException {
         StringBuilder logMsg;
         InputStream fileInputStream;
-        String localPath = com.github.catvod.spider.merge.VodResult.VodCategory.a("tv/lib", binaryName);
+        String localPath = context().getFilesDir().getAbsolutePath() + "/tv/lib/" + binaryName;
         if (new File(localPath).exists()) {
             fileInputStream = new FileInputStream(localPath);
         } else {
-            String remoteUrl = z.b(new StringBuilder(), this.baseUrl, binaryName, "");
-            String md5Url = z.b(new StringBuilder(), this.baseUrl, binaryName, ".md5");
+            String remoteUrl = new StringBuilder().append(this.baseUrl).append(binaryName).append("").toString();
+            String md5Url = new StringBuilder().append(this.baseUrl).append(binaryName).append(".md5").toString();
             if (targetFile.exists()) {
                 MessageDigest messageDigest = MessageDigest.getInstance("MD5");
                 FileInputStream fis = new FileInputStream(targetFile);
@@ -374,7 +372,7 @@ public class Init {
                     }
                     String localMd5 = sb.toString();
                     SpiderDebug.log(binaryName + ":localMd5:" + localMd5);
-                    if (com.github.catvod.spider.merge.f0.HttpClient.l(md5Url).contains(localMd5)) {
+                    if (OkHttpUtil.string(md5Url, new HashMap<>()).contains(localMd5)) {
                         SpiderDebug.log(binaryName + ":与线上一致:");
                         fileInputStream = new FileInputStream(targetFile);
                     } else {
@@ -392,10 +390,10 @@ public class Init {
                     throw th;
                 }
             } else {
-                logMsg = com.github.catvod.spider.merge.C1.a.a(binaryName, ":不存在:");
+                logMsg = new StringBuilder(binaryName).append(":不存在:");
             }
             SpiderDebug.log(logMsg.toString());
-            fileInputStream = GeneralUtils.k(remoteUrl);
+            fileInputStream = OkHttpUtil.downloadStream(remoteUrl);
         }
         write(targetFile, fileInputStream);
         targetFile.setExecutable(true);
@@ -406,7 +404,7 @@ public class Init {
         File file = new File(context().getFilesDir().getAbsolutePath() + "/" + binaryName);
         Process process = Runtime.getRuntime().exec("/system/bin/sh\n");
         DataOutputStream outputStream = new DataOutputStream(process.getOutputStream());
-        StringBuilder sb = BuilderUtils.b("cd ");
+        StringBuilder sb = new StringBuilder("cd ");
         sb.append(file.getParent());
         sb.append("\n");
         outputStream.writeBytes(sb.toString());
@@ -414,14 +412,14 @@ public class Init {
         outputStream.writeBytes("chmod 777 " + file.getAbsolutePath() + "\n");
         boolean hasLogFile = false;
         CharSequence[] logFileArr = {logFile};
-        int unusedConst = com.github.catvod.spider.merge.P0.StringUtils.a;
+        // unused constant removed
         if (!(Array.getLength(logFileArr) == 0)) {
             int idx = 0;
             while (true) {
                 if (idx >= 1) {
                     break;
                 }
-                if (com.github.catvod.spider.merge.P0.StringUtils.b(logFileArr[idx])) {
+                if ((logFileArr[idx]) == null || logFileArr[idx].isEmpty()) {
                     hasLogFile = true;
                     break;
                 }
@@ -429,14 +427,14 @@ public class Init {
             }
         }
         if (true ^ hasLogFile) {
-            String logPath = com.github.catvod.spider.merge.VodResult.VodCategory.a("tv/log", logFile);
+            String logPath = context().getFilesDir().getAbsolutePath() + "/tv/log/" + logFile;
             StringBuilder cmdSb = new StringBuilder();
             cmdSb.append("killall -9 ");
             cmdSb.append(binaryName);
             cmdSb.append(";");
             cmdSb.append(command);
             cmdSb.append(" > ");
-            fullCmd = ConcatUtils.b(cmdSb, logPath, " 2>&1\n");
+            fullCmd = cmdSb.append(logPath).append(" 2>&1\n").toString();
         } else {
             fullCmd = "killall -9 " + binaryName + ";" + command + "\n";
         }
@@ -456,7 +454,7 @@ public class Init {
             file.delete();
         }
         ClassLoader classLoader = getClass().getClassLoader();
-        StringBuilder sb = BuilderUtils.b("assets/libs/");
+        StringBuilder sb = new StringBuilder("assets/libs/");
         sb.append(libStubPath);
         write(file, classLoader.getResourceAsStream(sb.toString()));
         try {
@@ -479,7 +477,7 @@ public class Init {
             if (!(line.contains("not found") || line.contains("killall") || line.contains("sing-box") || line.contains("goProxy") || line.contains("Killed"))) {
                 SpiderDebug.log(line);
                 if (showOutput) {
-                    GeneralUtils.w(line);
+                    Log.w("Spider", line);
                 }
             }
         }
@@ -502,8 +500,8 @@ public class Init {
             ServerStart.a().c();
         } catch (Exception e) {
             SpiderDebug.log("ailProxyDanmuServer error");
-            GeneralUtils.w("請使用 " + StringUtils.getCause());
-            StringUtils.printStackTrace();
+            Log.w("Spider", "請使用 " + e.getMessage());
+            SpiderDebug.log("Error occurred");
         }
     }
 
@@ -582,7 +580,7 @@ public class Init {
             try {
                 loadNativeLib();
             } catch (Throwable th) {
-                GeneralUtils.w(libStubPath + " load fail ex" + th.getMessage());
+                Log.w("Spider", libStubPath + " load fail ex" + th.getMessage());
             }
         }
     }

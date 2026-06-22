@@ -3,11 +3,8 @@ package com.github.catvod.spider;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
-import com.github.catvod.spider.merge.I0.GeneralUtils;
-import com.github.catvod.spider.merge.K.VodResult;
-import com.github.catvod.spider.merge.dp.n;
-import com.github.catvod.spider.merge.nz.o;
-import com.github.catvod.spider.merge.q1.StringUtils;
+import com.github.catvod.bean.VodResult;
+import com.github.catvod.utils.OkHttpUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,12 +21,14 @@ public class XBPQPA extends XBPQAli {
                 File[] fileArrListFiles = file.getParentFile().listFiles();
                 fileArrListFiles.getClass();
                 for (File file2 : fileArrListFiles) {
-                    String strB = o.b(file2.getName());
-                    if (o.d(strB)) {
+                    String name = file2.getName();
+                    String strB = name.substring(name.lastIndexOf(".") + 1);
+                    if (strB.equals("srt") || strB.equals("ass") || strB.equals("ssa")) {
+                        String baseName = name.contains(".") ? name.substring(0, name.lastIndexOf(".")) : name;
                         com.github.catvod.spider.merge.fb.StringUtils eVar = new com.github.catvod.spider.merge.fb.StringUtils();
-                        eVar.c(o.e(file2.getName()));
+                        eVar.c(baseName);
                         com.github.catvod.spider.merge.fb.StringUtils eVarA = eVar.a(strB);
-                        StringBuilder sbB = com.github.catvod.spider.merge.ka.FilterGroup.b("file://");
+                        StringBuilder sbB = new StringBuilder("file://");
                         sbB.append(file2.getAbsolutePath());
                         eVarA.d(sbB.toString());
                         arrayList.add(eVarA);
@@ -41,10 +40,10 @@ public class XBPQPA extends XBPQAli {
             try {
                 List listAsList = Arrays.asList("mp4", "mkv");
                 List<String> listAsList2 = Arrays.asList("srt", "ass");
-                if (listAsList.contains(o.b(str))) {
+                if (listAsList.contains(str.substring(str.lastIndexOf(".") + 1))) {
                     for (String str2 : listAsList2) {
-                        String strConcat = o.e(str).concat(".").concat(str2);
-                        if (com.github.catvod.spider.merge.lq.VodCategory.a(strConcat).code() == 200) {
+                        String strConcat = (str.contains(".") ? str.substring(0, str.lastIndexOf(".")) : str).concat(".").concat(str2);
+                        if (OkHttpUtil.string(strConcat) != null) {
                             String lastPathSegment = Uri.parse(strConcat).getLastPathSegment();
                             com.github.catvod.spider.merge.fb.StringUtils eVar2 = new com.github.catvod.spider.merge.fb.StringUtils();
                             eVar2.c(lastPathSegment);
@@ -55,7 +54,7 @@ public class XBPQPA extends XBPQAli {
                     }
                 }
             } catch (Exception e) {
-                StringUtils.printStackTrace();
+                e.printStackTrace();
             }
         }
         return arrayList;
@@ -67,8 +66,8 @@ public class XBPQPA extends XBPQAli {
         gVar.g(str);
         gVar.a("XBPQ");
         gVar.h("https://pic.rmb.bdstatic.com/bjh/1d0b02d0f57f0a42201f92caba5107ed.jpeg");
-        gVar.i(TextUtils.join("$$$", GeneralUtils.d(str) ? Arrays.asList("解析", "嗅探", "直链") : (GeneralUtils.c(str) || str.startsWith("magnet")) ? Arrays.asList("直连", "嗅探", "解析") : Arrays.asList("嗅探", "解析", "直连")));
-        gVar.j(TextUtils.join("$$$", Arrays.asList(n.a("播放$", str), n.a("播放$", str), n.a("播放$", str))));
+        gVar.i(TextUtils.join("$$$", str.startsWith("http") ? Arrays.asList("解析", "嗅探", "直链") : str.startsWith("magnet") ? Arrays.asList("直连", "嗅探", "解析") : Arrays.asList("嗅探", "解析", "直连")));
+        gVar.j(TextUtils.join("$$$", Arrays.asList("播放$" + str, "播放$" + str, "播放$" + str)));
         return gVar;
     }
 

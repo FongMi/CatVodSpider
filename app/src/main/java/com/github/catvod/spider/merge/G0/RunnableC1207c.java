@@ -9,7 +9,7 @@ import com.github.catvod.spider.Init;
 import com.github.catvod.spider.TgYunDouBanPan;
 import com.github.catvod.spider.merge.I.C0775q;
 import com.github.catvod.spider.merge.I.RunnableC0747c;
-import com.github.catvod.spider.merge.I.v0;
+import com.github.catvod.utils.merge.UcDriveApi;
 import java.io.File;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.g0.c, reason: case insensitive filesystem */
@@ -29,7 +29,7 @@ public final /* synthetic */ class RunnableC1207c implements Runnable {
         switch (this.b) {
             case 0:
                 String str = ConfigCenter.m;
-                com.github.catvod.spider.merge.T.b bVar = v0.r().m;
+                com.github.catvod.spider.merge.T.b bVar = UcDriveApi.r().m;
                 bVar.a();
                 bVar.j();
                 break;

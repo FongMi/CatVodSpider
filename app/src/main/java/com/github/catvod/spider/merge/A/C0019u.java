@@ -167,7 +167,7 @@ public final class C0019u implements com.github.catvod.spider.merge.N.p {
                 sb.append(strY);
                 return;
             } else {
-                com.github.catvod.spider.merge.K.b.a(sb, strY, com.github.catvod.spider.merge.L.s.B(sb));
+                com.github.catvod.bean.b.a(sb, strY, com.github.catvod.spider.merge.L.s.B(sb));
                 return;
             }
         }

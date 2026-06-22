@@ -26,14 +26,14 @@ public enum C0036d extends B {
                 return true;
             }
         }
-        if ((n.e() && com.github.catvod.spider.merge.K.b.c(((L) n).c, A.y)) || (n.d() && ((K) n).c.equals("table"))) {
+        if ((n.e() && com.github.catvod.bean.b.c(((L) n).c, A.y)) || (n.d() && ((K) n).c.equals("table"))) {
             c0032b.h(this);
             if (c0032b.F("caption")) {
                 return c0032b.D(n);
             }
             return true;
         }
-        if (n.d() && com.github.catvod.spider.merge.K.b.c(((K) n).c, A.J)) {
+        if (n.d() && com.github.catvod.bean.b.c(((K) n).c, A.J)) {
             c0032b.h(this);
             return false;
         }

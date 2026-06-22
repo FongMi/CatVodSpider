@@ -184,7 +184,7 @@ public final class C0783y {
         return "";
     }
 
-    public final List g(com.github.catvod.spider.merge.K.j jVar) {
+    public final List g(com.github.catvod.bean.j jVar) {
         if (!NetPan.isBaidu("")) {
             return null;
         }
@@ -203,7 +203,7 @@ public final class C0783y {
         i(strB, 1, arrayList2, arrayList);
         ArrayList arrayList3 = new ArrayList();
         for (JsonObject jsonObject : arrayList2) {
-            com.github.catvod.spider.merge.K.VodItem iVar = new com.github.catvod.spider.merge.K.VodItem();
+            com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
             StringBuilder sbB = t0.b("selfbaidu*#");
             sbB.append(jsonObject.get("path").getAsString());
             iVar.l(sbB.toString());
@@ -212,7 +212,7 @@ public final class C0783y {
             arrayList3.add(iVar);
         }
         for (JsonObject jsonObject2 : arrayList) {
-            com.github.catvod.spider.merge.K.VodItem iVar2 = new com.github.catvod.spider.merge.K.VodItem();
+            com.github.catvod.bean.VodItem iVar2 = new com.github.catvod.bean.VodItem();
             iVar2.l("selfbaidu_" + strB + "*#" + jsonObject2.get("server_filename").getAsString());
             iVar2.m(jsonObject2.get("server_filename").getAsString());
             iVar2.r("file");
@@ -249,7 +249,7 @@ public final class C0783y {
             } else {
                 isoDownloadUrl = NetPan.getIsoDownloadUrl(strZ);
             }
-            com.github.catvod.spider.merge.K.g gVar = new com.github.catvod.spider.merge.K.g();
+            com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
             gVar.w(isoDownloadUrl);
             gVar.i();
             gVar.a(C0773p.a.t(strArrSplit));

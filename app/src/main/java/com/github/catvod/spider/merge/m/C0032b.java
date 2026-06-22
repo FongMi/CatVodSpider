@@ -337,7 +337,7 @@ public final class C0032b {
         for (int size = this.e.size() - 1; size >= 0; size--) {
             com.github.catvod.spider.merge.L.l lVar = (com.github.catvod.spider.merge.L.l) this.e.get(size);
             String str = lVar.d.b;
-            String[] strArr2 = com.github.catvod.spider.merge.K.b.a;
+            String[] strArr2 = com.github.catvod.bean.b.a;
             for (String str2 : strArr) {
                 if (str2.equals(str)) {
                     return;
@@ -371,7 +371,7 @@ public final class C0032b {
     }
 
     public final void i(String str) {
-        while (com.github.catvod.spider.merge.K.b.c(f().d.b, C)) {
+        while (com.github.catvod.bean.b.c(f().d.b, C)) {
             if (str != null && g(str)) {
                 return;
             } else {
@@ -382,7 +382,7 @@ public final class C0032b {
 
     public final void j(boolean z2) {
         String[] strArr = z2 ? D : C;
-        while (com.github.catvod.spider.merge.K.b.c(f().d.b, strArr)) {
+        while (com.github.catvod.bean.b.c(f().d.b, strArr)) {
             A();
         }
     }
@@ -435,7 +435,7 @@ public final class C0032b {
             if (str2.equals(str)) {
                 return true;
             }
-            if (!com.github.catvod.spider.merge.K.b.c(str2, B)) {
+            if (!com.github.catvod.bean.b.c(str2, B)) {
                 return false;
             }
         }
@@ -448,13 +448,13 @@ public final class C0032b {
         int i2 = i > 100 ? size - 101 : 0;
         while (i >= i2) {
             String str = ((com.github.catvod.spider.merge.L.l) this.e.get(i)).d.b;
-            if (com.github.catvod.spider.merge.K.b.c(str, strArr)) {
+            if (com.github.catvod.bean.b.c(str, strArr)) {
                 return true;
             }
-            if (com.github.catvod.spider.merge.K.b.c(str, strArr2)) {
+            if (com.github.catvod.bean.b.c(str, strArr2)) {
                 return false;
             }
-            if (strArr3 != null && com.github.catvod.spider.merge.K.b.c(str, strArr3)) {
+            if (strArr3 != null && com.github.catvod.bean.b.c(str, strArr3)) {
                 return false;
             }
             i--;
@@ -693,7 +693,7 @@ public final class C0032b {
         com.github.catvod.spider.merge.L.o oVar;
         if (this.e.isEmpty()) {
             this.d.x(qVar);
-        } else if (this.v && com.github.catvod.spider.merge.K.b.c(f().d.b, A.A)) {
+        } else if (this.v && com.github.catvod.bean.b.c(f().d.b, A.A)) {
             w(qVar);
         } else {
             f().x(qVar);

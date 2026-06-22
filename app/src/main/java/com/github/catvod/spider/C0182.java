@@ -1,6 +1,5 @@
 package com.github.catvod.spider;
 
-import com.github.catvod.spider.merge.C0171;
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -18,7 +17,7 @@ public class C0182 {
      * @return XOR result of 567 and internal constant
      */
     public static int getXorValue() {
-        return 567 ^ C0171.f880;
+        return 567 ^ 318;
     }
 
     /**

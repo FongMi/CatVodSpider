@@ -62,8 +62,8 @@ public final class C0758h0 {
         L2b:
             com.github.catvod.spider.merge.I.h0 r1 = com.github.catvod.spider.merge.I.C0756g0.a
             java.lang.String r2 = "selfquark"
-            com.github.catvod.spider.merge.K.VodItem r4 = r1.j(r5, r2, r0, r4)
-            java.lang.String r4 = com.github.catvod.spider.merge.K.g.m(r4)
+            com.github.catvod.bean.VodItem r4 = r1.j(r5, r2, r0, r4)
+            java.lang.String r4 = com.github.catvod.bean.g.m(r4)
             return r4
         */
         throw new UnsupportedOperationException("Method not decompiled: com.github.catvod.spider.merge.I.C0758h0.a(java.lang.String, java.util.List):java.lang.String");
@@ -99,8 +99,8 @@ public final class C0758h0 {
         L2b:
             com.github.catvod.spider.merge.I.h0 r1 = com.github.catvod.spider.merge.I.w0.a
             java.lang.String r2 = "selfuc"
-            com.github.catvod.spider.merge.K.VodItem r4 = r1.j(r5, r2, r0, r4)
-            java.lang.String r4 = com.github.catvod.spider.merge.K.g.m(r4)
+            com.github.catvod.bean.VodItem r4 = r1.j(r5, r2, r0, r4)
+            java.lang.String r4 = com.github.catvod.bean.g.m(r4)
             return r4
         */
         throw new UnsupportedOperationException("Method not decompiled: com.github.catvod.spider.merge.I.C0758h0.b(java.lang.String, java.util.List):java.lang.String");
@@ -341,7 +341,7 @@ public final class C0758h0 {
         }
     }
 
-    public final com.github.catvod.spider.merge.K.VodItem j(String str, String str2, String str3, String str4) {
+    public final com.github.catvod.bean.VodItem j(String str, String str2, String str3, String str4) {
         List list;
         List list2;
         String str5;
@@ -408,7 +408,7 @@ public final class C0758h0 {
                         i++;
                         charSequence = charSequence;
                     } else {
-                        com.github.catvod.spider.merge.K.VodItem iVar = new com.github.catvod.spider.merge.K.VodItem();
+                        com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
                         iVar.l(str);
                         iVar.j(str);
                         iVar.n("https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/c7/6c/55/c76c5544-64a5-882a-3862-c68b28f16299/AppIcon-0-0-1x_U007ephone-0-11-0-0-85-220.png/350x350.png");
@@ -481,7 +481,7 @@ public final class C0758h0 {
                             try {
                                 ArrayList arrayList10 = (ArrayList) list;
                                 if (i2 >= arrayList10.size()) {
-                                    com.github.catvod.spider.merge.K.VodItem iVar2 = new com.github.catvod.spider.merge.K.VodItem();
+                                    com.github.catvod.bean.VodItem iVar2 = new com.github.catvod.bean.VodItem();
                                     iVar2.l(str);
                                     iVar2.j(str);
                                     iVar2.n("https://ts1.cn.mm.bing.net/th/id/R-C.421c96e47df7c9719403654ee4f7c281?rik=yiiEoGCTgDDc3w&riu=http%3a%2f%2fpic.9663.com%2fupload%2f2023-5%2f20235111411256277.png&ehk=R81N%2flXMrl%2bxpRlST8DtHXDfab6rzaMb83gihuD71Fk%3d&risl=&pid=ImgRaw&r=0");
@@ -544,7 +544,7 @@ public final class C0758h0 {
         }
     }
 
-    public final List k(com.github.catvod.spider.merge.K.JsonUtils jVar) {
+    public final List k(com.github.catvod.bean.JsonUtils jVar) {
         String strB;
         switch (this.a) {
             case 0:
@@ -565,7 +565,7 @@ public final class C0758h0 {
                     l(mapA, false, new com.github.catvod.spider.merge.S.a(strB), arrayList, new ArrayList(), arrayList2, 1);
                     ArrayList arrayList3 = new ArrayList();
                     for (com.github.catvod.spider.merge.S.a aVar : arrayList2) {
-                        com.github.catvod.spider.merge.K.VodItem iVar = new com.github.catvod.spider.merge.K.VodItem();
+                        com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
                         StringBuilder sbA = com.github.catvod.spider.merge.C1.a.a(strC, "*#");
                         sbA.append(aVar.d());
                         sbA.append("*#");
@@ -576,7 +576,7 @@ public final class C0758h0 {
                         arrayList3.add(iVar);
                     }
                     for (com.github.catvod.spider.merge.S.a aVar2 : arrayList) {
-                        com.github.catvod.spider.merge.K.VodItem iVar2 = new com.github.catvod.spider.merge.K.VodItem();
+                        com.github.catvod.bean.VodItem iVar2 = new com.github.catvod.bean.VodItem();
                         StringBuilder sbA2 = com.github.catvod.spider.merge.C1.a.a(strE, "_");
                         sbA2.append(aVar2.g());
                         sbA2.append("*#");
@@ -607,7 +607,7 @@ public final class C0758h0 {
                     m(mapA2, false, new com.github.catvod.spider.merge.S.a(strB), arrayList4, new ArrayList(), arrayList5, 1);
                     ArrayList arrayList6 = new ArrayList();
                     for (com.github.catvod.spider.merge.S.a aVar3 : arrayList5) {
-                        com.github.catvod.spider.merge.K.VodItem iVar3 = new com.github.catvod.spider.merge.K.VodItem();
+                        com.github.catvod.bean.VodItem iVar3 = new com.github.catvod.bean.VodItem();
                         StringBuilder sbA3 = com.github.catvod.spider.merge.C1.a.a(strC2, "*#");
                         sbA3.append(aVar3.d());
                         sbA3.append("*#");
@@ -618,7 +618,7 @@ public final class C0758h0 {
                         arrayList6.add(iVar3);
                     }
                     for (com.github.catvod.spider.merge.S.a aVar4 : arrayList4) {
-                        com.github.catvod.spider.merge.K.VodItem iVar4 = new com.github.catvod.spider.merge.K.VodItem();
+                        com.github.catvod.bean.VodItem iVar4 = new com.github.catvod.bean.VodItem();
                         StringBuilder sbA4 = com.github.catvod.spider.merge.C1.a.a(strE2, "_");
                         sbA4.append(aVar4.g());
                         sbA4.append("*#");

@@ -3,9 +3,8 @@
 //import android.content.Context;
 //import android.text.TextUtils;
 //import com.github.catvod.en.NetPan;
-//import com.github.catvod.spider.merge.K.VodItem;
-//import com.github.catvod.spider.merge.K.VodResult;
-//import com.github.catvod.spider.merge.q1.StringUtils;
+//import com.github.catvod.bean.VodItem;
+//import com.github.catvod.bean.VodResult;
 //import com.google.gson.Gson;
 //import com.google.gson.JsonObject;
 //import org.json.JSONArray;

@@ -12,7 +12,7 @@ public enum C0079z extends B {
     @Override // com.github.catvod.spider.merge.M.B
     public final boolean c(N n, C0032b c0032b) {
         B b;
-        if (n.a == 5 && com.github.catvod.spider.merge.K.b.c(c0032b.f().d.b, A.A)) {
+        if (n.a == 5 && com.github.catvod.bean.b.c(c0032b.f().d.b, A.A)) {
             c0032b.s = new ArrayList();
             c0032b.m = c0032b.l;
             c0032b.l = B.j;
@@ -48,7 +48,7 @@ public enum C0079z extends B {
                 c0032b.B("table");
                 c0032b.M();
             } else {
-                if (com.github.catvod.spider.merge.K.b.c(str, A.z)) {
+                if (com.github.catvod.bean.b.c(str, A.z)) {
                     c0032b.h(this);
                     return false;
                 }
@@ -72,12 +72,12 @@ public enum C0079z extends B {
                 if (str2.equals("col")) {
                     c0032b.e();
                     c0032b.G("colgroup");
-                } else if (com.github.catvod.spider.merge.K.b.c(str2, A.s)) {
+                } else if (com.github.catvod.bean.b.c(str2, A.s)) {
                     c0032b.e();
                     c0032b.r(l);
                     b = B.m;
                 } else {
-                    if (!com.github.catvod.spider.merge.K.b.c(str2, A.t)) {
+                    if (!com.github.catvod.bean.b.c(str2, A.t)) {
                         if (str2.equals("table")) {
                             c0032b.h(this);
                             if (!c0032b.q(str2)) {
@@ -90,7 +90,7 @@ public enum C0079z extends B {
                             c0032b.r(l);
                             return true;
                         }
-                        if (com.github.catvod.spider.merge.K.b.c(str2, A.u)) {
+                        if (com.github.catvod.bean.b.c(str2, A.u)) {
                             c0032b.g = n;
                             return c0069u.c(n, c0032b);
                         }

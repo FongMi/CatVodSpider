@@ -6,7 +6,7 @@ import com.github.catvod.en.BaseApi;
 import com.github.catvod.spider.ConfigCenter;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.merge.I.C0754f0;
-import com.github.catvod.spider.merge.I.Q0;
+import com.github.catvod.utils.merge.Yun115Api;
 import com.github.catvod.spider.merge.I.RunnableC0778t;
 import com.github.catvod.spider.merge.I.T;
 import com.github.catvod.spider.merge.I.V;
@@ -34,7 +34,7 @@ public final /* synthetic */ class RunnableC1213i implements Runnable {
                 break;
             case 1:
                 String str2 = ConfigCenter.m;
-                Q0 q0C = Q0.c();
+                Yun115Api q0C = Yun115Api.c();
                 q0C.getClass();
                 EditText editTextInitEditText = BaseApi.get().initEditText();
                 editTextInitEditText.setHint("請輸入115 安全删除码");

@@ -17,14 +17,14 @@ public final class g extends o {
                 this.b = com.github.catvod.spider.merge.R.f.a(str);
                 break;
             case 4:
-                StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
-                com.github.catvod.spider.merge.K.b.a(sbB, str, false);
-                this.b = com.github.catvod.spider.merge.R.f.a(com.github.catvod.spider.merge.K.b.g(sbB));
+                StringBuilder sbB = com.github.catvod.bean.b.b();
+                com.github.catvod.bean.b.a(sbB, str, false);
+                this.b = com.github.catvod.spider.merge.R.f.a(com.github.catvod.bean.b.g(sbB));
                 break;
             case 5:
-                StringBuilder sbB2 = com.github.catvod.spider.merge.K.b.b();
-                com.github.catvod.spider.merge.K.b.a(sbB2, str, false);
-                this.b = com.github.catvod.spider.merge.R.f.a(com.github.catvod.spider.merge.K.b.g(sbB2));
+                StringBuilder sbB2 = com.github.catvod.bean.b.b();
+                com.github.catvod.bean.b.a(sbB2, str, false);
+                this.b = com.github.catvod.spider.merge.R.f.a(com.github.catvod.bean.b.g(sbB2));
                 break;
             default:
                 com.github.catvod.spider.merge.J.b.d(str);
@@ -100,9 +100,9 @@ public final class g extends o {
                 return lVar2.P().contains(this.b);
             case 7:
                 lVar2.getClass();
-                StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+                StringBuilder sbB = com.github.catvod.bean.b.b();
                 com.github.catvod.spider.merge.R.g.a(new com.github.catvod.spider.merge.L.j(sbB), lVar2);
-                return com.github.catvod.spider.merge.K.b.g(sbB).contains(this.b);
+                return com.github.catvod.bean.b.g(sbB).contains(this.b);
             case 8:
                 com.github.catvod.spider.merge.L.c cVar2 = lVar2.g;
                 return this.b.equals(cVar2 != null ? cVar2.e("id") : "");

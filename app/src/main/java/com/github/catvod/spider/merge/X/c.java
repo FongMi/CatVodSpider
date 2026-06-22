@@ -1,6 +1,6 @@
 package com.github.catvod.spider.merge.X;
 
-import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.bean.VodItem;
 import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.Collections;

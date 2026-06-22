@@ -4,8 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K0.StringUtils;
+
+import com.github.catvod.utils.okhttp.OkHttpUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,13 +16,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-
 public class SP360 extends Spider {
     protected JSONObject a = null;
 
     protected final HashMap<String, String> a() {
-        return BuilderUtils.c("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36");
+        return new HashMap<String, String>() {{ put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"); }};
     }
 
     public String categoryContent(String str, String str2, boolean z, HashMap<String, String> map) {
@@ -37,7 +35,7 @@ public class SP360 extends Spider {
                     str6 = str6 + "&" + str7 + "=" + URLEncoder.encode(strTrim);
                 }
             }
-            JSONObject jSONObject = new JSONObject(StringUtils.d(str6, a())).getJSONObject("data");
+            JSONObject jSONObject = new JSONObject(OkHttpUtil.string(str6, a())).getJSONObject("data");
             JSONArray jSONArray = jSONObject.getJSONArray("movies");
             JSONArray jSONArray2 = new JSONArray();
             int i = 0;
@@ -103,7 +101,7 @@ public class SP360 extends Spider {
         try {
             String[] strArrSplit = list.get(0).split("_");
             String str4 = String.format("%s?cat=%s&id=%s", "https://api.web.360kan.com/v1/detail", strArrSplit[0], strArrSplit[1]);
-            JSONObject jSONObject5 = new JSONObject(StringUtils.d(str4, a())).getJSONObject("data");
+            JSONObject jSONObject5 = new JSONObject(OkHttpUtil.string(str4, a())).getJSONObject("data");
             JSONArray jSONArray = new JSONArray();
             JSONObject jSONObject6 = new JSONObject();
             jSONArray.put(jSONObject6);
@@ -196,7 +194,7 @@ public class SP360 extends Spider {
                     }
                     ArrayList arrayList11 = arrayList10;
                     String str8 = str5;
-                    JSONObject jSONObjectOptJSONObject4 = new JSONObject(StringUtils.d(string, a())).getJSONObject(str3).optJSONObject(str8);
+                    JSONObject jSONObjectOptJSONObject4 = new JSONObject(OkHttpUtil.string(string, a())).getJSONObject(str3).optJSONObject(str8);
                     ArrayList arrayList12 = new ArrayList();
                     JSONArray jSONArray2 = jSONObjectOptJSONObject4.getJSONArray(str7);
                     String str9 = str4;
@@ -241,7 +239,7 @@ public class SP360 extends Spider {
                             }
                             int i12 = i7;
                             jSONObject3 = jSONObject6;
-                            JSONObject jSONObjectOptJSONObject5 = new JSONObject(StringUtils.d(String.format("%s?cat=%s&id=%s&start=%s&end=%s&site=%s", "https://api.web.360kan.com/v1/detail", strArrSplit[0], strArrSplit[1], Integer.valueOf(i10), Integer.valueOf(i11), str7), a())).optJSONObject(str3);
+                            JSONObject jSONObjectOptJSONObject5 = new JSONObject(OkHttpUtil.string(String.format("%s?cat=%s&id=%s&start=%s&end=%s&site=%s", "https://api.web.360kan.com/v1/detail", strArrSplit[0], strArrSplit[1], Integer.valueOf(i10), Integer.valueOf(i11), str7), a())).optJSONObject(str3);
                             if (jSONObjectOptJSONObject5 == null) {
                                 str = str3;
                                 break;
@@ -324,7 +322,7 @@ public class SP360 extends Spider {
     public String homeVideoContent() {
         JSONObject jSONObject = new JSONObject();
         try {
-            String strD = StringUtils.d("https://api.web.360kan.com/v1/rank?cat=1", new HashMap());
+            String strD = OkHttpUtil.string("https://api.web.360kan.com/v1/rank?cat=1", new HashMap());
             SpiderDebug.log("响应请求：https://api.web.360kan.com/v1/rank?cat=1");
             JSONArray jSONArrayOptJSONArray = new JSONObject(strD).optJSONArray("data");
             JSONArray jSONArray = new JSONArray();
@@ -370,7 +368,7 @@ public class SP360 extends Spider {
         JSONObject jSONObjectOptJSONObject;
         JSONObject jSONObject = new JSONObject();
         try {
-            JSONObject jSONObjectOptJSONObject2 = new JSONObject(StringUtils.d(String.format("https://api.so.360kan.com/index?force_v=1&kw=%s&from=&pageno=1&v_ap=1&tab=all", str), a())).optJSONObject("data");
+            JSONObject jSONObjectOptJSONObject2 = new JSONObject(OkHttpUtil.string(String.format("https://api.so.360kan.com/index?force_v=1&kw=%s&from=&pageno=1&v_ap=1&tab=all", str), a())).optJSONObject("data");
             if (jSONObjectOptJSONObject2 != null && (jSONObjectOptJSONObject = jSONObjectOptJSONObject2.optJSONObject("longData")) != null) {
                 JSONArray jSONArray = jSONObjectOptJSONObject.getJSONArray("rows");
                 JSONArray jSONArray2 = new JSONArray();

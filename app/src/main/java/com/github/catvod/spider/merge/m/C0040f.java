@@ -17,12 +17,12 @@ public enum C0040f extends B {
             L l = (L) n;
             String str = l.c;
             if (!str.equals("tr")) {
-                if (com.github.catvod.spider.merge.K.b.c(str, A.v)) {
+                if (com.github.catvod.bean.b.c(str, A.v)) {
                     c0032b.h(this);
                     c0032b.G("tr");
                     return c0032b.D(l);
                 }
-                if (com.github.catvod.spider.merge.K.b.c(str, A.B)) {
+                if (com.github.catvod.bean.b.c(str, A.B)) {
                     return d(n, c0032b);
                 }
                 c0032b.g = n;
@@ -37,11 +37,11 @@ public enum C0040f extends B {
                 return c0079z.c(n, c0032b);
             }
             String str2 = ((K) n).c;
-            if (!com.github.catvod.spider.merge.K.b.c(str2, A.H)) {
+            if (!com.github.catvod.bean.b.c(str2, A.H)) {
                 if (str2.equals("table")) {
                     return d(n, c0032b);
                 }
-                if (com.github.catvod.spider.merge.K.b.c(str2, A.C)) {
+                if (com.github.catvod.bean.b.c(str2, A.C)) {
                     c0032b.h(this);
                     return false;
                 }

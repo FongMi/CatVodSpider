@@ -14,6 +14,6 @@ public final /* synthetic */ class C0967m implements ToIntFunction {
     public final int applyAsInt(Object obj) {
         List list = this.a;
         Pattern pattern = NetPan.a;
-        return list.indexOf(NetPan.extractNetName(((com.github.catvod.spider.merge.K.VodItem) obj).c()));
+        return list.indexOf(NetPan.extractNetName(((com.github.catvod.bean.VodItem) obj).c()));
     }
 }

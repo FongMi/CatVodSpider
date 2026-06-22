@@ -3,9 +3,9 @@ package com.github.catvod.spider;
 import android.text.TextUtils;
 import android.util.Base64;
 import com.github.catvod.en.NetPan;
-import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.K.VodResult;
+
+import com.github.catvod.bean.VodItem;
+import com.github.catvod.bean.VodResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -222,7 +222,7 @@ public class GuaZi extends NetPan {
                 if (jSONObject2.optInt("vod_continu", 0) == 0) {
                     string = "电影";
                 } else {
-                    StringBuilder sbB = BuilderUtils.b("更新至");
+                    StringBuilder sbB = new StringBuilder("更新至");
                     sbB.append(jSONObject2.optInt("vod_continu", 0));
                     sbB.append("集");
                     string = sbB.toString();
@@ -300,37 +300,37 @@ public class GuaZi extends NetPan {
     }
 
     public String homeContent(boolean z) {
-        ArrayList<com.github.catvod.spider.merge.K.VodCategory> arrayList = new ArrayList();
-        arrayList.add(new com.github.catvod.spider.merge.K.VodCategory("1", "电影"));
-        arrayList.add(new com.github.catvod.spider.merge.K.VodCategory("2", "电视剧"));
-        arrayList.add(new com.github.catvod.spider.merge.K.VodCategory("4", "动漫"));
-        arrayList.add(new com.github.catvod.spider.merge.K.VodCategory("3", "综艺"));
-        arrayList.add(new com.github.catvod.spider.merge.K.VodCategory("64", "短剧"));
+        ArrayList<com.github.catvod.bean.VodCategory> arrayList = new ArrayList();
+        arrayList.add(new com.github.catvod.bean.VodCategory("1", "电影"));
+        arrayList.add(new com.github.catvod.bean.VodCategory("2", "电视剧"));
+        arrayList.add(new com.github.catvod.bean.VodCategory("4", "动漫"));
+        arrayList.add(new com.github.catvod.bean.VodCategory("3", "综艺"));
+        arrayList.add(new com.github.catvod.bean.VodCategory("64", "短剧"));
         LinkedHashMap linkedHashMap = new LinkedHashMap();
-        for (com.github.catvod.spider.merge.K.VodCategory bVar : arrayList) {
+        for (com.github.catvod.bean.VodCategory bVar : arrayList) {
             ArrayList arrayList2 = new ArrayList();
             ArrayList arrayList3 = new ArrayList();
-            arrayList3.add(new com.github.catvod.spider.merge.K.FilterValue("全部", "0"));
+            arrayList3.add(new com.github.catvod.bean.FilterValue("全部", "0"));
             for (int i = 2025; i >= 2005; i--) {
-                arrayList3.add(new com.github.catvod.spider.merge.K.FilterValue(String.valueOf(i), String.valueOf(i)));
+                arrayList3.add(new com.github.catvod.bean.FilterValue(String.valueOf(i), String.valueOf(i)));
             }
-            arrayList3.add(new com.github.catvod.spider.merge.K.FilterValue("更早", "2004"));
-            arrayList2.add(new com.github.catvod.spider.merge.K.FilterGroup("year", "年份", arrayList3));
+            arrayList3.add(new com.github.catvod.bean.FilterValue("更早", "2004"));
+            arrayList2.add(new com.github.catvod.bean.FilterGroup("year", "年份", arrayList3));
             if (!bVar.b().equals("64")) {
                 ArrayList arrayList4 = new ArrayList();
-                arrayList4.add(new com.github.catvod.spider.merge.K.FilterValue("全部", "0"));
+                arrayList4.add(new com.github.catvod.bean.FilterValue("全部", "0"));
                 String[] strArr = {"大陆", "香港", "台湾", "美国", "韩国", "日本", "英国", "法国", "泰国", "印度", "其他"};
                 for (int i2 = 0; i2 < 11; i2++) {
                     String str = strArr[i2];
-                    arrayList4.add(new com.github.catvod.spider.merge.K.FilterValue(str, str));
+                    arrayList4.add(new com.github.catvod.bean.FilterValue(str, str));
                 }
-                arrayList2.add(new com.github.catvod.spider.merge.K.FilterGroup("area", "地区", arrayList4));
+                arrayList2.add(new com.github.catvod.bean.FilterGroup("area", "地区", arrayList4));
             }
             ArrayList arrayList5 = new ArrayList();
-            arrayList5.add(new com.github.catvod.spider.merge.K.FilterValue("最新", "d_id"));
-            arrayList5.add(new com.github.catvod.spider.merge.K.FilterValue("最热", "d_hits"));
-            arrayList5.add(new com.github.catvod.spider.merge.K.FilterValue("推荐", "d_score"));
-            arrayList2.add(new com.github.catvod.spider.merge.K.FilterGroup("sort", "排序", arrayList5));
+            arrayList5.add(new com.github.catvod.bean.FilterValue("最新", "d_id"));
+            arrayList5.add(new com.github.catvod.bean.FilterValue("最热", "d_hits"));
+            arrayList5.add(new com.github.catvod.bean.FilterValue("推荐", "d_score"));
+            arrayList2.add(new com.github.catvod.bean.FilterGroup("sort", "排序", arrayList5));
             linkedHashMap.put(bVar.b(), arrayList2);
         }
         return VodResult.p(arrayList, linkedHashMap);
@@ -398,7 +398,7 @@ public class GuaZi extends NetPan {
                     if (jSONObject2.optInt("vod_continu", 0) == 0) {
                         string = "电影";
                     } else {
-                        StringBuilder sbB = BuilderUtils.b("更新至");
+                        StringBuilder sbB = new StringBuilder("更新至");
                         sbB.append(jSONObject2.optInt("vod_continu", 0));
                         sbB.append("集");
                         string = sbB.toString();

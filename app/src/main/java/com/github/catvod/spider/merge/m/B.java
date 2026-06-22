@@ -91,7 +91,7 @@ public abstract class B {
 
     public static boolean a(N n2) {
         if (n2.a == 5) {
-            return com.github.catvod.spider.merge.K.b.d(((G) n2).b);
+            return com.github.catvod.bean.b.d(((G) n2).b);
         }
         return false;
     }

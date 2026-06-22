@@ -144,6 +144,36 @@ public class OkHttpUtil {
         new OKRequest(METHOD_POST, url, jsonStr, headerMap, callBack).execute(client);
     }
 
+    public static String postJsonString(String url, String jsonStr, Map<String, String> headerMap) {
+        OKCallBack<String> stringCallback = new OKCallBack.OKCallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                setResult("");
+                SpiderDebug.log(e);
+            }
+
+            @Override
+            public void onResponse(String response) {
+            }
+        };
+        new OKRequest(METHOD_POST, url, jsonStr, headerMap, stringCallback).execute(defaultClient());
+        return stringCallback.getResult();
+    }
+
+    /**
+     * Synchronous GET returning InputStream
+     */
+    public static java.io.InputStream downloadStream(String url) {
+        try {
+            Request req = new Request.Builder().url(url).get().build();
+            Response response = defaultClient().newCall(req).execute();
+            return response.body() != null ? response.body().byteStream() : null;
+        } catch (Exception e) {
+            SpiderDebug.log(e);
+            return null;
+        }
+    }
+
     /**
      * 根据Tag取消请求
      */

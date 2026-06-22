@@ -62,7 +62,7 @@ public final class e extends ArrayList {
     }
 
     public final String e() {
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         Iterator<E> it = iterator();
         while (it.hasNext()) {
             com.github.catvod.spider.merge.L.l lVar = (com.github.catvod.spider.merge.L.l) it.next();
@@ -71,7 +71,7 @@ public final class e extends ArrayList {
             }
             sbB.append(lVar.G());
         }
-        return com.github.catvod.spider.merge.K.b.g(sbB);
+        return com.github.catvod.bean.b.g(sbB);
     }
 
     public final e f(String str) {
@@ -96,7 +96,7 @@ public final class e extends ArrayList {
     }
 
     public final String g() {
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         Iterator<E> it = iterator();
         while (it.hasNext()) {
             com.github.catvod.spider.merge.L.l lVar = (com.github.catvod.spider.merge.L.l) it.next();
@@ -105,12 +105,12 @@ public final class e extends ArrayList {
             }
             sbB.append(lVar.O());
         }
-        return com.github.catvod.spider.merge.K.b.g(sbB);
+        return com.github.catvod.bean.b.g(sbB);
     }
 
     @Override // java.util.AbstractCollection
     public final String toString() {
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         Iterator<E> it = iterator();
         while (it.hasNext()) {
             com.github.catvod.spider.merge.L.l lVar = (com.github.catvod.spider.merge.L.l) it.next();
@@ -119,7 +119,7 @@ public final class e extends ArrayList {
             }
             sbB.append(lVar.p());
         }
-        return com.github.catvod.spider.merge.K.b.g(sbB);
+        return com.github.catvod.bean.b.g(sbB);
     }
 
     public e(int i) {

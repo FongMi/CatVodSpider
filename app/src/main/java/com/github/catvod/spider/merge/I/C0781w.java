@@ -79,7 +79,7 @@ public final class C0781w {
         } else {
             isoDownloadUrl = NetPan.getIsoDownloadUrl(strZ);
         }
-        com.github.catvod.spider.merge.K.g gVar = new com.github.catvod.spider.merge.K.g();
+        com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
         gVar.w(isoDownloadUrl);
         gVar.i();
         gVar.a(C0773p.a.t(strArr2));
@@ -91,9 +91,9 @@ public final class C0781w {
                 String str4 = strArrSplit[0];
                 String str5 = strArrSplit[1];
                 String str6 = Proxy.getUrl() + "?do=ali&type=sub&shareId=" + strArr[0] + "&fileId=" + strArrSplit[2];
-                com.github.catvod.spider.merge.K.h hVar = new com.github.catvod.spider.merge.K.h();
+                com.github.catvod.bean.h hVar = new com.github.catvod.bean.h();
                 hVar.b(str4);
-                com.github.catvod.spider.merge.K.h hVarA = hVar.a(str5);
+                com.github.catvod.bean.h hVarA = hVar.a(str5);
                 hVarA.c(str6);
                 arrayList.add(hVarA);
             }

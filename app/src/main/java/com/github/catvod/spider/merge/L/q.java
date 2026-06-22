@@ -18,7 +18,7 @@ public abstract class q implements Cloneable {
         String strValueOf;
         Appendable appendableAppend = appendable.append('\n');
         int iMin = i * gVar.f;
-        String[] strArr = com.github.catvod.spider.merge.K.b.a;
+        String[] strArr = com.github.catvod.bean.b.a;
         if (!(iMin >= 0)) {
             throw new com.github.catvod.spider.merge.J.c("width must be >= 0");
         }
@@ -28,7 +28,7 @@ public abstract class q implements Cloneable {
             iMin = Math.min(iMin, i2);
         }
         if (iMin < 21) {
-            strValueOf = com.github.catvod.spider.merge.K.b.a[iMin];
+            strValueOf = com.github.catvod.bean.b.a[iMin];
         } else {
             char[] cArr = new char[iMin];
             for (int i3 = 0; i3 < iMin; i3++) {
@@ -47,19 +47,19 @@ public abstract class q implements Cloneable {
         }
         String strE = e();
         String strE2 = d().e(str);
-        Pattern pattern = com.github.catvod.spider.merge.K.b.d;
+        Pattern pattern = com.github.catvod.bean.b.d;
         String strReplaceAll = pattern.matcher(strE).replaceAll("");
         String strReplaceAll2 = pattern.matcher(strE2).replaceAll("");
         try {
             try {
-                url = com.github.catvod.spider.merge.K.b.h(new URL(strReplaceAll), strReplaceAll2);
+                url = com.github.catvod.bean.b.h(new URL(strReplaceAll), strReplaceAll2);
             } catch (MalformedURLException unused) {
                 url = new URL(strReplaceAll2);
             }
             strReplaceAll2 = url.toExternalForm();
             return strReplaceAll2;
         } catch (MalformedURLException unused2) {
-            return com.github.catvod.spider.merge.K.b.c.matcher(strReplaceAll2).find() ? strReplaceAll2 : "";
+            return com.github.catvod.bean.b.c.matcher(strReplaceAll2).find() ? strReplaceAll2 : "";
         }
     }
 
@@ -216,14 +216,14 @@ public abstract class q implements Cloneable {
     public abstract String o();
 
     public String p() {
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         q qVarW = w();
         h hVar = qVarW instanceof h ? (h) qVarW : null;
         if (hVar == null) {
             hVar = new h("");
         }
         com.github.catvod.spider.merge.R.g.a(new com.github.catvod.spider.merge.B.c(sbB, hVar.j), this);
-        return com.github.catvod.spider.merge.K.b.g(sbB);
+        return com.github.catvod.bean.b.g(sbB);
     }
 
     public abstract void q(Appendable appendable, int i, g gVar);

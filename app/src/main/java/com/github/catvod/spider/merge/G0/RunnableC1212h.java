@@ -6,8 +6,8 @@ import com.github.catvod.en.BaseApi;
 import com.github.catvod.spider.ConfigCenter;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.merge.I.DialogInterfaceOnClickListenerC0763k;
-import com.github.catvod.spider.merge.I.J0;
-import com.github.catvod.spider.merge.I.v0;
+import com.github.catvod.utils.merge.Yun123Api;
+import com.github.catvod.utils.merge.UcDriveApi;
 import com.github.catvod.utils.server.Server;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.g0.h, reason: case insensitive filesystem */
@@ -28,7 +28,7 @@ public final /* synthetic */ class RunnableC1212h implements Runnable {
         switch (this.b) {
             case 0:
                 String str = ConfigCenter.m;
-                final v0 v0VarR = v0.r();
+                final UcDriveApi v0VarR = UcDriveApi.r();
                 v0VarR.getClass();
                 final EditText editTextInitEditText = BaseApi.get().initEditText();
                 editTextInitEditText.setHint("输入线程数");
@@ -38,7 +38,7 @@ public final /* synthetic */ class RunnableC1212h implements Runnable {
                 Init.run(new Runnable() { // from class: com.github.catvod.spider.merge.I.r0
                     @Override // java.lang.Runnable
                     public final void run() {
-                        v0 v0Var = v0VarR;
+                        UcDriveApi v0Var = v0VarR;
                         EditText editText = editTextInitEditText;
                         DialogInterface.OnClickListener onClickListener = dialogInterfaceOnClickListenerC0763k;
                         v0Var.getClass();
@@ -51,7 +51,7 @@ public final /* synthetic */ class RunnableC1212h implements Runnable {
                 break;
             case 1:
                 String str2 = ConfigCenter.m;
-                com.github.catvod.spider.merge.R.c cVar = J0.a().f;
+                com.github.catvod.spider.merge.R.c cVar = Yun123Api.a().f;
                 cVar.a();
                 cVar.f();
                 break;

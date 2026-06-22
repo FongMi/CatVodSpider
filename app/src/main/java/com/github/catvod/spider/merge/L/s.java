@@ -35,10 +35,10 @@ public class s extends p {
             boolean z5 = (this.b == 0 && lVar != null && lVar.d.c) || (this.a instanceof h);
             boolean z6 = n() == null && lVar != null && lVar.d.c;
             q qVarN = n();
-            if ((((qVarN instanceof l) && ((l) qVarN).N(gVar)) || ((qVarN instanceof s) && com.github.catvod.spider.merge.K.b.d(((s) qVarN).y()))) && com.github.catvod.spider.merge.K.b.d(y())) {
+            if ((((qVarN instanceof l) && ((l) qVarN).N(gVar)) || ((qVarN instanceof s) && com.github.catvod.bean.b.d(((s) qVarN).y()))) && com.github.catvod.bean.b.d(y())) {
                 return;
             }
-            if (this.b == 0 && lVar != null && lVar.d.d && !com.github.catvod.spider.merge.K.b.d(y())) {
+            if (this.b == 0 && lVar != null && lVar.d.d && !com.github.catvod.bean.b.d(y())) {
                 q.m(appendable, i, gVar);
             }
             z = z5;

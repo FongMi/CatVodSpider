@@ -3,8 +3,8 @@ package com.github.catvod.spider;
 import android.content.Context;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.I.v0;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.utils.merge.UcDriveApi;
+import com.github.catvod.bean.VodResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,25 +20,25 @@ public class Uc extends Spider {
         Subtitle.b("quark detailContent url:", strReplace);
         Matcher matcher = a.matcher(strReplace);
         if (matcher.find()) {
-            return VodResult.m(v0.r().A(strReplace, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", str));
+            return VodResult.m(UcDriveApi.r().A(strReplace, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", str));
         }
         return "";
     }
 
     public void init(Context context, String str) {
-        v0.r().getClass();
+        UcDriveApi.r().getClass();
         SpiderDebug.log("UcPanApi init extend:" + str);
     }
 
     public String playerContent(String str, String str2, List list) {
-        v0.r().getClass();
+        UcDriveApi.r().getClass();
         return playerContentInternal(str, str2, list);
     }
 
     public String playerContentInternal(String str, String str2, List<String> list) {
         SpiderDebug.log("quark playerContent id:" + str2);
         String[] strArrSplit = str2.split("\\+");
-        return (str.startsWith("代理原畫") || str.startsWith("極速GO原畫")) ? v0.r().G(strArrSplit, str) : str.startsWith("轉存原畫") ? v0.r().F(strArrSplit) : v0.r().G(strArrSplit, str);
+        return (str.startsWith("代理原畫") || str.startsWith("極速GO原畫")) ? UcDriveApi.r().G(strArrSplit, str) : str.startsWith("轉存原畫") ? UcDriveApi.r().F(strArrSplit) : UcDriveApi.r().G(strArrSplit, str);
     }
 
     public void test() {
@@ -51,7 +51,7 @@ public class Uc extends Spider {
         Subtitle.b("quark detailContent url:", strReplace);
         Matcher matcher = a.matcher(strReplace);
         if (matcher.find()) {
-            return VodResult.m(v0.r().A(strReplace, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", ""));
+            return VodResult.m(UcDriveApi.r().A(strReplace, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", ""));
         }
         return "";
     }

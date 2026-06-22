@@ -1,6 +1,5 @@
 package com.github.catvod.spider;
 
-import com.github.catvod.spider.merge.C1024e;
 import java.io.ByteArrayOutputStream;
 
 
@@ -37,7 +36,7 @@ public class w {
     }
 
     public static int d() {
-        return (-818) ^ C1024e.a;
+        return 828;
     }
 
     public static String e(short[] sArr, int i, int i2, int i3) {

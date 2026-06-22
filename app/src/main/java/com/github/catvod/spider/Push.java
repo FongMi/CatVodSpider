@@ -5,14 +5,12 @@ import android.net.Uri;
 import android.text.TextUtils;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.NetPan;
-import com.github.catvod.spider.merge.I.BuilderUtils;
+import com.github.catvod.utils.okhttp.OkHttpUtil;
+import com.github.catvod.bean.VodItem;
+import com.github.catvod.bean.VodResult;
 
-import com.github.catvod.spider.merge.I0.GeneralUtils;
-import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.K.VodResult;
-
+import org.jsoup.nodes.Element;
 import com.github.catvod.spider.merge.KI.Subtitle;
-import com.github.catvod.spider.merge.y.z;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,8 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
 public class Push extends NetPan {
     public static final List<String> m = Arrays.asList("thunder", "magnet", "ed2k", "ftp");
     private String l = "http://127.0.0.1:8090";
@@ -38,15 +34,17 @@ public class Push extends NetPan {
     }
 
     private String f(String str) throws InterruptedException, UnsupportedEncodingException {
-        String strA = com.github.catvod.spider.merge.f0.HttpClient.j(ConcatUtils.b(new StringBuilder(), this.l, "/torrents"), String.format("{\"action\":\"add\",\"link\":\"%s\",\"title\":\"\",\"poster\":\"\",\"save_to_db\":true}", str), new HashMap()).a();
+        String strA = OkHttpUtil.postJsonString(this.l + "/torrents",
+                String.format("{\"action\":\"add\",\"link\":\"%s\",\"title\":\"\",\"poster\":\"\",\"save_to_db\":true}", str),
+                new HashMap());
         SpiderDebug.log("torr1 Torrent added" + strA);
         try {
             String string = new JSONObject(strA).getString("hash");
             String strB = null;
-            String strM = com.github.catvod.spider.merge.f0.HttpClient.m(z.b(new StringBuilder(), this.l, "/playlist?hash=", string), new HashMap(), null);
+            String strM = OkHttpUtil.string(this.l + "/playlist?hash=" + string, new HashMap<>());
             if (!strM.contains("http")) {
                 Thread.sleep(3000L);
-                strM = com.github.catvod.spider.merge.f0.HttpClient.m(z.b(new StringBuilder(), this.l, "/playlist?hash=", string), new HashMap(), null);
+                strM = OkHttpUtil.string(this.l + "/playlist?hash=" + string, new HashMap<>());
             }
             Matcher matcher = Pattern.compile("http[^\n]+").matcher(strM);
             ArrayList arrayList = new ArrayList();
@@ -65,7 +63,7 @@ public class Push extends NetPan {
                 sb.append(strB);
                 sb.append(URLDecoder.decode(extractFileName((String) arrayList.get(i)), StandardCharsets.UTF_8.toString()));
                 sb.append("$");
-                strB = ConcatUtils.b(sb, (String) arrayList.get(i), "#");
+                strB = sb.append((String) arrayList.get(i)).append("#").toString();
             }
             return strB;
         } catch (JSONException e) {
@@ -81,12 +79,14 @@ public class Push extends NetPan {
                 File[] fileArrListFiles = file.getParentFile().listFiles();
                 fileArrListFiles.getClass();
                 for (File file2 : fileArrListFiles) {
-                    String strJ = GeneralUtils.j(file2.getName());
-                    if (GeneralUtils.r(strJ)) {
+                    String fileName = file2.getName();
+                    String strJ = fileName.substring(fileName.lastIndexOf(".") + 1);
+                    if (strJ.equals("srt") || strJ.equals("ass") || strJ.equals("ssa")) {
                         Subtitle hVar = new Subtitle();
-                        hVar.b(GeneralUtils.x(file2.getName()));
+                        String nameWithoutExt = fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf(".")) : fileName;
+                        hVar.b(nameWithoutExt);
                         Subtitle hVarA = hVar.a(strJ);
-                        StringBuilder sbB = BuilderUtils.b("file://");
+                        StringBuilder sbB = new StringBuilder("file://");
                         sbB.append(file2.getAbsolutePath());
                         hVarA.c(sbB.toString());
                         arrayList.add(hVarA);
@@ -97,10 +97,12 @@ public class Push extends NetPan {
         if (str.startsWith("http://")) {
             List listAsList = Arrays.asList("mp4", "mkv");
             List<String> listAsList2 = Arrays.asList("srt", "ass");
-            if (listAsList.contains(GeneralUtils.j(str))) {
+            String urlExt = str.substring(str.lastIndexOf(".") + 1);
+            if (listAsList.contains(urlExt)) {
+                String urlBase = str.contains(".") ? str.substring(0, str.lastIndexOf(".")) : str;
                 for (String str2 : listAsList2) {
-                    String strConcat = GeneralUtils.x(str).concat(".").concat(str2);
-                    if (com.github.catvod.spider.merge.f0.HttpClient.l(strConcat).length() <= 100) {
+                    String strConcat = urlBase + "." + str2;
+                    if (OkHttpUtil.string(strConcat).length() <= 100) {
                         String lastPathSegment = Uri.parse(strConcat).getLastPathSegment();
                         Subtitle hVar2 = new Subtitle();
                         hVar2.b(lastPathSegment);
@@ -115,7 +117,7 @@ public class Push extends NetPan {
     }
 
     public static boolean isThunder(String str) {
-        return GeneralUtils.contains(scheme(str));
+        return m.contains(scheme(str));
     }
 
     public static String scheme(String str) {
@@ -129,7 +131,7 @@ public class Push extends NetPan {
         if (NetPan.isNetPan(list.get(0))) {
             return super.detailContent("", "", list);
         }
-        if (com.github.catvod.spider.merge.P0.StringUtils.d(Youtube.hasYouTube(list.get(0)))) {
+        if (list.get(0) != null && !list.get(0).isEmpty() && Youtube.hasYouTube(list.get(0))) {
             return Youtube.get().detailContent(list);
         }
         String str = list.get(0);
@@ -158,7 +160,7 @@ public class Push extends NetPan {
                 }
             }
             iVar.o(sb.toString());
-            List listAsList2 = Arrays.asList(ConcatUtils.a("播放$", str), strF);
+            List listAsList2 = Arrays.asList("播放$" + str, strF);
             StringBuilder sb2 = new StringBuilder();
             Iterator it2 = listAsList2.iterator();
             if (it2.hasNext()) {
@@ -173,7 +175,7 @@ public class Push extends NetPan {
             strJoin = sb2.toString();
         } else {
             iVar.o(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
-            strJoin = TextUtils.join("$$$", Arrays.asList(ConcatUtils.a("播放$", str), ConcatUtils.a("播放$", str), ConcatUtils.a("播放$", str)));
+            strJoin = TextUtils.join("$$$", Arrays.asList("播放$" + str, "播放$" + str, "播放$" + str));
         }
         iVar.p(strJoin);
         return VodResult.m(iVar);
@@ -205,7 +207,7 @@ public class Push extends NetPan {
             return gVar3.toString();
         }
         if (!str.equals("解析")) {
-            return com.github.catvod.spider.merge.P0.StringUtils.d(Youtube.hasYouTube(str2)) ? Youtube.get().playerContent(null, str2, null) : super.playerContent(str, str2, list);
+            return str2 != null && !str2.isEmpty() && Youtube.hasYouTube(str2) ? Youtube.get().playerContent(null, str2, null) : super.playerContent(str, str2, list);
         }
         VodResult gVar4 = new VodResult();
         gVar4.k();

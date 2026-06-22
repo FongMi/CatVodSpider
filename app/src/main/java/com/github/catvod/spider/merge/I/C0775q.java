@@ -675,7 +675,7 @@ public final class AliDriveApi {
         return V("v2/share_link/get_share_token", jsonObject);
     }
 
-    public final List<com.github.catvod.spider.merge.K.h> J(String[] strArr) {
+    public final List<com.github.catvod.bean.h> J(String[] strArr) {
         ArrayList arrayList = new ArrayList();
         for (String str : strArr) {
             if (str.contains("@@@")) {
@@ -683,9 +683,9 @@ public final class AliDriveApi {
                 String str2 = strArrSplit[0];
                 String str3 = strArrSplit[1];
                 String str4 = Proxy.getUrl() + "?do=ali&type=sub&shareId=" + strArr[0] + "&fileId=" + strArrSplit[2];
-                com.github.catvod.spider.merge.K.h hVar = new com.github.catvod.spider.merge.K.h();
+                com.github.catvod.bean.h hVar = new com.github.catvod.bean.h();
                 hVar.b(str2);
-                com.github.catvod.spider.merge.K.h hVarA = hVar.a(str3);
+                com.github.catvod.bean.h hVarA = hVar.a(str3);
                 hVarA.c(str4);
                 arrayList.add(hVarA);
             }
@@ -745,7 +745,7 @@ public final class AliDriveApi {
         }
     }
 
-    public final com.github.catvod.spider.merge.K.VodItem M(String str, String str2, String str3, String str4, String str5) {
+    public final com.github.catvod.bean.VodItem M(String str, String str2, String str3, String str4, String str5) {
         String str6;
         ArrayList arrayList = new ArrayList();
         arrayList.add("代理原畫");
@@ -796,7 +796,7 @@ public final class AliDriveApi {
                 for (int i2 = 0; i2 < arrayList.size(); i2++) {
                     arrayList6.add(TextUtils.join("#", arrayList5));
                 }
-                com.github.catvod.spider.merge.K.VodItem iVar = new com.github.catvod.spider.merge.K.VodItem();
+                com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
                 iVar.l(str3);
                 iVar.j(str3);
                 iVar.n(kVarN.c());
@@ -816,7 +816,7 @@ public final class AliDriveApi {
     /* JADX WARN: Type inference failed for: r5v11, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
     /* JADX WARN: Type inference failed for: r5v2, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
     /* JADX WARN: Type inference failed for: r6v6, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    public final List<com.github.catvod.spider.merge.K.VodItem> N(com.github.catvod.spider.merge.K.j jVar) {
+    public final List<com.github.catvod.bean.VodItem> N(com.github.catvod.bean.j jVar) {
         String strF;
         String strD = jVar.d();
         String strC = jVar.c();
@@ -837,14 +837,14 @@ public final class AliDriveApi {
         R(mapA, strC, new com.github.catvod.spider.merge.L.f(C(strB, kVarN)), arrayList3, arrayList, arrayList2, false);
         ArrayList arrayList4 = new ArrayList();
         for (com.github.catvod.spider.merge.L.f fVar : arrayList3) {
-            com.github.catvod.spider.merge.K.VodItem iVar = new com.github.catvod.spider.merge.K.VodItem();
+            com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
             iVar.l(fVar.j() + "*#" + fVar.d());
             iVar.m(fVar.b());
             iVar.r(fVar.m());
             arrayList4.add(iVar);
         }
         for (com.github.catvod.spider.merge.L.f fVar2 : arrayList) {
-            com.github.catvod.spider.merge.K.VodItem iVar2 = new com.github.catvod.spider.merge.K.VodItem();
+            com.github.catvod.bean.VodItem iVar2 = new com.github.catvod.bean.VodItem();
             StringBuilder sbA = com.github.catvod.spider.merge.C1.a.a(strE, "/folder/");
             sbA.append(fVar2.i());
             sbA.append("*#");
@@ -873,10 +873,10 @@ public final class AliDriveApi {
     public final String T(String[] strArr) {
         try {
             String strD = D(L(strArr[0], strArr[1]), strArr[0], strArr[1], true);
-            List<com.github.catvod.spider.merge.K.h> listJ = J(strArr);
+            List<com.github.catvod.bean.h> listJ = J(strArr);
             ArrayList arrayList = (ArrayList) listJ;
             arrayList.addAll(arrayList);
-            com.github.catvod.spider.merge.K.g gVar = new com.github.catvod.spider.merge.K.g();
+            com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
             gVar.w(strD);
             gVar.a(t(strArr));
             gVar.v(listJ);
@@ -884,7 +884,7 @@ public final class AliDriveApi {
             return gVar.toString();
         } catch (Exception e) {
             e.printStackTrace();
-            com.github.catvod.spider.merge.K.g gVar2 = new com.github.catvod.spider.merge.K.g();
+            com.github.catvod.bean.g gVar2 = new com.github.catvod.bean.g();
             gVar2.w("");
             return gVar2.toString();
         }
@@ -895,7 +895,7 @@ public final class AliDriveApi {
             if (str.split("#")[0].equals("原畫")) {
                 u(strArr[0], strArr[1]);
                 s(strArr[1]);
-                com.github.catvod.spider.merge.K.g gVar = new com.github.catvod.spider.merge.K.g();
+                com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
                 gVar.w(Server.x(strArr[0], strArr[1]));
                 gVar.i();
                 gVar.a(t(strArr));
@@ -910,7 +910,7 @@ public final class AliDriveApi {
                 return T(strArr);
             }
             if (str.split("#")[0].equals("分享原畫")) {
-                com.github.catvod.spider.merge.K.g gVar2 = new com.github.catvod.spider.merge.K.g();
+                com.github.catvod.bean.g gVar2 = new com.github.catvod.bean.g();
                 gVar2.w(Server.z(H(strArr[0], strArr[1]), 10, 480));
                 gVar2.i();
                 gVar2.a(t(strArr));
@@ -919,12 +919,12 @@ public final class AliDriveApi {
                 return gVar2.toString();
             }
             if (!str.split("#")[0].equals("代理原畫")) {
-                com.github.catvod.spider.merge.K.g gVar3 = new com.github.catvod.spider.merge.K.g();
+                com.github.catvod.bean.g gVar3 = new com.github.catvod.bean.g();
                 gVar3.w("");
                 return gVar3.toString();
             }
             String strE = E(strArr);
-            com.github.catvod.spider.merge.K.g gVar4 = new com.github.catvod.spider.merge.K.g();
+            com.github.catvod.bean.g gVar4 = new com.github.catvod.bean.g();
             gVar4.w(strE);
             gVar4.i();
             gVar4.a(t(strArr));
@@ -932,7 +932,7 @@ public final class AliDriveApi {
             gVar4.g(x());
             return gVar4.toString();
         } catch (Exception unused) {
-            com.github.catvod.spider.merge.K.g gVar5 = new com.github.catvod.spider.merge.K.g();
+            com.github.catvod.bean.g gVar5 = new com.github.catvod.bean.g();
             gVar5.w("");
             return gVar5.toString();
         }

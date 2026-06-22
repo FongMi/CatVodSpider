@@ -172,10 +172,10 @@ public final class c implements Iterable, Cloneable {
     }
 
     public final String toString() {
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         try {
             f(sbB, new h("").j);
-            return com.github.catvod.spider.merge.K.b.g(sbB);
+            return com.github.catvod.bean.b.g(sbB);
         } catch (IOException e) {
             throw new com.github.catvod.spider.merge.I.a(e);
         }

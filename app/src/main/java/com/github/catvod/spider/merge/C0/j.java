@@ -49,12 +49,12 @@ public final class j {
         this.d = cVar;
     }
 
-    private com.github.catvod.spider.merge.v0.c b(C1413b c1413b, String str) {
+    private com.github.catvod.spider.merge.UcDriveApi.c b(C1413b c1413b, String str) {
         if (c1413b.size() <= 1 || !c1413b.o(1).containsKey("continuationItemRenderer")) {
             return null;
         }
         C1416e c1416eU = c1413b.o(1).u("continuationItemRenderer").u("continuationEndpoint");
-        return new com.github.catvod.spider.merge.v0.c(c1416eU.u("continuationCommand").x("token"), str, c1416eU.x("clickTrackingParams"));
+        return new com.github.catvod.spider.merge.UcDriveApi.c(c1416eU.u("continuationCommand").x("token"), str, c1416eU.x("clickTrackingParams"));
     }
 
     private void c(String str, String str2, List<com.github.catvod.spider.merge.u0.c> list, String str3) throws com.github.catvod.spider.merge.m0.h {
@@ -210,7 +210,7 @@ public final class j {
         return arrayList;
     }
 
-    private com.github.catvod.spider.merge.v0.d i(String str) throws com.github.catvod.spider.merge.m0.e, com.github.catvod.spider.merge.m0.g {
+    private com.github.catvod.spider.merge.UcDriveApi.d i(String str) throws com.github.catvod.spider.merge.m0.e, com.github.catvod.spider.merge.m0.g {
         C1384c c1384c = (C1384c) this.b.b(new com.github.catvod.spider.merge.q0.h(str));
         if (!c1384c.f()) {
             throw new com.github.catvod.spider.merge.m0.g(String.format("Could not load url: %s, exception: %s", str, c1384c.c().getMessage()));
@@ -268,7 +268,7 @@ public final class j {
         }
     }
 
-    private com.github.catvod.spider.merge.v0.d n(com.github.catvod.spider.merge.v0.c cVar) throws com.github.catvod.spider.merge.m0.h {
+    private com.github.catvod.spider.merge.UcDriveApi.d n(com.github.catvod.spider.merge.UcDriveApi.c cVar) throws com.github.catvod.spider.merge.m0.h {
         C1416e c1416e = new C1416e();
         C1416e c1416e2 = new C1416e();
         C1416e c1416e3 = new C1416e();
@@ -302,11 +302,11 @@ public final class j {
         }
     }
 
-    private com.github.catvod.spider.merge.v0.d p(long j, C1413b c1413b, com.github.catvod.spider.merge.v0.c cVar) throws com.github.catvod.spider.merge.m0.e {
+    private com.github.catvod.spider.merge.UcDriveApi.d p(long j, C1413b c1413b, com.github.catvod.spider.merge.UcDriveApi.c cVar) throws com.github.catvod.spider.merge.m0.e {
         C1416e c1416eO;
         String next;
         C1416e c1416eU;
-        com.github.catvod.spider.merge.v0.f eVar;
+        com.github.catvod.spider.merge.UcDriveApi.f eVar;
         try {
             C1413b c1413bT = c1413b.o(0).u("itemSectionRenderer").t("contents");
             ArrayList arrayList = new ArrayList(c1413bT.size());
@@ -321,19 +321,19 @@ public final class j {
                         eVar = new com.github.catvod.spider.merge.x0.e(c1416eU);
                         break;
                     case "videoRenderer":
-                        eVar = new com.github.catvod.spider.merge.v0.j(c1416eU, false);
+                        eVar = new com.github.catvod.spider.merge.UcDriveApi.j(c1416eU, false);
                         break;
                     case "channelRenderer":
-                        eVar = new com.github.catvod.spider.merge.v0.e(c1416eU);
+                        eVar = new com.github.catvod.spider.merge.UcDriveApi.e(c1416eU);
                         break;
                     case "shelfRenderer":
-                        eVar = new com.github.catvod.spider.merge.v0.i(c1416eU);
+                        eVar = new com.github.catvod.spider.merge.UcDriveApi.i(c1416eU);
                         break;
                     case "playlistRenderer":
-                        eVar = new com.github.catvod.spider.merge.v0.h(c1416eU);
+                        eVar = new com.github.catvod.spider.merge.UcDriveApi.h(c1416eU);
                         break;
                     case "movieRenderer":
-                        eVar = new com.github.catvod.spider.merge.v0.j(c1416eU, true);
+                        eVar = new com.github.catvod.spider.merge.UcDriveApi.j(c1416eU, true);
                         break;
                     case "didYouMeanRenderer":
                         eVar = new com.github.catvod.spider.merge.x0.f(c1416eU);
@@ -348,21 +348,21 @@ public final class j {
                         break;
                 }
                 if (eVar != null) {
-                    if (eVar instanceof com.github.catvod.spider.merge.v0.g) {
-                        arrayList.add((com.github.catvod.spider.merge.v0.g) eVar);
+                    if (eVar instanceof com.github.catvod.spider.merge.UcDriveApi.g) {
+                        arrayList.add((com.github.catvod.spider.merge.UcDriveApi.g) eVar);
                     } else {
                         InterfaceC1405b interfaceC1405b = (InterfaceC1405b) eVar;
                         map.put(interfaceC1405b.type(), interfaceC1405b);
                     }
                 }
             }
-            return cVar == null ? new com.github.catvod.spider.merge.v0.d(arrayList, map) : new com.github.catvod.spider.merge.v0.b(j, arrayList, map, cVar);
+            return cVar == null ? new com.github.catvod.spider.merge.UcDriveApi.d(arrayList, map) : new com.github.catvod.spider.merge.UcDriveApi.b(j, arrayList, map, cVar);
         } catch (NullPointerException unused) {
             throw new com.github.catvod.spider.merge.m0.e("Search result contents not found");
         }
     }
 
-    private com.github.catvod.spider.merge.v0.d q(String str, String str2) throws com.github.catvod.spider.merge.m0.h {
+    private com.github.catvod.spider.merge.UcDriveApi.d q(String str, String str2) throws com.github.catvod.spider.merge.m0.h {
         try {
             str = URLEncoder.encode(str, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -575,7 +575,7 @@ public final class j {
         }
     }
 
-    public final InterfaceC1382a<com.github.catvod.spider.merge.v0.d> m(com.github.catvod.spider.merge.q0.d dVar) {
+    public final InterfaceC1382a<com.github.catvod.spider.merge.UcDriveApi.d> m(com.github.catvod.spider.merge.q0.d dVar) {
         try {
             return C1384c.d(n(dVar.c()));
         } catch (com.github.catvod.spider.merge.m0.h e) {
@@ -583,7 +583,7 @@ public final class j {
         }
     }
 
-    public final InterfaceC1382a<com.github.catvod.spider.merge.v0.d> o(com.github.catvod.spider.merge.q0.f fVar) {
+    public final InterfaceC1382a<com.github.catvod.spider.merge.UcDriveApi.d> o(com.github.catvod.spider.merge.q0.f fVar) {
         try {
             return C1384c.d(q(fVar.d(), fVar.c()));
         } catch (com.github.catvod.spider.merge.m0.h e) {

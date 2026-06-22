@@ -7,7 +7,7 @@ import com.github.catvod.spider.ConfigCenter;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.merge.I.C0;
 import com.github.catvod.spider.merge.I.C0781w;
-import com.github.catvod.spider.merge.I.Q0;
+import com.github.catvod.utils.merge.Yun115Api;
 import com.github.catvod.spider.merge.I.RunnableC0778t;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.g0.e, reason: case insensitive filesystem */
@@ -27,7 +27,7 @@ public final /* synthetic */ class RunnableC1209e implements Runnable {
         switch (this.b) {
             case 0:
                 String str = ConfigCenter.m;
-                com.github.catvod.spider.merge.b0.c cVar = Q0.c().e;
+                com.github.catvod.spider.merge.b0.c cVar = Yun115Api.c().e;
                 cVar.a();
                 cVar.c();
                 break;

@@ -17,7 +17,7 @@ public final class O {
     }
 
     public static String n(String str) {
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         char[] charArray = str.toCharArray();
         int length = charArray.length;
         int i = 0;
@@ -30,7 +30,7 @@ public final class O {
             i++;
             c = c2;
         }
-        return com.github.catvod.spider.merge.K.b.g(sbB);
+        return com.github.catvod.bean.b.g(sbB);
     }
 
     /* JADX WARN: Removed duplicated region for block: B:45:0x0071 A[LOOP:0: B:3:0x0009->B:45:0x0071, LOOP_END] */
@@ -187,7 +187,7 @@ public final class O {
 
     public boolean f() {
         boolean z = false;
-        while (!h() && com.github.catvod.spider.merge.K.b.e(this.c.charAt(this.b))) {
+        while (!h() && com.github.catvod.bean.b.e(this.c.charAt(this.b))) {
             this.b++;
             z = true;
         }

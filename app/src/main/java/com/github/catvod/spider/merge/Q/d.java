@@ -1,7 +1,7 @@
 package com.github.catvod.spider.merge.Q;
 
 import android.text.TextUtils;
-import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.bean.VodItem;
 import com.github.catvod.spider.merge.i0.m;
 import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;

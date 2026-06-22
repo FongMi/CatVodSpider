@@ -73,7 +73,7 @@ public class l extends q {
 
     public final String C() {
         String strY;
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         for (q qVar : this.f) {
             if (qVar instanceof f) {
                 strY = ((f) qVar).y();
@@ -86,7 +86,7 @@ public class l extends q {
             }
             sbB.append(strY);
         }
-        return com.github.catvod.spider.merge.K.b.g(sbB);
+        return com.github.catvod.bean.b.g(sbB);
     }
 
     public final void D(String str) {
@@ -104,7 +104,7 @@ public class l extends q {
     public final boolean F() {
         for (q qVar : this.f) {
             if (qVar instanceof s) {
-                if (!com.github.catvod.spider.merge.K.b.d(((s) qVar).y())) {
+                if (!com.github.catvod.bean.b.d(((s) qVar).y())) {
                     return true;
                 }
             } else if ((qVar instanceof l) && ((l) qVar).F()) {
@@ -116,7 +116,7 @@ public class l extends q {
 
     public final String G() {
         h hVar;
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         int size = this.f.size();
         int i2 = 0;
         while (true) {
@@ -132,14 +132,14 @@ public class l extends q {
             com.github.catvod.spider.merge.R.g.a(new com.github.catvod.spider.merge.B.c(sbB, hVar.j), qVar);
             i2++;
         }
-        String strG = com.github.catvod.spider.merge.K.b.g(sbB);
+        String strG = com.github.catvod.bean.b.g(sbB);
         q qVarW2 = w();
         hVar = qVarW2 instanceof h ? (h) qVarW2 : null;
         return (hVar != null ? hVar.j : new h("").j).e ? strG.trim() : strG;
     }
 
     public final String I() {
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         for (int i2 = 0; i2 < this.f.size(); i2++) {
             q qVar = (q) this.f.get(i2);
             if (qVar instanceof s) {
@@ -148,13 +148,13 @@ public class l extends q {
                 if (J(sVar.a) || (sVar instanceof d)) {
                     sbB.append(strY);
                 } else {
-                    com.github.catvod.spider.merge.K.b.a(sbB, strY, s.B(sbB));
+                    com.github.catvod.bean.b.a(sbB, strY, s.B(sbB));
                 }
             } else if ((qVar instanceof l) && ((l) qVar).d.b.equals("br") && !s.B(sbB)) {
                 sbB.append(" ");
             }
         }
-        return com.github.catvod.spider.merge.K.b.g(sbB).trim();
+        return com.github.catvod.bean.b.g(sbB).trim();
     }
 
     public final l K() {
@@ -206,18 +206,18 @@ public class l extends q {
     }
 
     public final String O() {
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         com.github.catvod.spider.merge.R.g.a(new C0019u(sbB), this);
-        return com.github.catvod.spider.merge.K.b.g(sbB).trim();
+        return com.github.catvod.bean.b.g(sbB).trim();
     }
 
     public final String P() {
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         int size = this.f.size();
         for (int i2 = 0; i2 < size; i2++) {
             y((q) this.f.get(i2), sbB);
         }
-        return com.github.catvod.spider.merge.K.b.g(sbB);
+        return com.github.catvod.bean.b.g(sbB);
     }
 
     @Override // com.github.catvod.spider.merge.L.q

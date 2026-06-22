@@ -124,7 +124,7 @@ public final class Q {
             r1 = 0
         L38:
             if (r1 == 0) goto L47
-            com.github.catvod.spider.merge.I.O r9 = com.github.catvod.spider.merge.I.N.a     // Catch: java.lang.Exception -> L70
+            com.github.catvod.utils.merge.GuangYaPanApi r9 = com.github.catvod.spider.merge.I.N.a     // Catch: java.lang.Exception -> L70
             boolean r9 = r9.w()     // Catch: java.lang.Exception -> L70
             if (r9 == 0) goto L47
             java.lang.String r7 = r6.h(r7, r8, r3)     // Catch: java.lang.Exception -> L70
@@ -156,7 +156,7 @@ public final class Q {
         throw new UnsupportedOperationException("Method not decompiled: com.github.catvod.spider.merge.I.Q.h(java.lang.String, org.json.JSONObject, boolean):java.lang.String");
     }
 
-    public final List<com.github.catvod.spider.merge.K.VodItem> d(com.github.catvod.spider.merge.K.j jVar) {
+    public final List<com.github.catvod.bean.VodItem> d(com.github.catvod.bean.j jVar) {
         JSONArray jSONArrayOptJSONArray;
         String str;
         String strC = jVar.c();
@@ -182,7 +182,7 @@ public final class Q {
             if ("success".equals(jSONObject2.optString("msg")) && (jSONArrayOptJSONArray = jSONObject2.getJSONObject("data").optJSONArray("list")) != null) {
                 for (int i = 0; i < jSONArrayOptJSONArray.length(); i++) {
                     JSONObject jSONObject3 = jSONArrayOptJSONArray.getJSONObject(i);
-                    com.github.catvod.spider.merge.K.VodItem iVar = new com.github.catvod.spider.merge.K.VodItem();
+                    com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
                     String string = jSONObject3.getString("fileName");
                     String string2 = jSONObject3.getString("fileId");
                     if (jSONObject3.optInt("resType") == 2) {
@@ -222,7 +222,7 @@ public final class Q {
                             strOptString = jSONObject3.optString("downloadUrl", "");
                         }
                         if (com.github.catvod.spider.merge.P0.e.d(strOptString)) {
-                            com.github.catvod.spider.merge.K.g gVar = new com.github.catvod.spider.merge.K.g();
+                            com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
                             gVar.w(strOptString);
                             gVar.g(c());
                             return gVar.toString();

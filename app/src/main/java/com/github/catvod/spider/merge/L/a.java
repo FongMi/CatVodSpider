@@ -129,7 +129,7 @@ public final class a implements Map.Entry, Cloneable {
     }
 
     public final String toString() {
-        StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+        StringBuilder sbB = com.github.catvod.bean.b.b();
         try {
             g gVar = new h("").j;
             String str = this.b;
@@ -137,7 +137,7 @@ public final class a implements Map.Entry, Cloneable {
             if (strA != null) {
                 b(strA, str, sbB, gVar);
             }
-            return com.github.catvod.spider.merge.K.b.g(sbB);
+            return com.github.catvod.bean.b.g(sbB);
         } catch (IOException e2) {
             throw new com.github.catvod.spider.merge.I.a(e2);
         }

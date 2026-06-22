@@ -31,7 +31,7 @@ public enum C0065s extends B {
                 return true;
             }
         }
-        if (n.d() && com.github.catvod.spider.merge.K.b.c(((K) n).c, A.e)) {
+        if (n.d() && com.github.catvod.bean.b.c(((K) n).c, A.e)) {
             c0032b.getClass();
             com.github.catvod.spider.merge.L.l lVar = new com.github.catvod.spider.merge.L.l(c0032b.N("html", c0032b.h), null, null);
             c0032b.x(lVar);

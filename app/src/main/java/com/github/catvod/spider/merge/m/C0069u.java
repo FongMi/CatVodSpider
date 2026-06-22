@@ -27,7 +27,7 @@ public enum C0069u extends B {
             if (str.equals("html")) {
                 return B.g.c(n, c0032b);
             }
-            if (com.github.catvod.spider.merge.K.b.c(str, A.a)) {
+            if (com.github.catvod.bean.b.c(str, A.a)) {
                 com.github.catvod.spider.merge.L.l lVarU = c0032b.u(l);
                 if (str.equals("base") && lVarU.k("href") && !c0032b.n) {
                     String strA = lVarU.a("href");
@@ -49,7 +49,7 @@ public enum C0069u extends B {
                     c0032b.m = c0032b.l;
                     c0032b.l = c0077y;
                     c0032b.r(l);
-                } else if (com.github.catvod.spider.merge.K.b.c(str, A.b)) {
+                } else if (com.github.catvod.bean.b.c(str, A.b)) {
                     B.b(l, c0032b);
                 } else if (str.equals("noscript")) {
                     c0032b.r(l);
@@ -84,7 +84,7 @@ public enum C0069u extends B {
                 b = B.f;
                 c0032b.l = b;
             } else {
-                if (com.github.catvod.spider.merge.K.b.c(str2, A.c)) {
+                if (com.github.catvod.bean.b.c(str2, A.c)) {
                     c0032b.F("head");
                     return c0032b.D(n);
                 }

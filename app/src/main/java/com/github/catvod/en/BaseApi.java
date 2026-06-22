@@ -16,7 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.*;
 import com.github.catvod.spider.Init;
-import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.bean.VodItem;
 import com.github.catvod.spider.merge.i0.m;
 import com.github.catvod.utils.server.Server;
 

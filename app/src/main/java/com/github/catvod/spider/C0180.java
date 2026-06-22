@@ -1,6 +1,5 @@
 package com.github.catvod.spider;
 
-import com.github.catvod.spider.merge.C0169;
 import java.io.ByteArrayOutputStream;
 
 /* renamed from: com.github.catvod.spider.۟ۡۡۧ۟ */
@@ -38,7 +37,7 @@ public class C0180 {
 
     /* renamed from: ۤ۠ۢۨ */
     public static int m853() {
-        return 109 ^ C0169.f878;
+        return 109 ^ 534;
     }
 
     /* renamed from: ۥۣ۟ۨ */

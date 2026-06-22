@@ -11,10 +11,10 @@ public enum C0048j extends B {
     public final boolean c(N n, C0032b c0032b) {
         boolean zE = n.e();
         String[] strArr = A.G;
-        if (!zE || !com.github.catvod.spider.merge.K.b.c(((L) n).c, strArr)) {
+        if (!zE || !com.github.catvod.bean.b.c(((L) n).c, strArr)) {
             if (n.d()) {
                 K k = (K) n;
-                if (com.github.catvod.spider.merge.K.b.c(k.c, strArr)) {
+                if (com.github.catvod.bean.b.c(k.c, strArr)) {
                     c0032b.h(this);
                     if (!c0032b.q(k.c)) {
                         return false;

@@ -3,8 +3,8 @@ package com.github.catvod.spider;
 import android.content.Context;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.I.N0;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.utils.merge.Yun189Api;
+import com.github.catvod.bean.VodResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,7 @@ public class YunPan189 extends Spider {
         if (matcher.groupCount() == 4) {
             matcher.group(4);
         }
-        return VodResult.m(N0.a().d(strReplaceAll, strReplace));
+        return VodResult.m(Yun189Api.a().d(strReplaceAll, strReplace));
     }
 
     public String detailContent(List<String> list) {
@@ -44,7 +44,7 @@ public class YunPan189 extends Spider {
 
     public String playerContent(String str, String str2, List<String> list) {
         SpiderDebug.log("playerContent ids" + str2);
-        N0 n0A = N0.a();
+        Yun189Api n0A = Yun189Api.a();
         String[] strArrSplit = str2.split("\\+");
         str.split("#")[0].equals("天意原畫");
         return n0A.f(strArrSplit);

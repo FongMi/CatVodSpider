@@ -4,7 +4,7 @@ import com.github.catvod.en.BaseApi;
 import com.github.catvod.spider.ConfigCenter;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.merge.I.RunnableC0770n0;
-import com.github.catvod.spider.merge.I.v0;
+import com.github.catvod.utils.merge.UcDriveApi;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.g0.f, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
@@ -24,13 +24,13 @@ public final /* synthetic */ class RunnableC1210f implements Runnable {
         switch (this.b) {
             case 0:
                 String str = ConfigCenter.m;
-                v0 v0VarR = v0.r();
+                UcDriveApi v0VarR = UcDriveApi.r();
                 v0VarR.getClass();
                 Init.run(new RunnableC0770n0(v0VarR, 1));
                 return;
             case 1:
                 String str2 = ConfigCenter.m;
-                com.github.catvod.spider.merge.I.O oL = com.github.catvod.spider.merge.I.O.l();
+                com.github.catvod.utils.merge.GuangYaPanApi oL = com.github.catvod.utils.merge.GuangYaPanApi.l();
                 oL.getClass();
                 Init.run(new com.github.catvod.spider.merge.I.M(oL, 0));
                 return;

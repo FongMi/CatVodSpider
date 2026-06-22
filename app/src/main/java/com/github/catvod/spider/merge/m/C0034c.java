@@ -22,13 +22,13 @@ public enum C0034c extends B {
         }
         if (c0032b.s.size() > 0) {
             for (String str : c0032b.s) {
-                if (com.github.catvod.spider.merge.K.b.d(str)) {
+                if (com.github.catvod.bean.b.d(str)) {
                     G g2 = new G();
                     g2.b = str;
                     c0032b.s(g2);
                 } else {
                     c0032b.h(this);
-                    boolean zC = com.github.catvod.spider.merge.K.b.c(c0032b.f().d.b, A.A);
+                    boolean zC = com.github.catvod.bean.b.c(c0032b.f().d.b, A.A);
                     B b = B.g;
                     if (zC) {
                         c0032b.v = true;

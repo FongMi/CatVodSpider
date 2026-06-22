@@ -6,7 +6,7 @@ import com.github.catvod.spider.ConfigCenter;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.merge.I.RunnableC0759i;
 import com.github.catvod.spider.merge.I.S;
-import com.github.catvod.spider.merge.I.v0;
+import com.github.catvod.utils.merge.UcDriveApi;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.g0.b, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
@@ -25,7 +25,7 @@ public final /* synthetic */ class RunnableC1206b implements Runnable {
         switch (this.b) {
             case 0:
                 String str = ConfigCenter.m;
-                v0 v0VarR = v0.r();
+                UcDriveApi v0VarR = UcDriveApi.r();
                 v0VarR.getClass();
                 EditText editTextInitEditText = BaseApi.get().initEditText();
                 editTextInitEditText.setHint("输入uc ut");

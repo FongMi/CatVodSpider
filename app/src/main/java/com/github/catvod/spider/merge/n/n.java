@@ -23,9 +23,9 @@ public final class n extends o {
                 return this.b.matcher(lVar2.P()).find();
             default:
                 lVar2.getClass();
-                StringBuilder sbB = com.github.catvod.spider.merge.K.b.b();
+                StringBuilder sbB = com.github.catvod.bean.b.b();
                 com.github.catvod.spider.merge.R.g.a(new com.github.catvod.spider.merge.L.j(sbB), lVar2);
-                return this.b.matcher(com.github.catvod.spider.merge.K.b.g(sbB)).find();
+                return this.b.matcher(com.github.catvod.bean.b.g(sbB)).find();
         }
     }
 

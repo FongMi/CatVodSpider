@@ -34,7 +34,7 @@ public enum C0073w extends B {
                 } else if (str.equals("frameset")) {
                     c0032b.r(l);
                     c0032b.l = B.t;
-                } else if (com.github.catvod.spider.merge.K.b.c(str, A.g)) {
+                } else if (com.github.catvod.bean.b.c(str, A.g)) {
                     c0032b.h(this);
                     com.github.catvod.spider.merge.L.l lVar = c0032b.o;
                     c0032b.e.add(lVar);
@@ -52,7 +52,7 @@ public enum C0073w extends B {
             } else {
                 if (n.d()) {
                     String str2 = ((K) n).c;
-                    if (com.github.catvod.spider.merge.K.b.c(str2, A.d)) {
+                    if (com.github.catvod.bean.b.c(str2, A.d)) {
                         c0032b.G("body");
                     } else {
                         if (!str2.equals("template")) {

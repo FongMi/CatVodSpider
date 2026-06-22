@@ -81,7 +81,7 @@ public enum C0075x extends B {
             com.github.catvod.spider.merge.M.E r4 = r4.d
             java.lang.String r4 = r4.b
             java.lang.String[] r5 = com.github.catvod.spider.merge.M.C0032b.E
-            boolean r4 = com.github.catvod.spider.merge.K.b.c(r4, r5)
+            boolean r4 = com.github.catvod.bean.b.c(r4, r5)
             if (r4 == 0) goto L4c
             r8.h(r6)
             return r2

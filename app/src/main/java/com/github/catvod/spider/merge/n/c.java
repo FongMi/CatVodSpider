@@ -19,7 +19,7 @@ public final class c extends d {
     }
 
     public final String toString() {
-        return com.github.catvod.spider.merge.K.b.f(this.a, ", ");
+        return com.github.catvod.bean.b.f(this.a, ", ");
     }
 
     public c(o... oVarArr) {

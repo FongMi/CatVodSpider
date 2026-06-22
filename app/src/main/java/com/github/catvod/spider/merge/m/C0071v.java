@@ -20,7 +20,7 @@ public enum C0071v extends B {
             boolean zD = n.d();
             C0069u c0069u = B.d;
             if (!zD || !((K) n).c.equals("noscript")) {
-                if (B.a(n) || n.a() || (n.e() && com.github.catvod.spider.merge.K.b.c(((L) n).c, A.f))) {
+                if (B.a(n) || n.a() || (n.e() && com.github.catvod.bean.b.c(((L) n).c, A.f))) {
                     c0032b.g = n;
                     return c0069u.c(n, c0032b);
                 }
@@ -31,7 +31,7 @@ public enum C0071v extends B {
                     c0032b.s(g);
                     return true;
                 }
-                if ((n.e() && com.github.catvod.spider.merge.K.b.c(((L) n).c, A.I)) || n.d()) {
+                if ((n.e() && com.github.catvod.bean.b.c(((L) n).c, A.I)) || n.d()) {
                     c0032b.h(this);
                     return false;
                 }

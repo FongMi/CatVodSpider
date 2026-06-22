@@ -205,7 +205,7 @@ public final class BilibiliApi extends Spider {
         String str7 = "pic";
         if (str3.startsWith("recmheji")) {
             SpiderDebug.log("RECM_HEJI start");
-            com.github.catvod.spider.merge.K.VodItem iVar = new com.github.catvod.spider.merge.K.VodItem();
+            com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
             iVar.n("https://ts1.cn.mm.bing.net/th/id/R-C.1aada2475d9851291fc5bef3879ea8ce?rik=9H3yELyeynR2wA&riu=http%3a%2f%2fpic.3h3.com%2fup%2f2015-12%2f2015121227270835514629.jpg&ehk=Sg1VqYsgoeYzuAnVMRjm6zYCrBGLYM8CQn5%2fwJPtbg0%3d&risl=&pid=ImgRaw&r=0");
             iVar.m("推荐合集");
             iVar.g("推荐");
@@ -245,13 +245,13 @@ public final class BilibiliApi extends Spider {
             linkedHashMap.put("B站", TextUtils.join("#", arrayList));
             iVar.o(TextUtils.join("$$$", linkedHashMap.keySet()));
             iVar.p(TextUtils.join("$$$", linkedHashMap.values()));
-            return com.github.catvod.spider.merge.K.g.m(iVar);
+            return com.github.catvod.bean.g.m(iVar);
         }
         String str9 = "//";
         String str10 = "aid";
         if (str3.startsWith("hotHeji")) {
             SpiderDebug.log("HOT_HEJI start");
-            com.github.catvod.spider.merge.K.VodItem iVar2 = new com.github.catvod.spider.merge.K.VodItem();
+            com.github.catvod.bean.VodItem iVar2 = new com.github.catvod.bean.VodItem();
             iVar2.n("https://ts1.cn.mm.bing.net/th/id/R-C.1aada2475d9851291fc5bef3879ea8ce?rik=9H3yELyeynR2wA&riu=http%3a%2f%2fpic.3h3.com%2fup%2f2015-12%2f2015121227270835514629.jpg&ehk=Sg1VqYsgoeYzuAnVMRjm6zYCrBGLYM8CQn5%2fwJPtbg0%3d&risl=&pid=ImgRaw&r=0");
             iVar2.m("热门合集");
             iVar2.g("热门");
@@ -293,12 +293,12 @@ public final class BilibiliApi extends Spider {
             linkedHashMap2.put("B站", TextUtils.join("#", arrayList2));
             iVar2.o(TextUtils.join("$$$", linkedHashMap2.keySet()));
             iVar2.p(TextUtils.join("$$$", linkedHashMap2.values()));
-            return com.github.catvod.spider.merge.K.g.m(iVar2);
+            return com.github.catvod.bean.g.m(iVar2);
         }
         String str12 = "aid";
         if (!str3.startsWith("rankHeji")) {
             com.github.catvod.spider.merge.O.b bVarA = com.github.catvod.spider.merge.O.h.b(com.github.catvod.spider.merge.f0.d.m(C1290c.a("https://api.bilibili.com/x/web-interface/view?aid=", str4), o(), null)).a();
-            com.github.catvod.spider.merge.K.VodItem iVar3 = new com.github.catvod.spider.merge.K.VodItem();
+            com.github.catvod.bean.VodItem iVar3 = new com.github.catvod.bean.VodItem();
             iVar3.l(list.get(0));
             iVar3.n(bVarA.g());
             iVar3.m(bVarA.i());
@@ -320,10 +320,10 @@ public final class BilibiliApi extends Spider {
             linkedHashMap3.put("相关推荐", TextUtils.join("#", arrayList4));
             iVar3.o(TextUtils.join("$$$", linkedHashMap3.keySet()));
             iVar3.p(TextUtils.join("$$$", linkedHashMap3.values()));
-            return com.github.catvod.spider.merge.K.g.m(iVar3);
+            return com.github.catvod.bean.g.m(iVar3);
         }
         SpiderDebug.log("RANK_HEJI start");
-        com.github.catvod.spider.merge.K.VodItem iVar4 = new com.github.catvod.spider.merge.K.VodItem();
+        com.github.catvod.bean.VodItem iVar4 = new com.github.catvod.bean.VodItem();
         iVar4.n("https://ts1.cn.mm.bing.net/th/id/R-C.1aada2475d9851291fc5bef3879ea8ce?rik=9H3yELyeynR2wA&riu=http%3a%2f%2fpic.3h3.com%2fup%2f2015-12%2f2015121227270835514629.jpg&ehk=Sg1VqYsgoeYzuAnVMRjm6zYCrBGLYM8CQn5%2fwJPtbg0%3d&risl=&pid=ImgRaw&r=0");
         iVar4.m("排行榜合集");
         iVar4.g("排行榜");
@@ -363,7 +363,7 @@ public final class BilibiliApi extends Spider {
         linkedHashMap4.put("B站", TextUtils.join("#", arrayList5));
         iVar4.o(TextUtils.join("$$$", linkedHashMap4.keySet()));
         iVar4.p(TextUtils.join("$$$", linkedHashMap4.values()));
-        return com.github.catvod.spider.merge.K.g.m(iVar4);
+        return com.github.catvod.bean.g.m(iVar4);
     }
 
     public final void g() {
@@ -419,13 +419,13 @@ public final class BilibiliApi extends Spider {
         ArrayList arrayList = new ArrayList();
         LinkedHashMap linkedHashMap = new LinkedHashMap();
         for (String str : this.d.get("type").getAsString().split("#")) {
-            arrayList.add(new com.github.catvod.spider.merge.K.b(str, str));
+            arrayList.add(new com.github.catvod.bean.b(str, str));
             ArrayList arrayList2 = new ArrayList();
-            arrayList2.add(new com.github.catvod.spider.merge.K.d("order", "排序", Arrays.asList(new com.github.catvod.spider.merge.K.c("預設", "totalrank"), new com.github.catvod.spider.merge.K.c("最多點擊", "click"), new com.github.catvod.spider.merge.K.c("最新發布", "pubdate"), new com.github.catvod.spider.merge.K.c("最多彈幕", "dm"), new com.github.catvod.spider.merge.K.c("最多收藏", "stow"))));
-            arrayList2.add(new com.github.catvod.spider.merge.K.d("duration", "時長", Arrays.asList(new com.github.catvod.spider.merge.K.c("全部時長", "0"), new com.github.catvod.spider.merge.K.c("60分鐘以上", "4"), new com.github.catvod.spider.merge.K.c("30~60分鐘", "3"), new com.github.catvod.spider.merge.K.c("10~30分鐘", "2"), new com.github.catvod.spider.merge.K.c("10分鐘以下", "1"))));
+            arrayList2.add(new com.github.catvod.bean.d("order", "排序", Arrays.asList(new com.github.catvod.bean.c("預設", "totalrank"), new com.github.catvod.bean.c("最多點擊", "click"), new com.github.catvod.bean.c("最新發布", "pubdate"), new com.github.catvod.bean.c("最多彈幕", "dm"), new com.github.catvod.bean.c("最多收藏", "stow"))));
+            arrayList2.add(new com.github.catvod.bean.d("duration", "時長", Arrays.asList(new com.github.catvod.bean.c("全部時長", "0"), new com.github.catvod.bean.c("60分鐘以上", "4"), new com.github.catvod.bean.c("30~60分鐘", "3"), new com.github.catvod.bean.c("10~30分鐘", "2"), new com.github.catvod.bean.c("10分鐘以下", "1"))));
             linkedHashMap.put(str, arrayList2);
         }
-        return com.github.catvod.spider.merge.K.g.p(arrayList, linkedHashMap);
+        return com.github.catvod.bean.g.p(arrayList, linkedHashMap);
     }
 
     public final String homeVideoContent() {
@@ -435,7 +435,7 @@ public final class BilibiliApi extends Spider {
         while (it.hasNext()) {
             arrayList.add(it.next().c());
         }
-        return com.github.catvod.spider.merge.K.g.n(arrayList);
+        return com.github.catvod.bean.g.n(arrayList);
     }
 
     public final void init(Context context, String str) {
@@ -463,7 +463,7 @@ public final class BilibiliApi extends Spider {
         StringBuilder sbB = t0.b("http://127.0.0.1:9966/api/danmu/?do=danmuku&vodName=");
         sbB.append("https://api.bilibili.com/x/v1/dm/list.so?oid=".concat(str4));
         String string = sbB.toString();
-        com.github.catvod.spider.merge.K.g gVar = new com.github.catvod.spider.merge.K.g();
+        com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
         gVar.w(Server.y(str3, str4, "127"));
         if (!C0773p.a.a.booleanValue()) {
             string = "";

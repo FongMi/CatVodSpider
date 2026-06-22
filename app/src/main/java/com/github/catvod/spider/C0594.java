@@ -6,9 +6,9 @@ import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.JuheShortDrama;
 import com.github.catvod.spider.merge.I.*;
-import com.github.catvod.spider.merge.K.JsonUtils;
-import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.bean.JsonUtils;
+import com.github.catvod.bean.VodItem;
+import com.github.catvod.bean.VodResult;
 import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.L.k;
 import com.github.catvod.spider.merge.b0.C0902a;
@@ -189,14 +189,14 @@ public class C0594 extends NetPan {
                 public final boolean test(Object obj) {
                     com.github.catvod.spider.merge.L.k kVar2 = kVar;
                     int i = C0594.m;
-                    return ((com.github.catvod.spider.merge.K.VodCategory) obj).b().equals(kVar2.h());
+                    return ((com.github.catvod.bean.VodCategory) obj).b().equals(kVar2.h());
                 }
             })) {
-                arrayList.add(new com.github.catvod.spider.merge.K.VodCategory(com.github.catvod.spider.merge.P0.StringUtils.d(kVar.h()) ? kVar.h() : kVar.g(), com.github.catvod.spider.merge.P0.StringUtils.d(kVar.h()) ? kVar.h() : kVar.i(), "1"));
+                arrayList.add(new com.github.catvod.bean.VodCategory(com.github.catvod.spider.merge.P0.StringUtils.d(kVar.h()) ? kVar.h() : kVar.g(), com.github.catvod.spider.merge.P0.StringUtils.d(kVar.h()) ? kVar.h() : kVar.i(), "1"));
                 String strG = kVar.g();
                 ArrayList arrayList2 = new ArrayList();
-                arrayList2.add(new com.github.catvod.spider.merge.K.FilterGroup("type", "排序類型", Arrays.asList(new com.github.catvod.spider.merge.K.FilterValue("名稱", "name"), new com.github.catvod.spider.merge.K.FilterValue("修改時間", "updated_at"))));
-                arrayList2.add(new com.github.catvod.spider.merge.K.FilterGroup("order", "排序方式", Arrays.asList(new com.github.catvod.spider.merge.K.FilterValue("⬆", "ASC"), new com.github.catvod.spider.merge.K.FilterValue("⬇", "DESC"))));
+                arrayList2.add(new com.github.catvod.bean.FilterGroup("type", "排序類型", Arrays.asList(new com.github.catvod.bean.FilterValue("名稱", "name"), new com.github.catvod.bean.FilterValue("修改時間", "updated_at"))));
+                arrayList2.add(new com.github.catvod.bean.FilterGroup("order", "排序方式", Arrays.asList(new com.github.catvod.bean.FilterValue("⬆", "ASC"), new com.github.catvod.bean.FilterValue("⬇", "DESC"))));
                 linkedHashMap.put(strG, arrayList2);
             }
         }
@@ -317,7 +317,7 @@ public class C0594 extends NetPan {
                                 for (int i2 = 0; i2 < jSONArray.length(); i2++) {
                                     JSONObject jSONObject = jSONArray.getJSONObject(i2);
                                     if (!jSONObject.getString("type").equals("file")) {
-                                        com.github.catvod.spider.merge.K.VodItem iVar2 = new com.github.catvod.spider.merge.K.VodItem();
+                                        com.github.catvod.bean.VodItem iVar2 = new com.github.catvod.bean.VodItem();
                                         iVar2.l(str3 + "/folder/" + jSONObject.getString("file_id") + "*#" + str2 + "*#" + kVar2.j());
                                         iVar2.n("https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/48/5e/29/485e292b-ed09-47b8-8c41-3402a7fb8936/AppIcon-0-1x_U007epad-0-1-0-85-220-0.png/350x350.png");
                                         iVar2.m(jSONObject.getString("name"));
@@ -340,7 +340,7 @@ public class C0594 extends NetPan {
                                 C0594 c0594 = this.a;
                                 com.github.catvod.spider.merge.L.k kVar2 = kVar;
                                 String str2 = str;
-                                List<com.github.catvod.spider.merge.K.VodItem> list = copyOnWriteArrayList;
+                                List<com.github.catvod.bean.VodItem> list = copyOnWriteArrayList;
                                 int i = C0594.m;
                                 c0594.get115List(kVar2, str2, list, "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/5f/ed/bf/5fedbfb2-1431-a324-97c5-327487d5817d/AppIcon-0-0-1x_U007emarketing-0-8-0-0-sRGB-85-220.png/350x350.png");
                                 return null;
@@ -415,7 +415,7 @@ public class C0594 extends NetPan {
                                 for (int i3 = 0; i3 < jSONArrayI.length(); i3++) {
                                     JSONObject jSONObject = jSONArrayI.getJSONObject(i3);
                                     if (jSONObject.optInt("resType") == 2) {
-                                        com.github.catvod.spider.merge.K.VodItem iVar2 = new com.github.catvod.spider.merge.K.VodItem();
+                                        com.github.catvod.bean.VodItem iVar2 = new com.github.catvod.bean.VodItem();
                                         iVar2.l(kVar2.g() + "_" + jSONObject.getString("fileId") + "*#" + str2 + "*#" + kVar2.j());
                                         iVar2.n("https://pp.myapp.com/ma_icon/0/icon_54641066_1776429411/256");
                                         iVar2.m(jSONObject.getString("fileName"));

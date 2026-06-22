@@ -3,8 +3,8 @@ package com.github.catvod.spider;
 import android.content.Context;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.I.Q0;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.utils.merge.Yun115Api;
+import com.github.catvod.bean.VodResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,16 +27,16 @@ public class Yun115 extends Spider {
         if (!matcher.find()) {
             return "";
         }
-        return VodResult.m(Q0.c().g(str2, matcher.group(1), strArrSplit.length > 1 ? strArrSplit[1] : "0", str, matcher.groupCount() == 2 ? matcher.group(2) : ""));
+        return VodResult.m(Yun115Api.c().g(str2, matcher.group(1), strArrSplit.length > 1 ? strArrSplit[1] : "0", str, matcher.groupCount() == 2 ? matcher.group(2) : ""));
     }
 
     public void init(Context context, String str) {
-        Q0.c().getClass();
+        Yun115Api.c().getClass();
         SpiderDebug.log("QuarkPanApi init extend:" + str);
     }
 
     public String playerContent(String str, String str2, List list) {
-        Q0.c().getClass();
+        Yun115Api.c().getClass();
         return playerContentInternal(str, str2, list);
     }
 
@@ -44,7 +44,7 @@ public class Yun115 extends Spider {
         SpiderDebug.log("quark playerContent id:" + str2);
         String[] strArrSplit = str2.split("\\+");
         SpiderDebug.log("quark playerContent flag:" + str);
-        return Q0.c().k(strArrSplit, str);
+        return Yun115Api.c().k(strArrSplit, str);
     }
 
     public String detailContent(List<String> list) {
@@ -54,6 +54,6 @@ public class Yun115 extends Spider {
         if (!matcher.find()) {
             return "";
         }
-        return VodResult.m(Q0.c().g(strTrim, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", "", matcher.groupCount() == 2 ? matcher.group(2) : ""));
+        return VodResult.m(Yun115Api.c().g(strTrim, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", "", matcher.groupCount() == 2 ? matcher.group(2) : ""));
     }
 }

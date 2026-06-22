@@ -7,9 +7,9 @@ import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.merge.C.C0595a;
-import com.github.catvod.spider.merge.I.BuilderUtils;
+
 import com.github.catvod.spider.merge.I1.h;
-import com.github.catvod.spider.merge.K.VodItem;
+import com.github.catvod.bean.VodItem;
 import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.e0.C1026b;
 import com.github.catvod.spider.merge.g0.C1202A;
@@ -17,12 +17,8 @@ import com.github.catvod.spider.merge.g0.z;
 import com.github.catvod.spider.merge.i0.GeneralUtils;
 import com.github.catvod.spider.merge.l.ConcatUtils;
 import com.github.catvod.spider.merge.m0.C1307b;
-import com.github.catvod.spider.merge.m0.C1308c;
 import com.github.catvod.spider.merge.p0.C1363a;
 import com.github.catvod.spider.merge.r0.C1384c;
-import com.github.catvod.spider.merge.r0.InterfaceC1382a;
-import com.github.catvod.spider.merge.s0.C1387b;
-import com.github.catvod.spider.merge.y.C1413b;
 import com.github.catvod.spider.merge.y.C1416e;
 import com.github.catvod.spider.merge.z0.C1452b;
 import com.github.catvod.utils.server.Server;
@@ -47,7 +43,7 @@ public class Youtube extends NetPan {
     public static final /* synthetic */ int t = 0;
     private JsonObject config;
     public com.github.catvod.spider.merge.m0.FilterGroup filterGroup;
-    private C1308c httpClient;
+    private com.github.catvod.spider.merge.m0.C1308c httpClient;
     private final Map<String, C1452b> videoInfoCache = new ConcurrentHashMap();
     private final Map<String, Subtitle> subtitleCache = new ConcurrentHashMap();
     private final Map<String, com.github.catvod.spider.merge.v0.d> filterCache = new ConcurrentHashMap();
@@ -79,9 +75,9 @@ public class Youtube extends NetPan {
         String segmentBaseXml = "";
         String codecs = matcher.find() ? matcher.group(1) : "";
         String baseUrl = Server.H(cVar.h()).replace("&", "&amp;");
-        StringBuilder template = BuilderUtils.b("<AdaptationSet>\n<ContentComponent contentType=\"%s\"/>\n<Representation id=\"%d\" bandwidth=\"%s\" codecs=\"%s\" mimeType=\"%s\" %s startWithSAP=\"%d\">\n<BaseURL>%s</BaseURL>\n");
+        StringBuilder template = new StringBuilder("<AdaptationSet>\n<ContentComponent contentType=\"%s\"/>\n<Representation id=\"%d\" bandwidth=\"%s\" codecs=\"%s\" mimeType=\"%s\" %s startWithSAP=\"%d\">\n<BaseURL>%s</BaseURL>\n");
         if (cVar.d() != null && cVar.c() != null) {
-            StringBuilder segmentBuilder = BuilderUtils.b("<SegmentBase indexRange=\"");
+            StringBuilder segmentBuilder = new StringBuilder("<SegmentBase indexRange=\"");
             segmentBuilder.append(cVar.c().b());
             segmentBuilder.append("-");
             segmentBuilder.append(cVar.c().a());
@@ -117,7 +113,7 @@ public class Youtube extends NetPan {
     private String searchAndPaginate(String str, int i) {
         String displayText;
         com.github.catvod.spider.merge.v0.FilterGroup cachedFilter;
-        InterfaceC1382a<com.github.catvod.spider.merge.v0.d> interfaceC1382aE = (i <= 1 || !this.filterCache.containsKey(str) || (cachedFilter = (com.github.catvod.spider.merge.v0.d) this.filterCache.get(str)) == null || !(cachedFilter instanceof com.github.catvod.spider.merge.v0.b)) ? null : this.GeneralUtils.e(new com.github.catvod.spider.merge.q0.d(cachedFilter));
+        com.github.catvod.spider.merge.r0.InterfaceC1382a<com.github.catvod.spider.merge.v0.d> interfaceC1382aE = (i <= 1 || !this.filterCache.containsKey(str) || (cachedFilter = (com.github.catvod.spider.merge.v0.d) this.filterCache.get(str)) == null || !(cachedFilter instanceof com.github.catvod.spider.merge.v0.b)) ? null : this.GeneralUtils.e(new com.github.catvod.spider.merge.q0.d(cachedFilter));
         if (interfaceC1382aE == null) {
             interfaceC1382aE = this.GeneralUtils.d(new com.github.catvod.spider.merge.q0.f(str));
         }
@@ -133,10 +129,10 @@ public class Youtube extends NetPan {
                 if (videoInfo.j() != null && !((ArrayList) videoInfo.j()).isEmpty()) {
                     item.n(Server.C((String) (((ArrayList) videoInfo.h()).size() >= 2 ? ((ArrayList) videoInfo.h()).get(1) : ((ArrayList) videoInfo.h()).get(0)), "jpg"));
                 }
-                displayText = videoInfo.f() ? "直播" : GeneralUtils.z(videoInfo.g());
+                displayText = videoInfo.f() ? "直播" : formatDuration(videoInfo.g());
             } else if (searchResult.c() == 2) {
                 com.github.catvod.spider.merge.v0.StringUtils channelInfo = searchResult.d();
-                StringBuilder channelPrefix = BuilderUtils.b("channel@");
+                StringBuilder channelPrefix = new StringBuilder("channel@");
                 channelPrefix.append(channelInfo.g());
                 item.l(channelPrefix.toString());
                 item.m(searchResult.b());
@@ -146,7 +142,7 @@ public class Youtube extends NetPan {
                 displayText = channelInfo.h() == null ? "频道" : channelInfo.h();
             } else if (searchResult.c() == 3) {
                 com.github.catvod.spider.merge.v0.Subtitle playlistInfo = searchResult.e();
-                StringBuilder playlistPrefix = BuilderUtils.b("playlist@");
+                StringBuilder playlistPrefix = new StringBuilder("playlist@");
                 playlistPrefix.append(playlistInfo.g());
                 item.l(playlistPrefix.toString());
                 item.m(searchResult.b());
@@ -158,7 +154,7 @@ public class Youtube extends NetPan {
             item.q(displayText);
             vodItems.add(item);
         }
-        com.github.catvod.spider.merge.K.VodResult vodResult = new com.github.catvod.spider.merge.K.VodResult();
+        com.github.catvod.bean.VodResult vodResult = new com.github.catvod.bean.VodResult();
         vodResult.y(vodItems);
         vodResult.j(i + 1, vodItems.size(), vodItems.size(), vodItems.size());
         return vodResult.toString();
@@ -168,7 +164,7 @@ public class Youtube extends NetPan {
         if ("时下流行-刚刚发布视频".equals(str) || "时下流行-近期热门视频".equals(str)) {
             List<VodItem> feedTrend = getFeedTrend(str);
             this.vodListCache.put(str, feedTrend);
-            com.github.catvod.spider.merge.K.VodResult vodResult = new com.github.catvod.spider.merge.K.VodResult();
+            com.github.catvod.bean.VodResult vodResult = new com.github.catvod.bean.VodResult();
             vodResult.y(feedTrend);
             vodResult.j(1, 1, 1, 1);
             return vodResult.toString();
@@ -178,7 +174,7 @@ public class Youtube extends NetPan {
         while (it.hasNext()) {
             queryRef.set(((String) queryRef.get()) + it.next().getValue() + " ");
         }
-        if (com.github.catvod.spider.merge.P0.StringUtils.d((CharSequence) queryRef.get())) {
+        if (!TextUtils.isEmpty((CharSequence) queryRef.get())) {
             str = (String) queryRef.get();
         }
         return searchAndPaginate(str, Integer.parseInt(str2));
@@ -187,7 +183,7 @@ public class Youtube extends NetPan {
     @Override // com.github.catvod.en.NetPan
     public String detailContent(List<String> list) {
         String strHasYouTube = list.get(0);
-        if (com.github.catvod.spider.merge.P0.StringUtils.d(hasYouTube(strHasYouTube))) {
+        if (!TextUtils.isEmpty(hasYouTube(strHasYouTube))) {
             strHasYouTube = hasYouTube(strHasYouTube);
         }
         if (strHasYouTube.startsWith("channel@") || strHasYouTube.startsWith("playlist@")) {
@@ -201,7 +197,7 @@ public class Youtube extends NetPan {
             for (com.github.catvod.spider.merge.u0.FilterValue filterVal : category.b()) {
                 episodeList.add(filterVal.b().replace("#", "").replace("$", "") + "$" + filterVal.i());
             }
-            GeneralUtils.h(episodeList).getClass();
+            // Common prefix logic removed (was a no-op side-effect call)
             StringBuilder sb = new StringBuilder();
             Iterator it = episodeList.iterator();
             if (it.hasNext()) {
@@ -214,7 +210,7 @@ public class Youtube extends NetPan {
                 }
             }
             item.p(sb.toString());
-            return com.github.catvod.spider.merge.K.VodResult.m(item);
+            return com.github.catvod.bean.VodResult.m(item);
         }
         if ("时下流行-刚刚发布视频".equals(strHasYouTube) || "时下流行-近期热门视频".equals(strHasYouTube)) {
             VodItem trendItem = new VodItem();
@@ -240,11 +236,11 @@ public class Youtube extends NetPan {
                 }
             }
             trendItem.p(sb2.toString());
-            return com.github.catvod.spider.merge.K.VodResult.m(trendItem);
+            return com.github.catvod.bean.VodResult.m(trendItem);
         }
         Subtitle videoInfo = getNewPipeVideoInfo(strHasYouTube);
         if (videoInfo == null) {
-            return com.github.catvod.spider.merge.K.VodResult.c("获取视频信息失败");
+            return com.github.catvod.bean.VodResult.c("获取视频信息失败");
         }
         ArrayList episodeUrls = new ArrayList();
         ArrayList playSources = new ArrayList();
@@ -283,7 +279,7 @@ public class Youtube extends NetPan {
             }
         } catch (Exception unused) {
         }
-        detailItem.q(isLive ? "" : GeneralUtils.z(videoInfo.k()));
+        detailItem.q(isLive ? "" : formatDuration(videoInfo.k()));
         StringBuilder sourcesBuilder = new StringBuilder();
         Iterator it4 = playSources.iterator();
         if (it4.hasNext()) {
@@ -308,7 +304,7 @@ public class Youtube extends NetPan {
             }
         }
         detailItem.p(urlsBuilder.toString());
-        return com.github.catvod.spider.merge.K.VodResult.m(detailItem);
+        return com.github.catvod.bean.VodResult.m(detailItem);
     }
 
     public List<VodItem> getFeedTrend(String str) {
@@ -316,7 +312,7 @@ public class Youtube extends NetPan {
         headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) quark-cloud-drive/2.5.20 Chrome/100.0.4896.160 Electron/18.3.5.4-b478491100 Safari/537.36 Channel/pckk_other_ch");
         try {
             try {
-                C1413b trendItems = new C1387b(new C1363a(this.httpClient)).b(com.github.catvod.spider.merge.f0.VodResult.g("https://www.youtube.com/feed/trending", headers)).u("contents").u("twoColumnBrowseResultsRenderer").t("tabs").o(0).u("tabRenderer").u("content").u("sectionListRenderer").t("contents").o(str.equals("时下流行-近期热门视频") ? r2.size() - 1 : r2.size() - 2).u("itemSectionRenderer").t("contents").o(0).u("shelfRenderer").u("content").u("expandedShelfContentsRenderer").t("items");
+                com.github.catvod.spider.merge.y.C1413b trendItems = new com.github.catvod.spider.merge.s0.C1387b(new C1363a(this.httpClient)).b(com.github.catvod.spider.merge.f0.VodResult.g("https://www.youtube.com/feed/trending", headers)).u("contents").u("twoColumnBrowseResultsRenderer").t("tabs").o(0).u("tabRenderer").u("content").u("sectionListRenderer").t("contents").o(str.equals("时下流行-近期热门视频") ? r2.size() - 1 : r2.size() - 2).u("itemSectionRenderer").t("contents").o(0).u("shelfRenderer").u("content").u("expandedShelfContentsRenderer").t("items");
                 ArrayList vodItems = new ArrayList();
                 vodItems.add(new VodItem(str, "合集", "", "共" + trendItems.size() + "个视频"));
                 for (int i = 0; i < trendItems.size(); i++) {
@@ -390,13 +386,13 @@ public class Youtube extends NetPan {
         }
         C1384c resultWrapper = (C1384c) get().GeneralUtils.c(new com.github.catvod.spider.merge.q0.g(str));
         if (resultWrapper.c() != null) {
-            StringBuilder errorBuilder = BuilderUtils.b("获取播放地址失败 请配置下youtube cookie或到配置中心手动更换节点重试");
+            StringBuilder errorBuilder = new StringBuilder("获取播放地址失败 请配置下youtube cookie或到配置中心手动更换节点重试");
             errorBuilder.append(resultWrapper.c().getMessage());
-            GeneralUtils.w(errorBuilder.toString());
+            SpiderDebug.log(errorBuilder.toString());
             return null;
         }
         C1452b videoInfo = (C1452b) resultWrapper.a();
-        StringBuilder logBuilder = BuilderUtils.b("getVideoInfo:");
+        StringBuilder logBuilder = new StringBuilder("getVideoInfo:");
         logBuilder.append(new Gson().toJson(videoInfo));
         SpiderDebug.log(logBuilder.toString());
         get().videoInfoCache.put(str, videoInfo);
@@ -410,13 +406,13 @@ public class Youtube extends NetPan {
         ArrayList categories = new ArrayList();
         LinkedHashMap filterMap = new LinkedHashMap();
         for (String type : this.config.get("type").getAsString().split("#")) {
-            categories.add(new com.github.catvod.spider.merge.K.VodCategory(type, type));
+            categories.add(new com.github.catvod.bean.VodCategory(type, type));
             ArrayList filterGroups = new ArrayList();
-            filterGroups.add(new com.github.catvod.spider.merge.K.FilterGroup("order", "排序", Arrays.asList(new com.github.catvod.spider.merge.K.FilterValue("預設", "totalrank"), new com.github.catvod.spider.merge.K.FilterValue("最多點擊", "click"), new com.github.catvod.spider.merge.K.FilterValue("最新發布", "pubdate"), new com.github.catvod.spider.merge.K.FilterValue("最多彈幕", "dm"), new com.github.catvod.spider.merge.K.FilterValue("最多收藏", "stow"))));
-            filterGroups.add(new com.github.catvod.spider.merge.K.FilterGroup("duration", "時長", Arrays.asList(new com.github.catvod.spider.merge.K.FilterValue("全部時長", "0"), new com.github.catvod.spider.merge.K.FilterValue("60分鐘以上", "4"), new com.github.catvod.spider.merge.K.FilterValue("30~60分鐘", "3"), new com.github.catvod.spider.merge.K.FilterValue("10~30分鐘", "2"), new com.github.catvod.spider.merge.K.FilterValue("10分鐘以下", "1"))));
+            filterGroups.add(new com.github.catvod.bean.FilterGroup("order", "排序", Arrays.asList(new com.github.catvod.bean.FilterValue("預設", "totalrank"), new com.github.catvod.bean.FilterValue("最多點擊", "click"), new com.github.catvod.bean.FilterValue("最新發布", "pubdate"), new com.github.catvod.bean.FilterValue("最多彈幕", "dm"), new com.github.catvod.bean.FilterValue("最多收藏", "stow"))));
+            filterGroups.add(new com.github.catvod.bean.FilterGroup("duration", "時長", Arrays.asList(new com.github.catvod.bean.FilterValue("全部時長", "0"), new com.github.catvod.bean.FilterValue("60分鐘以上", "4"), new com.github.catvod.bean.FilterValue("30~60分鐘", "3"), new com.github.catvod.bean.FilterValue("10~30分鐘", "2"), new com.github.catvod.bean.FilterValue("10分鐘以下", "1"))));
             filterMap.put(type, filterGroups);
         }
-        return com.github.catvod.spider.merge.K.VodResult.p(categories, filterMap);
+        return com.github.catvod.bean.VodResult.p(categories, filterMap);
     }
 
     public String homeVideoContent() {
@@ -441,7 +437,7 @@ public class Youtube extends NetPan {
                     configStr = com.github.catvod.spider.merge.f0.HttpClient.l(configStr);
                 }
                 JSONObject commonConfig = new JSONObject(configStr.trim());
-                if (commonConfig.has("proxy") && com.github.catvod.spider.merge.P0.StringUtils.d(commonConfig.getString("proxy"))) {
+                if (commonConfig.has("proxy") && !TextUtils.isEmpty(commonConfig.getString("proxy"))) {
                     String proxyUrl = commonConfig.getString("proxy");
                     com.github.catvod.spider.merge.i0.Subtitle proxyParser = new com.github.catvod.spider.merge.i0.h();
                     proxyParser.f(proxyUrl);
@@ -450,7 +446,7 @@ public class Youtube extends NetPan {
                     String proxyUser = proxyParser.e();
                     String proxyPass = proxyParser.b();
                     String userInfo = "";
-                    if (com.github.catvod.spider.merge.P0.StringUtils.d(proxyUser) && !proxyUser.equals("null")) {
+                    if (!TextUtils.isEmpty(proxyUser) && !proxyUser.equals("null")) {
                         userInfo = proxyUser + ":" + proxyPass;
                     }
                     SpiderDebug.log("uri.getUserInfo :" + userInfo);
@@ -475,18 +471,18 @@ public class Youtube extends NetPan {
         if (BaseApi.isOk("youtube")) {
             return "";
         }
-        if (com.github.catvod.spider.merge.P0.StringUtils.d(hasYouTube(str2))) {
+        if (!TextUtils.isEmpty(hasYouTube(str2))) {
             str2 = hasYouTube(str2);
         }
         Subtitle videoInfo = getNewPipeVideoInfo(str2);
         if (videoInfo == null) {
-            return com.github.catvod.spider.merge.K.VodResult.c("获取视频信息失败");
+            return com.github.catvod.bean.VodResult.c("获取视频信息失败");
         }
-        com.github.catvod.spider.merge.K.VodResult vodResult = new com.github.catvod.spider.merge.K.VodResult();
+        com.github.catvod.bean.VodResult vodResult = new com.github.catvod.bean.VodResult();
         if (C0595a.b(videoInfo.n()).contains("LIVE")) {
-            if (com.github.catvod.spider.merge.P0.StringUtils.d(videoInfo.l())) {
+            if (!TextUtils.isEmpty(videoInfo.l())) {
                 liveUrl = videoInfo.l();
-            } else if (com.github.catvod.spider.merge.P0.StringUtils.d(videoInfo.i())) {
+            } else if (!TextUtils.isEmpty(videoInfo.i())) {
                 liveUrl = videoInfo.i();
             }
             playUrl = Server.G(liveUrl);
@@ -583,5 +579,11 @@ public class Youtube extends NetPan {
                 return this.a.buildMediaAttributes(this.b, token, (com.github.catvod.spider.merge.A0.c) obj);
             }
         }).collect(Collectors.joining())) : "";
+    }
+
+    private static String formatDuration(long seconds) {
+        long hours = seconds / 3600;
+        long minutes = (seconds - (3600 * hours)) / 60;
+        return hours > 0 ? String.format("%d:%02d:%02d", Long.valueOf(hours), Long.valueOf(minutes), Long.valueOf(seconds % 60)) : String.format("%d:%02d", Long.valueOf(minutes), Long.valueOf(seconds % 60));
     }
 }

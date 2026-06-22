@@ -49,7 +49,7 @@ public final class q {
     public final int b() {
         boolean z = true;
         String strTrim = this.a.b().trim();
-        String[] strArr = com.github.catvod.spider.merge.K.b.a;
+        String[] strArr = com.github.catvod.bean.b.a;
         if (strTrim == null || strTrim.length() == 0) {
             z = false;
             break;

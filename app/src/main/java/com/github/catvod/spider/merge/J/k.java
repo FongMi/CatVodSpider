@@ -18,7 +18,7 @@ import java.util.List;
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
 public final class k extends Spider {
     public final String detailContent(String str, List<String> list) {
-        com.github.catvod.spider.merge.K.VodItem iVarFakeVod;
+        com.github.catvod.bean.VodItem iVarFakeVod;
         String strTrim = list.get(0).trim();
         C0781w c0781wA = C0781w.a();
         c0781wA.getClass();
@@ -60,7 +60,7 @@ public final class k extends Spider {
         sbB3.append(gVarN.a);
         SpiderDebug.log(sbB3.toString());
         try {
-            iVarFakeVod = new com.github.catvod.spider.merge.K.VodItem();
+            iVarFakeVod = new com.github.catvod.bean.VodItem();
             ArrayList arrayList2 = new ArrayList();
             for (int i = 0; i < arrayList.size(); i++) {
                 arrayList2.add(gVarN.a.get(0));
@@ -98,7 +98,7 @@ public final class k extends Spider {
             m.w(e.getMessage());
             iVarFakeVod = BaseApi.fakeVod(arrayList, "摆渡");
         }
-        return com.github.catvod.spider.merge.K.g.m(iVarFakeVod);
+        return com.github.catvod.bean.g.m(iVarFakeVod);
     }
 
     public final String detailContent(List<String> list) {

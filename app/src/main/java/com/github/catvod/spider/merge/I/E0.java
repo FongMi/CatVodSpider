@@ -60,7 +60,7 @@ public final class E0 {
     /* JADX WARN: Type inference failed for: r7v7, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
     /* JADX WARN: Type inference failed for: r8v12, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
     public static String a(String str, List<String> list) {
-        com.github.catvod.spider.merge.K.VodItem iVarFakeVod;
+        com.github.catvod.bean.VodItem iVarFakeVod;
         String[] strArrSplit = list.get(0).trim().split("_");
         String str2 = strArrSplit[0];
         com.github.catvod.spider.merge.B.h.b("115 detailContent url:", str2);
@@ -105,7 +105,7 @@ public final class E0 {
                 }
                 arrayList5.add(sb.toString());
             }
-            iVarFakeVod = new com.github.catvod.spider.merge.K.VodItem();
+            iVarFakeVod = new com.github.catvod.bean.VodItem();
             iVarFakeVod.l(str2);
             iVarFakeVod.j(str2);
             iVarFakeVod.n("https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/5f/ed/bf/5fedbfb2-1431-a324-97c5-327487d5817d/AppIcon-0-0-1x_U007emarketing-0-8-0-0-sRGB-85-220.png/350x350.png");
@@ -138,7 +138,7 @@ public final class E0 {
         } catch (Exception unused) {
             iVarFakeVod = BaseApi.fakeVod(arrayList, "115雲盤");
         }
-        return com.github.catvod.spider.merge.K.g.m(iVarFakeVod);
+        return com.github.catvod.bean.g.m(iVarFakeVod);
     }
 
     /* JADX WARN: Type inference failed for: r1v1, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
@@ -243,7 +243,7 @@ public final class E0 {
         }
     }
 
-    public final List<com.github.catvod.spider.merge.K.VodItem> e(com.github.catvod.spider.merge.K.j jVar) {
+    public final List<com.github.catvod.bean.VodItem> e(com.github.catvod.bean.j jVar) {
         List<com.github.catvod.spider.merge.Y.a> arrayList;
         String str;
         String strC = jVar.c();
@@ -265,7 +265,7 @@ public final class E0 {
         }
         ArrayList arrayList4 = new ArrayList();
         for (com.github.catvod.spider.merge.Y.a aVar : arrayList3) {
-            com.github.catvod.spider.merge.K.VodItem iVar = new com.github.catvod.spider.merge.K.VodItem();
+            com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
             StringBuilder sbA = com.github.catvod.spider.merge.C1.a.a(strC, "*#");
             sbA.append(aVar.g());
             sbA.append("*#");
@@ -277,7 +277,7 @@ public final class E0 {
             arrayList4.add(iVar);
         }
         for (com.github.catvod.spider.merge.Y.a aVar2 : arrayList) {
-            com.github.catvod.spider.merge.K.VodItem iVar2 = new com.github.catvod.spider.merge.K.VodItem();
+            com.github.catvod.bean.VodItem iVar2 = new com.github.catvod.bean.VodItem();
             StringBuilder sbA2 = com.github.catvod.spider.merge.C1.a.a(strE, "_");
             sbA2.append(aVar2.g());
             sbA2.append("*#");

@@ -4,9 +4,9 @@ import android.content.Context;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
-import com.github.catvod.spider.merge.I.L0;
-import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.K.VodResult;
+import com.github.catvod.utils.merge.Yun139Api;
+import com.github.catvod.bean.VodItem;
+import com.github.catvod.bean.VodResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +22,7 @@ public class YunPan139 extends Spider {
         if (matcher.groupCount() == 4) {
             matcher.group(4);
         }
-        return L0.a().e(str, str2, strReplace);
+        return Yun139Api.a().e(str, str2, strReplace);
     }
 
     public static void main(String[] strArr) {
@@ -46,6 +46,6 @@ public class YunPan139 extends Spider {
 
     public String playerContent(String str, String str2, List<String> list) {
         SpiderDebug.log("playerContent ids" + str2);
-        return BaseApi.isOk("Yun139") ? "" : L0.a().g(str2.split("\\+"), str.split("#")[0].equals("异动原畫"));
+        return BaseApi.isOk("Yun139") ? "" : Yun139Api.a().g(str2.split("\\+"), str.split("#")[0].equals("异动原畫"));
     }
 }

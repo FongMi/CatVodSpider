@@ -14,8 +14,8 @@ public enum C0042g extends B {
         if (zE) {
             L l = (L) n;
             String str = l.c;
-            if (!com.github.catvod.spider.merge.K.b.c(str, A.v)) {
-                if (!com.github.catvod.spider.merge.K.b.c(str, A.D)) {
+            if (!com.github.catvod.bean.b.c(str, A.v)) {
+                if (!com.github.catvod.bean.b.c(str, A.D)) {
                     c0032b.g = n;
                     return c0079z.c(n, c0032b);
                 }
@@ -49,8 +49,8 @@ public enum C0042g extends B {
                     }
                     return false;
                 }
-                if (!com.github.catvod.spider.merge.K.b.c(str2, A.s)) {
-                    if (com.github.catvod.spider.merge.K.b.c(str2, A.E)) {
+                if (!com.github.catvod.bean.b.c(str2, A.s)) {
+                    if (com.github.catvod.bean.b.c(str2, A.E)) {
                         c0032b.h(this);
                         return false;
                     }

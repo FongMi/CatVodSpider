@@ -34,9 +34,9 @@ public final class g {
         return TextUtils.isEmpty(this.d) ? "" : this.d;
     }
 
-    public final com.github.catvod.spider.merge.K.VodItem c() {
+    public final com.github.catvod.bean.VodItem c() {
         String strB;
-        com.github.catvod.spider.merge.K.VodItem iVar = new com.github.catvod.spider.merge.K.VodItem();
+        com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
         StringBuilder sb = new StringBuilder();
         sb.append(TextUtils.isEmpty(this.a) ? "" : this.a);
         sb.append("@");

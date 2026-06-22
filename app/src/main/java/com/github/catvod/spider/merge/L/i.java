@@ -23,7 +23,7 @@ public final class i extends p {
     }
 
     public final boolean A(String str) {
-        return !com.github.catvod.spider.merge.K.b.d(c(str));
+        return !com.github.catvod.bean.b.d(c(str));
     }
 
     @Override // com.github.catvod.spider.merge.L.q

@@ -3,11 +3,8 @@
 //import android.content.Context;
 //import com.github.catvod.crawler.SpiderDebug;
 //import com.github.catvod.en.NetPan;
-//import com.github.catvod.spider.merge.I.BuilderUtils;
-//import com.github.catvod.spider.merge.I0.GeneralUtils;
-//import com.github.catvod.spider.merge.K.VodItem;
-//import com.github.catvod.spider.merge.K.VodResult;
-//import com.github.catvod.spider.merge.e1.JsoupElements;
+//import com.github.catvod.bean.VodItem;
+//import com.github.catvod.bean.VodResult;
 //import com.google.gson.JsonParser;
 //
 //import java.net.URLEncoder;
@@ -97,7 +94,7 @@
 //        LinkedHashMap linkedHashMap = new LinkedHashMap();
 //        JsoupElements c1036gL0 = l.e(f(this.l)).l0(".tab-item");
 //        for (int i = 0; i < c1036gL0.size(); i++) {
-//            arrayList.add(new com.github.catvod.spider.merge.K.VodCategory(String.valueOf(i), c1036gL0.get(i).s0(), "1"));
+//            arrayList.add(new com.github.catvod.bean.VodCategory(String.valueOf(i), c1036gL0.get(i).s0(), "1"));
 //        }
 //        return VodResult.p(arrayList, linkedHashMap);
 //    }

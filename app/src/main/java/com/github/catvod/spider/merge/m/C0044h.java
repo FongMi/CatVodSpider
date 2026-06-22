@@ -12,7 +12,7 @@ public enum C0044h extends B {
         boolean zD = n.d();
         C0075x c0075x = B.g;
         if (!zD) {
-            if (!n.e() || !com.github.catvod.spider.merge.K.b.c(((L) n).c, A.y)) {
+            if (!n.e() || !com.github.catvod.bean.b.c(((L) n).c, A.y)) {
                 c0032b.g = n;
                 return c0075x.c(n, c0032b);
             }
@@ -28,7 +28,7 @@ public enum C0044h extends B {
             return c0032b.D(n);
         }
         String str = ((K) n).c;
-        if (com.github.catvod.spider.merge.K.b.c(str, A.v)) {
+        if (com.github.catvod.bean.b.c(str, A.v)) {
             boolean zQ = c0032b.q(str);
             C0042g c0042g = B.n;
             if (!zQ) {
@@ -45,11 +45,11 @@ public enum C0044h extends B {
             c0032b.l = c0042g;
             return true;
         }
-        if (com.github.catvod.spider.merge.K.b.c(str, A.w)) {
+        if (com.github.catvod.bean.b.c(str, A.w)) {
             c0032b.h(this);
             return false;
         }
-        if (!com.github.catvod.spider.merge.K.b.c(str, A.x)) {
+        if (!com.github.catvod.bean.b.c(str, A.x)) {
             c0032b.g = n;
             return c0075x.c(n, c0032b);
         }

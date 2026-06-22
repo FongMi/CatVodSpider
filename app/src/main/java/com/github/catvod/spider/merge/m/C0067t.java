@@ -32,7 +32,7 @@ public enum C0067t extends B {
                 return true;
             }
         }
-        if (n.d() && com.github.catvod.spider.merge.K.b.c(((K) n).c, A.e)) {
+        if (n.d() && com.github.catvod.bean.b.c(((K) n).c, A.e)) {
             c0032b.G("head");
             return c0032b.D(n);
         }

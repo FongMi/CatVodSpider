@@ -6,7 +6,7 @@ import com.github.catvod.en.BaseApi;
 import com.github.catvod.spider.ConfigCenter;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.merge.I.C0754f0;
-import com.github.catvod.spider.merge.I.J0;
+import com.github.catvod.utils.merge.Yun123Api;
 import com.github.catvod.utils.server.Server;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.g0.j, reason: case insensitive filesystem */
@@ -34,7 +34,7 @@ public final /* synthetic */ class RunnableC1214j implements Runnable {
                 return;
             case 1:
                 String str2 = ConfigCenter.m;
-                final J0 j0A = J0.a();
+                final Yun123Api j0A = Yun123Api.a();
                 j0A.getClass();
                 final EditText editTextInitEditText = BaseApi.get().initEditText();
                 editTextInitEditText.setHint("输入盘123账号密码 格式：18888888888|123456");
@@ -44,7 +44,7 @@ public final /* synthetic */ class RunnableC1214j implements Runnable {
                     @Override // android.content.DialogInterface.OnClickListener
                     public final void onClick(DialogInterface dialogInterface, int i) {
                         EditText editText = editTextInitEditText;
-                        J0 j0 = H0.a;
+                        Yun123Api j0 = H0.a;
                         String string = editText.getText().toString();
                         j0.getClass();
                         Init.execute(new U(j0, string, 1));
@@ -56,7 +56,7 @@ public final /* synthetic */ class RunnableC1214j implements Runnable {
                     public final void run() {
                         switch (i) {
                             case 0:
-                                J0 j0 = (J0) j0A;
+                                Yun123Api j0 = (Yun123Api) j0A;
                                 EditText editText = editTextInitEditText;
                                 DialogInterface.OnClickListener onClickListener2 = onClickListener;
                                 j0.getClass();

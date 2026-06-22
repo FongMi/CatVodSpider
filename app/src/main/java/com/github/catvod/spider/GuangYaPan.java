@@ -4,11 +4,9 @@ import android.content.Context;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
-import com.github.catvod.spider.merge.I.BuilderUtils;
-import com.github.catvod.spider.merge.I.O;
-import com.github.catvod.spider.merge.K.VodItem;
-import com.github.catvod.spider.merge.K.VodResult;
-import com.github.catvod.spider.merge.q1.StringUtils;
+import com.github.catvod.utils.merge.GuangYaPanApi;
+import com.github.catvod.bean.VodItem;
+import com.github.catvod.bean.VodResult;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -17,21 +15,23 @@ import java.util.regex.Pattern;
 
 
 public class GuangYaPan extends Spider {
-    public static final Pattern a = Pattern.compile("www\\.guangyapan\\.com/s/([^/#?]*)(?:\\?code=([\\w]+))?(?:#/share/([\\w-]+))?");
+    public static final Pattern SHARE_PATTERN = Pattern.compile("www\\.guangyapan\\.com/s/([^/#?]*)(?:\\?code=([\\w]+))?(?:#/share/([\\w-]+))?");
 
     public String detailContent(String str, List<String> list) {
         try {
             SpiderDebug.log("光鸭云盘 detailContent vodName:" + str + " ids:" + list);
-            String strTrim = list.get(0).trim();
-            Matcher matcher = a.matcher(strTrim);
+            String url = list.get(0).trim();
+            Matcher matcher = SHARE_PATTERN.matcher(url);
             if (!matcher.find()) {
                 return "";
             }
-            return VodResult.m(O.l().r(strTrim, matcher.group(1) != null ? matcher.group(1) : "", matcher.group(3) != null ? matcher.group(3) : "", matcher.group(2) != null ? matcher.group(2) : "", str));
+            return VodResult.m(GuangYaPanApi.l().r(url,
+                    matcher.group(1) != null ? matcher.group(1) : "",
+                    matcher.group(3) != null ? matcher.group(3) : "",
+                    matcher.group(2) != null ? matcher.group(2) : "",
+                    str));
         } catch (Exception e) {
-            StringBuilder sbB = BuilderUtils.b("光鸭云盘 detailContent 异常: ");
-            sbB.append(StringUtils.getMessage());
-            SpiderDebug.log(sbB.toString());
+            SpiderDebug.log("光鸭云盘 detailContent 异常: " + e.getMessage());
             return VodResult.m(new VodItem("1", "无效", ""));
         }
     }
@@ -40,37 +40,40 @@ public class GuangYaPan extends Spider {
         SpiderDebug.log("光鸭云盘 init");
     }
 
-    public String playerContent(String str, String str2, List list) {
-        SpiderDebug.log("光鸭云盘 playerContent flag:" + str + " id:" + str2);
+    public String playerContent(String playFlag, String playUrl, List<String> vipFlags) {
+        SpiderDebug.log("光鸭云盘 playerContent flag:" + playFlag + " id:" + playUrl);
         if (BaseApi.isOk("guangya")) {
             return "";
         }
-        String[] strArrSplit = str2.split("\\+");
-        O oL = O.l();
-        oL.getClass();
+        String[] parts = playUrl.split("\\+");
+        GuangYaPanApi client = GuangYaPanApi.l();
         try {
-            String strN = oL.n(strArrSplit[0], strArrSplit[1], strArrSplit.length > 2 ? strArrSplit[2] : "");
-            if (!StringUtils.isnotNull(strN)) {
+            String downloadUrl = client.n(parts[0], parts[1], parts.length > 2 ? parts[2] : "");
+            if (downloadUrl == null || downloadUrl.isEmpty()) {
                 return "";
             }
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put("parse", 0);
-            jSONObject.put("url", strN);
-            jSONObject.put("header", new JSONObject());
-            return jSONObject.toString();
+            JSONObject result = new JSONObject();
+            result.put("parse", 0);
+            result.put("url", downloadUrl);
+            result.put("header", new JSONObject());
+            return result.toString();
         } catch (Exception e) {
-            com.github.catvod.spider.merge.A.FilterValue.e(e, BuilderUtils.b("光鸭云盘 playerContent 异常: "));
+            SpiderDebug.log("光鸭云盘 playerContent 异常: " + e.getMessage());
             return "";
         }
     }
 
     public String detailContent(List<String> list) {
-        String strTrim = list.get(0).trim();
-        Subtitle.b("光鸭云盘 detailContent url:", strTrim);
-        Matcher matcher = a.matcher(strTrim);
+        String url = list.get(0).trim();
+        SpiderDebug.log("光鸭云盘 detailContent url:" + url);
+        Matcher matcher = SHARE_PATTERN.matcher(url);
         if (!matcher.find()) {
             return "";
         }
-        return VodResult.m(O.l().r(strTrim, matcher.group(1) != null ? matcher.group(1) : "", matcher.group(3) != null ? matcher.group(3) : "", matcher.group(2) != null ? matcher.group(2) : "", ""));
+        return VodResult.m(GuangYaPanApi.l().r(url,
+                matcher.group(1) != null ? matcher.group(1) : "",
+                matcher.group(3) != null ? matcher.group(3) : "",
+                matcher.group(2) != null ? matcher.group(2) : "",
+                ""));
     }
 }

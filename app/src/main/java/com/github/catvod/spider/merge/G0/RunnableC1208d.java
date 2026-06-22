@@ -8,7 +8,7 @@ import com.github.catvod.spider.Init;
 import com.github.catvod.spider.merge.I.C0;
 import com.github.catvod.spider.merge.I.C0775q;
 import com.github.catvod.spider.merge.I.O0;
-import com.github.catvod.spider.merge.I.Q0;
+import com.github.catvod.utils.merge.Yun115Api;
 import com.github.catvod.spider.merge.I.RunnableC0743a;
 import com.github.catvod.spider.merge.I.RunnableC0757h;
 
@@ -29,7 +29,7 @@ public final /* synthetic */ class RunnableC1208d implements Runnable {
         switch (this.b) {
             case 0:
                 String str = ConfigCenter.m;
-                Q0 q0C = Q0.c();
+                Yun115Api q0C = Yun115Api.c();
                 q0C.getClass();
                 Init.run(new O0(q0C, 0));
                 break;

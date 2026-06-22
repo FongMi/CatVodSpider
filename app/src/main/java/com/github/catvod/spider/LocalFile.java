@@ -4,15 +4,13 @@ import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.spider.merge.q1.StringUtils;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-
 public class LocalFile extends Spider {
     public static boolean checkstring(String str) {
         String[] strArr = {".avi", ".wmv", ".rm", ".3gp", ".mov", ".mp", ".m4", ".vob", ".ts", ".webm", ".dat", ".m3u", ".mkv", ".flv", ".aac", ".wma", ".flac", ".ape"};
@@ -61,7 +59,7 @@ public class LocalFile extends Spider {
             jSONObject2.put("list", jSONArray);
             return jSONObject2.toString();
         } catch (Exception e) {
-            StringUtils.printStackTrace(e);
+            e.printStackTrace();
             return "";
         }
     }
@@ -97,7 +95,7 @@ public class LocalFile extends Spider {
             jSONObject2.put("list", jSONArray);
             return jSONObject2.toString();
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            SpiderDebug.log("Error occurred");
             return "";
         }
     }
@@ -119,7 +117,7 @@ public class LocalFile extends Spider {
             }
             return jSONObject2.toString();
         } catch (Exception e) {
-            StringUtils.printStackTrace(e);
+            e.printStackTrace();
             return "";
         }
     }
@@ -136,7 +134,7 @@ public class LocalFile extends Spider {
             jSONObject.put("url", str2);
             return jSONObject.toString();
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            SpiderDebug.log("Error occurred");
             return "";
         }
     }
