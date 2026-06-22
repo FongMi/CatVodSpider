@@ -3,101 +3,111 @@ package com.github.catvod.spider;
 import android.content.Context;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.*;
-import com.github.catvod.spider.merge.q1.StringUtils;
+import com.github.catvod.utils.okhttp.OkHttpUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 
 
 public class QnMp4 extends Spider {
 
-    /* JADX INFO: renamed from: Ϳ, reason: contains not printable characters */
-    private String f49 = "https://www.qnmp4.com";
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36";
 
-    /* JADX INFO: renamed from: Ϳ, reason: contains not printable characters */
-    private HashMap<String, String> m49(String str) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36");
-        map.put("Referer", this.f49 + "/");
-        return map;
+    private String baseUrl = "https://www.qnmp4.com";
+
+    private HashMap<String, String> buildHeaders() {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", USER_AGENT);
+        headers.put("Referer", this.baseUrl + "/");
+        return headers;
     }
 
-    public String categoryContent(String str, String str2, boolean z, HashMap<String, String> map) {
+    private static String resolveUrl(String baseUrl, String relativeUrl) {
         try {
-            JSONObject jSONObject = new JSONObject();
-            JSONArray jSONArray = new JSONArray();
-            String strReplace = this.f49 + "/ms/{cateId}--------" + str2 + "---.html";
-            if (z && map != null && map.size() > 0) {
-                for (String str3 : map.keySet()) {
-                    String str4 = map.get(str3);
-                    if (str4.length() > 0) {
-                        strReplace = strReplace.replace("{" + str3 + "}", str4);
+            if (relativeUrl.startsWith("//")) return URI.create(baseUrl).getScheme() + ":" + relativeUrl;
+            if (relativeUrl.startsWith("/")) {
+                URI base = URI.create(baseUrl);
+                return base.getScheme() + "://" + base.getHost() + relativeUrl;
+            }
+            if (relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")) return relativeUrl;
+            URI base = URI.create(baseUrl);
+            return base.getScheme() + "://" + base.getHost() + "/" + relativeUrl;
+        } catch (Exception e) {
+            return relativeUrl;
+        }
+    }
+
+    public String categoryContent(String cateId, String page, boolean filterEnabled, HashMap<String, String> filters) {
+        try {
+            JSONObject result = new JSONObject();
+            JSONArray list = new JSONArray();
+            String url = this.baseUrl + "/ms/{cateId}--------" + page + "---.html";
+            if (filterEnabled && filters != null && filters.size() > 0) {
+                for (String key : filters.keySet()) {
+                    String value = filters.get(key);
+                    if (value.length() > 0) {
+                        url = url.replace("{" + key + "}", value);
                     }
                 }
             }
-            C0455 c0455M199 = C0243.m884(C0295.m1089(strReplace.replaceAll("\\{cateId\\}", str), m49(this.f49))).m199("ul.content-list li");
-            for (int i = 0; i < c0455M199.size(); i++) {
-                C0011 c0011 = c0455M199.get(i);
-                String strM1693 = c0011.m199("h3").m1693();
-                String strM1054 = C0287.m1054(this.f49, c0011.m199("img").m1686("src"));
-                String strM16932 = c0011.m199(".bottom2").m1693();
-                String strM1686 = c0011.m199("a").m1686("href");
-                JSONObject jSONObject2 = new JSONObject();
-                jSONObject2.put("vod_id", strM1686);
-                jSONObject2.put("vod_name", strM1693);
-                jSONObject2.put("vod_pic", strM1054);
-                jSONObject2.put("vod_remarks", strM16932);
-                jSONArray.put(jSONObject2);
+            Document doc = Jsoup.parse(OkHttpUtil.string(url.replaceAll("\\{cateId\\}", cateId), buildHeaders()));
+            Elements items = doc.select("ul.content-list li");
+            for (int i = 0; i < items.size(); i++) {
+                Element item = items.get(i);
+                String name = item.select("h3").text();
+                String pic = resolveUrl(this.baseUrl, item.select("img").attr("src"));
+                String remark = item.select(".bottom2").text();
+                String href = item.select("a").attr("href");
+                JSONObject vod = new JSONObject();
+                vod.put("vod_id", href);
+                vod.put("vod_name", name);
+                vod.put("vod_pic", pic);
+                vod.put("vod_remarks", remark);
+                list.put(vod);
             }
-            jSONObject.put("page", str2);
-            jSONObject.put("pagecount", Integer.MAX_VALUE);
-            jSONObject.put("limit", jSONArray.length());
-            jSONObject.put("total", Integer.MAX_VALUE);
-            jSONObject.put("list", jSONArray);
-            return jSONObject.toString();
+            result.put("page", page);
+            result.put("pagecount", Integer.MAX_VALUE);
+            result.put("limit", list.length());
+            result.put("total", Integer.MAX_VALUE);
+            result.put("list", list);
+            return result.toString();
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:34:0x0142 A[Catch: Exception -> 0x01d3, TryCatch #4 {Exception -> 0x01d3, blocks: (B:32:0x0136, B:34:0x0142, B:35:0x0157, B:37:0x015d, B:38:0x017d, B:40:0x0183, B:41:0x01be), top: B:62:0x0136, outer: #3 }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public java.lang.String detailContent(java.util.List<java.lang.String> r24) {
-        /*
-            Method dump skipped, instruction units count: 596
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
+    public String detailContent(List<String> ids) {
         // TODO: Method not decompiled by JADX - needs manual reconstruction
         return "";
     }
 
-    public String homeContent(boolean z) {
-        String strD = "&";
+    public String homeContent(boolean filterEnabled) {
         try {
-            JSONArray jSONArray = new JSONArray();
-            String[] strArrSplit = "电影&电视剧&综艺&动漫&短剧".split(strD);
-            String[] strArrSplit2 = "1&2&3&4&30".split(strD);
-            for (int i = 0; i < strArrSplit.length; i++) {
-                JSONObject jSONObject = new JSONObject();
-                jSONObject.put("type_id", strArrSplit2[i]);
-                jSONObject.put("type_name", strArrSplit[i]);
-                jSONArray.put(jSONObject);
+            JSONArray classes = new JSONArray();
+            String[] names = "电影&电视剧&综艺&动漫&短剧".split("&");
+            String[] ids = "1&2&3&4&30".split("&");
+            for (int i = 0; i < names.length; i++) {
+                JSONObject cls = new JSONObject();
+                cls.put("type_id", ids[i]);
+                cls.put("type_name", names[i]);
+                classes.put(cls);
             }
-            JSONObject jSONObject2 = new JSONObject();
-            jSONObject2.put("class", jSONArray);
-            if (z) {
-                jSONObject2.put("filters", new JSONObject("{}"));
+            JSONObject result = new JSONObject();
+            result.put("class", classes);
+            if (filterEnabled) {
+                result.put("filters", new JSONObject("{}"));
             }
-            return jSONObject2.toString();
+            return result.toString();
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            SpiderDebug.log(e);
             return "";
         }
     }
@@ -107,51 +117,51 @@ public class QnMp4 extends Spider {
         if (str.isEmpty()) {
             return;
         }
-        this.f49 = str;
+        this.baseUrl = str;
     }
 
-    public String playerContent(String str, String str2, List<String> list) {
+    public String playerContent(String playFlag, String playUrl, List<String> vipFlags) {
         try {
-            JSONObject jSONObject = new JSONObject();
-            JSONObject jSONObject2 = new JSONObject();
-            jSONObject2.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36");
-            jSONObject.put("url", str2);
-            boolean zStartsWith = str2.startsWith("tvbox");
-            String strD = "parse";
-            if (zStartsWith || str2.startsWith("ed2k")) {
-                jSONObject.put(strD, 0);
+            JSONObject result = new JSONObject();
+            JSONObject header = new JSONObject();
+            header.put("User-Agent", USER_AGENT);
+            result.put("url", playUrl);
+            if (playUrl.startsWith("tvbox") || playUrl.startsWith("ed2k")) {
+                result.put("parse", 0);
             } else {
-                jSONObject.put("header", jSONObject2.toString());
-                jSONObject.put(strD, 1);
+                result.put("header", header.toString());
+                result.put("parse", 1);
             }
-            jSONObject.put("playUrl", "");
-            return jSONObject.toString();
+            result.put("playUrl", "");
+            return result.toString();
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
         }
     }
 
-    public String searchContent(String str, boolean z) {
+    public String searchContent(String keyword, boolean quick) {
         try {
-            JSONArray jSONArray = new JSONArray();
-            C0455 c0455M199 = C0243.m884(C0295.m1089(this.f49 + "/vs/-------------.html?wd=" + str, m49(this.f49))).m199("div.sr_lists li");
-            for (int i = 0; i < c0455M199.size(); i++) {
-                C0011 c0011 = c0455M199.get(i);
-                String strM1693 = c0011.m199("h3").m1693();
-                String strM1054 = C0287.m1054(this.f49, c0011.m199("img").m1686("src"));
-                String strM16932 = c0011.m199(".bottom2").m1693();
-                String strM1686 = c0011.m199("a").m1686("href");
-                JSONObject jSONObject = new JSONObject();
-                jSONObject.put("vod_id", strM1686);
-                jSONObject.put("vod_name", strM1693);
-                jSONObject.put("vod_pic", strM1054);
-                jSONObject.put("vod_remarks", strM16932);
-                jSONArray.put(jSONObject);
+            JSONArray list = new JSONArray();
+            String url = this.baseUrl + "/vs/-------------.html?wd=" + keyword;
+            Document doc = Jsoup.parse(OkHttpUtil.string(url, buildHeaders()));
+            Elements items = doc.select("div.sr_lists li");
+            for (int i = 0; i < items.size(); i++) {
+                Element item = items.get(i);
+                String name = item.select("h3").text();
+                String pic = resolveUrl(this.baseUrl, item.select("img").attr("src"));
+                String remark = item.select(".bottom2").text();
+                String href = item.select("a").attr("href");
+                JSONObject vod = new JSONObject();
+                vod.put("vod_id", href);
+                vod.put("vod_name", name);
+                vod.put("vod_pic", pic);
+                vod.put("vod_remarks", remark);
+                list.put(vod);
             }
-            JSONObject jSONObject2 = new JSONObject();
-            jSONObject2.put("list", jSONArray);
-            return jSONObject2.toString();
+            JSONObject result = new JSONObject();
+            result.put("list", list);
+            return result.toString();
         } catch (Exception e) {
             SpiderDebug.log(e);
             return "";
