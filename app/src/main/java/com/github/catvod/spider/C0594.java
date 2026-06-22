@@ -2,13 +2,13 @@ package com.github.catvod.spider;
 
 import android.content.Context;
 import android.os.Build;
+import com.github.catvod.bean.JsonUtils;
+import com.github.catvod.bean.VodItem;
+import com.github.catvod.bean.VodResult;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.JuheShortDrama;
 import com.github.catvod.spider.merge.I.*;
-import com.github.catvod.bean.JsonUtils;
-import com.github.catvod.bean.VodItem;
-import com.github.catvod.bean.VodResult;
 import com.github.catvod.spider.merge.KI.Subtitle;
 import com.github.catvod.spider.merge.L.k;
 import com.github.catvod.spider.merge.b0.C0902a;

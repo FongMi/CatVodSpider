@@ -1,0 +1,95 @@
+package com.github.catvod.spider.merge.M;
+
+import com.github.catvod.spider.merge.oZP;
+
+/* JADX INFO: loaded from: /tmp/decompiler/446907477a41490d9e71cfdd71d695e7/classes.dex */
+final class A {
+    static final String[] A;
+    static final String[] B;
+    static final String[] C;
+    static final String[] D;
+    static final String[] E;
+    static final String[] F;
+    static final String[] G;
+    static final String[] H;
+    static final String[] I;
+    static final String[] J;
+    static final String[] K;
+    static final String[] L;
+    static final String[] a = {oZP.d("170E0424"), oZP.d("170E04240A3A1B1B"), oZP.d("1708042E193B11"), oZP.d("16001A2C0D3B11"), oZP.d("1906192A")};
+    static final String[] b = {oZP.d("1B0011330D38101C"), oZP.d("061B0E2D09")};
+    static final String[] c;
+    static final String[] d;
+    static final String[] e;
+    static final String[] f;
+    static final String[] g;
+    static final String[] h;
+    static final String[] i;
+    static final String[] j;
+    static final String[] k;
+    static final String[] l;
+    static final String[] m;
+    static final String[] n;
+    static final String[] o;
+    static final String[] p;
+    static final String[] q;
+    static final String[] r;
+    static final String[] s;
+    static final String[] t;
+    static final String[] u;
+    static final String[] v;
+    static final String[] w;
+    static final String[] x;
+    static final String[] y;
+    static final String[] z;
+
+    static {
+        String strD = oZP.d("17001338");
+        String strD2 = oZP.d("1D1B1A2D");
+        c = new String[]{strD, oZP.d("171D"), strD2};
+        d = new String[]{strD, oZP.d("171D"), strD2};
+        e = new String[]{strD, oZP.d("171D"), oZP.d("1D0A1625"), strD2};
+        f = new String[]{oZP.d("170E04240A3A1B1B"), oZP.d("1708042E193B11"), oZP.d("1906192A"), oZP.d("180A0320"), oZP.d("1B0011330D38101C"), oZP.d("061B0E2D09")};
+        g = new String[]{oZP.d("170E0424"), oZP.d("170E04240A3A1B1B"), oZP.d("1708042E193B11"), oZP.d("16001A2C0D3B11"), oZP.d("1906192A"), oZP.d("180A0320"), oZP.d("1B0011330D38101C"), oZP.d("060C05281C21"), oZP.d("061B0E2D09"), oZP.d("010A1A310034010A"), oZP.d("0106032D09")};
+        h = new String[]{oZP.d("140B1333092606"), oZP.d("141D03280F3910"), oZP.d("141C1E2509"), oZP.d("17031822072400000324"), oZP.d("160A19350927"), oZP.d("110A0320053906"), oZP.d("110605"), oZP.d("110601"), oZP.d("1103"), oZP.d("1306122D0826101B"), oZP.d("130610220D250106182F"), oZP.d("130610341E30"), oZP.d("130018350927"), oZP.d("1D0A16250927"), oZP.d("1D08052E1925"), oZP.d("180A1934"), oZP.d("1B0E01"), oZP.d("1A03"), oZP.d("05"), oZP.d("060A1435053A1B"), oZP.d("061A1A2C0D270C"), oZP.d("0003")};
+        i = new String[]{oZP.d("1D5E"), oZP.d("1D5D"), oZP.d("1D5C"), oZP.d("1D5B"), oZP.d("1D5A"), oZP.d("1D59")};
+        j = new String[]{oZP.d("140B1333092606"), oZP.d("110601"), oZP.d("05")};
+        k = new String[]{oZP.d("110B"), oZP.d("111B")};
+        l = new String[]{oZP.d("141F072D0921"), oZP.d("180E0530193010"), oZP.d("1A0D1D240F21")};
+        m = new String[]{oZP.d("050E052001"), oZP.d("060002330F30"), oZP.d("011D162207")};
+        n = new String[]{oZP.d("140C0328033B"), oZP.d("1B0E1A24"), oZP.d("051D182C1C21")};
+        String strD3 = oZP.d("160E0735053A1B");
+        String strD4 = oZP.d("16001B");
+        String strD5 = oZP.d("16001B261E3A001F");
+        String strD6 = oZP.d("010D182515");
+        String strD7 = oZP.d("010B");
+        String strD8 = oZP.d("0109182E18");
+        String strD9 = oZP.d("0107");
+        String strD10 = oZP.d("0107122008");
+        String strD11 = oZP.d("011D");
+        o = new String[]{strD3, strD4, strD5, oZP.d("131D162C09"), oZP.d("1D0A1625"), strD6, strD7, strD8, strD9, strD10, strD11};
+        p = new String[]{oZP.d("140B1333092606"), oZP.d("141D03280F3910"), oZP.d("141C1E2509"), oZP.d("17031822072400000324"), oZP.d("171A0335033B"), oZP.d("160A19350927"), oZP.d("110A0320053906"), oZP.d("110605"), oZP.d("110601"), oZP.d("1103"), oZP.d("1306122D0826101B"), oZP.d("130610220D250106182F"), oZP.d("130610341E30"), oZP.d("130018350927"), oZP.d("1D0A16250927"), oZP.d("1D08052E1925"), oZP.d("19060435053B12"), oZP.d("180A1934"), oZP.d("1B0E01"), oZP.d("1A03"), oZP.d("051D12"), oZP.d("060A1435053A1B"), oZP.d("061A1A2C0D270C"), oZP.d("0003")};
+        q = new String[]{oZP.d("14"), oZP.d("17"), oZP.d("170610"), oZP.d("16001324"), oZP.d("1002"), oZP.d("13001935"), oZP.d("1C"), oZP.d("1B001533"), oZP.d("06"), oZP.d("0602162D00"), oZP.d("061B05280730"), oZP.d("061B052E0232"), oZP.d("011B"), oZP.d("00")};
+        r = new String[]{oZP.d("010E152D09"), strD6, strD8, strD10, strD11};
+        s = new String[]{strD6, strD8, strD10};
+        t = new String[]{strD7, strD9, strD11};
+        u = new String[]{oZP.d("060C05281C21"), oZP.d("061B0E2D09"), oZP.d("010A1A310034010A")};
+        v = new String[]{strD7, strD9};
+        w = new String[]{strD, strD3, strD4, strD5, strD2};
+        x = new String[]{oZP.d("010E152D09"), strD6, strD8, strD10, strD11};
+        y = new String[]{strD3, strD4, strD5, strD6, strD7, strD8, strD9, strD10, strD11};
+        z = new String[]{strD, strD3, strD4, strD5, strD2, strD6, strD7, strD8, strD9, strD10, strD11};
+        A = new String[]{oZP.d("010E152D09"), strD6, strD8, strD10, strD11};
+        B = new String[]{strD3, strD4, strD5, strD6, strD8, strD10};
+        C = new String[]{strD, strD3, strD4, strD5, strD2, strD7, strD9, strD11};
+        D = new String[]{strD3, strD4, strD5, strD6, strD8, strD10, strD11};
+        E = new String[]{strD, strD3, strD4, strD5, strD2, strD7, strD9};
+        F = new String[]{oZP.d("1C01073418"), oZP.d("1E0A0E26093B"), oZP.d("010A0F350D27100E")};
+        G = new String[]{strD3, oZP.d("010E152D09"), strD6, strD7, strD8, strD9, strD10, strD11};
+        H = new String[]{strD6, strD8, strD10};
+        I = new String[]{oZP.d("1D0A1625"), oZP.d("1B0004221E3C051B")};
+        J = new String[]{strD, strD4, strD5, strD2, strD6, strD7, strD8, strD9, strD10, strD11};
+        K = new String[]{oZP.d("170E0424"), oZP.d("170E04240A3A1B1B"), oZP.d("1708042E193B11"), oZP.d("1906192A"), oZP.d("180A0320"), oZP.d("1B0011330D38101C"), oZP.d("060C05281C21"), oZP.d("061B0E2D09"), oZP.d("010A1A310034010A"), oZP.d("0106032D09")};
+        L = new String[]{strD3, strD5, strD6, strD8, strD10};
+    }
+}

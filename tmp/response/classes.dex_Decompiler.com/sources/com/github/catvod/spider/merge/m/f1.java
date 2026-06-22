@@ -1,0 +1,15 @@
+package com.github.catvod.spider.merge.M;
+
+import com.github.catvod.spider.merge.oZP;
+
+/* JADX INFO: loaded from: /tmp/decompiler/446907477a41490d9e71cfdd71d695e7/classes.dex */
+enum f1 extends j1 {
+    f1() {
+        super(oZP.d("260C05281C21310E0320"), 5, null);
+    }
+
+    @Override // com.github.catvod.spider.merge.M.j1
+    final void g(T t, C0017a c0017a) {
+        j1.b(t, c0017a, this, j1.q);
+    }
+}

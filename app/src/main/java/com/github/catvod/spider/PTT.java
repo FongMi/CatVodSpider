@@ -3,6 +3,7 @@ package com.github.catvod.spider;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+import com.github.catvod.bean.VodCategory;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 import com.github.catvod.bean.VodItem;
@@ -52,7 +53,7 @@ public class PTT extends Spider {
             Element mVar2 = mVar.select("a").get(0);
             Element mVar3 = mVar2.select("img").get(0);
             String strS0 = mVar.select("span.badge.badge-success").get(0).text();
-            String strC = mVar3.attr("src").startsWith("http") ? mVar3.attr("src") : this.a + mVar3.attr("src");
+            String strC = mVar3.attr("src").startsWith("http") ? mVar3.attr("src") : baseUrl + mVar3.attr("src");
             String strC2 = mVar3.attr("alt");
             if (!TextUtils.isEmpty(strC2)) {
                 arrayList.add(new VodItem(mVar2.attr("href").substring(3), strC2, strC, strS0));
@@ -63,7 +64,7 @@ public class PTT extends Spider {
 
     public String detailContent(List<String> list) {
         StringBuilder sb = new StringBuilder();
-        sb.append(this.a);
+        sb.append(baseUrl);
         Document doc = Jsoup.parse(OkHttpUtil.string(sb.toString() + list.get(0) + "/1", buildHeader()));
         LinkedHashMap linkedHashMap = new LinkedHashMap();
         ArrayList arrayList = new ArrayList();
@@ -92,10 +93,10 @@ public class PTT extends Spider {
     }
 
     public String homeContent(boolean z) {
-        Document doc = Jsoup.parse(OkHttpUtil.string(baseUrl, a()));
+        Document doc = Jsoup.parse(OkHttpUtil.string(baseUrl, buildHeader()));
         ArrayList arrayList = new ArrayList();
         for (Element mVar : doc.select("li > a.px-2.px-sm-3.py-2.nav-link")) {
-            arrayList.add(new com.github.catvod.bean.VodCategory(mVar.attr("href").replace("/p/", ""), mVar.text()));
+            arrayList.add(new VodCategory(mVar.attr("href").replace("/p/", ""), mVar.text()));
         }
         return VodResult.o(arrayList, new JSONObject(TextUtils.isEmpty(this.b) ? "{}" : OkHttpUtil.string(this.b)));
     }

@@ -18,6 +18,7 @@ import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.spider.merge.W;
 import com.github.catvod.spider.merge.eE;
 import com.github.catvod.spider.merge.fS;
+import com.github.catvod.spider.merge.q1.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,7 +40,6 @@ public class Init2 {
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private Application application;
 
-    private static final short[] f29short = {2371, 2328, 2334, 2371, 2370, 2375, 2323, 2323, 2372, 2381, 2375, 2381, 2371, 2381, 2373, 2332, 2373, 2328, 2375, 2332, 2380, 2375, 2334, 2374, 2332, 2328, 2369, 2370, 2380, 2369, 2333, 2323, 2332, 2333, 2323, 2332, 2333, 2369, 2369, 2372, 2380, 2375, 2380, 2328, 2375, 2369, 2375, 2381, 2372, 2375, 2373, 2375, 2368, 2332, 2323, 2370, 2332, 2371, 2373, 2334, 2368, 2380, 2372, 2373, 2373, 2369, 537, 548, 569, 545, 552, 1818, 1851, 1824, 1853, 1847, 1841, 2360, 2320, 2310, 2310, 2324, 2322, 2320, 2589, 2623, 2587, 2613, 2601, 1904, 1879, 1858, 1879, 1878, 1872, 707, 743, 749, 735, 760, 742, 1346, 1390, 1393, 1400, 1397, 1384, 1393, 1837, 1808, 1806, 1793, 1805, 1797, 1096, 1102, 1112, 1103, 1145, 1116, 1097, 1116, 2133, 2116, 2134, 2134, 2130, 2122, 2135, 2113, -30313, -29197, 21253, 28064, 28507, 31329, 17554, 23314, 26959, 29605, 27938, 28633, 3320, 3319, 3325, 3307, 3318, 3312, 3325, 3255, 3320, 3305, 3305, 3255, 3288, 3322, 3309, 3312, 3311, 3312, 3309, 3296, 3277, 3313, 3307, 3324, 3320, 3325, 2192, 2182, 2177, 2177, 2198, 2205, 2183, 2226, 2192, 2183, 2202, 2181, 2202, 2183, 2186, 2215, 2203, 2177, 2198, 2194, 2199, 1248, 1228, 1262, 1273, 1252, 1275, 1252, 1273, 1252, 1256, 1278, 2757, 2772, 2752, 2758, 2768, 2769, 2801, 2803, 2788, 2809, 2790, 2809, 2788, 2793, -30117, 20523, 17912, 31133, -29222, 17746, 29616, 22801, -31540, 27041, 22830, -2896};
     public static Boolean dialogShown = Boolean.FALSE;
 
     private static class Loader {
@@ -75,7 +75,7 @@ public class Init2 {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 LinearLayout linearLayout = new LinearLayout(getActivity());
-                linearLayout.setOrientation(1);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
                 fS fSVar = new fS(getActivity());
                 fSVar.setMaxHeight(300);
                 fSVar.HM(imageUrl);
@@ -139,7 +139,7 @@ public class Init2 {
                             editorEdit.apply();
                             this.l8.dismiss();
                         } else {
-                            Toast.makeText(Init2.getActivity(), "激活码错误", 1).show();
+                            Toast.makeText(Init2.getActivity(), "激活码错误", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -147,13 +147,13 @@ public class Init2 {
             }
             return null;
         } catch (JSONException e) {
-            StringUtils.printStackTrace();
+            StringUtils.printStackTrace(e);
         }
         return null;
     }
 
     static void showToast(String str) {
-        Toast.makeText(context(), str, 1).show();
+        Toast.makeText(context(), str, Toast.LENGTH_LONG).show();
     }
 
     public static Application context() {
