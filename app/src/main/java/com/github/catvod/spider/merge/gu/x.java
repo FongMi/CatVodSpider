@@ -23,7 +23,7 @@ public class x extends C {
     /* JADX WARN: Type inference failed for: r0v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Lc.b>] */
     @Override // com.github.catvod.spider.merge.gu.C, com.github.catvod.spider.merge.Lc.b
     public final b b(int i) {
-        ?? r0 = this.d;
+        Object r0 = this.d;
         if (r0 == 0 || i < 0 || i >= r0.size()) {
             return null;
         }
@@ -33,7 +33,7 @@ public class x extends C {
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Lc.b>] */
     @Override // com.github.catvod.spider.merge.gu.C, com.github.catvod.spider.merge.Lc.b
     public final int d() {
-        ?? r0 = this.d;
+        Object r0 = this.d;
         if (r0 != 0) {
             return r0.size();
         }
@@ -59,7 +59,7 @@ public class x extends C {
     /* JADX WARN: Type inference failed for: r0v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Lc.b>] */
     public final x k(Class cls) {
         b bVar;
-        ?? r0 = this.d;
+        Object r0 = this.d;
         if (r0 == 0 || r0.size() <= 0) {
             bVar = null;
         } else {
@@ -76,7 +76,7 @@ public class x extends C {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Lc.b>] */
     public final <T extends x> List<T> l(Class<? extends T> cls) {
-        ?? r0 = this.d;
+        Object r0 = this.d;
         if (r0 == 0) {
             return Collections.emptyList();
         }
@@ -95,7 +95,7 @@ public class x extends C {
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Lc.b>] */
     /* JADX WARN: Type inference failed for: r0v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Lc.b>] */
     public final com.github.catvod.spider.merge.Lc.f m(int i) {
-        ?? r0 = this.d;
+        Object r0 = this.d;
         if (r0 == 0 || r0.size() <= 0) {
             return null;
         }

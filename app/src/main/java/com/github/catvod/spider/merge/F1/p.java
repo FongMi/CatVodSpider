@@ -46,7 +46,7 @@ public final class p {
         if (strC == null) {
             return str2;
         }
-        ?? r1 = a;
+        Object r1 = a;
         CharSequence charSequence = (String) r1.get(strC);
         if (charSequence != null) {
             return str2.replace(strC, charSequence);

@@ -2,7 +2,7 @@ package com.github.catvod.spider.merge.Fs;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.Fs.t, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C0668t extends A {
+class C0668t extends A {
     C0668t() {
         super("InHead", 3, null);
     }

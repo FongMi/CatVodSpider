@@ -2,7 +2,7 @@ package com.github.catvod.spider.merge.Fs;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.Fs.m, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C0655m extends A {
+class C0655m extends A {
     C0655m() {
         super("Initial", 0, null);
     }

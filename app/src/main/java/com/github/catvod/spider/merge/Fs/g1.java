@@ -1,7 +1,7 @@
 package com.github.catvod.spider.merge.Fs;
 
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum g1 extends h1 {
+class g1 extends h1 {
     g1() {
         super("EndTagOpen", 8, null);
     }

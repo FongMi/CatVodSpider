@@ -57,7 +57,7 @@ public final class k {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<java.util.UUID>] */
     protected static boolean d(UUID uuid, UUID uuid2) {
-        ?? r0 = e;
+        Object r0 = e;
         int iIndexOf = r0.indexOf(uuid);
         return iIndexOf >= 0 && r0.indexOf(uuid2) >= iIndexOf;
     }

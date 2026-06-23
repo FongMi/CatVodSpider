@@ -98,7 +98,7 @@ public final class W implements X, com.github.catvod.spider.merge.C.w {
             return null;
         }
         if (iP == 4 || iP == 26) {
-            ?? r8 = (T) dVar.A();
+            Object r8 = (T) dVar.A();
             dVar.o(16);
             if (r8.length != 0 || type == byte[].class) {
                 return r8;

@@ -62,7 +62,7 @@ public final class h extends j {
         this.a.put("Content-Type", "application/x-www-form-urlencoded");
         this.a.put("Origin", "https://pan.baidu.com");
         this.a.put("Referer", "https://pan.baidu.com/");
-        ?? r0 = this.b;
+        Object r0 = this.b;
         if (r0 == 0 || r0.isEmpty()) {
             System.err.println("Warning: Baidu cookies not found in cache.");
         }
@@ -738,7 +738,7 @@ public final class h extends j {
             sbB3.append(gVar.c());
             throw new IllegalArgumentException(sbB3.toString());
         }
-        ?? r2 = this.b;
+        Object r2 = this.b;
         if (r2 == 0 || r2.isEmpty()) {
             sb = new StringBuilder();
             str = "BDCLND=";
@@ -1073,7 +1073,7 @@ public final class h extends j {
                 e eVarO = o(str);
                 String str2 = eVarO.b;
                 if (str2 == null) {
-                    ?? r2 = eVarO.a;
+                    Object r2 = eVarO.a;
                     StringBuilder sb = new StringBuilder();
                     Iterator it = r2.iterator();
                     if (it.hasNext()) {

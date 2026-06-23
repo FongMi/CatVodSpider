@@ -15,10 +15,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.spider.merge.W;
-import com.github.catvod.spider.merge.eE;
-import com.github.catvod.spider.merge.fS;
-import com.github.catvod.spider.merge.q1.StringUtils;
+import com.github.catvod.utils.TraditionalChinese;
+
+import com.github.catvod.utils.RemoteImageView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,7 +54,7 @@ public class Init2 {
 
     public static AlertDialog N0() {
         try {
-            JSONObject jSONObject = new JSONObject(eE.l8("{\"Status\":0,\"Notice\":0,\"MoKey\":\"8972\",\"Mpname\":\"\",\"Copytip\":\"\",\"Title\":\"\",\"Message\":\"激活码8972\",\"ImgUrl\":\"\",\"WcNob\":\"\"}"));
+            JSONObject jSONObject = new JSONObject("{\"Status\":0,\"Notice\":0,\"MoKey\":\"8972\",\"Mpname\":\"\",\"Copytip\":\"\",\"Title\":\"\",\"Message\":\"激活码8972\",\"ImgUrl\":\"\",\"WcNob\":\"\"}");
             title = jSONObject.optString("Title");
             noticeType = jSONObject.getInt("Notice");
             message = jSONObject.optString("Message");
@@ -76,7 +76,7 @@ public class Init2 {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 LinearLayout linearLayout = new LinearLayout(getActivity());
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                fS fSVar = new fS(getActivity());
+                RemoteImageView fSVar = new fS(getActivity());
                 fSVar.setMaxHeight(300);
                 fSVar.HM(imageUrl);
                 EditText editText = new EditText(getActivity());
@@ -147,7 +147,7 @@ public class Init2 {
             }
             return null;
         } catch (JSONException e) {
-            StringUtils.printStackTrace(e);
+            e.printStackTrace();
         }
         return null;
     }
@@ -186,13 +186,13 @@ public class Init2 {
             }
             return null;
         } catch (Exception e) {
-            StringUtils.printStackTrace();
+            new RuntimeException().printStackTrace();
             return null;
         }
     }
 
     public static void init(Context context) {
-        W.l8();
+        TraditionalChinese.l8();
         Application application = (Application) context;
         Init2 init2 = get();
         init2.application = application;

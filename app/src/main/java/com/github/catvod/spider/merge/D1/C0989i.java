@@ -2,7 +2,7 @@ package com.github.catvod.spider.merge.d1;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.d1.i, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C0989i extends EnumC0969B {
+class C0989i extends EnumC0969B {
     C0989i() {
         super("InSelect", 15, null);
     }

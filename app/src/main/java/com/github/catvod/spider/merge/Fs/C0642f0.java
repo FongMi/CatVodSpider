@@ -2,7 +2,7 @@ package com.github.catvod.spider.merge.Fs;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.Fs.f0, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C0642f0 extends h1 {
+class C0642f0 extends h1 {
     C0642f0() {
         super("ScriptDataEscaped", 21, null);
     }

@@ -4,7 +4,7 @@ import com.github.catvod.spider.merge.ZrJ;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.Mp.x, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C0883x extends B {
+class C0883x extends B {
     C0883x() {
         super(ZrJ.d("302D09222C3C"), 6, null);
     }

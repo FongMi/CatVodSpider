@@ -58,7 +58,7 @@ public final class d extends f {
         String strSubstring = str3.substring(str3.lastIndexOf(".") + 1);
         EnumC1316h enumC1316hA = EnumC1316h.a(strSubstring);
         String strA = t0.a(str, "-", strSubstring);
-        ?? r4 = this.h;
+        List<o> r4 = this.h;
         com.github.catvod.spider.merge.I1.a aVar = new com.github.catvod.spider.merge.I1.a();
         aVar.u(strA + "-" + str2 + "-" + j.c(1));
         aVar.s(str3, true);
@@ -85,7 +85,7 @@ public final class d extends f {
         if (m.j(strG)) {
             return;
         }
-        ?? r10 = this.h;
+        List<com.github.catvod.spider.merge.I1.b> r10 = this.h;
         com.github.catvod.spider.merge.I1.a aVar3 = new com.github.catvod.spider.merge.I1.a();
         aVar3.u(strA + "-" + str2 + "-" + j.c(5));
         aVar3.s(strG, true);
@@ -103,7 +103,7 @@ public final class d extends f {
         EnumC1316h enumC1316hA = EnumC1316h.a(strSubstring);
         String strA = t0.a(str, "-", strSubstring);
         boolean z2 = eVar.containsKey("hasAudio") && !eVar.d("hasAudio");
-        ?? r12 = this.i;
+        List<q> r12 = this.i;
         p pVar = new p();
         pVar.d(strA + "-" + str2 + "-" + j.c(1));
         pVar.b(str3, true);
@@ -132,7 +132,7 @@ public final class d extends f {
         if (m.j(strG)) {
             return;
         }
-        ?? r4 = this.i;
+        List<q> r4 = this.i;
         p pVar3 = new p();
         pVar3.d(strA + "-" + str2 + "-" + j.c(5));
         pVar3.b(strG, true);
@@ -459,7 +459,7 @@ public final class d extends f {
                             String strG = com.github.catvod.spider.merge.L1.b.g(eVar, "language.id");
                             EnumC1316h enumC1316hA = EnumC1316h.a(str.substring(str.lastIndexOf(".") + 1));
                             if (enumC1316hA != null && !m.j(strG)) {
-                                ?? r3 = this.g;
+                                List<o> r3 = this.g;
                                 n nVar = new n();
                                 nVar.c(str);
                                 nVar.e(enumC1316hA);

@@ -50,7 +50,7 @@ public final class v implements w {
                 dVar.o(16);
                 return (T) Byte.valueOf(com.github.catvod.spider.merge.H.A.c(bigDecimalS2));
             }
-            ?? r9 = (T) dVar.s();
+            BigDecimal r9 = (T) dVar.s();
             dVar.o(16);
             return dVar.l(com.github.catvod.spider.merge.B.c.UseBigDecimal) ? r9 : (T) Double.valueOf(r9.doubleValue());
         }

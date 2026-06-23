@@ -4,7 +4,7 @@ import com.github.catvod.spider.merge.b1.C0906c;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.d1.d, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C0979d extends EnumC0969B {
+class C0979d extends EnumC0969B {
     C0979d() {
         super("InCaption", 10, null);
     }

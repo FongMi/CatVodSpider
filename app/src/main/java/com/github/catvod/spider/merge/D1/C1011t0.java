@@ -2,7 +2,7 @@ package com.github.catvod.spider.merge.d1;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.d1.t0, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C1011t0 extends i1 {
+class C1011t0 extends i1 {
     C1011t0() {
         super("BeforeAttributeName", 33, null);
     }

@@ -2,22 +2,19 @@ package com.github.catvod.utils.merge;
 
 import java.util.Comparator;
 
-/* JADX INFO: renamed from: com.github.catvod.spider.merge.b0.b, reason: case insensitive filesystem */
-/* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
+/**
+ * 115 网盘文件排序器（按文件名中的数字排序）
+ */
 public final class Yun115FileComparator implements Comparator<Yun115File> {
-    @Override // java.util.Comparator
-    public final int compare(Yun115File c0902a, Yun115File c0902a2) {
-        Yun115File c0902a3 = c0902a;
-        Yun115File c0902a4 = c0902a2;
+
+    @Override
+    public final int compare(Yun115File a, Yun115File b) {
         try {
-            int i = Integer.parseInt(m.x(c0902a3.k()).replaceAll("\\D+", ""));
-            int i2 = Integer.parseInt(m.x(c0902a4.k()).replaceAll("\\D+", ""));
-            if (i == i2) {
-                return 0;
-            }
-            return i < i2 ? -1 : 1;
-        } catch (NumberFormatException unused) {
-            return c0902a3.b().compareToIgnoreCase(c0902a4.b());
+            int numA = Integer.parseInt(m.x(a.sortKey()).replaceAll("\\D+", ""));
+            int numB = Integer.parseInt(m.x(b.sortKey()).replaceAll("\\D+", ""));
+            return Integer.compare(numA, numB);
+        } catch (NumberFormatException e) {
+            return a.display().compareToIgnoreCase(b.display());
         }
     }
 }

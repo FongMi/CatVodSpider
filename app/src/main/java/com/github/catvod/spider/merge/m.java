@@ -1860,7 +1860,7 @@ abstract class m {
     static final char[] b6 = {0, '\t', '\n', '\f', '\r', ' ', '\"', '&', '\'', '<', '=', '>', '`'};
     private static final String L = String.valueOf((char) 65533);
 
-    enum a extends m {
+    class a extends m {
         a(String str, int i) {
             super(str, i, null);
         }

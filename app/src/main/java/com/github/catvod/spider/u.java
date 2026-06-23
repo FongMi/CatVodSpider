@@ -2,8 +2,8 @@ package com.github.catvod.spider;
 
 import android.util.Base64;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.spider.merge.O5;
-import com.github.catvod.spider.merge.zm;
+import com.github.catvod.utils.M3uParser;
+import com.github.catvod.utils.LiveVodParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.Map;
@@ -39,12 +39,12 @@ public class u extends Spider {
             String strE = "UTF-8";
             if (str.equals("live")) {
                 if (map.get("type").equals("txt")) {
-                    objArrVod = O5.S(new String(Base64.decode(map.get("ext"), 10), strE));
+                    objArrVod = M3uParser.S(new String(Base64.decode(map.get("ext"), 10), strE));
                 }
             } else if (str.equals("ck")) {
                 objArrVod = new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes(strE))};
             } else if (str.equals("push")) {
-                objArrVod = zm.vod(map);
+                objArrVod = LiveVodParser.vod(map);
             } else if (str.equals("czspp")) {
                 objArrVod = Ddrk.loadsub(map.get("url"));
             } else if (str.equals("ddrk")) {

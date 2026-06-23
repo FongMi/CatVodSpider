@@ -21,7 +21,7 @@ public class Quark extends Spider {
     public String detailContent(String extend, List<String> ids) {
         SpiderDebug.log("网盘集合 detailContent ids 3:" + ids);
         String url = ids.get(0).trim();
-        Subtitle.b("quark detailContent url:", url);
+        SpiderDebug.log("quark detailContent url:", url);
         Matcher matcher = PAN_URL_PATTERN.matcher(url);
         if (matcher.find()) {
             return VodResult.m(QuarkDriveApi.o().y(url, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", extend));
@@ -47,7 +47,7 @@ public class Quark extends Spider {
 
     public String detailContent(List<String> ids) {
         String url = ids.get(0).trim();
-        Subtitle.b("quark detailContent url:", url);
+        SpiderDebug.log("quark detailContent url:", url);
         Matcher matcher = PAN_URL_PATTERN.matcher(url);
         if (matcher.find()) {
             return VodResult.m(QuarkDriveApi.o().y(url, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", ""));

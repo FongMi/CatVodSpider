@@ -211,7 +211,7 @@ public final class C1185v implements Closeable {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.HashMap, java.util.Map<java.lang.Object, java.lang.Object>] */
     public final void E(Object obj) {
-        ?? r0 = this.q;
+        Object r0 = this.q;
         if (r0 == 0) {
             return;
         }
@@ -330,7 +330,7 @@ public final class C1185v implements Closeable {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.HashMap, java.util.Map<java.lang.Object, java.lang.Object>] */
     public final Object q(Object obj) {
-        ?? r0 = this.q;
+        Object r0 = this.q;
         if (r0 == 0) {
             return null;
         }

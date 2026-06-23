@@ -82,7 +82,7 @@ public abstract class g0 {
     /* JADX WARN: Type inference failed for: r1v1, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.Z>] */
     /* JADX WARN: Type inference failed for: r1v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.Z>] */
     public final boolean e(L l, Object obj, String str, Object obj2) {
-        ?? r1 = l.c;
+        List<Z> r1 = l.c;
         if (r1 != 0) {
             Iterator it = r1.iterator();
             while (it.hasNext()) {
@@ -91,7 +91,7 @@ public abstract class g0 {
                 }
             }
         }
-        ?? r12 = this.c;
+        List<Z> r12 = this.c;
         if (r12 == 0) {
             return true;
         }
@@ -107,7 +107,7 @@ public abstract class g0 {
     /* JADX WARN: Type inference failed for: r1v1, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.a0>] */
     /* JADX WARN: Type inference failed for: r1v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.a0>] */
     public final boolean f(L l, Object obj, String str) {
-        ?? r1 = l.f;
+        List<a0> r1 = l.f;
         if (r1 != 0) {
             Iterator it = r1.iterator();
             while (it.hasNext()) {
@@ -116,7 +116,7 @@ public abstract class g0 {
                 }
             }
         }
-        ?? r12 = this.f;
+        List<a0> r12 = this.f;
         if (r12 == 0) {
             return true;
         }
@@ -132,14 +132,14 @@ public abstract class g0 {
     /* JADX WARN: Type inference failed for: r1v1, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.V>] */
     /* JADX WARN: Type inference failed for: r1v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.V>] */
     protected final String g(L l, Object obj, String str, Object obj2) {
-        ?? r1 = l.e;
+        List<V> r1 = l.e;
         if (r1 != 0) {
             Iterator it = r1.iterator();
             while (it.hasNext()) {
                 str = ((V) it.next()).b();
             }
         }
-        ?? r12 = this.e;
+        List<V> r12 = this.e;
         if (r12 != 0) {
             Iterator it2 = r12.iterator();
             while (it2.hasNext()) {
@@ -168,28 +168,28 @@ public abstract class g0 {
                 obj2 = AbstractC1412a.d((String) obj2);
             }
         }
-        ?? r2 = l.d;
+        List<l0> r2 = l.d;
         if (r2 != 0) {
             Iterator it = r2.iterator();
             while (it.hasNext()) {
                 obj2 = ((l0) it.next()).d();
             }
         }
-        ?? r22 = this.d;
+        List<l0> r22 = this.d;
         if (r22 != 0) {
             Iterator it2 = r22.iterator();
             while (it2.hasNext()) {
                 obj2 = ((l0) it2.next()).d();
             }
         }
-        ?? r1 = l.h;
+        List<InterfaceC0622x> r1 = l.h;
         if (r1 != 0) {
             Iterator it3 = r1.iterator();
             while (it3.hasNext()) {
                 obj2 = ((InterfaceC0622x) it3.next()).b();
             }
         }
-        ?? r12 = this.h;
+        List<InterfaceC0622x> r12 = this.h;
         if (r12 != 0) {
             Iterator it4 = r12.iterator();
             while (it4.hasNext()) {

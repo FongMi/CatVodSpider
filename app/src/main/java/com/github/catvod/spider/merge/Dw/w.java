@@ -156,7 +156,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.j, com.github.catvod.spider.merge.gu.x] */
     public final com.github.catvod.spider.merge.gu.j D() {
-        ?? jVar = new com.github.catvod.spider.merge.gu.j(this.g, i());
+        Object jVar = new com.github.catvod.spider.merge.gu.j(this.g, i());
         n(jVar, 28);
         try {
             try {
@@ -223,7 +223,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.l, com.github.catvod.spider.merge.gu.x] */
     public final com.github.catvod.spider.merge.gu.l F() {
-        ?? lVar = new com.github.catvod.spider.merge.gu.l(this.g, i());
+        Object lVar = new com.github.catvod.spider.merge.gu.l(this.g, i());
         n(lVar, 46);
         try {
             try {
@@ -243,7 +243,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.m, com.github.catvod.spider.merge.gu.x] */
     public final com.github.catvod.spider.merge.gu.m G() {
-        ?? mVar = new com.github.catvod.spider.merge.gu.m(this.g, i());
+        Object mVar = new com.github.catvod.spider.merge.gu.m(this.g, i());
         n(mVar, 2);
         try {
             try {
@@ -401,7 +401,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.r, com.github.catvod.spider.merge.gu.x] */
     public final com.github.catvod.spider.merge.gu.r L() {
         int iF;
-        ?? rVar = new com.github.catvod.spider.merge.gu.r(this.g, i());
+        Object rVar = new com.github.catvod.spider.merge.gu.r(this.g, i());
         n(rVar, 12);
         try {
             try {
@@ -448,7 +448,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.s, com.github.catvod.spider.merge.gu.x] */
     public final com.github.catvod.spider.merge.gu.s M() {
-        ?? sVar = new com.github.catvod.spider.merge.gu.s(this.g, i());
+        Object sVar = new com.github.catvod.spider.merge.gu.s(this.g, i());
         n(sVar, 30);
         try {
             try {
@@ -478,7 +478,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.t, com.github.catvod.spider.merge.gu.x] */
     public final com.github.catvod.spider.merge.gu.t N() {
-        ?? tVar = new com.github.catvod.spider.merge.gu.t(this.g, i());
+        Object tVar = new com.github.catvod.spider.merge.gu.t(this.g, i());
         n(tVar, 26);
         try {
             try {
@@ -526,7 +526,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.u, com.github.catvod.spider.merge.gu.x] */
     public final com.github.catvod.spider.merge.gu.u O() {
-        ?? uVar = new com.github.catvod.spider.merge.gu.u(this.g, i());
+        Object uVar = new com.github.catvod.spider.merge.gu.u(this.g, i());
         n(uVar, 14);
         try {
             try {
@@ -601,7 +601,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.w, com.github.catvod.spider.merge.gu.x] */
     public final com.github.catvod.spider.merge.gu.w Q() {
-        ?? wVar = new com.github.catvod.spider.merge.gu.w(this.g, i());
+        Object wVar = new com.github.catvod.spider.merge.gu.w(this.g, i());
         n(wVar, 44);
         try {
             try {
@@ -671,7 +671,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.x, com.github.catvod.spider.merge.gu.y] */
     public final y S() {
-        ?? yVar = new y(this.g, i());
+        Object yVar = new y(this.g, i());
         n(yVar, 6);
         try {
             try {
@@ -836,7 +836,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.B, com.github.catvod.spider.merge.gu.x] */
     public final B V() {
-        ?? b = new B(this.g, i());
+        Object b = new B(this.g, i());
         n(b, 24);
         try {
             try {
@@ -877,7 +877,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.C, com.github.catvod.spider.merge.gu.x] */
     public final C W() {
-        ?? c = new C(this.g, i());
+        Object c = new C(this.g, i());
         n(c, 48);
         try {
             try {
@@ -931,7 +931,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.d, com.github.catvod.spider.merge.gu.x] */
     public final InterfaceC1227d x() {
-        ?? interfaceC1227d = new InterfaceC1227d(this.g, i());
+        Object interfaceC1227d = new InterfaceC1227d(this.g, i());
         n(interfaceC1227d, 4);
         try {
             try {
@@ -963,7 +963,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.e, com.github.catvod.spider.merge.gu.x] */
     public final com.github.catvod.spider.merge.gu.e y() {
-        ?? eVar = new com.github.catvod.spider.merge.gu.e(this.g, i());
+        Object eVar = new com.github.catvod.spider.merge.gu.e(this.g, i());
         n(eVar, 38);
         try {
             try {
@@ -1007,7 +1007,7 @@ public final class w extends com.github.catvod.spider.merge.gu.w {
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r0v0, types: [com.github.catvod.spider.merge.gu.f, com.github.catvod.spider.merge.gu.x] */
     public final com.github.catvod.spider.merge.gu.f z() {
-        ?? fVar = new com.github.catvod.spider.merge.gu.f(this.g, i());
+        Object fVar = new com.github.catvod.spider.merge.gu.f(this.g, i());
         n(fVar, 32);
         try {
             try {

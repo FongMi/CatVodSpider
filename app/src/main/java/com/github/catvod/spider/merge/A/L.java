@@ -4120,7 +4120,6 @@ public final class L extends AbstractC0007h {
         d0[] d0VarArr;
         Iterator it;
         int i3;
-        ?? r5 = 1;
         int iA = hVar.a(1);
         com.github.catvod.spider.merge.B.e eVar2 = eVar;
         while (true) {
@@ -4136,7 +4135,7 @@ public final class L extends AbstractC0007h {
                     com.github.catvod.spider.merge.B.e eVar5 = new com.github.catvod.spider.merge.B.e(c0004eH2);
                     int iN = n(c0004eH2);
                     if (iN != 0) {
-                        eVar5.d = r5;
+                        eVar5.d = true;
                         eVar5.b.d = iN;
                         eVar5.e = iN;
                     } else {
@@ -4152,7 +4151,7 @@ public final class L extends AbstractC0007h {
                                     if (!it3.hasNext()) {
                                         break;
                                     }
-                                    if (((BitSet) it3.next()).cardinality() > r5) {
+                                    if (((BitSet) it3.next()).cardinality() > 1) {
                                         HashMap map = new HashMap();
                                         for (C0001b c0001b : arrayList) {
                                             BitSet bitSet2 = (BitSet) map.get(c0001b.a);
@@ -4164,7 +4163,7 @@ public final class L extends AbstractC0007h {
                                         }
                                         Iterator it4 = map.values().iterator();
                                         while (it4.hasNext()) {
-                                            if (((BitSet) it4.next()).cardinality() == r5) {
+                                            if (((BitSet) it4.next()).cardinality() == 1) {
                                                 break;
                                             }
                                         }
@@ -4180,8 +4179,8 @@ public final class L extends AbstractC0007h {
                             bitSet3.or((BitSet) it5.next());
                         }
                         c0004e.e = bitSet3;
-                        eVar5.g = r5;
-                        eVar5.d = r5;
+                        eVar5.g = true;
+                        eVar5.d = true;
                         eVar5.e = eVar5.b.e.nextSetBit(0);
                     }
                     if (eVar5.d && eVar5.b.f) {
@@ -4419,7 +4418,6 @@ public final class L extends AbstractC0007h {
                 iA = hVar.a(1);
             }
             eVar2 = eVarC;
-            r5 = 1;
         }
     }
 

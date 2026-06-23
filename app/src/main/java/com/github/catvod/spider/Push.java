@@ -10,7 +10,7 @@ import com.github.catvod.bean.VodItem;
 import com.github.catvod.bean.VodResult;
 
 import org.jsoup.nodes.Element;
-import com.github.catvod.spider.merge.KI.Subtitle;
+import com.github.catvod.bean.h;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,7 +71,7 @@ public class Push extends NetPan {
         }
     }
 
-    private List<Subtitle> g(String str) {
+    private List<h> g(String str) {
         ArrayList arrayList = new ArrayList();
         if (str.startsWith("file://")) {
             File file = new File(str.replace("file://", ""));
@@ -82,10 +82,10 @@ public class Push extends NetPan {
                     String fileName = file2.getName();
                     String strJ = fileName.substring(fileName.lastIndexOf(".") + 1);
                     if (strJ.equals("srt") || strJ.equals("ass") || strJ.equals("ssa")) {
-                        Subtitle hVar = new Subtitle();
+                        h hVar = new h();
                         String nameWithoutExt = fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf(".")) : fileName;
                         hVar.b(nameWithoutExt);
-                        Subtitle hVarA = hVar.a(strJ);
+                        h hVarA = hVar.a(strJ);
                         StringBuilder sbB = new StringBuilder("file://");
                         sbB.append(file2.getAbsolutePath());
                         hVarA.c(sbB.toString());
@@ -104,9 +104,9 @@ public class Push extends NetPan {
                     String strConcat = urlBase + "." + str2;
                     if (OkHttpUtil.string(strConcat).length() <= 100) {
                         String lastPathSegment = Uri.parse(strConcat).getLastPathSegment();
-                        Subtitle hVar2 = new Subtitle();
+                        h hVar2 = new h();
                         hVar2.b(lastPathSegment);
-                        Subtitle hVarA2 = hVar2.a(str2);
+                        h hVarA2 = hVar2.a(str2);
                         hVarA2.c(strConcat);
                         arrayList.add(hVarA2);
                     }

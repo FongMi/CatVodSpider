@@ -15,7 +15,7 @@ public final class b {
     /* JADX WARN: Type inference incomplete: some casts might be missing */
     static char b(char[] cArr, Character ch) {
         Map<char[], Map<Character, Integer>> map = b;
-        ?? map2 = (Map) map.get(cArr);
+        Object map2 = (Map) map.get(cArr);
         if (map2 == 0) {
             map2 = new HashMap();
             map.put(cArr, (Map<Character, Integer>) map2);

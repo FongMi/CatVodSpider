@@ -4,9 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import com.github.catvod.bean.VodResult;
-import com.github.catvod.spider.merge.fb.FilterGroup;
-import com.github.catvod.spider.merge.fb.StringUtils;
-import com.github.catvod.utils.OkHttpUtil;
+import com.github.catvod.bean.vod.FilterGroup;
+import com.github.catvod.bean.vod.StringUtils;
+import com.github.catvod.utils.okhttp.OkHttpUtil;
 
 import java.io.File;
 import java.util.ArrayList;

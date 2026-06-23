@@ -1,7 +1,7 @@
 package com.github.catvod.spider.merge.d1;
 
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum S0 extends i1 {
+class S0 extends i1 {
     S0() {
         super("DoctypePublicIdentifier_doubleQuoted", 56, null);
     }

@@ -12,9 +12,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: xC */
     public static final EnumC0115dT f670xC = new EnumC0115dT("CharacterReferenceInData", 1) { // from class: com.github.catvod.spider.merge.dT.lm
-        lm(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -25,9 +23,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: QU */
     public static final EnumC0115dT f624QU = new EnumC0115dT("Rcdata", 2) { // from class: com.github.catvod.spider.merge.dT.au
-        au(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -55,9 +51,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: UJ */
     public static final EnumC0115dT f629UJ = new EnumC0115dT("CharacterReferenceInRcdata", 3) { // from class: com.github.catvod.spider.merge.dT.wT
-        wT(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -68,9 +62,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: u */
     public static final EnumC0115dT f663u = new EnumC0115dT("Rawtext", 4) { // from class: com.github.catvod.spider.merge.dT.Ks
-        Ks(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -81,9 +73,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: Mo */
     public static final EnumC0115dT f621Mo = new EnumC0115dT("ScriptData", 5) { // from class: com.github.catvod.spider.merge.dT.OO
-        OO(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -94,9 +84,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: i */
     public static final EnumC0115dT f643i = new EnumC0115dT("PLAINTEXT", 6) { // from class: com.github.catvod.spider.merge.dT.BN
-        BN(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -116,9 +104,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: MH */
     public static final EnumC0115dT f620MH = new EnumC0115dT("TagOpen", 7) { // from class: com.github.catvod.spider.merge.dT.lK
-        lK(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -148,9 +134,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: se */
     public static final EnumC0115dT f661se = new EnumC0115dT("EndTagOpen", 8) { // from class: com.github.catvod.spider.merge.dT.SP
-        SP(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -175,9 +159,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: W */
     public static final EnumC0115dT f632W = new EnumC0115dT("TagName", 9) { // from class: com.github.catvod.spider.merge.dT.p
-        p(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -216,9 +198,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: FN */
     public static final EnumC0115dT f611FN = new EnumC0115dT("RcdataLessthanSign", 10) { // from class: com.github.catvod.spider.merge.dT.Qe
-        Qe(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -243,9 +223,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: B */
     public static final EnumC0115dT f605B = new EnumC0115dT("RCDATAEndTagOpen", 11) { // from class: com.github.catvod.spider.merge.dT.J
-        J(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -264,9 +242,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: w8 */
     public static final EnumC0115dT f666w8 = new EnumC0115dT("RCDATAEndTagName", 12) { // from class: com.github.catvod.spider.merge.dT.FD
-        FD(String str, int i) {
-            super(str, i, null);
-        }
+
 
         /* renamed from: w8 */
         private void m592w8(C0059EV c0059ev, C0060Eo c0060Eo) {
@@ -317,9 +293,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: F */
     public static final EnumC0115dT f610F = new EnumC0115dT("RawtextLessthanSign", 13) { // from class: com.github.catvod.spider.merge.dT.Qt
-        Qt(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -336,9 +310,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: RH */
     public static final EnumC0115dT f625RH = new EnumC0115dT("RawtextEndTagOpen", 14) { // from class: com.github.catvod.spider.merge.dT.oK
-        oK(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -349,9 +321,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: KT */
     public static final EnumC0115dT f616KT = new EnumC0115dT("RawtextEndTagName", 15) { // from class: com.github.catvod.spider.merge.dT.t7
-        t7(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -362,9 +332,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: k */
     public static final EnumC0115dT f646k = new EnumC0115dT("ScriptDataLessthanSign", 16) { // from class: com.github.catvod.spider.merge.dT.Vm
-        Vm(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -392,9 +360,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: Tz */
     public static final EnumC0115dT f627Tz = new EnumC0115dT("ScriptDataEndTagOpen", 17) { // from class: com.github.catvod.spider.merge.dT.yn
-        yn(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -405,9 +371,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: IS */
     public static final EnumC0115dT f615IS = new EnumC0115dT("ScriptDataEndTagName", 18) { // from class: com.github.catvod.spider.merge.dT.O
-        O(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -418,9 +382,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: E */
     public static final EnumC0115dT f609E = new EnumC0115dT("ScriptDataEscapeStart", 19) { // from class: com.github.catvod.spider.merge.dT.b
-        b(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -436,9 +398,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: p */
     public static final EnumC0115dT f654p = new EnumC0115dT("ScriptDataEscapeStartDash", 20) { // from class: com.github.catvod.spider.merge.dT.HU
-        HU(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -454,9 +414,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: go */
     public static final EnumC0115dT f641go = new EnumC0115dT("ScriptDataEscaped", 21) { // from class: com.github.catvod.spider.merge.dT.Q
-        Q(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -484,9 +442,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: l */
     public static final EnumC0115dT f648l = new EnumC0115dT("ScriptDataEscapedDash", 22) { // from class: com.github.catvod.spider.merge.dT.MS
-        MS(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -515,9 +471,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: BP */
     public static final EnumC0115dT f607BP = new EnumC0115dT("ScriptDataEscapedDashDash", 23) { // from class: com.github.catvod.spider.merge.dT.tY
-        tY(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -552,9 +506,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: yS */
     public static final EnumC0115dT f672yS = new EnumC0115dT("ScriptDataEscapedLessthanSign", 24) { // from class: com.github.catvod.spider.merge.dT.Y
-        Y(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -579,9 +531,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: UN */
     public static final EnumC0115dT f630UN = new EnumC0115dT("ScriptDataEscapedEndTagOpen", 25) { // from class: com.github.catvod.spider.merge.dT.LA
-        LA(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -600,9 +550,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: Fp */
     public static final EnumC0115dT f612Fp = new EnumC0115dT("ScriptDataEscapedEndTagName", 26) { // from class: com.github.catvod.spider.merge.dT.Ux
-        Ux(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -613,9 +561,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: pb */
     public static final EnumC0115dT f656pb = new EnumC0115dT("ScriptDataDoubleEscapeStart", 27) { // from class: com.github.catvod.spider.merge.dT.Dl
-        Dl(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -626,9 +572,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: P */
     public static final EnumC0115dT f623P = new EnumC0115dT("ScriptDataDoubleEscaped", 28) { // from class: com.github.catvod.spider.merge.dT.V
-        V(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -655,9 +599,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: Xl */
     public static final EnumC0115dT f633Xl = new EnumC0115dT("ScriptDataDoubleEscapedDash", 29) { // from class: com.github.catvod.spider.merge.dT.Tb
-        Tb(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -685,9 +627,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: fH */
     public static final EnumC0115dT f640fH = new EnumC0115dT("ScriptDataDoubleEscapedDashDash", 30) { // from class: com.github.catvod.spider.merge.dT.s
-        s(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -721,9 +661,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: d */
     public static final EnumC0115dT f636d = new EnumC0115dT("ScriptDataDoubleEscapedLessthanSign", 31) { // from class: com.github.catvod.spider.merge.dT.l
-        l(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -740,9 +678,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: U */
     public static final EnumC0115dT f628U = new EnumC0115dT("ScriptDataDoubleEscapeEnd", 32) { // from class: com.github.catvod.spider.merge.dT.qB
-        qB(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -753,9 +689,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: m */
     public static final EnumC0115dT f649m = new EnumC0115dT("BeforeAttributeName", 33) { // from class: com.github.catvod.spider.merge.dT.U
-        U(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -811,9 +745,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: T */
     public static final EnumC0115dT f626T = new EnumC0115dT("AttributeName", 34) { // from class: com.github.catvod.spider.merge.dT.F
-        F(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -864,9 +796,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: s */
     public static final EnumC0115dT f660s = new EnumC0115dT("AfterAttributeName", 35) { // from class: com.github.catvod.spider.merge.dT.Sb
-        Sb(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -920,9 +850,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: rF */
     public static final EnumC0115dT f658rF = new EnumC0115dT("BeforeAttributeValue", 36) { // from class: com.github.catvod.spider.merge.dT.jm
-        jm(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -983,9 +911,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: M */
     public static final EnumC0115dT f618M = new EnumC0115dT("AttributeValue_doubleQuoted", 37) { // from class: com.github.catvod.spider.merge.dT.d
-        d(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1027,9 +953,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: wR */
     public static final EnumC0115dT f667wR = new EnumC0115dT("AttributeValue_singleQuoted", 38) { // from class: com.github.catvod.spider.merge.dT.p8
-        p8(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1071,9 +995,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: t */
     public static final EnumC0115dT f662t = new EnumC0115dT("AttributeValue_unquoted", 39) { // from class: com.github.catvod.spider.merge.dT.r
-        r(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1133,9 +1055,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: z */
     public static final EnumC0115dT f673z = new EnumC0115dT("AfterAttributeValue_quoted", 40) { // from class: com.github.catvod.spider.merge.dT.vp
-        vp(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1165,9 +1085,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: c */
     public static final EnumC0115dT f635c = new EnumC0115dT("SelfClosingStartTag", 41) { // from class: com.github.catvod.spider.merge.dT.mQ
-        mQ(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1190,9 +1108,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: mT */
     public static final EnumC0115dT f650mT = new EnumC0115dT("BogusComment", 42) { // from class: com.github.catvod.spider.merge.dT.tG
-        tG(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1209,9 +1125,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: V */
     public static final EnumC0115dT f631V = new EnumC0115dT("MarkupDeclarationOpen", 43) { // from class: com.github.catvod.spider.merge.dT.Nx
-        Nx(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1238,9 +1152,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: id */
     public static final EnumC0115dT f644id = new EnumC0115dT("CommentStart", 44) { // from class: com.github.catvod.spider.merge.dT.w
-        w(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1273,9 +1185,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: BY */
     public static final EnumC0115dT f608BY = new EnumC0115dT("CommentStartDash", 45) { // from class: com.github.catvod.spider.merge.dT.ga
-        ga(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1308,9 +1218,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: Oz */
     public static final EnumC0115dT f622Oz = new EnumC0115dT("Comment", 46) { // from class: com.github.catvod.spider.merge.dT.c
-        c(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1336,9 +1244,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: BE */
     public static final EnumC0115dT f606BE = new EnumC0115dT("CommentEndDash", 47) { // from class: com.github.catvod.spider.merge.dT.dC
-        dC(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1367,9 +1273,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: Z */
     public static final EnumC0115dT f634Z = new EnumC0115dT("CommentEnd", 48) { // from class: com.github.catvod.spider.merge.dT.i9
-        i9(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1408,9 +1312,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: I */
     public static final EnumC0115dT f614I = new EnumC0115dT("CommentEndBang", 49) { // from class: com.github.catvod.spider.merge.dT.f4
-        f4(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1443,9 +1345,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: nT */
     public static final EnumC0115dT f652nT = new EnumC0115dT("Doctype", 50) { // from class: com.github.catvod.spider.merge.dT.V3
-        V3(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1473,9 +1373,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: ip */
     public static final EnumC0115dT f645ip = new EnumC0115dT("BeforeDoctypeName", 51) { // from class: com.github.catvod.spider.merge.dT.ZM
-        ZM(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1514,9 +1412,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: L */
     public static final EnumC0115dT f617L = new EnumC0115dT("DoctypeName", 52) { // from class: com.github.catvod.spider.merge.dT.ZJ
-        ZJ(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1555,9 +1451,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: om */
     public static final EnumC0115dT f653om = new EnumC0115dT("AfterDoctypeName", 53) { // from class: com.github.catvod.spider.merge.dT.Os
-        Os(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1594,9 +1488,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: pS */
     public static final EnumC0115dT f655pS = new EnumC0115dT("AfterDoctypePublicKeyword", 54) { // from class: com.github.catvod.spider.merge.dT.v2
-        v2(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1638,9 +1530,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: eq */
     public static final EnumC0115dT f638eq = new EnumC0115dT("BeforeDoctypePublicIdentifier", 55) { // from class: com.github.catvod.spider.merge.dT.Tt
-        Tt(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1679,9 +1569,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: GD */
     public static final EnumC0115dT f613GD = new EnumC0115dT("DoctypePublicIdentifier_doubleQuoted", 56) { // from class: com.github.catvod.spider.merge.dT.qw
-        qw(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1716,9 +1604,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: M2 */
     public static final EnumC0115dT f619M2 = new EnumC0115dT("DoctypePublicIdentifier_singleQuoted", 57) { // from class: com.github.catvod.spider.merge.dT.ze
-        ze(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1753,9 +1639,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: wt */
     public static final EnumC0115dT f668wt = new EnumC0115dT("AfterDoctypePublicIdentifier", 58) { // from class: com.github.catvod.spider.merge.dT.hs
-        hs(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1793,9 +1677,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: el */
     public static final EnumC0115dT f637el = new EnumC0115dT("BetweenDoctypePublicAndSystemIdentifiers", 59) { // from class: com.github.catvod.spider.merge.dT.bw
-        bw(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1832,9 +1714,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: y */
     public static final EnumC0115dT f671y = new EnumC0115dT("AfterDoctypeSystemKeyword", 60) { // from class: com.github.catvod.spider.merge.dT.qf
-        qf(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1876,9 +1756,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: uR */
     public static final EnumC0115dT f664uR = new EnumC0115dT("BeforeDoctypeSystemIdentifier", 61) { // from class: com.github.catvod.spider.merge.dT.x3
-        x3(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1917,9 +1795,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: f */
     public static final EnumC0115dT f639f = new EnumC0115dT("DoctypeSystemIdentifier_doubleQuoted", 62) { // from class: com.github.catvod.spider.merge.dT.nW
-        nW(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1954,9 +1830,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: mu */
     public static final EnumC0115dT f651mu = new EnumC0115dT("DoctypeSystemIdentifier_singleQuoted", 63) { // from class: com.github.catvod.spider.merge.dT.Tz
-        Tz(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -1991,9 +1865,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: AI */
     public static final EnumC0115dT f604AI = new EnumC0115dT("AfterDoctypeSystemIdentifier", 64) { // from class: com.github.catvod.spider.merge.dT.t
-        t(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2019,9 +1891,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: x */
     public static final EnumC0115dT f669x = new EnumC0115dT("BogusDoctype", 65) { // from class: com.github.catvod.spider.merge.dT.ti
-        ti(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2042,9 +1912,7 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
 
     /* renamed from: A */
     public static final EnumC0115dT f603A = new EnumC0115dT("CdataSection", 66) { // from class: com.github.catvod.spider.merge.dT.oh
-        oh(String str, int i) {
-            super(str, i, null);
-        }
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2070,10 +1938,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     private static final String f665v = String.valueOf((char) 65533);
 
     /* renamed from: com.github.catvod.spider.merge.dT$BN */
-    enum BN extends EnumC0115dT {
-        BN(String str, int i) {
-            super(str, i, null);
-        }
+    class BN extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2092,10 +1958,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Dl */
-    enum Dl extends EnumC0115dT {
-        Dl(String str, int i) {
-            super(str, i, null);
-        }
+    class Dl extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2105,10 +1969,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$F */
-    enum F extends EnumC0115dT {
-        F(String str, int i) {
-            super(str, i, null);
-        }
+    class F extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2158,10 +2020,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$FD */
-    enum FD extends EnumC0115dT {
-        FD(String str, int i) {
-            super(str, i, null);
-        }
+    class FD extends EnumC0115dT {
+
 
         /* renamed from: w8 */
         private void m592w8(C0059EV c0059ev, C0060Eo c0060Eo) {
@@ -2211,10 +2071,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$HU */
-    enum HU extends EnumC0115dT {
-        HU(String str, int i) {
-            super(str, i, null);
-        }
+    class HU extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2229,10 +2087,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$J */
-    enum J extends EnumC0115dT {
-        J(String str, int i) {
-            super(str, i, null);
-        }
+    class J extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2250,10 +2106,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Ks */
-    enum Ks extends EnumC0115dT {
-        Ks(String str, int i) {
-            super(str, i, null);
-        }
+    class Ks extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2263,10 +2117,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$LA */
-    enum LA extends EnumC0115dT {
-        LA(String str, int i) {
-            super(str, i, null);
-        }
+    class LA extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2284,10 +2136,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$MS */
-    enum MS extends EnumC0115dT {
-        MS(String str, int i) {
-            super(str, i, null);
-        }
+    class MS extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2315,10 +2165,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$N */
-    enum N extends EnumC0115dT {
-        N(String str, int i) {
-            super(str, i, null);
-        }
+    class N extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2344,10 +2192,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Nx */
-    enum Nx extends EnumC0115dT {
-        Nx(String str, int i) {
-            super(str, i, null);
-        }
+    class Nx extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2373,10 +2219,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$O */
-    enum O extends EnumC0115dT {
-        O(String str, int i) {
-            super(str, i, null);
-        }
+    class O extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2386,10 +2230,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$OO */
-    enum OO extends EnumC0115dT {
-        OO(String str, int i) {
-            super(str, i, null);
-        }
+    class OO extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2399,10 +2241,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Os */
-    enum Os extends EnumC0115dT {
-        Os(String str, int i) {
-            super(str, i, null);
-        }
+    class Os extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2438,10 +2278,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Q */
-    enum Q extends EnumC0115dT {
-        Q(String str, int i) {
-            super(str, i, null);
-        }
+    class Q extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2468,10 +2306,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Qe */
-    enum Qe extends EnumC0115dT {
-        Qe(String str, int i) {
-            super(str, i, null);
-        }
+    class Qe extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2495,10 +2331,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Qt */
-    enum Qt extends EnumC0115dT {
-        Qt(String str, int i) {
-            super(str, i, null);
-        }
+    class Qt extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2514,10 +2348,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$SP */
-    enum SP extends EnumC0115dT {
-        SP(String str, int i) {
-            super(str, i, null);
-        }
+    class SP extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2541,10 +2373,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Sb */
-    enum Sb extends EnumC0115dT {
-        Sb(String str, int i) {
-            super(str, i, null);
-        }
+    class Sb extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2597,10 +2427,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Tb */
-    enum Tb extends EnumC0115dT {
-        Tb(String str, int i) {
-            super(str, i, null);
-        }
+    class Tb extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2627,10 +2455,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Tt */
-    enum Tt extends EnumC0115dT {
-        Tt(String str, int i) {
-            super(str, i, null);
-        }
+    class Tt extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2668,10 +2494,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Tz */
-    enum Tz extends EnumC0115dT {
-        Tz(String str, int i) {
-            super(str, i, null);
-        }
+    class Tz extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2705,10 +2529,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$U */
-    enum U extends EnumC0115dT {
-        U(String str, int i) {
-            super(str, i, null);
-        }
+    class U extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2763,10 +2585,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Ux */
-    enum Ux extends EnumC0115dT {
-        Ux(String str, int i) {
-            super(str, i, null);
-        }
+    class Ux extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2776,10 +2596,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$V */
-    enum V extends EnumC0115dT {
-        V(String str, int i) {
-            super(str, i, null);
-        }
+    class V extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2805,10 +2623,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$V3 */
-    enum V3 extends EnumC0115dT {
-        V3(String str, int i) {
-            super(str, i, null);
-        }
+    class V3 extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2835,10 +2651,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Vm */
-    enum Vm extends EnumC0115dT {
-        Vm(String str, int i) {
-            super(str, i, null);
-        }
+    class Vm extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2865,10 +2679,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$Y */
-    enum Y extends EnumC0115dT {
-        Y(String str, int i) {
-            super(str, i, null);
-        }
+    class Y extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2892,10 +2704,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$ZJ */
-    enum ZJ extends EnumC0115dT {
-        ZJ(String str, int i) {
-            super(str, i, null);
-        }
+    class ZJ extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2933,10 +2743,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$ZM */
-    enum ZM extends EnumC0115dT {
-        ZM(String str, int i) {
-            super(str, i, null);
-        }
+    class ZM extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -2974,10 +2782,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$au */
-    enum au extends EnumC0115dT {
-        au(String str, int i) {
-            super(str, i, null);
-        }
+    class au extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3004,10 +2810,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$b */
-    enum b extends EnumC0115dT {
-        b(String str, int i) {
-            super(str, i, null);
-        }
+    class b extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3022,10 +2826,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$bw */
-    enum bw extends EnumC0115dT {
-        bw(String str, int i) {
-            super(str, i, null);
-        }
+    class bw extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3061,10 +2863,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$c */
-    enum c extends EnumC0115dT {
-        c(String str, int i) {
-            super(str, i, null);
-        }
+    class c extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3089,10 +2889,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$d */
-    enum d extends EnumC0115dT {
-        d(String str, int i) {
-            super(str, i, null);
-        }
+    class d extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3133,10 +2931,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$dC */
-    enum dC extends EnumC0115dT {
-        dC(String str, int i) {
-            super(str, i, null);
-        }
+    class dC extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3164,10 +2960,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$f4 */
-    enum f4 extends EnumC0115dT {
-        f4(String str, int i) {
-            super(str, i, null);
-        }
+    class f4 extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3199,10 +2993,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$ga */
-    enum ga extends EnumC0115dT {
-        ga(String str, int i) {
-            super(str, i, null);
-        }
+    class ga extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3234,10 +3026,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$hs */
-    enum hs extends EnumC0115dT {
-        hs(String str, int i) {
-            super(str, i, null);
-        }
+    class hs extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3274,10 +3064,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$i9 */
-    enum i9 extends EnumC0115dT {
-        i9(String str, int i) {
-            super(str, i, null);
-        }
+    class i9 extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3315,10 +3103,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$jm */
-    enum jm extends EnumC0115dT {
-        jm(String str, int i) {
-            super(str, i, null);
-        }
+    class jm extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3378,10 +3164,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$l */
-    enum l extends EnumC0115dT {
-        l(String str, int i) {
-            super(str, i, null);
-        }
+    class l extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3397,10 +3181,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$lK */
-    enum lK extends EnumC0115dT {
-        lK(String str, int i) {
-            super(str, i, null);
-        }
+    class lK extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3429,10 +3211,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$lm */
-    enum lm extends EnumC0115dT {
-        lm(String str, int i) {
-            super(str, i, null);
-        }
+    class lm extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3442,10 +3222,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$mQ */
-    enum mQ extends EnumC0115dT {
-        mQ(String str, int i) {
-            super(str, i, null);
-        }
+    class mQ extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3467,10 +3245,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$nW */
-    enum nW extends EnumC0115dT {
-        nW(String str, int i) {
-            super(str, i, null);
-        }
+    class nW extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3504,10 +3280,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$oK */
-    enum oK extends EnumC0115dT {
-        oK(String str, int i) {
-            super(str, i, null);
-        }
+    class oK extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3517,10 +3291,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$oh */
-    enum oh extends EnumC0115dT {
-        oh(String str, int i) {
-            super(str, i, null);
-        }
+    class oh extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3534,10 +3306,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$p */
-    enum p extends EnumC0115dT {
-        p(String str, int i) {
-            super(str, i, null);
-        }
+    class p extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3575,10 +3345,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$p8 */
-    enum p8 extends EnumC0115dT {
-        p8(String str, int i) {
-            super(str, i, null);
-        }
+    class p8 extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3619,10 +3387,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$qB */
-    enum qB extends EnumC0115dT {
-        qB(String str, int i) {
-            super(str, i, null);
-        }
+    class qB extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3632,10 +3398,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$qf */
-    enum qf extends EnumC0115dT {
-        qf(String str, int i) {
-            super(str, i, null);
-        }
+    class qf extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3676,10 +3440,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$qw */
-    enum qw extends EnumC0115dT {
-        qw(String str, int i) {
-            super(str, i, null);
-        }
+    class qw extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3713,10 +3475,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$r */
-    enum r extends EnumC0115dT {
-        r(String str, int i) {
-            super(str, i, null);
-        }
+    class r extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3775,10 +3535,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$s */
-    enum s extends EnumC0115dT {
-        s(String str, int i) {
-            super(str, i, null);
-        }
+    class s extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3811,10 +3569,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$t */
-    enum t extends EnumC0115dT {
-        t(String str, int i) {
-            super(str, i, null);
-        }
+    class t extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3839,10 +3595,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$t7 */
-    enum t7 extends EnumC0115dT {
-        t7(String str, int i) {
-            super(str, i, null);
-        }
+    class t7 extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3852,10 +3606,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$tG */
-    enum tG extends EnumC0115dT {
-        tG(String str, int i) {
-            super(str, i, null);
-        }
+    class tG extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3871,10 +3623,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$tY */
-    enum tY extends EnumC0115dT {
-        tY(String str, int i) {
-            super(str, i, null);
-        }
+    class tY extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3908,10 +3658,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$ti */
-    enum ti extends EnumC0115dT {
-        ti(String str, int i) {
-            super(str, i, null);
-        }
+    class ti extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3931,10 +3679,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$v2 */
-    enum v2 extends EnumC0115dT {
-        v2(String str, int i) {
-            super(str, i, null);
-        }
+    class v2 extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -3975,10 +3721,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$vp */
-    enum vp extends EnumC0115dT {
-        vp(String str, int i) {
-            super(str, i, null);
-        }
+    class vp extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -4007,10 +3751,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$w */
-    enum w extends EnumC0115dT {
-        w(String str, int i) {
-            super(str, i, null);
-        }
+    class w extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -4042,10 +3784,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$wT */
-    enum wT extends EnumC0115dT {
-        wT(String str, int i) {
-            super(str, i, null);
-        }
+    class wT extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -4055,10 +3795,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$x3 */
-    enum x3 extends EnumC0115dT {
-        x3(String str, int i) {
-            super(str, i, null);
-        }
+    class x3 extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -4096,10 +3834,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$yn */
-    enum yn extends EnumC0115dT {
-        yn(String str, int i) {
-            super(str, i, null);
-        }
+    class yn extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */
@@ -4109,10 +3845,8 @@ abstract class EnumC0115dT extends Enum<EnumC0115dT> {
     }
 
     /* renamed from: com.github.catvod.spider.merge.dT$ze */
-    enum ze extends EnumC0115dT {
-        ze(String str, int i) {
-            super(str, i, null);
-        }
+    class ze extends EnumC0115dT {
+
 
         @Override // com.github.catvod.spider.merge.EnumC0115dT
         /* renamed from: se */

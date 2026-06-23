@@ -369,7 +369,7 @@ public class q implements w {
         if (str == null) {
             return null;
         }
-        ?? r1 = this.g;
+        Map<String, n> r1 = this.g;
         if (r1 != 0 && (nVar = (n) r1.get(str)) != null) {
             return nVar;
         }

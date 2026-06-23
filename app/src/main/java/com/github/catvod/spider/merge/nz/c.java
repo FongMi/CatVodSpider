@@ -166,7 +166,7 @@ public final class c {
         ArrayList<??> arrayList = new ArrayList(128);
         int i = 0;
         while (linkedBlockingQueueC.drainTo(arrayList, 128) != 0) {
-            for (?? r6 : arrayList) {
+            for (Object r6 : arrayList) {
                 if (r6 != 0) {
                     com.github.catvod.spider.merge.Dw.c cVarA = r6.a();
                     String strB = cVarA.b();

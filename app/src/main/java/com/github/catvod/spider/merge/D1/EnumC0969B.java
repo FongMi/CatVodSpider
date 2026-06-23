@@ -83,7 +83,7 @@ abstract class EnumC0969B {
         w = c1003p;
         C1005q c1005q = new C1005q();
         x = c1005q;
-        ?? r23 = new EnumC0969B() { // from class: com.github.catvod.spider.merge.d1.r
+        Object r23 = new EnumC0969B() { // from class: com.github.catvod.spider.merge.d1.r
             @Override // com.github.catvod.spider.merge.d1.EnumC0969B
             final boolean d(P p2, C0975b c0975b) {
                 return true;

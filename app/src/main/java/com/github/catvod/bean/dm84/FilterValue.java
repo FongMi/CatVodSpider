@@ -1,6 +1,6 @@
 package com.github.catvod.bean.dm84;
 
-import com.github.catvod.spider.merge.KI.b;
+import com.github.catvod.bean.vod.FilterItem;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
@@ -14,7 +14,7 @@ public final class FilterValue {
     private final String b;
 
     @SerializedName("value")
-    private final List<com.github.catvod.spider.merge.KI.b> c;
+    private final List<com.github.catvod.bean.vod.FilterItem> c;
 
     public FilterValue(String str, String str2, List<b> list) {
         this.a = str;

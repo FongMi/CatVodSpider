@@ -7,10 +7,13 @@ import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import com.github.catvod.bean.guangya.GuangYaUser;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
 import com.github.catvod.spider.Init;
-import com.google.gson.Gson;
+import com.github.catvod.utils.GsonHelper;
+import com.github.catvod.utils.PanHttpClient;
+import com.github.catvod.utils.PanStringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -19,619 +22,568 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
+/**
+ * 光鸭云盘 API 客户端
+ */
 public final class GuangYaPanApi {
-    private String a;
-    private String b;
-    private long c;
-    private String d;
-    private String e = UUID.randomUUID().toString().replace("-", "");
-    public com.github.catvod.spider.merge.P.a f;
-    private ScheduledExecutorService g;
-    private AlertDialog h;
+    private static class Holder { static final GuangYaPanApi INSTANCE = new GuangYaPanApi(); }
+
+    private static final String CLIENT_ID = "aMe-8VSlkrbQXpUR";
+    private static final String API_BASE = "https://api.guangyapan.com/nd.bizuserres.s/v1";
+    private static final String AUTH_BASE = "https://account.guangyapan.com/v1/auth";
+    private static final long TOKEN_TTL_MS = 3_000_000; // 50 分钟
+    private static final String[] VIDEO_EXTENSIONS = {
+            ".mp4", ".mkv", ".avi", ".wmv", ".flv", ".mov", ".rmvb", ".rm",
+            ".3gp", ".ts", ".m4v", ".webm", ".mpg", ".mpeg", ".m2ts"
+    };
+
+    // ==================== 实例字段 ====================
+
+    private String lastShareId;
+    private String cachedAccessToken;
+    private long tokenExpiryTime;
+    private String shareTitle;
+    private final String deviceId = UUID.randomUUID().toString().replace("-", "");
+    private GuangYaUser userInfo;
+    private ScheduledExecutorService pollingExecutor;
+    private AlertDialog qrDialog;
+
+    // ==================== 构造与单例 ====================
 
     GuangYaPanApi() {
         try {
-            com.github.catvod.spider.merge.P.a aVar = (com.github.catvod.spider.merge.P.a) new Gson().fromJson(com.github.catvod.spider.merge.g.b.d(com.github.catvod.spider.merge.g.b.f("guangya_user")), com.github.catvod.spider.merge.P.a.class);
-            this.f = aVar == null ? new com.github.catvod.spider.merge.P.a() : aVar;
-        } catch (Exception unused) {
-            this.f = new com.github.catvod.spider.merge.P.a();
+            GuangYaUser saved = (GuangYaUser) GsonHelper.fromJson(
+                    LocalStorage.readJson("guangya_user"),
+                    GuangYaUser.class);
+            this.userInfo = saved != null ? saved : new GuangYaUser();
+        } catch (Exception e) {
+            this.userInfo = new GuangYaUser();
         }
     }
 
-    public static void a(GuangYaPanApi o) {
-        o.k();
-        Init.execute(new L(o, 0));
+    public static GuangYaPanApi getInstance() {
+        return Holder.INSTANCE;
     }
 
-    public static void b(GuangYaPanApi o) {
-        ScheduledExecutorService scheduledExecutorService = o.g;
-        if (scheduledExecutorService != null) {
-            scheduledExecutorService.shutdownNow();
-        }
-        Init.run(new B(o, 1));
+    // ==================== 设备授权流程 ====================
+
+    /**
+     * 启动设备授权流程：显示二维码 → 轮询 → 获取 token
+     */
+    public static void startDeviceAuth(GuangYaPanApi client) {
+        client.dismissDialog();
+        Init.execute(new L(client, 0));
     }
 
-    public static void c(GuangYaPanApi o, String str) {
-        o.getClass();
-        ScheduledExecutorService scheduledExecutorServiceNewScheduledThreadPool = Executors.newScheduledThreadPool(1);
-        o.g = scheduledExecutorServiceNewScheduledThreadPool;
-        scheduledExecutorServiceNewScheduledThreadPool.scheduleWithFixedDelay(new D(o, str, 1), 1L, 2L, TimeUnit.SECONDS);
+    /**
+     * 取消授权流程：停止轮询，关闭对话框
+     */
+    public static void cancelAuth(GuangYaPanApi client) {
+        stopPolling(client);
+        Init.run(new B(client, 1));
     }
 
-    public static void d(final GuangYaPanApi o, String str) {
-        o.getClass();
+    /**
+     * 开始轮询设备码授权结果
+     */
+    public static void startPolling(GuangYaPanApi client, String deviceCode) {
+        stopPolling(client);
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        client.pollingExecutor = executor;
+        executor.scheduleWithFixedDelay(new D(client, deviceCode, 1), 1L, 2L, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 显示二维码对话框
+     */
+    public static void showQrDialog(final GuangYaPanApi client, String qrUrl) {
         try {
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(com.github.catvod.spider.merge.i0.GeneralUtils.f(240), com.github.catvod.spider.merge.i0.GeneralUtils.f(240));
+            int sizePx = PanStringUtils.dpToPx(240);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(sizePx, sizePx);
             ImageView imageView = new ImageView(Init.context());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setImageBitmap(QrCodeUtils.generateQrCode(str, 240, 2));
-            FrameLayout frameLayout = new FrameLayout(Init.context());
-            layoutParams.gravity = 17;
-            frameLayout.addView(imageView, layoutParams);
-            AlertDialog alertDialogShow = new AlertDialog.Builder(Init.getActivity()).setView(frameLayout).setOnCancelListener(new DialogInterface.OnCancelListener() { // from class: com.github.catvod.spider.merge.I.H
-                @Override // android.content.DialogInterface.OnCancelListener
-                public final void onCancel(DialogInterface dialogInterface) {
-                    GuangYaPanApi.f(this.a);
-                }
-            }).setOnDismissListener(new DialogInterface.OnDismissListener() { // from class: com.github.catvod.spider.merge.I.K
-                @Override // android.content.DialogInterface.OnDismissListener
-                public final void onDismiss(DialogInterface dialogInterface) {
-                    GuangYaPanApi.b(this.a);
-                }
-            }).show();
-            o.h = alertDialogShow;
-            alertDialogShow.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            imageView.setImageBitmap(QrCodeUtils.generateQrCode(qrUrl, 240, 2));
+            FrameLayout container = new FrameLayout(Init.context());
+            params.gravity = 17;
+            container.addView(imageView, params);
+            AlertDialog dialog = new AlertDialog.Builder(Init.getActivity())
+                    .setView(container)
+                    .setOnCancelListener(dialogInterface -> GuangYaPanApi.onDialogCancelled(client))
+                    .setOnDismissListener(dialogInterface -> GuangYaPanApi.cancelAuth(client))
+                    .show();
+            client.qrDialog = dialog;
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             SpiderDebug.log("請使用光鸭云盘 App 或浏览器掃描二維碼");
-        } catch (Exception unused) {
+        } catch (Exception ignored) {
         }
     }
 
-    public static void e(GuangYaPanApi o) {
-        o.getClass();
+    /**
+     * 请求设备码并显示二维码
+     */
+    public static void requestDeviceCode(GuangYaPanApi client) {
         try {
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put("scope", "user");
-            jSONObject.put("client_id", "aMe-8VSlkrbQXpUR");
-            JSONObject jSONObject2 = new JSONObject(com.github.catvod.spider.merge.f0.d.j("https://account.guangyapan.com/v1/auth/device/code", jSONObject.toString(), o.p()).a());
-            String string = jSONObject2.getString("verification_uri_complete");
-            String string2 = jSONObject2.getString("device_code");
-            Init.run(new RunnableC0755g(o, string, 2));
-            Init.execute(new E(o, string2, 1));
+            JSONObject body = new JSONObject();
+            body.put("scope", "user");
+            body.put("client_id", CLIENT_ID);
+            JSONObject resp = new JSONObject(
+                    PanHttpClient.post(AUTH_BASE + "/device/code", body.toString(), client.buildHeaders()).body());
+            String verificationUrl = resp.getString("verification_uri_complete");
+            String deviceCode = resp.getString("device_code");
+            Init.run(new RunnableC0755g(client, verificationUrl, 2));
+            Init.execute(new E(client, deviceCode, 1));
         } catch (Exception e) {
-            StringBuilder sbB = new StringBuilder("光鸭获取二维码失败: ");
-            sbB.append(e.getMessage());
-            SpiderDebug.log(sbB.toString());
-            SpiderDebug.log("光鸭获取二维码失败");
+            SpiderDebug.log("光鸭获取二维码失败: " + e.getMessage());
         }
     }
 
-    public static void f(GuangYaPanApi o) {
-        ScheduledExecutorService scheduledExecutorService = o.g;
-        if (scheduledExecutorService != null) {
-            scheduledExecutorService.shutdownNow();
-        }
-        Init.run(new B(o, 1));
+    /**
+     * 对话框取消回调
+     */
+    public static void onDialogCancelled(GuangYaPanApi client) {
+        stopPolling(client);
+        Init.run(new B(client, 1));
     }
 
-    public static void g(GuangYaPanApi o, EditText editText) {
-        o.getClass();
-        String string = editText.getText().toString();
-        o.k();
-        Init.execute(new RunnableC0751e(o, string, 2));
+    /**
+     * 从输入框提交 token
+     */
+    public static void submitToken(GuangYaPanApi client, EditText editText) {
+        String token = editText.getText().toString();
+        client.dismissDialog();
+        Init.execute(new RunnableC0751e(client, token, 2));
     }
 
-    public static /* synthetic */ void i(GuangYaPanApi o, String str) {
-        o.getClass();
+    /**
+     * 轮询设备码换取 token
+     */
+    public static void pollForToken(GuangYaPanApi client, String deviceCode) {
         try {
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put("grant_type", "urn:ietf:params:oauth:grant-type:device_code");
-            jSONObject.put("device_code", str);
-            jSONObject.put("client_id", "aMe-8VSlkrbQXpUR");
-            String strA = com.github.catvod.spider.merge.f0.d.j("https://account.guangyapan.com/v1/auth/token", jSONObject.toString(), o.p()).a();
-            if (strA.contains("access_token") && strA.contains("refresh_token")) {
-                JSONObject jSONObject2 = new JSONObject(strA);
-                o.y(jSONObject2.getString("access_token"), jSONObject2.getString("refresh_token"));
+            JSONObject body = new JSONObject();
+            body.put("grant_type", "urn:ietf:params:oauth:grant-type:device_code");
+            body.put("device_code", deviceCode);
+            body.put("client_id", CLIENT_ID);
+            String resp = PanHttpClient.post(AUTH_BASE + "/token", body.toString(), client.buildHeaders()).body();
+            if (resp.contains("access_token") && resp.contains("refresh_token")) {
+                JSONObject json = new JSONObject(resp);
+                client.onTokenReceived(json.getString("access_token"), json.getString("refresh_token"));
             }
-        } catch (Exception unused) {
+        } catch (Exception ignored) {
         }
     }
 
-    private com.github.catvod.bean.VodItem j(String str, String str2) {
-        com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
-        iVar.l(str);
-        if (!(str2 != null && !str2.isEmpty())) {
-            str2 = "光鸭云盘";
+    private static void stopPolling(GuangYaPanApi client) {
+        if (client.pollingExecutor != null) {
+            client.pollingExecutor.shutdownNow();
         }
-        iVar.m(str2);
-        iVar.j("无法获取文件列表");
-        iVar.g("光鸭雲盤");
-        return iVar;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void k() {
+    private void dismissDialog() {
         try {
-            AlertDialog alertDialog = this.h;
-            if (alertDialog != null) {
-                alertDialog.dismiss();
+            if (qrDialog != null) {
+                qrDialog.dismiss();
             }
-        } catch (Exception unused) {
+        } catch (Exception ignored) {
         }
     }
 
-    public static GuangYaPanApi l() {
-        return N.a;
+    private void onTokenReceived(String accessToken, String refreshToken) {
+        SpiderDebug.log("光鸭Token获取成功: " + refreshToken);
+        userInfo.e("Bearer " + accessToken);
+        userInfo.f(refreshToken);
+        userInfo.d();
+        stopPolling(this);
+        Init.run(new B(this, 1));
     }
 
-    private String m(String str, String str2) {
+    // ==================== Token 管理 ====================
+
+    /**
+     * 获取 AccessToken（带缓存）
+     */
+    private String getAccessToken(String shareId, String code) {
         try {
-            if (str.equals(this.a) && (this.b != null && !this.b.isEmpty()) && System.currentTimeMillis() < this.c) {
-                return this.b;
+            if (shareId.equals(lastShareId) && (cachedAccessToken != null && !cachedAccessToken.isEmpty())
+                    && System.currentTimeMillis() < tokenExpiryTime) {
+                return cachedAccessToken;
             }
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put("shareId", str);
-            if ((str2 != null && !str2.isEmpty())) {
-                jSONObject.put("code", str2);
+            JSONObject body = new JSONObject();
+            body.put("shareId", shareId);
+            if (code != null && !code.isEmpty()) {
+                body.put("code", code);
             }
-            String strV = v("https://api.guangyapan.com/nd.bizuserres.s/v1/get_share_access_token", jSONObject, true);
-            if (!(strV != null && !strV.isEmpty())) {
-                return "";
-            }
-            JSONObject jSONObject2 = new JSONObject(strV);
-            if (!"success".equals(jSONObject2.optString("msg"))) {
-                return "";
-            }
-            this.b = jSONObject2.getJSONObject("data").getString("accessToken");
-            this.a = str;
-            this.c = System.currentTimeMillis() + 3000000;
-            return this.b;
+            String resp = apiPost(API_BASE + "/get_share_access_token", body, true);
+            if (resp == null || resp.isEmpty()) return "";
+            JSONObject json = new JSONObject(resp);
+            if (!"success".equals(json.optString("msg"))) return "";
+            cachedAccessToken = json.getJSONObject("data").getString("accessToken");
+            lastShareId = shareId;
+            tokenExpiryTime = System.currentTimeMillis() + TOKEN_TTL_MS;
+            return cachedAccessToken;
         } catch (Exception e) {
-            com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 getAccessToken 异常: "));
+            logError("光鸭云盘 getAccessToken 异常: ", e);
             return "";
         }
     }
 
-    private JSONArray o(String str, String str2) {
+    /**
+     * 刷新 AccessToken
+     */
+    boolean refreshAccessToken() {
         try {
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put("pageSize", 200);
-            jSONObject.put("accessToken", str);
-            jSONObject.put("parentId", str2);
-            jSONObject.put("orderBy", 0);
-            jSONObject.put("sortType", 0);
-            String strV = v("https://api.guangyapan.com/nd.bizuserres.s/v1/get_share_page_files_list", jSONObject, true);
-            if ((strV != null && !strV.isEmpty())) {
-                JSONObject jSONObject2 = new JSONObject(strV);
-                if ("success".equals(jSONObject2.optString("msg"))) {
-                    return jSONObject2.getJSONObject("data").optJSONArray("list");
-                }
-            }
-        } catch (Exception e) {
-            com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 getFilesList 异常: "));
-        }
-        return new JSONArray();
-    }
-
-    private Map<String, String> p() {
-        HashMap mapB = com.github.catvod.spider.merge.B.e.b("Content-Type", "application/json", "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36");
-        mapB.put("Referer", "https://www.guangyapan.com/");
-        mapB.put("Origin", "https://www.guangyapan.com");
-        mapB.put("dt", "4");
-        mapB.put("did", this.e);
-        if ((this.f.b() != null && !this.f.b().isEmpty())) {
-            mapB.put("Authorization", this.f.b());
-        }
-        return mapB;
-    }
-
-    private boolean t(JSONObject jSONObject) {
-        String strOptString = jSONObject.optString("mineType", "");
-        String lowerCase = jSONObject.optString("ext", "").toLowerCase();
-        if (strOptString.startsWith("video/")) {
-            return true;
-        }
-        String[] strArr = {".mp4", ".mkv", ".avi", ".wmv", ".flv", ".mov", ".rmvb", ".rm", ".3gp", ".ts", ".m4v", ".webm", ".mpg", ".mpeg", ".m2ts"};
-        for (int i = 0; i < 15; i++) {
-            if (lowerCase.equals(strArr[i])) {
+            SpiderDebug.log("光鸭云盘 refreshAccessToken...");
+            String refreshToken = userInfo.c();
+            if (refreshToken == null || refreshToken.isEmpty()) return false;
+            Map<String, String> headers = buildHeaders();
+            ((HashMap) headers).put("x-action", "401");
+            JSONObject body = new JSONObject();
+            body.put("client_id", CLIENT_ID);
+            body.put("grant_type", "refresh_token");
+            body.put("refresh_token", refreshToken);
+            String resp = PanHttpClient.post(AUTH_BASE + "/token", body.toString(), headers).body();
+            if (resp != null && !resp.isEmpty() && resp.contains("access_token")) {
+                JSONObject json = new JSONObject(resp);
+                String newAccess = json.getString("access_token");
+                String newRefresh = json.optString("refresh_token", refreshToken);
+                SpiderDebug.log("光鸭云盘 refreshAccessToken accessToken..." + newAccess);
+                onTokenReceived(newAccess, newRefresh);
                 return true;
             }
+        } catch (Exception e) {
+            logError("光鸭云盘 refreshAccessToken 异常: ", e);
         }
         return false;
     }
 
-    private void u(String str, String str2, List<JSONObject> list, String str3) {
-        try {
-            JSONArray jSONArrayO = o(str, str2);
-            if (jSONArrayO == null) {
-                return;
+    /**
+     * 设置用户 token（从配置读取）
+     */
+    public void setUser(String tokenOrUrl, boolean force) {
+        if ((userInfo.c() == null || userInfo.c().isEmpty()) || force) {
+            SpiderDebug.log("光鸭云盘 setUser: " + tokenOrUrl);
+            if (tokenOrUrl != null && tokenOrUrl.startsWith("http")) {
+                try {
+                    tokenOrUrl = PanHttpClient.get(tokenOrUrl).trim();
+                } catch (Exception e) {
+                    logError("光鸭云盘 setUser fetching error: ", e);
+                }
             }
-            for (int i = 0; i < jSONArrayO.length(); i++) {
-                JSONObject jSONObject = jSONArrayO.getJSONObject(i);
-                if (jSONObject.optInt("resType") == 2) {
-                    String string = jSONObject.getString("fileName");
-                    String string2 = jSONObject.getString("fileId");
-                    if ((str3 != null && !str3.isEmpty())) {
-                        string = str3 + "/" + string;
+            if (tokenOrUrl != null && !tokenOrUrl.isEmpty()) {
+                userInfo.f(tokenOrUrl);
+                userInfo.d();
+            }
+        }
+    }
+
+    // ==================== HTTP 请求 ====================
+
+    private Map<String, String> buildHeaders() {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36");
+        headers.put("Referer", "https://www.guangyapan.com/");
+        headers.put("Origin", "https://www.guangyapan.com");
+        headers.put("dt", "4");
+        headers.put("did", deviceId);
+        String auth = userInfo.b();
+        if (auth != null && !auth.isEmpty()) {
+            headers.put("Authorization", auth);
+        }
+        return headers;
+    }
+
+    /**
+     * POST 请求（带自动 token 刷新重试）
+     *
+     * @param url       API 地址
+     * @param body      请求体
+     * @param retry401  是否在 401 时自动刷新 token 重试
+     * @return 响应字符串，失败返回空串
+     */
+    private String apiPost(String url, JSONObject body, boolean retry401) {
+        try {
+            String bodyStr = body.toString();
+            Map<String, String> headers = buildHeaders();
+            PanHttpClient.HttpResponse resp = PanHttpClient.post(url, bodyStr, headers);
+            SpiderDebug.log("光鸭云盘 POST " + url + " body:" + body + " result:" + resp.body());
+            if (retry401) {
+                boolean needRetry = false;
+                if (resp.code() == 401) {
+                    needRetry = true;
+                } else {
+                    String respBody = resp.body();
+                    if (respBody != null && !respBody.isEmpty()) {
+                        int code = new JSONObject(respBody).optInt("code", 200);
+                        if (code == 401 || code == 207) {
+                            needRetry = true;
+                        }
                     }
-                    u(str, string2, list, string);
-                } else if (t(jSONObject)) {
-                    jSONObject.put("_parentName", str3 != null ? str3 : "");
-                    list.add(jSONObject);
+                }
+                if (needRetry && refreshAccessToken()) {
+                    return apiPost(url, body, false);
+                }
+            }
+            return resp.body();
+        } catch (Exception e) {
+            logError("光鸭云盘 POST 异常: ", e);
+            return "";
+        }
+    }
+
+    // ==================== 文件列表 ====================
+
+    /**
+     * 获取分享目录下的文件列表
+     */
+    private JSONArray getFileList(String accessToken, String parentId) {
+        try {
+            JSONObject body = new JSONObject();
+            body.put("pageSize", 200);
+            body.put("accessToken", accessToken);
+            body.put("parentId", parentId);
+            body.put("orderBy", 0);
+            body.put("sortType", 0);
+            String resp = apiPost(API_BASE + "/get_share_page_files_list", body, true);
+            if (resp != null && !resp.isEmpty()) {
+                JSONObject json = new JSONObject(resp);
+                if ("success".equals(json.optString("msg"))) {
+                    return json.getJSONObject("data").optJSONArray("list");
                 }
             }
         } catch (Exception e) {
-            com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 listAllVideoFiles 异常: "));
+            logError("光鸭云盘 getFilesList 异常: ", e);
         }
+        return new JSONArray();
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:14:0x0063  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private java.lang.String v(java.lang.String r7, org.json.JSONObject r8, boolean r9) {
-        /*
-            r6 = this;
-            java.lang.String r0 = r8.toString()     // Catch: java.lang.Exception -> L76
-            java.util.Map r1 = r6.p()     // Catch: java.lang.Exception -> L76
-            com.github.catvod.spider.merge.f0.i r0 = com.github.catvod.spider.merge.f0.d.j(r7, r0, r1)     // Catch: java.lang.Exception -> L76
-            java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch: java.lang.Exception -> L76
-            r1.<init>()     // Catch: java.lang.Exception -> L76
-            java.lang.String r2 = "光鸭云盘 POST "
-            r1.append(r2)     // Catch: java.lang.Exception -> L76
-            r1.append(r7)     // Catch: java.lang.Exception -> L76
-            java.lang.String r2 = " body:"
-            r1.append(r2)     // Catch: java.lang.Exception -> L76
-            r1.append(r8)     // Catch: java.lang.Exception -> L76
-            java.lang.String r2 = " result:"
-            r1.append(r2)     // Catch: java.lang.Exception -> L76
-            java.lang.String r2 = r0.a()     // Catch: java.lang.Exception -> L76
-            r1.append(r2)     // Catch: java.lang.Exception -> L76
-            java.lang.String r1 = r1.toString()     // Catch: java.lang.Exception -> L76
-            com.github.catvod.crawler.SpiderDebug.log(r1)     // Catch: java.lang.Exception -> L76
-            if (r9 == 0) goto L71
-            int r9 = r0.b()     // Catch: java.lang.Exception -> L76
-            r1 = 1
-            r2 = 401(0x191, float:5.62E-43)
-            r3 = 0
-            if (r9 != r2) goto L41
-            goto L64
-        L41:
-            java.lang.String r9 = r0.a()     // Catch: java.lang.Exception -> L76
-            boolean r9 = (r9 != null && !r9.isEmpty())     // Catch: java.lang.Exception -> L76
-            if (r9 == 0) goto L63
-            org.json.JSONObject r9 = new org.json.JSONObject     // Catch: java.lang.Exception -> L63
-            java.lang.String r4 = r0.a()     // Catch: java.lang.Exception -> L63
-            r9.<init>(r4)     // Catch: java.lang.Exception -> L63
-            java.lang.String r4 = "code"
-            r5 = 200(0xc8, float:2.8E-43)
-            int r9 = r9.optInt(r4, r5)     // Catch: java.lang.Exception -> L63
-            if (r9 == r2) goto L64
-            r2 = 207(0xcf, float:2.9E-43)
-            if (r9 != r2) goto L63
-            goto L64
-        L63:
-            r1 = 0
-        L64:
-            if (r1 == 0) goto L71
-            boolean r9 = r6.w()     // Catch: java.lang.Exception -> L76
-            if (r9 == 0) goto L71
-            java.lang.String r7 = r6.v(r7, r8, r3)     // Catch: java.lang.Exception -> L76
-            return r7
-        L71:
-            java.lang.String r7 = r0.a()     // Catch: java.lang.Exception -> L76
-            return r7
-        L76:
-            r7 = move-exception
-            java.lang.String r8 = "光鸭云盘 POST 异常: "
-            java.lang.StringBuilder r8 = new java.lang.StringBuilder(r8)
-            com.github.catvod.spider.merge.A.c.e(r7, r8)
-            java.lang.String r7 = ""
-            return r7
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.github.catvod.spider.merge.I.GuangYaPanApi.v(java.lang.String, org.json.JSONObject, boolean):java.lang.String");
-    }
-
-    private void y(String str, String str2) {
-        SpiderDebug.log("光鸭Token获取成功: " + str2);
-        this.f.e("Bearer " + str);
-        this.f.f(str2);
-        this.f.d();
-        ScheduledExecutorService scheduledExecutorService = this.g;
-        if (scheduledExecutorService != null) {
-            scheduledExecutorService.shutdownNow();
-        }
-        Init.run(new B(this, 1));
-    }
-
-    public final String n(String str, String str2, String str3) {
-        String strM;
+    /**
+     * 获取分享摘要信息
+     */
+    public JSONObject getShareSummary(String shareId, String code) {
         try {
-            strM = m(str, str3);
-        } catch (Exception e) {
-            com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 getDownloadUrl 异常: "));
-        }
-        if ((strM == null || strM.isEmpty())) {
-            return "";
-        }
-        JSONObject jSONObject = new JSONObject();
-        jSONObject.put("fileId", str2);
-        jSONObject.put("accessToken", strM);
-        String strV = v("https://api.guangyapan.com/nd.bizuserres.s/v1/get_share_download_url", jSONObject, true);
-        if ((strV != null && !strV.isEmpty())) {
-            JSONObject jSONObject2 = new JSONObject(strV);
-            if ("success".equals(jSONObject2.optString("msg"))) {
-                return jSONObject2.getJSONObject("data").optString("downloadUrl", "");
+            JSONObject body = new JSONObject();
+            body.put("shareId", shareId);
+            if (code != null && !code.isEmpty()) {
+                body.put("code", code);
             }
-            SpiderDebug.log("光鸭云盘 下载失败: " + jSONObject2.optString("msg") + " code:" + jSONObject2.optInt("code"));
-            return "";
+            String resp = apiPost(API_BASE + "/get_share_summary", body, true);
+            if (resp != null && !resp.isEmpty()) {
+                JSONObject json = new JSONObject(resp);
+                if ("success".equals(json.optString("msg"))) {
+                    return json.optJSONObject("data");
+                }
+            }
+        } catch (Exception e) {
+            logError("光鸭云盘 getShareSummary 异常: ", e);
+        }
+        return null;
+    }
+
+    /**
+     * 递归列出所有视频文件
+     */
+    private void listAllVideoFiles(String accessToken, String parentId, List<JSONObject> result, String parentPath) {
+        try {
+            JSONArray files = getFileList(accessToken, parentId);
+            if (files == null) return;
+            for (int i = 0; i < files.length(); i++) {
+                JSONObject file = files.getJSONObject(i);
+                if (file.optInt("resType") == 2) {
+                    // 文件夹，递归
+                    String folderName = file.getString("fileName");
+                    String folderId = file.getString("fileId");
+                    String path = (parentPath != null && !parentPath.isEmpty()) ? parentPath + "/" + folderName : folderName;
+                    listAllVideoFiles(accessToken, folderId, result, path);
+                } else if (isVideoFile(file)) {
+                    file.put("_parentName", parentPath != null ? parentPath : "");
+                    result.add(file);
+                }
+            }
+        } catch (Exception e) {
+            logError("光鸭云盘 listAllVideoFiles 异常: ", e);
+        }
+    }
+
+    /**
+     * 判断文件是否为视频类型
+     */
+    private boolean isVideoFile(JSONObject file) {
+        String mimeType = file.optString("mineType", "");
+        String ext = file.optString("ext", "").toLowerCase();
+        if (mimeType.startsWith("video/")) return true;
+        for (String videoExt : VIDEO_EXTENSIONS) {
+            if (ext.equals(videoExt)) return true;
+        }
+        return false;
+    }
+
+    // ==================== 搜索 ====================
+
+    /**
+     * 搜索分享文件
+     */
+    public JSONArray searchFiles(String shareId, String code, String keyword) {
+        try {
+            String accessToken = getAccessToken(shareId, code);
+            if (accessToken == null || accessToken.isEmpty()) return new JSONArray();
+            JSONObject body = new JSONObject();
+            body.put("accessToken", accessToken);
+            body.put("keyword", keyword);
+            body.put("page", 0);
+            body.put("pageSize", 100);
+            String resp = apiPost(API_BASE + "/share_page_search_files", body, true);
+            if (resp != null && !resp.isEmpty()) {
+                JSONObject json = new JSONObject(resp);
+                if ("success".equals(json.optString("msg"))) {
+                    return json.optJSONObject("data").optJSONArray("list");
+                }
+            }
+        } catch (Exception e) {
+            logError("光鸭云盘 searchFiles 异常: ", e);
+        }
+        return new JSONArray();
+    }
+
+    // ==================== 获取下载链接 ====================
+
+    /**
+     * 获取文件下载链接
+     */
+    public String getDownloadUrl(String shareId, String fileId, String code) {
+        try {
+            String accessToken = getAccessToken(shareId, code);
+            if (accessToken == null || accessToken.isEmpty()) return "";
+            JSONObject body = new JSONObject();
+            body.put("fileId", fileId);
+            body.put("accessToken", accessToken);
+            String resp = apiPost(API_BASE + "/get_share_download_url", body, true);
+            if (resp != null && !resp.isEmpty()) {
+                JSONObject json = new JSONObject(resp);
+                if ("success".equals(json.optString("msg"))) {
+                    return json.getJSONObject("data").optString("downloadUrl", "");
+                }
+                SpiderDebug.log("光鸭云盘 下载失败: " + json.optString("msg") + " code:" + json.optInt("code"));
+            }
+        } catch (Exception e) {
+            logError("光鸭云盘 getDownloadUrl 异常: ", e);
         }
         return "";
     }
 
-    public final JSONObject q(String str, String str2) {
+    // ==================== VodItem 构建 ====================
+
+    /**
+     * 构建 VodItem（视频详情页）
+     */
+    public com.github.catvod.bean.VodItem buildVodItem(String shareId, String fileId, String folderId, String code, String name) {
         try {
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put("shareId", str);
-            if ((str2 != null && !str2.isEmpty())) {
-                jSONObject.put("code", str2);
+            String accessToken = getAccessToken(shareId, code);
+            if (accessToken == null || accessToken.isEmpty()) {
+                return createErrorVod(shareId, name);
             }
-            String strV = v("https://api.guangyapan.com/nd.bizuserres.s/v1/get_share_summary", jSONObject, true);
-            if (!(strV != null && !strV.isEmpty())) {
-                return null;
+            String displayName = name;
+            JSONObject summary = getShareSummary(shareId, code);
+            if (summary != null) {
+                this.shareTitle = summary.optString("title", "光鸭云盘");
+                if (name == null || name.isEmpty()) {
+                    displayName = this.shareTitle;
+                }
             }
-            JSONObject jSONObject2 = new JSONObject(strV);
-            if ("success".equals(jSONObject2.optString("msg"))) {
-                return jSONObject2.optJSONObject("data");
+            ArrayList<JSONObject> videoFiles = new ArrayList<>();
+            String targetFolder = (folderId != null && !folderId.isEmpty()) ? folderId : "";
+            listAllVideoFiles(accessToken, targetFolder, videoFiles, "");
+            if (videoFiles.isEmpty()) {
+                return createErrorVod(shareId, displayName);
             }
-            return null;
+            // 构建播放列表
+            ArrayList<String> sourceNames = new ArrayList<>();
+            sourceNames.add("光鸭原畫");
+            ArrayList<String> playUrls = new ArrayList<>();
+            ArrayList<String> episodeList = new ArrayList<>();
+            for (JSONObject file : videoFiles) {
+                String fileName = PanStringUtils.cleanFilename(file.getString("fileName"));
+                String videoFileId = file.getString("fileId");
+                double fileSize = file.optDouble("fileSize", file.optDouble("size", 0.0d));
+                String sizeStr = fileSize == 0.0d ? "" : "[" + PanStringUtils.formatFileSize(fileSize) + "]";
+                String display = TextUtils.join(" ", Arrays.asList(
+                        PanStringUtils.extractEpisodeNumber(fileName), sizeStr, fileName)).trim();
+                episodeList.add(display + "$" + shareId + "+" + videoFileId + "+" + code + "+" + displayName);
+            }
+            playUrls.add(TextUtils.join("#", episodeList));
+            // 组装 VodItem
+            com.github.catvod.bean.VodItem vod = new com.github.catvod.bean.VodItem();
+            vod.l(shareId);
+            vod.j(shareId);
+            String title = (displayName != null && !displayName.isEmpty()) ? displayName : this.shareTitle;
+            vod.m(title);
+            vod.p(TextUtils.join("$$$", playUrls));
+            vod.o(TextUtils.join("$$$", sourceNames));
+            vod.g("光鸭雲盤");
+            return vod;
         } catch (Exception e) {
-            com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 getShareSummary 异常: "));
-            return null;
+            logError("光鸭云盘 getVod 异常: ", e);
+            return createErrorVod(shareId, name);
         }
     }
 
-    public final com.github.catvod.bean.VodItem r(String str, String str2, String str3, String str4, String str5) {
-        String strB;
-        GuangYaPanApi o;
-        String str6;
-        String str7 = str;
-        ArrayList arrayList = new ArrayList();
-        ArrayList arrayList2 = new ArrayList();
-        ArrayList arrayList3 = new ArrayList();
+    /**
+     * 构建文件夹浏览列表
+     */
+    public List<com.github.catvod.bean.VodItem> buildFolderList(com.github.catvod.bean.JsonUtils params) {
+        String shareCode = params.d();
+        String shareId = params.c();
+        String folderId = params.f();
+        String pathPrefix = params.e();
+        String currentFolderId = params.b();
+        ArrayList<com.github.catvod.bean.VodItem> result = new ArrayList<>();
         try {
-            String strM = m(str2, str4);
-            strB = (strM == null || strM.isEmpty());
-            try {
-                if (strB != 0) {
-                    return j(str7, str5);
+            String accessToken = getAccessToken(shareId, shareCode);
+            if (accessToken == null || accessToken.isEmpty()) return result;
+            if ((folderId == null || folderId.isEmpty() || currentFolderId == null || currentFolderId.isEmpty())) {
+                JSONObject summary = getShareSummary(shareId, shareCode);
+                if (summary != null) {
+                    summary.optString("title", "光鸭云盘");
                 }
-                String str8 = str5;
-                JSONObject jSONObjectQ = q(str2, str4);
-                strB = str8;
-                if (jSONObjectQ != null) {
-                    this.d = jSONObjectQ.optString("title", "光鸭云盘");
-                    strB = str8;
-                    if ((str5 == null || str5.isEmpty())) {
-                        strB = this.d;
-                    }
-                }
-                ArrayList<JSONObject> arrayList4 = new ArrayList();
-                u(strM, (str3 != null && !str3.isEmpty()) ? str3 : "", arrayList4, "");
-                if (arrayList4.isEmpty()) {
-                    return j(str7, strB);
-                }
-                arrayList.add("光鸭原畫");
-                for (JSONObject jSONObject : arrayList4) {
-                    try {
-                        String strY = com.github.catvod.spider.merge.i0.GeneralUtils.y(jSONObject.getString("fileName"));
-                        String string = jSONObject.getString("fileId");
-                        ArrayList arrayList5 = arrayList;
-                        ArrayList arrayList6 = arrayList2;
-                        double dOptDouble = jSONObject.optDouble("fileSize", jSONObject.optDouble("size", 0.0d));
-                        arrayList3.add(TextUtils.join(" ", Arrays.asList(com.github.catvod.spider.merge.i0.m.v(strY), dOptDouble == 0.0d ? "" : "[" + com.github.catvod.spider.merge.i0.m.n(dOptDouble) + "]", strY)).trim() + "$" + str2 + "+" + string + "+" + str4 + "+" + strB);
-                        arrayList = arrayList5;
-                        arrayList2 = arrayList6;
-                    } catch (Exception e) {
-                        e = e;
-                        o = this;
-                        str7 = str;
-                        com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 getVod 异常: "));
-                        return o.j(str7, strB);
-                    }
-                }
-                ArrayList arrayList7 = arrayList;
-                ArrayList arrayList8 = arrayList2;
-                StringBuilder sb = new StringBuilder();
-                Iterator it = arrayList3.iterator();
-                if (it.hasNext()) {
-                    while (true) {
-                        sb.append((CharSequence) it.next());
-                        if (!it.hasNext()) {
-                            break;
-                        }
-                        sb.append((CharSequence) "#");
-                    }
-                }
-                arrayList8.add(sb.toString());
-                com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
-                str7 = str;
-                try {
-                    iVar.l(str7);
-                    iVar.j(str7);
-                    if ((strB != null && !strB.isEmpty())) {
-                        o = this;
-                        str6 = strB;
-                    } else {
-                        o = this;
-                        try {
-                            String str9 = o.d;
-                            o = o;
-                            str6 = str9;
-                        } catch (Exception e2) {
-                            e = e2;
-                            com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 getVod 异常: "));
-                            return o.j(str7, strB);
-                        }
-                    }
-                    iVar.m(str6);
-                    StringBuilder sb2 = new StringBuilder();
-                    Iterator it2 = arrayList8.iterator();
-                    if (it2.hasNext()) {
-                        while (true) {
-                            sb2.append((CharSequence) it2.next());
-                            if (!it2.hasNext()) {
-                                break;
-                            }
-                            sb2.append((CharSequence) "$$$");
-                        }
-                    }
-                    iVar.p(sb2.toString());
-                    StringBuilder sb3 = new StringBuilder();
-                    Iterator it3 = arrayList7.iterator();
-                    if (it3.hasNext()) {
-                        while (true) {
-                            sb3.append((CharSequence) it3.next());
-                            if (!it3.hasNext()) {
-                                break;
-                            }
-                            sb3.append((CharSequence) "$$$");
-                        }
-                    }
-                    iVar.o(sb3.toString());
-                    iVar.g("光鸭雲盤");
-                    return iVar;
-                } catch (Exception e3) {
-                    e = e3;
-                    o = this;
-                }
-            } catch (Exception e4) {
-                e = e4;
-                o = this;
-                com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 getVod 异常: "));
-                return o.j(str7, strB);
             }
-        } catch (Exception e5) {
-            e = e5;
-            strB = str5;
-        }
-    }
-
-    public final List<com.github.catvod.bean.VodItem> s(com.github.catvod.bean.j jVar) {
-        JSONObject jSONObjectQ;
-        String str;
-        String strD = jVar.d();
-        String strC = jVar.c();
-        String strF = jVar.f();
-        String strE = jVar.e();
-        String strB = jVar.b();
-        ArrayList arrayList = new ArrayList();
-        try {
-            String strM = m(strC, strD);
-            if ((strM == null || strM.isEmpty())) {
-                return arrayList;
+            if (currentFolderId == null || currentFolderId.isEmpty()) {
+                currentFolderId = "";
             }
-            if (((strF == null || strF.isEmpty()) || (strB == null || strB.isEmpty())) && (jSONObjectQ = q(strC, strD)) != null) {
-                jSONObjectQ.optString("title", "光鸭云盘");
-            }
-            if ((strB == null || strB.isEmpty())) {
-                strB = "";
-            }
-            JSONArray jSONArrayO = o(strM, strB);
-            if (jSONArrayO == null) {
-                return arrayList;
-            }
-            for (int i = 0; i < jSONArrayO.length(); i++) {
-                JSONObject jSONObject = jSONArrayO.getJSONObject(i);
-                com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
-                String string = jSONObject.getString("fileName");
-                String string2 = jSONObject.getString("fileId");
-                if (jSONObject.optInt("resType") == 2) {
-                    iVar.l(strC + "*#" + string2 + "*#" + string);
-                    iVar.m(string);
-                    str = "folder";
-                } else if (t(jSONObject) || BaseApi.get().d.booleanValue() || (com.github.catvod.spider.merge.i0.GeneralUtils.m(string) != null && !com.github.catvod.spider.merge.i0.GeneralUtils.m(string).isEmpty())) {
-                    iVar.l(strE + jSONObject.getString("parentId") + "*#" + string2 + "*#" + string);
-                    iVar.m(string);
-                    str = "file";
+            JSONArray files = getFileList(accessToken, currentFolderId);
+            if (files == null) return result;
+            for (int i = 0; i < files.length(); i++) {
+                JSONObject file = files.getJSONObject(i);
+                com.github.catvod.bean.VodItem vod = new com.github.catvod.bean.VodItem();
+                String fileName = file.getString("fileName");
+                String fileId = file.getString("fileId");
+                if (file.optInt("resType") == 2) {
+                    vod.l(shareId + "*#" + fileId + "*#" + fileName);
+                    vod.m(fileName);
+                    vod.r("folder");
+                } else if (isVideoFile(file) || BaseApi.get().d.booleanValue()
+                        || (PanStringUtils.getMimeType(fileName) != null
+                        && !PanStringUtils.getMimeType(fileName).isEmpty())) {
+                    vod.l(pathPrefix + file.getString("parentId") + "*#" + fileId + "*#" + fileName);
+                    vod.m(fileName);
+                    vod.r("file");
                 }
-                iVar.r(str);
-                arrayList.add(iVar);
+                result.add(vod);
             }
         } catch (Exception e) {
-            com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 getVodFolder 异常: "));
+            logError("光鸭云盘 getVodFolder 异常: ", e);
         }
-        return arrayList;
+        return result;
     }
 
-    final boolean w() {
-        try {
-            SpiderDebug.log("光鸭云盘 refreshAccessToken...");
-            String strC = this.f.c();
-            if ((strC == null || strC.isEmpty())) {
-                return false;
-            }
-            Map<String, String> mapP = p();
-            ((HashMap) mapP).put("x-action", "401");
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put("client_id", "aMe-8VSlkrbQXpUR");
-            jSONObject.put("grant_type", "refresh_token");
-            jSONObject.put("refresh_token", strC);
-            String strA = com.github.catvod.spider.merge.f0.d.j("https://account.guangyapan.com/v1/auth/token", jSONObject.toString(), mapP).a();
-            if ((strA != null && !strA.isEmpty()) && strA.contains("access_token")) {
-                JSONObject jSONObject2 = new JSONObject(strA);
-                String string = jSONObject2.getString("access_token");
-                String strOptString = jSONObject2.optString("refresh_token", strC);
-                SpiderDebug.log("光鸭云盘 refreshAccessToken accessToken..." + string);
-                y(string, strOptString);
-                return true;
-            }
-        } catch (Exception e) {
-            com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 refreshAccessToken 异常: "));
-        }
-        return false;
+    private com.github.catvod.bean.VodItem createErrorVod(String id, String name) {
+        com.github.catvod.bean.VodItem vod = new com.github.catvod.bean.VodItem();
+        vod.l(id);
+        vod.m((name != null && !name.isEmpty()) ? name : "光鸭云盘");
+        vod.j("无法获取文件列表");
+        vod.g("光鸭雲盤");
+        return vod;
     }
 
-    public final JSONArray x(String str, String str2, String str3) {
-        String strM;
-        try {
-            strM = m(str, str2);
-        } catch (Exception e) {
-            com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 searchFiles 异常: "));
-        }
-        if ((strM == null || strM.isEmpty())) {
-            return new JSONArray();
-        }
-        JSONObject jSONObject = new JSONObject();
-        jSONObject.put("accessToken", strM);
-        jSONObject.put("keyword", str3);
-        jSONObject.put("page", 0);
-        jSONObject.put("pageSize", 100);
-        String strV = v("https://api.guangyapan.com/nd.bizuserres.s/v1/share_page_search_files", jSONObject, true);
-        if ((strV != null && !strV.isEmpty())) {
-            JSONObject jSONObject2 = new JSONObject(strV);
-            if ("success".equals(jSONObject2.optString("msg"))) {
-                return jSONObject2.optJSONObject("data").optJSONArray("list");
-            }
-        }
-        return new JSONArray();
-    }
-
-    public final void z(String str, boolean z) {
-        if ((this.f.c() == null || this.f.c().isEmpty()) || z) {
-            SpiderDebug.log("光鸭云盘 setUser: " + str);
-            if (str != null && str.startsWith("http")) {
-                try {
-                    str = com.github.catvod.spider.merge.f0.d.l(str).trim();
-                } catch (Exception e) {
-                    com.github.catvod.spider.merge.A.c.e(e, new StringBuilder("光鸭云盘 setUser fetching error: "));
-                }
-            }
-            if ((str != null && !str.isEmpty())) {
-                this.f.f(str);
-                this.f.d();
-            }
-        }
+    private static void logError(String message, Exception e) {
+        SpiderDebug.log(message + e.getMessage());
     }
 }

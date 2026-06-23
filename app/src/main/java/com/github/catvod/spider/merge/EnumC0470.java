@@ -2081,7 +2081,7 @@ abstract class EnumC0470 {
     private static final String f1199 = String.valueOf((char) 65533);
 
     /* JADX INFO: renamed from: com.github.catvod.spider.merge.ར$ރ, reason: contains not printable characters */
-    enum C0481 extends EnumC0470 {
+    class C0481 extends EnumC0470 {
         C0481(String str, int i) {
             super(str, i, null);
         }

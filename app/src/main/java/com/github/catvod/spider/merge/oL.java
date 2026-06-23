@@ -34,7 +34,7 @@ abstract class oL {
     public static final oL uS;
     public static final oL v;
 
-    enum a extends oL {
+    class a extends oL {
         a(String str, int i) {
             super(str, i, null);
         }

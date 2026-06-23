@@ -28,7 +28,7 @@ public final class C0620v implements X, com.github.catvod.spider.merge.C.w {
             return null;
         }
         if (type == C1413b.class) {
-            ?? r5 = (T) new C1413b();
+            C1413b r5 = (T) new C1413b();
             bVar.q(r5, null);
             return r5;
         }

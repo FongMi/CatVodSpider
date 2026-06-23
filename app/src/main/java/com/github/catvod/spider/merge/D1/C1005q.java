@@ -2,7 +2,7 @@ package com.github.catvod.spider.merge.d1;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.d1.q, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C1005q extends EnumC0969B {
+class C1005q extends EnumC0969B {
     C1005q() {
         super("AfterAfterFrameset", 22, null);
     }

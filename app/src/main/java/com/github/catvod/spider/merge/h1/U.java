@@ -105,7 +105,7 @@ public class U extends E {
     /* JADX WARN: Type inference failed for: r0v4, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.h1.U>] */
     /* JADX WARN: Type inference failed for: r2v1, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.h1.U>] */
     public final void u0(U u) {
-        ?? r0 = this.u;
+        Object r0 = this.u;
         if (r0 != 0) {
             for (U u2 : r0) {
                 if (u.u == null) {

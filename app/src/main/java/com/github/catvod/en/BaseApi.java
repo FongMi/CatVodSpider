@@ -17,7 +17,8 @@ import android.view.WindowManager;
 import android.widget.*;
 import com.github.catvod.spider.Init;
 import com.github.catvod.bean.VodItem;
-import com.github.catvod.spider.merge.i0.m;
+import com.github.catvod.utils.PanStringUtils;
+import com.github.catvod.utils.PanTextUtils;
 import com.github.catvod.utils.server.Server;
 
 import java.io.File;
@@ -176,7 +177,7 @@ public class BaseApi {
             linearLayout.setOrientation(1);
             linearLayout.setGravity(17);
             int i = 16;
-            linearLayout.setPadding(m.f(16), m.f(16), m.f(16), m.f(16));
+            linearLayout.setPadding(PanStringUtils.dpToPx(16), PanStringUtils.dpToPx(16), PanStringUtils.dpToPx(16), PanStringUtils.dpToPx(16));
             ScrollView scrollView = new ScrollView(Init.context());
             LinearLayout linearLayout2 = new LinearLayout(Init.context());
             linearLayout2.setOrientation(1);
@@ -196,10 +197,10 @@ public class BaseApi {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-1, -2);
                 layoutParams.setMargins(0, 1, 0, 8);
                 textView.setLayoutParams(layoutParams);
-                textView.setOnClickListener(new View.OnClickListener() { // from class: com.github.catvod.spider.merge.d0.e
-                    @Override // android.view.View.OnClickListener
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
                     public final void onClick(View view) {
-                        BaseApi baseApi = this.b;
+                        BaseApi baseApi = BaseApi.this;
                         baseApi.g.setText(str4);
                     }
                 });
@@ -211,30 +212,28 @@ public class BaseApi {
                 scrollView.setVerticalScrollBarEnabled(true);
                 scrollView.setScrollbarFadingEnabled(false);
             }
-            scrollView.setLayoutParams(new LinearLayout.LayoutParams(-1, m.f(list.size() > 3 ? 200 : 100)));
+            scrollView.setLayoutParams(new LinearLayout.LayoutParams(-1, PanStringUtils.dpToPx(list.size() > 3 ? 200 : 100)));
             linearLayout.addView(scrollView);
-            h(linearLayout, m.f(10));
+            h(linearLayout, PanStringUtils.dpToPx(10));
             final EditText editTextInitEditText = get().initEditText();
             editTextInitEditText.setHint(str3);
-            editTextInitEditText.setPadding(m.f(8), m.f(8), m.f(8), m.f(8));
-            editTextInitEditText.setBackground(createRoundedBackground(-3355444, m.f(8)));
+            editTextInitEditText.setPadding(PanStringUtils.dpToPx(8), PanStringUtils.dpToPx(8), PanStringUtils.dpToPx(8), PanStringUtils.dpToPx(8));
+            editTextInitEditText.setBackground(createRoundedBackground(-3355444, PanStringUtils.dpToPx(8)));
             linearLayout.addView(editTextInitEditText, new LinearLayout.LayoutParams(-1, -2));
-            h(linearLayout, m.f(10));
+            h(linearLayout, PanStringUtils.dpToPx(10));
             linearLayout.addView(o(Server.u()), new LinearLayout.LayoutParams(-1, -2));
             TextView textView2 = new TextView(Init.context());
             textView2.setText(str2);
             textView2.setGravity(17);
-            textView2.setPadding(m.f(1), m.f(16), m.f(1), m.f(1));
+            textView2.setPadding(PanStringUtils.dpToPx(1), PanStringUtils.dpToPx(16), PanStringUtils.dpToPx(1), PanStringUtils.dpToPx(1));
             textView2.setTextSize(20.0f);
             textView2.setTypeface(null, 1);
             AlertDialog.Builder builder = new AlertDialog.Builder(Init.getConfigActivity());
-            builder.setCustomTitle(textView2).setView(linearLayout).setNegativeButton(R.string.cancel, (DialogInterface.OnClickListener) null).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() { // from class: com.github.catvod.spider.merge.d0.a
-                @Override // android.content.DialogInterface.OnClickListener
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
                 public final void onClick(DialogInterface dialogInterface, int i2) {
-                    BaseApi baseApi = this.a;
                     EditText editText = editTextInitEditText;
                     Task task2 = task;
-                    baseApi.getClass();
                     String string = editText.getText().toString();
                     if (string.isEmpty()) {
                         Toast.makeText(Init.context(), "输入不能为空", 0).show();
@@ -259,7 +258,7 @@ public class BaseApi {
             Double.isNaN(d);
             window.setLayout((int) (d * 0.9d), -2);
         } catch (Exception e) {
-            m.w("当前节点为" + e);
+            android.util.Log.w("BaseApi", "当前节点为" + e);
             e.printStackTrace();
         }
     }
@@ -275,8 +274,8 @@ public class BaseApi {
             LinearLayout linearLayout = new LinearLayout(Init.context());
             boolean z = true;
             linearLayout.setOrientation(1);
-            linearLayout.setPadding(m.f(24), m.f(24), m.f(24), m.f(24));
-            linearLayout.setBackground(createRoundedBackground(-1, m.f(16)));
+            linearLayout.setPadding(PanStringUtils.dpToPx(24), PanStringUtils.dpToPx(24), PanStringUtils.dpToPx(24), PanStringUtils.dpToPx(24));
+            linearLayout.setBackground(createRoundedBackground(-1, PanStringUtils.dpToPx(16)));
             TextView textView = new TextView(Init.context());
             textView.setText(str);
             textView.setTextSize(18.0f);
@@ -291,17 +290,17 @@ public class BaseApi {
             textView2.setTextColor(-7829368);
             textView2.setGravity(17);
             scrollView.addView(textView2);
-            if (e.d(str2)) {
+            if (PanTextUtils.isNotBlank(str2)) {
                 scrollView.setVerticalScrollBarEnabled(true);
                 scrollView.setScrollbarFadingEnabled(false);
             }
-            scrollView.setLayoutParams(new LinearLayout.LayoutParams(-1, m.f((!e.d(str2) || str2.length() <= 200) ? 50 : 150)));
+            scrollView.setLayoutParams(new LinearLayout.LayoutParams(-1, PanStringUtils.dpToPx((!PanTextUtils.isNotBlank(str2) || str2.length() <= 200) ? 50 : 150)));
             linearLayout.addView(scrollView);
-            h(linearLayout, m.f(5));
+            h(linearLayout, PanStringUtils.dpToPx(5));
             FrameLayout frameLayout = new FrameLayout(Init.context());
             frameLayout.addView(editText, new FrameLayout.LayoutParams(-1, -2));
             linearLayout.addView(frameLayout);
-            h(linearLayout, m.f(24));
+            h(linearLayout, PanStringUtils.dpToPx(24));
             linearLayout.addView(o(str4));
             AlertDialog.Builder builder = new AlertDialog.Builder(Init.getConfigActivity());
             if (onClickListener2 != null) {

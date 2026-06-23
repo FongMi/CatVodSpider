@@ -7,10 +7,8 @@ import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.parser.MixDemo;
-import com.github.catvod.parser.MixWeb;
-import com.github.catvod.spider.merge.C0281;
-import com.github.catvod.spider.merge.I.AliDriveApi;
-import com.github.catvod.spider.merge.xc;
+import com.github.catvod.utils.M3uPlaylistParser;
+import com.github.catvod.utils.merge.AliDriveFacade;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
 import java.io.ByteArrayInputStream;
@@ -44,7 +42,7 @@ public class Proxy extends Spider {
                     if (!extContent.startsWith("http")) {
                         extContent = new String(Base64.decode(extContent, 10), charset);
                     }
-                    return C0281.m1034(extContent);
+                    return M3uPlaylistParser.m1034(extContent);
                 }
                 if (action.equals("ck")) {
                     return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes(charset))};
@@ -110,12 +108,12 @@ public class Proxy extends Spider {
 
     public static Object[] processPush(Map<String, String> params) {
         if (params.get("url") != null && !params.get("url").isEmpty()) {
-            AliDriveApi.r().r = AliDriveApi.r().F(params.get("url"), "1");
+            AliDriveFacade.getApi().r = AliDriveFacade.getApi().F(params.get("url"), "1");
             StringBuilder urlBuilder = new StringBuilder("弹幕来自推送 地址：");
-            urlBuilder.append(AliDriveApi.r().r);
+            urlBuilder.append(AliDriveFacade.getApi().r);
             urlBuilder.append(" 可能需要重新刷新播放页");
             Log.w("Spider", urlBuilder.toString());
-            OkHttpUtil.string("http://127.0.0.1:9978/action?do=refresh&type=danmaku&path=" + URLEncoder.encode(AliDriveApi.r().r));
+            OkHttpUtil.string("http://127.0.0.1:9978/action?do=refresh&type=danmaku&path=" + URLEncoder.encode(AliDriveFacade.getApi().r));
             return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
         }
         if (params.get("input") != null && !params.get("input").isEmpty()) {
@@ -125,8 +123,8 @@ public class Proxy extends Spider {
         if (!(params.get("subtitleContent") != null && !params.get("subtitleContent").isEmpty())) {
             return new Object[]{200, "text/html; charset=utf-8", Proxy.class.getClassLoader().getResourceAsStream("assets/push.html")};
         }
-        String subtitlePath = com.github.catvod.spider.merge.VodResult.VodCategory.a("tv/zm", params.get("subtitleName"));
-        com.github.catvod.spider.merge.VodResult.VodCategory.g(new File(subtitlePath), params.get("subtitleContent"));
+        String subtitlePath = com.github.catvod.utils.PathHelper.buildPath("tv/zm", params.get("subtitleName"));
+        com.github.catvod.utils.PathHelper.writeFile(new File(subtitlePath), params.get("subtitleContent"));
         OkHttpUtil.string("http://127.0.0.1:9978/action?do=refresh&type=subtitle&path=http://127.0.0.1:9978/file/" + subtitlePath);
         return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
     }

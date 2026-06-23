@@ -1,4 +1,5 @@
 package com.github.catvod.utils.merge;
+import com.github.catvod.utils.PanStringUtils;
 
 import android.text.TextUtils;
 import com.google.gson.annotations.SerializedName;
@@ -70,14 +71,18 @@ public final class Yun189File {
     @SerializedName("illegalResult")
     public Object illegalResult;
 
-    public final String a() {
-        return com.github.catvod.spider.merge.i0.GeneralUtils.y(this.fileName);
+    /** 返回清理后的文件名 */
+    public final String mediaId() {
+        return PanStringUtils.cleanFilename(this.fileName);
     }
 
-    public final String b() {
+    /** 返回带大小标签的显示名称，如 "[1.2G] movie.mkv" */
+    public final String displayName() {
         StringBuilder sb = new StringBuilder("[");
-        sb.append(com.github.catvod.spider.merge.i0.GeneralUtils.n(this.fileSize));
+        sb.append(PanStringUtils.formatFileSize(this.fileSize));
         sb.append("]");
-        return TextUtils.join(" ", Arrays.asList(com.github.catvod.spider.merge.i0.GeneralUtils.v(a()), sb.toString(), a(), "")).trim();
+        return TextUtils.join(" ", Arrays.asList(
+                PanStringUtils.extractEpisodeNumber(mediaId()),
+                sb.toString(), mediaId(), "")).trim();
     }
 }

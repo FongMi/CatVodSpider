@@ -20,7 +20,7 @@ import java.security.MessageDigest;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.*;
 
-import static com.github.catvod.spider.merge.I0.GeneralUtils.m;
+import static com.github.catvod.utils.PanStringUtils.getExtension;
 
 public class GuaZi extends NetPan {
     public static /* synthetic */ int compareDesc(GuaZi guaZi, String a, String b) {

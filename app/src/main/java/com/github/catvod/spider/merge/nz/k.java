@@ -46,14 +46,14 @@ public final class k {
     /* JADX WARN: Type inference failed for: r3v6, types: [android.content.DialogInterface$OnCancelListener] */
     /* JADX WARN: Type inference failed for: r5v3, types: [android.content.DialogInterface$OnClickListener, com.github.catvod.spider.merge.nz.c] */
     public static void A(String str, String str2, String str3, j jVar) {
-        ?? bVar;
+        Object bVar;
         try {
             Activity activity = Init.getActivity();
             e = activity;
             if (activity.getWindowManager().getDefaultDisplay().getWidth() - e.getWindowManager().getDefaultDisplay().getHeight() < 0) {
                 n = true;
             }
-            ?? builder = new AlertDialog.Builder(e);
+            Object builder = new AlertDialog.Builder(e);
             if (i.indexOf("验证码") >= 0) {
                 builder.setTitle(str);
                 builder.setView((LinearLayout) y(e, str2, str3));

@@ -77,7 +77,7 @@ abstract class A {
         w = c0659o;
         C0661p c0661p = new C0661p();
         x = c0661p;
-        ?? r22 = new A() { // from class: com.github.catvod.spider.merge.Fs.q
+        Object r22 = new A() { // from class: com.github.catvod.spider.merge.Fs.q
             @Override // com.github.catvod.spider.merge.Fs.A
             final boolean d(O o2, C0633b c0633b) {
                 return true;

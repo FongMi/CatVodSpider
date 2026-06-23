@@ -2,7 +2,7 @@ package com.github.catvod.spider.merge.d1;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.d1.k0, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C0994k0 extends i1 {
+class C0994k0 extends i1 {
     C0994k0() {
         super("ScriptDataEscapedEndTagOpen", 25, null);
     }

@@ -37,7 +37,7 @@ public final class N extends AbstractC1239f implements InterfaceC1248o {
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.h1.O>] */
     /* JADX WARN: Type inference failed for: r1v1, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.h1.O>] */
     public final void e0(List<O> list) {
-        ?? r0 = this.o;
+        Object r0 = this.o;
         if (r0 != 0) {
             r0.clear();
         }

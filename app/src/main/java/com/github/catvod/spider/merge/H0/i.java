@@ -422,7 +422,7 @@ public final class i {
                     this.c.skip(this.d);
                 }
                 this.h = new HashMap();
-                ?? r4 = this.i;
+                Object r4 = this.i;
                 if (r4 == 0) {
                     this.i = new HashMap();
                 } else {

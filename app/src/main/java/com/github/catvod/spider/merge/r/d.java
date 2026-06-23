@@ -14,8 +14,8 @@ public abstract class d {
     /* JADX WARN: Type inference failed for: r3v1, types: [java.lang.Object, java.lang.Throwable] */
     /* JADX WARN: Type inference failed for: r3v6 */
     public static String a(Exception exc) {
-        ?? arrayList = new ArrayList();
-        for (?? cause = exc; cause != 0 && !arrayList.contains(cause); cause = cause.getCause()) {
+        Object arrayList = new ArrayList();
+        for (Object cause = exc; cause != 0 && !arrayList.contains(cause); cause = cause.getCause()) {
             arrayList.add(cause);
         }
         Throwable th = arrayList.isEmpty() ? null : (Throwable) arrayList.get(arrayList.size() - 1);

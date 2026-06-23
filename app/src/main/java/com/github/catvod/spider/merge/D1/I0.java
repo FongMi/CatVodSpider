@@ -1,7 +1,7 @@
 package com.github.catvod.spider.merge.d1;
 
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum I0 extends i1 {
+class I0 extends i1 {
     I0() {
         super("CommentEndDash", 47, null);
     }

@@ -57,7 +57,7 @@ public final class k implements g {
                     if (i5 <= i6) {
                         j jVar3 = i5 > i4 ? new j(i4, i5 - 1) : null;
                         j jVar4 = i3 < i6 ? new j(i3 + 1, i6) : null;
-                        ?? r2 = kVar3.a;
+                        List<j> r2 = kVar3.a;
                         if (jVar3 != null) {
                             r2.set(i, jVar3);
                             if (jVar4 != null) {
@@ -205,8 +205,8 @@ public final class k implements g {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Bk.j>] */
     public final boolean f() {
-        ?? r0 = this.a;
-        return r0 == 0 || r0.isEmpty();
+        List<j> r0 = this.a;
+        return r0 == null || r0.isEmpty();
     }
 
     /* JADX WARN: Type inference failed for: r0v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Bk.j>] */
@@ -279,8 +279,8 @@ public final class k implements g {
     /* JADX WARN: Type inference failed for: r1v3, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Bk.j>] */
     public final String l(I i) {
         StringBuilder sb = new StringBuilder();
-        ?? r1 = this.a;
-        if (r1 == 0 || r1.isEmpty()) {
+        List<j> r1 = this.a;
+        if (r1 == null || r1.isEmpty()) {
             return ZrJ.d("023E");
         }
         if (j() > 1) {
@@ -325,8 +325,8 @@ public final class k implements g {
     /* JADX WARN: Type inference failed for: r1v3, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Bk.j>] */
     public final String toString() {
         StringBuilder sb = new StringBuilder();
-        ?? r1 = this.a;
-        if (r1 == 0 || r1.isEmpty()) {
+        List<j> r1 = this.a;
+        if (r1 == null || r1.isEmpty()) {
             return ZrJ.d("023E");
         }
         if (j() > 1) {

@@ -1,7 +1,7 @@
 package com.github.catvod.spider.merge.Fs;
 
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum e1 extends h1 {
+class e1 extends h1 {
     e1() {
         super("PLAINTEXT", 6, null);
     }

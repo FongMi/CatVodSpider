@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.d1.c, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C0977c extends EnumC0969B {
+class C0977c extends EnumC0969B {
     C0977c() {
         super("InTableText", 9, null);
     }

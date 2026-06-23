@@ -11,9 +11,9 @@ import android.os.Looper;
 import android.webkit.*;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
-import com.github.catvod.spider.merge.I.*;
-import com.github.catvod.spider.merge.g0.RunnableC1210f;
-import com.github.catvod.spider.merge.g0.RunnableC1214j;
+import com.github.catvod.utils.merge.AliDriveFacade;
+import com.github.catvod.utils.ActionRunnable1;
+import com.github.catvod.utils.ActionRunnable2;
 
 import com.github.catvod.utils.server.ServerStart;
 import org.json.JSONObject;
@@ -119,7 +119,7 @@ public class Init {
             String binaryName = init.getArchBinary("tgsou-linux", "tgsou-arm64", "tgsou-armV7");
             init.extractBinary(binaryName, new File(context().getFilesDir().getAbsolutePath() + "/" + binaryName));
             String cmd;
-            if (jsonObj != null && jsonObj.has("proxy") && (jsonObj.getString("proxy") != null && !jsonObj.getString("proxy".isEmpty())) {
+            if (jsonObj != null && jsonObj.has("proxy") && jsonObj.getString("proxy") != null && !jsonObj.getString("proxy").isEmpty()) {
                 cmd = "nohup ./" + binaryName + " -proxy " + jsonObj.getString("proxy");
             } else {
                 cmd = "nohup ./" + binaryName;
@@ -133,7 +133,7 @@ public class Init {
 
     public static void execGoProxyFallback(Init init, Context context, boolean showOutput) {
         init.execGoProxy(context, showOutput, "goProxy_arm64");
-        String pingResult = OkHttpUtil.string(AliDriveApi.r().c + "/api/ping", new HashMap<>());
+        String pingResult = OkHttpUtil.string(AliDriveFacade.getProxyBaseUrl() + "/api/ping", new HashMap<>());
         if (pingResult == null || pingResult.isEmpty()) {
             init.execGoProxy(context, showOutput, "goProxy_armV7");
         }
@@ -211,7 +211,7 @@ public class Init {
             }
             tgSouGoBinary = init.getArchBinary("tgsou-go-linux-amd64", "tgsou-go-linux-arm64", "tgsou-go-linux-arm");
             init.extractBinary(tgSouGoBinary, new File(context().getFilesDir().getAbsolutePath() + "/" + tgSouGoBinary));
-            if (jsonObj.has("proxy") && (jsonObj.getString("proxy") != null && !jsonObj.getString("proxy".isEmpty())) {
+            if (jsonObj.has("proxy") && jsonObj.getString("proxy") != null && !jsonObj.getString("proxy").isEmpty()) {
                 cmd = "nohup ./" + tgSouGoBinary + " -proxy " + jsonObj.getString("proxy");
             } else {
                 cmd = "nohup ./" + tgSouGoBinary;
@@ -317,11 +317,11 @@ public class Init {
         SpiderDebug.log("自定義爬蟲代碼載入成功！");
         get().exeLibStub();
         startProxyServer();
-        new Thread(RunnableC1210f.f).start();
+        new Thread(ActionRunnable1.f).start();
     }
 
     public static void interceptActivitySch() {
-        Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(RunnableC1214j.g, 1L, 1L, TimeUnit.SECONDS);
+        Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(ActionRunnable2.g, 1L, 1L, TimeUnit.SECONDS);
     }
 
     public static void interceptActivityStart() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException, InvocationTargetException {

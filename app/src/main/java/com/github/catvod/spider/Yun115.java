@@ -22,21 +22,21 @@ public class Yun115 extends Spider {
     public String detailContent(String str, List<String> list) {
         String[] strArrSplit = list.get(0).trim().split("_");
         String str2 = strArrSplit[0];
-        Subtitle.b("115 detailContent url:", str2);
+        SpiderDebug.log("115 detailContent url:", str2);
         Matcher matcher = a.matcher(str2);
         if (!matcher.find()) {
             return "";
         }
-        return VodResult.m(Yun115Api.c().g(str2, matcher.group(1), strArrSplit.length > 1 ? strArrSplit[1] : "0", str, matcher.groupCount() == 2 ? matcher.group(2) : ""));
+        return VodResult.m(Yun115Api.getInstance().buildVodItem(str2, matcher.group(1), strArrSplit.length > 1 ? strArrSplit[1] : "0", str, matcher.groupCount() == 2 ? matcher.group(2) : ""));
     }
 
     public void init(Context context, String str) {
-        Yun115Api.c().getClass();
+        Yun115Api.getInstance().getClass();
         SpiderDebug.log("QuarkPanApi init extend:" + str);
     }
 
     public String playerContent(String str, String str2, List list) {
-        Yun115Api.c().getClass();
+        Yun115Api.getInstance().getClass();
         return playerContentInternal(str, str2, list);
     }
 
@@ -44,16 +44,16 @@ public class Yun115 extends Spider {
         SpiderDebug.log("quark playerContent id:" + str2);
         String[] strArrSplit = str2.split("\\+");
         SpiderDebug.log("quark playerContent flag:" + str);
-        return Yun115Api.c().k(strArrSplit, str);
+        return Yun115Api.getInstance().getPlayUrl(strArrSplit, str);
     }
 
     public String detailContent(List<String> list) {
         String strTrim = list.get(0).trim();
-        Subtitle.b("115 detailContent url:", strTrim);
+        SpiderDebug.log("115 detailContent url:", strTrim);
         Matcher matcher = a.matcher(strTrim);
         if (!matcher.find()) {
             return "";
         }
-        return VodResult.m(Yun115Api.c().g(strTrim, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", "", matcher.groupCount() == 2 ? matcher.group(2) : ""));
+        return VodResult.m(Yun115Api.getInstance().buildVodItem(strTrim, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", "", matcher.groupCount() == 2 ? matcher.group(2) : ""));
     }
 }

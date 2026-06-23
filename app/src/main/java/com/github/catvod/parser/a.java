@@ -1,6 +1,6 @@
 package com.github.catvod.parser;
 
-import com.github.catvod.spider.merge.C1024e;
+
 
 import java.io.ByteArrayOutputStream;
 
@@ -9,7 +9,7 @@ public class a {
     public static int a = 553;
 
     public static int b() {
-        return 327 ^ C1024e.a;
+        return 327 ^ -58;
     }
 
     public static int d(Object obj) {

@@ -82,7 +82,7 @@ abstract class B {
         v = c0868p;
         C0870q c0870q = new C0870q();
         w = c0870q;
-        ?? r23 = new B() { // from class: com.github.catvod.spider.merge.Mp.r
+        Object r23 = new B() { // from class: com.github.catvod.spider.merge.Mp.r
             {
                 ZrJ.d("3F2C39282122170024233C201737");
             }

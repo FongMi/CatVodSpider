@@ -61,7 +61,7 @@ public abstract class w extends B<D, S> {
         if (dQ.e() != -1) {
             this.e.j();
         }
-        ?? r1 = this.j;
+        Object r1 = this.j;
         boolean z = (r1 == 0 || r1.isEmpty()) ? false : true;
         if (this.h || z) {
             if (this.d.a) {
@@ -69,7 +69,7 @@ public abstract class w extends B<D, S> {
                 a aVar = new a(dQ);
                 xVar.getClass();
                 xVar.h(aVar);
-                ?? r12 = this.j;
+                Object r12 = this.j;
                 if (r12 != 0) {
                     Iterator it = r12.iterator();
                     while (it.hasNext()) {
@@ -81,7 +81,7 @@ public abstract class w extends B<D, S> {
                 g gVar = new g(dQ);
                 xVar2.getClass();
                 xVar2.h(gVar);
-                ?? r13 = this.j;
+                Object r13 = this.j;
                 if (r13 != 0) {
                     Iterator it2 = r13.iterator();
                     while (it2.hasNext()) {
@@ -98,7 +98,7 @@ public abstract class w extends B<D, S> {
         x xVar2;
         x xVar3;
         if (this.h && (xVar2 = this.g) != xVar && (xVar3 = (x) xVar2.a) != null) {
-            ?? r1 = xVar3.d;
+            Object r1 = xVar3.d;
             if (r1 != 0) {
                 r1.remove(r1.size() - 1);
             }
@@ -119,7 +119,7 @@ public abstract class w extends B<D, S> {
                 xVar3.h(xVar2);
             }
         }
-        ?? r2 = this.j;
+        Object r2 = this.j;
         if (r2 != 0) {
             for (c cVar : r2) {
                 cVar.h(this.g);
@@ -141,7 +141,7 @@ public abstract class w extends B<D, S> {
             dE = this.e.e(-1);
         }
         xVar.f = dE;
-        ?? r0 = this.j;
+        Object r0 = this.j;
         if (r0 != 0) {
             for (int size = r0.size() - 1; size >= 0; size--) {
                 c cVar = (c) this.j.get(size);
@@ -195,7 +195,7 @@ public abstract class w extends B<D, S> {
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Lc.c>] */
     /* JADX WARN: Type inference failed for: r2v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Lc.c>] */
     public final void u(c cVar) {
-        ?? r0 = this.j;
+        Object r0 = this.j;
         if (r0 != 0 && r0.remove(cVar) && this.j.isEmpty()) {
             this.j = null;
         }

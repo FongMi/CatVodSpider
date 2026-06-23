@@ -21,7 +21,7 @@ public class y extends D {
     /* JADX WARN: Type inference failed for: r0v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.cz.b>] */
     @Override // com.github.catvod.spider.merge.yZ.D
     public final com.github.catvod.spider.merge.cz.b c(int i) {
-        ?? r0 = this.d;
+        Object r0 = this.d;
         if (r0 == 0 || i < 0 || i >= r0.size()) {
             return null;
         }
@@ -31,7 +31,7 @@ public class y extends D {
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.cz.b>] */
     @Override // com.github.catvod.spider.merge.yZ.D
     public final int d() {
-        ?? r0 = this.d;
+        Object r0 = this.d;
         if (r0 != 0) {
             return r0.size();
         }
@@ -57,7 +57,7 @@ public class y extends D {
     /* JADX WARN: Type inference failed for: r0v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.cz.b>] */
     public final y j(Class cls) {
         com.github.catvod.spider.merge.cz.b bVar;
-        ?? r0 = this.d;
+        Object r0 = this.d;
         if (r0 == 0 || r0.size() <= 0) {
             bVar = null;
         } else {
@@ -74,7 +74,7 @@ public class y extends D {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.cz.b>] */
     public final <T extends y> List<T> k(Class<? extends T> cls) {
-        ?? r0 = this.d;
+        Object r0 = this.d;
         if (r0 == 0) {
             return Collections.emptyList();
         }
@@ -93,7 +93,7 @@ public class y extends D {
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.cz.b>] */
     /* JADX WARN: Type inference failed for: r0v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.cz.b>] */
     public final com.github.catvod.spider.merge.cz.f l(int i) {
-        ?? r0 = this.d;
+        Object r0 = this.d;
         if (r0 == 0 || r0.size() <= 0) {
             return null;
         }

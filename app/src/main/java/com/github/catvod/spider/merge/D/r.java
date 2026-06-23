@@ -126,7 +126,7 @@ public final class r extends com.github.catvod.spider.merge.C.g implements X, In
             return null;
         }
         com.github.catvod.spider.merge.B.d dVar = bVar.g;
-        ?? r7 = (T) Calendar.getInstance(dVar.M(), dVar.G());
+        Object r7 = (T) Calendar.getInstance(dVar.M(), dVar.G());
         r7.setTime(date);
         return type == XMLGregorianCalendar.class ? (T) g((GregorianCalendar) r7) : r7;
     }

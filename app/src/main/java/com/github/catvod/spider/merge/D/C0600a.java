@@ -37,7 +37,7 @@ final class C0600a {
     /* JADX WARN: Type inference failed for: r0v4, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.Integer>] */
     public final int g(String str) {
         if (((Integer) this.e.get(str)) == null) {
-            ?? r0 = this.e;
+            Map<String, Integer> r0 = this.e;
             int i = this.f;
             this.f = i + 1;
             r0.put(str, Integer.valueOf(i));

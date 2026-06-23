@@ -1,7 +1,7 @@
 package com.github.catvod.spider.merge.Fs;
 
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum V extends h1 {
+class V extends h1 {
     V() {
         super("RCDATAEndTagName", 12, null);
     }

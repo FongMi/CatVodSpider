@@ -4,7 +4,7 @@ import com.github.catvod.spider.merge.b1.C0906c;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.d1.v, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C1014v extends EnumC0969B {
+class C1014v extends EnumC0969B {
     C1014v() {
         super("InHeadNoscript", 4, null);
     }

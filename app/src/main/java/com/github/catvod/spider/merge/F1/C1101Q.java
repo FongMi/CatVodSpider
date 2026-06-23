@@ -1017,13 +1017,13 @@ public final class C1101Q {
     /* JADX WARN: Type inference failed for: r5v0, types: [com.github.catvod.spider.merge.f1.Q] */
     /* JADX WARN: Type inference failed for: r6v0, types: [com.github.catvod.spider.merge.f1.Q1, com.github.catvod.spider.merge.h1.D, com.github.catvod.spider.merge.h1.d, com.github.catvod.spider.merge.h1.f] */
     private Q1 u(C1237d c1237d) {
-        ?? T;
+        Object T;
         com.github.catvod.spider.merge.h1.K kG1;
         AbstractC1239f abstractC1239fE0 = c1237d.e0();
         Y1 y1 = this.a;
         AbstractC1239f abstractC1239fD0 = c1237d.d0();
         y1.getClass();
-        ?? D0 = abstractC1239fD0;
+        Object D0 = abstractC1239fD0;
         while (D0 instanceof com.github.catvod.spider.merge.h1.P) {
             D0 = ((com.github.catvod.spider.merge.h1.P) D0).d0();
         }
@@ -1033,7 +1033,7 @@ public final class C1101Q {
             while (true) {
                 if (abstractC1239fT != null) {
                     if ((abstractC1239fT instanceof C1257y) && (kG1 = ((C1257y) abstractC1239fT).g1()) != null && kG1.d0().equals(strD0)) {
-                        ?? q = new com.github.catvod.spider.merge.h1.Q();
+                        Object q = new com.github.catvod.spider.merge.h1.Q();
                         com.github.catvod.spider.merge.h1.F f = new com.github.catvod.spider.merge.h1.F();
                         f.d0(43);
                         q.f0(f);

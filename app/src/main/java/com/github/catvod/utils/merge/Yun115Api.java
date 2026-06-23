@@ -1,424 +1,475 @@
 package com.github.catvod.utils.merge;
 
+import android.text.TextUtils;
+import com.github.catvod.bean.yun115.Yun115User;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
+
+import com.github.catvod.utils.MapHelper;
+import com.github.catvod.utils.PanHttpClient;
+import com.github.catvod.utils.PanStringUtils;
 import com.github.catvod.utils.server.Server;
 import com.google.gson.Gson;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.util.*;
 
-/* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
+/**
+ * 115 网盘 API 客户端
+ */
 public final class Yun115Api {
-    private static Map<String, String> g;
-    private static Map<String, String> h;
-    private final Map<String, String> a;
-    private final Map<String, String> b;
-    private String c;
-    private String d;
-    public com.github.catvod.spider.merge.b0.c e;
-    private String f;
+    private static class Holder { static final Yun115Api INSTANCE = new Yun115Api(); }
+
+    // ==================== 常量 ====================
+
+    private static final String DEFAULT_QUALITY_ORDER = "4kz|4k|2k|super|high|low";
+    private static final String SHARE_API = "https://115cdn.com/webapi/";
+
+    // ==================== 静态缓存 ====================
+
+    /** 下载链接缓存 {请求URL → 下载链接} */
+    private static Map<String, String> downloadCache;
+    /** SHA 哈希缓存 {fileId → sha} */
+    private static Map<String, String> shaCache;
+
+    static {
+        downloadCache = new HashMap<>(512);
+        shaCache = new HashMap<>(4096);
+    }
+
+    // ==================== 实例字段 ====================
+
+    /** 画质名称 → 画质代码，如 "4K" → "4k" */
+    private final Map<String, String> qualityNameToCode;
+    /** 画质代码 → 显示名称，如 "4k" → "4K" */
+    private final Map<String, String> qualityCodeToName;
+    /** 当前分享码 */
+    private String shareCode;
+    /** 当前提取码 */
+    private String receiveCode;
+    /** 用户信息 */
+    public Yun115User userInfo;
+    /** 画质优先级顺序 */
+    private String qualityOrder;
+
+    // ==================== 构造与单例 ====================
 
     Yun115Api() {
         try {
-            com.github.catvod.spider.merge.b0.c cVar = (com.github.catvod.spider.merge.b0.c) new Gson().fromJson(com.github.catvod.spider.merge.g.b.d(com.github.catvod.spider.merge.g.b.f("115_user")), com.github.catvod.spider.merge.b0.c.class);
-            this.e = cVar == null ? new com.github.catvod.spider.merge.b0.c() : cVar;
-        } catch (Exception unused) {
+            Yun115User saved = (Yun115User) new Gson().fromJson(
+                    LocalStorage.readJson("115_user"),
+                    Yun115User.class);
+            this.userInfo = saved != null ? saved : new Yun115User();
+        } catch (Exception e) {
             SpiderDebug.log("115授权初始化失败，请删除根目录TV文件夹下授权文件后重试");
         }
-        StringBuilder sbB = new StringBuilder("uc QuarkPanApi constructor user:");
-        sbB.append(this.e);
-        SpiderDebug.log(sbB.toString());
-        HashMap map = new HashMap();
-        this.a = map;
-        map.put("4K", "4k");
-        map.put("2k", "2k");
-        map.put("超清", "super");
-        map.put("高清", "high");
-        map.put("標清", "low");
-        map.put("流暢", "normal");
-        this.f = "4kz|4k|2k|super|high|low";
-        HashMap map2 = new HashMap();
-        this.b = map2;
-        map2.put("4kz", "115原畫");
-        map2.put("4k", "4K");
-        map2.put("2k", "2K");
-        map2.put("super", "高清");
-        map2.put("high", "標清");
-        map2.put("low", "流暢");
-        map2.put("normal", "普通");
-        map2.put("auto", "115秒传阿里");
-        g = new HashMap(512);
-        h = new HashMap(4096);
+        SpiderDebug.log("115 constructor user:" + this.userInfo);
+
+        this.qualityNameToCode = new HashMap<>();
+        this.qualityNameToCode.put("4K", "4k");
+        this.qualityNameToCode.put("2k", "2k");
+        this.qualityNameToCode.put("超清", "super");
+        this.qualityNameToCode.put("高清", "high");
+        this.qualityNameToCode.put("標清", "low");
+        this.qualityNameToCode.put("流暢", "normal");
+
+        this.qualityCodeToName = new HashMap<>();
+        this.qualityCodeToName.put("4kz", "115原畫");
+        this.qualityCodeToName.put("4k", "4K");
+        this.qualityCodeToName.put("2k", "2K");
+        this.qualityCodeToName.put("super", "高清");
+        this.qualityCodeToName.put("high", "標清");
+        this.qualityCodeToName.put("low", "流暢");
+        this.qualityCodeToName.put("normal", "普通");
+        this.qualityCodeToName.put("auto", "115秒传阿里");
+
+        this.qualityOrder = DEFAULT_QUALITY_ORDER;
     }
 
-    /* JADX WARN: Type inference failed for: r1v1, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    private String b(String str, List<Yun115File> list) {
-        ArrayList<Yun115File> arrayList = new ArrayList();
-        String lowerCase = com.github.catvod.spider.merge.i0.m.x(str).toLowerCase();
-        for (Yun115File c0902a : list) {
-            String lowerCase2 = com.github.catvod.spider.merge.i0.m.x(c0902a.f()).toLowerCase();
-            if (lowerCase.contains(lowerCase2) || lowerCase2.contains(lowerCase)) {
-                arrayList.add(c0902a);
+    public static Yun115Api getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    // ==================== HTTP 请求 ====================
+
+    /**
+     * GET 请求（带重试）
+     */
+    private String apiGet(String path) throws InterruptedException {
+        if (!path.startsWith("https")) {
+            path = UrlUtils.resolveUrl(SHARE_API, path);
+        }
+        Map<String, String> headers = buildHeaders();
+        Map<String, String> respHeaders = new HashMap<>();
+        String result = null;
+        for (int retry = 2; retry > 0; retry--) {
+            result = PanHttpClient.get(path, headers, respHeaders);
+            SpiderDebug.log("115 get result:" + result);
+            if (result.length() > 10) break;
+            Thread.sleep(500L);
+        }
+        SpiderDebug.log("115 get url:" + path + " headers:" + headers + " result:" + result);
+        return result;
+    }
+
+    /**
+     * 构建 HTTP 请求头
+     */
+    public Map<String, String> buildHeaders() {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
+        headers.put("Referer", "https://115.com/");
+        headers.put("Cookie", userInfo.b());
+        return headers;
+    }
+
+    // ==================== 分享信息 ====================
+
+    /**
+     * 检查分享链接是否过期
+     */
+    private static void checkShareExpiry(JSONObject shareData) {
+        try {
+            long expireTime = shareData.getJSONObject("shareinfo").getLong("expire_time");
+            if (expireTime == -1 || new Date().getTime() / 1000 <= expireTime) return;
+            SpiderDebug.log("115分享链接已经过期 可能获取不到播放地址");
+        } catch (Exception ignored) {
+        }
+    }
+
+    // ==================== 文件列表 ====================
+
+    /**
+     * 递归列出分享目录中的文件
+     *
+     * @param headers     HTTP 请求头
+     * @param recursive   是否递归子目录
+     * @param folder      当前文件夹
+     * @param videoList   视频文件输出列表
+     * @param subList     字幕文件输出列表
+     * @param folderList  子文件夹输出列表
+     */
+    private void listFiles(Map<String, String> headers, boolean recursive, Yun115File folder,
+                           List<Yun115File> videoList, List<Yun115File> subList, List<Yun115File> folderList) throws InterruptedException, JSONException {
+        if (recursive) {
+            folderList = new ArrayList<>();
+        }
+        SpiderDebug.log("listFiles >> cid=" + folder.categoryId());
+        String resp = apiGet("share/snap?share_code=" + shareCode + "&offset=0&receive_code=" + receiveCode
+                + "&cid=" + folder.categoryId() + "&limit=9999&asc=1&o=file_name");
+        SpiderDebug.log("listFiles >> " + resp);
+        Yun115File result = (Yun115File) new Gson().fromJson(
+                new JSONObject(resp).getJSONObject("data").toString(), Yun115File.class);
+        try {
+            if (!result.children().isEmpty()) {
+                Collections.sort(result.children(), new Yun115FileComparator());
+            }
+        } catch (Exception e) {
+            SpiderDebug.log("listFiles error: " + e.getMessage());
+        }
+        for (Yun115File file : result.children()) {
+            if ("folder".equals(file.type())) {
+                folderList.add(file);
+            } else if (file.j() != null && (BaseApi.get().d.booleanValue()
+                    || (PanStringUtils.getMimeType(file.name()) != null
+                    && !PanStringUtils.getMimeType(file.name()).isEmpty()))) {
+                file.n(folder.name());
+                videoList.add(file);
+            } else if (PanStringUtils.isSubtitleExtension(file.extension())) {
+                subList.add(file);
             }
         }
-        if (arrayList.isEmpty()) {
-            arrayList.addAll(list);
+        if (recursive) {
+            for (Yun115File subFolder : folderList) {
+                listFiles(headers, recursive, subFolder, videoList, subList, null);
+            }
+        }
+    }
+
+    /**
+     * 构建字幕关联信息
+     */
+    private String buildSubtitleMapping(String videoName, List<Yun115File> subtitleFiles) {
+        List<Yun115File> matched = new ArrayList<>();
+        String normalizedName = PanStringUtils.removeExtension(videoName).toLowerCase();
+        for (Yun115File sub : subtitleFiles) {
+            String subName = PanStringUtils.removeExtension(sub.name()).toLowerCase();
+            if (normalizedName.contains(subName) || subName.contains(normalizedName)) {
+                matched.add(sub);
+            }
+        }
+        if (matched.isEmpty()) {
+            matched.addAll(subtitleFiles);
         }
         StringBuilder sb = new StringBuilder();
-        for (Yun115File c0902a2 : arrayList) {
-            h.put(c0902a2.d(), c0902a2.h());
-            sb.append("+");
-            sb.append(com.github.catvod.spider.merge.i0.m.x(c0902a2.f()));
-            sb.append("@@@");
-            sb.append(c0902a2.c());
-            sb.append("@@@");
-            sb.append(c0902a2.a());
+        for (Yun115File sub : matched) {
+            shaCache.put(sub.fileId(), sub.sha());
+            sb.append("+").append(PanStringUtils.removeExtension(sub.name()));
+            sb.append("@@@").append(sub.extension());
+            sb.append("@@@").append(sub.id());
         }
         return sb.toString();
     }
 
-    public static Yun115Api c() {
-        return P0.a;
-    }
+    // ==================== 缓存清理 ====================
 
-    private String d(String str) throws InterruptedException {
-        if (!str.startsWith("https")) {
-            str = UrlUtils.resolveUrl("https://115cdn.com/webapi/", str);
-        }
-        HashMap map = new HashMap();
-        HashMap<String, String> mapE = e();
-        String strM = null;
-        int i = 2;
-        while (true) {
-            int i2 = i - 1;
-            if (i <= 0) {
-                break;
-            }
-            strM = com.github.catvod.spider.merge.f0.d.m(str, mapE, map);
-            SpiderDebug.log("quark get result:" + strM);
-            if (strM.length() > 10) {
-                break;
-            }
-            Thread.sleep(500L);
-            i = i2;
-        }
-        SpiderDebug.log("115 get url:" + str + " headers:" + mapE + " newcookie: result:" + strM);
-        return strM;
-    }
-
-    private static void i(JSONObject jSONObject) {
+    /**
+     * 清理服务端缓存
+     */
+    public void cleanCache(String fileName) {
+        if (userInfo.b == null || userInfo.b.isEmpty()) return;
         try {
-            long j = jSONObject.getJSONObject("shareinfo").getLong("expire_time");
-            if (j == -1 || new Date().getTime() / 1000 <= j) {
-                return;
-            }
-            SpiderDebug.log("115分享链接已经过期 可能获取不到播放地址");
-        } catch (Exception unused) {
+            PanHttpClient.get(
+                    AliDriveHelper.getProxyBaseUrl() + "/api/clean115/?pwd=" + URLEncoder.encode(userInfo.b)
+                            + "&cookie=" + URLEncoder.encode(userInfo.b())
+                            + "&fileName=" + URLEncoder.encode(fileName));
+        } catch (Exception ignored) {
         }
     }
 
-    private void j(HashMap<String, String> map, boolean z, Yun115File c0902a, List<Yun115File> list, List<Yun115File> list2, List<Yun115File> list3) {
-        if (z) {
-            try {
-                list3 = new ArrayList<>();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
+    // ==================== 字幕列表 ====================
+
+    /**
+     * 从播放地址参数中提取字幕列表
+     */
+    public List<com.github.catvod.bean.h> buildSubtitleList(String[] params) {
+        ArrayList<com.github.catvod.bean.h> subtitles = new ArrayList<>();
+        for (String param : params) {
+            if (param.contains("@@@")) {
+                String[] parts = param.split("@@@");
+                String name = parts[0];
+                String ext = parts[1];
+                String subUrl = Proxy.getUrl() + "?do=quark&type=sub&share_id=" + params[0] + "&file_id=" + parts[2];
+                com.github.catvod.bean.h sub = new com.github.catvod.bean.h();
+                sub.b(name);
+                sub.a(ext);
+                sub.c(subUrl);
+                subtitles.add(sub);
             }
         }
-        SpiderDebug.log("listFiles >> " + map);
-        String strD = d("share/snap?share_code=" + this.c + "&offset=0&receive_code=" + this.d + "&cid=" + c0902a.g() + "&limit=9999&asc=1&o=file_name");
-        StringBuilder sb = new StringBuilder();
-        sb.append("listFiles >> ");
-        sb.append(strD);
-        SpiderDebug.log(sb.toString());
-        Yun115File c0902a2 = (Yun115File) new Gson().fromJson(new JSONObject(strD).getJSONObject("data").toString(), Yun115File.class);
-        try {
-            if (!c0902a2.e().isEmpty()) {
-                Collections.sort(c0902a2.e(), new Yun115FileComparator());
-            }
-        } catch (Exception e2) {
-            SpiderDebug.log("listFiles error" + e2.getMessage());
-        }
-        for (Yun115File c0902a3 : c0902a2.e()) {
-            if ("folder".equals(c0902a3.m())) {
-                list3.add(c0902a3);
-            } else if (c0902a3.j() != null && (BaseApi.get().d.booleanValue() || (com.github.catvod.spider.merge.i0.GeneralUtils.m(c0902a3.f()) != null && !com.github.catvod.spider.merge.i0.GeneralUtils.m(c0902a3.f()).isEmpty()))) {
-                c0902a3.n(c0902a.f());
-                list.add(c0902a3);
-            } else if (com.github.catvod.spider.merge.i0.m.r(c0902a3.c())) {
-                list2.add(c0902a3);
-            }
-        }
-        if (z) {
-            Iterator<Yun115File> it = list3.iterator();
-            while (it.hasNext()) {
-                j(map, z, it.next(), list, list2, null);
-            }
-        }
+        return subtitles;
     }
 
-    public final void a(String str) {
-        if ((this.e.b == null || this.e.b.isEmpty())) {
-            return;
-        }
-        try {
-            com.github.catvod.spider.merge.f0.d.l(C0773p.a.c + "/api/clean115/?pwd=" + URLEncoder.encode(this.e.b) + "&cookie=" + URLEncoder.encode(this.e.b()) + "&fileName=" + URLEncoder.encode(str));
-        } catch (Exception unused) {
-        }
-    }
+    // ==================== VodItem 构建 ====================
 
-    public final HashMap<String, String> e() {
-        HashMap<String, String> mapB = com.github.catvod.spider.merge.B.e.b("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36", "Referer", "https://115.com/");
-        mapB.put("Cookie", this.e.b());
-        return mapB;
-    }
-
-    public final List<com.github.catvod.bean.h> f(String[] strArr) {
-        ArrayList arrayList = new ArrayList();
-        for (String str : strArr) {
-            if (str.contains("@@@")) {
-                String[] strArrSplit = str.split("@@@");
-                String str2 = strArrSplit[0];
-                String str3 = strArrSplit[1];
-                String str4 = Proxy.getUrl() + "?do=quark&type=sub&share_id=" + strArr[0] + "&file_id=" + strArrSplit[2];
-                com.github.catvod.bean.h hVar = new com.github.catvod.bean.h();
-                hVar.b(str2);
-                com.github.catvod.bean.h hVarA = hVar.a(str3);
-                hVarA.c(str4);
-                arrayList.add(hVarA);
-            }
-        }
-        return arrayList;
-    }
-
-    /* JADX WARN: Type inference failed for: r4v5, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    /* JADX WARN: Type inference failed for: r5v17, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    public final com.github.catvod.bean.VodItem g(String str, String str2, String str3, String str4, String str5) {
-        String str6;
-        ArrayList arrayList = new ArrayList();
-        String[] strArrSplit = this.f.split("\\|");
-        boolean z = false;
-        boolean z2 = false;
-        for (int i = 0; i < strArrSplit.length; i++) {
-            if (strArrSplit[i].equals("4k") || strArrSplit[i].equals("4kz")) {
-                if (!z2) {
-                    arrayList.add("115原畫");
-                    z2 = true;
+    /**
+     * 构建视频详情 VodItem
+     *
+     * @param shareId     分享 ID
+     * @param code        分享码
+     * @param cid         目录 ID
+     * @param title       标题（为空则从 API 获取）
+     * @param pwd         提取码
+     * @return VodItem
+     */
+    public com.github.catvod.bean.VodItem buildVodItem(String shareId, String code, String cid, String title, String pwd) {
+        String displayTitle;
+        ArrayList<String> sourceNames = new ArrayList<>();
+        String[] qualities = qualityOrder.split("\\|");
+        boolean hasAliSource = false;
+        boolean hasOriginalSource = false;
+        for (String q : qualities) {
+            if ("4k".equals(q) || "4kz".equals(q)) {
+                if (!hasOriginalSource) {
+                    sourceNames.add("115原畫");
+                    hasOriginalSource = true;
                 }
-            } else if (!z) {
-                arrayList.add(((String) this.b.get("auto")) + "");
-                z = true;
+            } else if (!hasAliSource) {
+                sourceNames.add(qualityCodeToName.get("auto") + "");
+                hasAliSource = true;
             }
         }
         try {
-            this.d = str5;
-            this.c = str2;
-            JSONObject jSONObject = new JSONObject(d("share/snap?share_code=" + this.c + "&offset=0&receive_code=" + this.d + "&cid=" + str3 + "&asc=1&o=file_name")).getJSONObject("data");
-            if ((str4 == null || str4.isEmpty())) {
-                String strY = com.github.catvod.spider.merge.i0.GeneralUtils.y(jSONObject.getJSONObject("shareinfo").getString("share_title"));
-                i(jSONObject);
-                str6 = strY;
+            this.receiveCode = pwd;
+            this.shareCode = code;
+            JSONObject data = new JSONObject(apiGet("share/snap?share_code=" + shareCode
+                    + "&offset=0&receive_code=" + receiveCode + "&cid=" + cid + "&asc=1&o=file_name")).getJSONObject("data");
+            if (title == null || title.isEmpty()) {
+                displayTitle = PanStringUtils.cleanFilename(
+                        data.getJSONObject("shareinfo").getString("share_title"));
+                checkShareExpiry(data);
             } else {
-                str6 = str4;
+                displayTitle = title;
             }
-            ArrayList<Yun115File> arrayList2 = new ArrayList();
-            List<Yun115File> arrayList3 = new ArrayList<>();
-            j(null, true, new Yun115File(str3), arrayList2, arrayList3, null);
-            ArrayList arrayList4 = new ArrayList();
-            ArrayList arrayList5 = new ArrayList();
-            for (Yun115File c0902a : arrayList2) {
-                h.put(c0902a.d(), c0902a.h());
-                arrayList4.add(c0902a.b() + "$" + str2 + "_" + this.d + '+' + c0902a.d() + '+' + com.github.catvod.spider.merge.i0.GeneralUtils.y(str6) + '+' + c0902a.f() + '+' + c0902a.i() + '+' + c0902a.h() + b(c0902a.f(), arrayList3));
-                str6 = str6;
+            ArrayList<Yun115File> videoFiles = new ArrayList<>();
+            List<Yun115File> subtitleFiles = new ArrayList<>();
+            listFiles(null, true, new Yun115File(cid), videoFiles, subtitleFiles, null);
+            // 构建播放列表
+            ArrayList<String> episodeList = new ArrayList<>();
+            for (Yun115File video : videoFiles) {
+                shaCache.put(video.fileId(), video.sha());
+                episodeList.add(video.display() + "$" + code + "_" + receiveCode + '+'
+                        + video.fileId() + '+' + PanStringUtils.cleanFilename(displayTitle)
+                        + '+' + video.name() + '+' + video.size() + '+' + video.sha()
+                        + buildSubtitleMapping(video.name(), subtitleFiles));
             }
-            String str7 = str6;
-            for (int i2 = 0; i2 < arrayList.size(); i2++) {
-                StringBuilder sb = new StringBuilder();
-                Iterator it = arrayList4.iterator();
-                if (it.hasNext()) {
-                    while (true) {
-                        sb.append((CharSequence) it.next());
-                        if (it.hasNext()) {
-                            sb.append((CharSequence) "#");
-                        }
-                    }
-                }
-                arrayList5.add(sb.toString());
+            ArrayList<String> playUrls = new ArrayList<>();
+            for (int i = 0; i < sourceNames.size(); i++) {
+                playUrls.add(TextUtils.join("#", episodeList));
             }
-            com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
-            iVar.l(str);
-            iVar.j(str);
-            iVar.n("https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/5f/ed/bf/5fedbfb2-1431-a324-97c5-327487d5817d/AppIcon-0-0-1x_U007emarketing-0-8-0-0-sRGB-85-220.png/350x350.png");
-            iVar.m(str7);
-            StringBuilder sb2 = new StringBuilder();
-            Iterator it2 = arrayList5.iterator();
-            if (it2.hasNext()) {
-                while (true) {
-                    sb2.append((CharSequence) it2.next());
-                    if (!it2.hasNext()) {
-                        break;
-                    }
-                    sb2.append((CharSequence) "$$$");
-                }
-            }
-            iVar.p(sb2.toString());
-            StringBuilder sb3 = new StringBuilder();
-            Iterator it3 = arrayList.iterator();
-            if (it3.hasNext()) {
-                while (true) {
-                    sb3.append((CharSequence) it3.next());
-                    if (!it3.hasNext()) {
-                        break;
-                    }
-                    sb3.append((CharSequence) "$$$");
-                }
-            }
-            iVar.o(sb3.toString());
-            iVar.g("115雲盤");
-            return iVar;
-        } catch (Exception unused) {
-            return BaseApi.fakeVod(arrayList, "115雲盤");
+            // 组装 VodItem
+            com.github.catvod.bean.VodItem vod = new com.github.catvod.bean.VodItem();
+            vod.l(shareId);
+            vod.j(shareId);
+            vod.n("https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/5f/ed/bf/5fedbfb2-1431-a324-97c5-327487d5817d/AppIcon-0-0-1x_U007emarketing-0-8-0-0-sRGB-85-220.png/350x350.png");
+            vod.m(displayTitle);
+            vod.p(TextUtils.join("$$$", playUrls));
+            vod.o(TextUtils.join("$$$", sourceNames));
+            vod.g("115雲盤");
+            return vod;
+        } catch (Exception e) {
+            return BaseApi.fakeVod(sourceNames, "115雲盤");
         }
     }
 
-    public final List<com.github.catvod.bean.VodItem> h(com.github.catvod.bean.JsonUtils jVar) {
-        List<Yun115File> arrayList;
-        String strD = jVar.d();
-        String strC = jVar.c();
-        String strF = jVar.f();
-        String strE = jVar.e();
-        String strB = (jVar.b() == null || jVar.b().isEmpty()) ? "0" : jVar.b();
-        HashMap<String, String> mapA = jVar.a();
-        List<Yun115File> arrayList2 = new ArrayList<>();
-        ArrayList<Yun115File> arrayList3 = new ArrayList();
+    /**
+     * 构建文件夹浏览列表
+     */
+    public List<com.github.catvod.bean.VodItem> buildFolderList(com.github.catvod.bean.JsonUtils params) {
+        String shareCodeParam = params.d();
+        String shareId = params.c();
+        String folderId = params.f();
+        String pathPrefix = params.e();
+        String folderIdParam = (params.b() == null || params.b().isEmpty()) ? "0" : params.b();
+        HashMap<String, String> extendParams = params.a();
+        List<Yun115File> videoFiles = new ArrayList<>();
+        ArrayList<Yun115File> folderItems = new ArrayList<>();
         try {
-            String str = com.github.catvod.spider.merge.P0.e.c(strB) ? "0" : strB;
-            this.d = strD;
-            this.c = strC;
-            JSONObject jSONObject = new JSONObject(d("share/snap?share_code=" + this.c + "&offset=0&receive_code=" + this.d + "&cid=" + str + "&asc=1&o=file_name")).getJSONObject("data");
-            if ((strF == null || strF.isEmpty())) {
-                strF = jSONObject.getJSONObject("shareinfo").getString("share_title");
-                i(jSONObject);
+            String cid = PanStringUtils.isEmpty(folderIdParam) ? "0" : folderIdParam;
+            this.receiveCode = shareCodeParam;
+            this.shareCode = shareId;
+            JSONObject data = new JSONObject(apiGet("share/snap?share_code=" + shareCode
+                    + "&offset=0&receive_code=" + receiveCode + "&cid=" + cid + "&asc=1&o=file_name")).getJSONObject("data");
+            if (folderId == null || folderId.isEmpty()) {
+                folderId = data.getJSONObject("shareinfo").getString("share_title");
+                checkShareExpiry(data);
             }
-            arrayList = new ArrayList<>();
-            try {
-                j(mapA, false, new Yun115File(strB), arrayList, new ArrayList<>(), arrayList3);
-            } catch (Exception unused) {
-                arrayList2 = arrayList;
-                arrayList = arrayList2;
-            }
-        } catch (Exception unused2) {
+            videoFiles = new ArrayList<>();
+            listFiles(extendParams, false, new Yun115File(folderIdParam), videoFiles, new ArrayList<>(), folderItems);
+        } catch (Exception ignored) {
         }
-        ArrayList arrayList4 = new ArrayList();
-        for (Yun115File c0902a : arrayList3) {
-            com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
-            StringBuilder sbA = com.github.catvod.spider.merge.C1.a.a(strC, "*#");
-            sbA.append(c0902a.g());
-            sbA.append("*#");
-            sbA.append(c0902a.f());
-            iVar.l(sbA.toString());
-            iVar.m(c0902a.f());
-            iVar.r(c0902a.m());
-            arrayList4.add(iVar);
+        // 构建结果列表
+        ArrayList<com.github.catvod.bean.VodItem> result = new ArrayList<>();
+        for (Yun115File folder : folderItems) {
+            com.github.catvod.bean.VodItem vod = new com.github.catvod.bean.VodItem();
+            vod.l(shareId + "*#" + folder.categoryId() + "*#" + folder.name());
+            vod.m(folder.name());
+            vod.r(folder.type());
+            result.add(vod);
         }
-        for (Yun115File c0902a2 : arrayList) {
-            com.github.catvod.bean.VodItem iVar2 = new com.github.catvod.bean.VodItem();
-            iVar2.l(strE + "_" + strB + "*#" + strF);
-            iVar2.m(c0902a2.b());
-            iVar2.r(c0902a2.m());
-            iVar2.n(c0902a2.l());
-            arrayList4.add(iVar2);
+        for (Yun115File video : videoFiles) {
+            com.github.catvod.bean.VodItem vod = new com.github.catvod.bean.VodItem();
+            vod.l(pathPrefix + "_" + folderIdParam + "*#" + folderId);
+            vod.m(video.display());
+            vod.r(video.type());
+            vod.n(video.thumbnail());
+            result.add(vod);
         }
-        return arrayList4;
+        return result;
     }
 
-    /* JADX WARN: Type inference failed for: r0v1, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    /* JADX WARN: Type inference failed for: r0v12, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    /* JADX WARN: Type inference failed for: r1v16, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    /* JADX WARN: Type inference failed for: r3v11, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    /* JADX WARN: Type inference failed for: r3v21, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    /* JADX WARN: Type inference failed for: r4v3, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    public final String k(String[] strArr, String str) {
-        String str2;
-        String isoDownloadUrl;
+    // ==================== 播放地址 ====================
+
+    /**
+     * 获取播放地址
+     *
+     * @param params  播放参数数组 [shareId_pwd, fileId, fileName, fileSize, sha, ...]
+     * @param quality 画质名称
+     * @return 播放信息 JSON
+     */
+    public String getPlayUrl(String[] params, String quality) {
         try {
-            if (!Server.v()) {
-                Thread.sleep(2000L);
-            }
-            if (NetPan.isYunSelf115(strArr[0])) {
-                str2 = C0773p.a.c + "/api/downloadByFileId/?fileId=" + URLEncoder.encode(strArr[1]) + "&cookie=" + URLEncoder.encode(this.e.b());
+            if (!Server.v()) Thread.sleep(2000L);
+            // 构建下载请求 URL
+            String requestUrl;
+            if (NetPan.isYunSelf115(params[0])) {
+                requestUrl = AliDriveHelper.getProxyBaseUrl() + "/api/downloadByFileId/?fileId="
+                        + URLEncoder.encode(params[1]) + "&cookie=" + URLEncoder.encode(userInfo.b());
             } else {
-                str2 = C0773p.a.c + "/api/downloadByShareCode/?shareId=" + URLEncoder.encode(strArr[0].split("_")[0]) + "&pwd=" + URLEncoder.encode(strArr[0].split("_")[1]) + "&fileId=" + URLEncoder.encode(strArr[1]) + "&cookie=" + URLEncoder.encode(this.e.b());
+                requestUrl = AliDriveHelper.getProxyBaseUrl() + "/api/downloadByShareCode/?shareId="
+                        + URLEncoder.encode(params[0].split("_")[0])
+                        + "&pwd=" + URLEncoder.encode(params[0].split("_")[1])
+                        + "&fileId=" + URLEncoder.encode(params[1])
+                        + "&cookie=" + URLEncoder.encode(userInfo.b());
             }
-            int i = 2;
-            if (((CharSequence) g.get(str2) == null || ((CharSequence) g.get(str2)).length() == 0)) {
-                String strL = com.github.catvod.spider.merge.f0.d.l(str2);
-                String str3 = strL.split("\\*#")[0];
-                String strF = strL.split("\\*#")[1];
-                if (strF.startsWith("https")) {
-                    if (NetPan.isYunSelf115(strArr[0])) {
-                        strF = Server.F(strF);
+            // 获取下载链接（带缓存）
+            if (downloadCache.get(requestUrl) == null || downloadCache.get(requestUrl).length() == 0) {
+                String resp = PanHttpClient.get(requestUrl);
+                String cookiePart = resp.split("\\*#")[0];
+                String downloadUrl = resp.split("\\*#")[1];
+                if (downloadUrl.startsWith("https")) {
+                    if (NetPan.isYunSelf115(params[0])) {
+                        downloadUrl = Server.F(downloadUrl);
                     }
-                    g.put(str2, strF);
-                    Init.execute(new RunnableC0778t(this, strArr, str3, i));
+                    downloadCache.put(requestUrl, downloadUrl);
+                    Init.execute(() -> { try { Thread.sleep(3000L); } catch (InterruptedException ignored) {} if (!NetPan.isYunSelf115(params[0])) cleanCache(params[2]); });
                 }
             }
-            String str4 = (String) g.get(str2);
-            String str5 = strArr[2] + strArr[3];
-            if (str.contains("阿里")) {
-                if (((CharSequence) g.get("阿里" + strArr[1]) != null && ((CharSequence) g.get("阿里" + strArr[1])).length() > 0)) {
-                    isoDownloadUrl = (String) g.get("阿里" + strArr[1]);
+            String cachedUrl = downloadCache.get(requestUrl);
+            // 根据画质选择播放方式
+            String fileName = params[2] + params[3];
+            String playUrl;
+            if (quality.contains("阿里")) {
+                String aliKey = "阿里" + params[1];
+                if (downloadCache.get(aliKey) != null && downloadCache.get(aliKey).length() > 0) {
+                    playUrl = downloadCache.get(aliKey);
                 } else {
-                    isoDownloadUrl = C0773p.a.o(str5, str4, Long.valueOf((long) Double.parseDouble(strArr[4])), strArr[5]);
-                    if ((isoDownloadUrl != null && !isoDownloadUrl.isEmpty())) {
-                        g.put("阿里" + strArr[1], isoDownloadUrl);
+                    playUrl = AliDriveHelper.createBySecUpload(fileName, cachedUrl,
+                            Long.valueOf((long) Double.parseDouble(params[4])), params[5]);
+                    if (playUrl != null && !playUrl.isEmpty()) {
+                        downloadCache.put(aliKey, playUrl);
                     }
                 }
             } else if (BaseApi.get().d.booleanValue()) {
-                BaseApi.get().downloadFileWithDownloadManager(str4, str5, e());
-                SpiderDebug.log("正在下载 " + str5);
-                isoDownloadUrl = Server.B();
+                BaseApi.get().downloadFileWithDownloadManager(cachedUrl, fileName, buildHeaders());
+                SpiderDebug.log("正在下载 " + fileName);
+                playUrl = Server.B();
             } else {
-                isoDownloadUrl = NetPan.getIsoDownloadUrl(str4);
+                playUrl = NetPan.getIsoDownloadUrl(cachedUrl);
             }
-            com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
-            gVar.w(isoDownloadUrl);
-            gVar.a(C0773p.a.t(strArr));
-            gVar.i();
-            gVar.v(f(strArr));
-            gVar.g(str.contains("阿里") ? C0773p.a.x() : e());
-            return gVar.toString();
+            // 组装播放结果
+            PlayResult result = new PlayResult();
+            result.setUrl(playUrl);
+            result.setExtra(AliDriveHelper.getDanmakuUrl(params));
+            result.setOctetStream();
+            result.setSubtitles(buildSubtitleList(params));
+            result.setHeaders(quality.contains("阿里") ? AliDriveHelper.getDefaultHeaders() : buildHeaders());
+            return result.toString();
         } catch (Exception e) {
-            StringBuilder sbB = new StringBuilder("yun115 api error");
-            sbB.append(e.getMessage());
-            SpiderDebug.log(sbB.toString());
-            com.github.catvod.bean.g gVar2 = new com.github.catvod.bean.g();
-            gVar2.w("4234234");
-            return gVar2.toString();
+            SpiderDebug.log("yun115 api error: " + e.getMessage());
+            PlayResult error = new PlayResult();
+            error.setUrl("4234234");
+            return error.toString();
         }
     }
 
-    public final void l(String str, boolean z) {
-        if (com.github.catvod.spider.merge.P0.e.c(this.e.b()) || z) {
-            SpiderDebug.log("set new Cookie:" + str);
-            if (str != null && str.startsWith("http")) {
-                str = com.github.catvod.spider.merge.f0.d.l(str).trim();
+    // ==================== Cookie 管理 ====================
+
+    /**
+     * 设置 115 Cookie
+     *
+     * @param cookie Cookie 字符串或包含 Cookie 的 URL
+     * @param force  是否强制更新
+     */
+    public void setCookie(String cookie, boolean force) {
+        if (PanStringUtils.isEmpty(userInfo.b()) || force) {
+            SpiderDebug.log("set new Cookie:" + cookie);
+            if (cookie != null && cookie.startsWith("http")) {
+                cookie = PanHttpClient.get(cookie).trim();
             }
-            if ((str != null && !str.isEmpty())) {
-                com.github.catvod.spider.merge.b0.c cVar = this.e;
-                if (str.endsWith(";")) {
-                    str = str.substring(0, str.length() - 1);
+            if (cookie != null && !cookie.isEmpty()) {
+                if (cookie.endsWith(";")) {
+                    cookie = cookie.substring(0, cookie.length() - 1);
                 }
-                cVar.d(str);
-                this.e.c();
-                g = new HashMap(512);
-                h = new HashMap(4096);
+                userInfo.d(cookie);
+                userInfo.c();
+                downloadCache = new HashMap<>(512);
+                shaCache = new HashMap<>(4096);
             }
         }
     }

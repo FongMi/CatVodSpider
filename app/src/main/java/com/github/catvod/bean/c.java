@@ -12,7 +12,7 @@ public final class c {
     private String b;
 
     public c(String str, String str2) {
-        int i = com.github.catvod.spider.merge.i0.g.a;
+        int i = 0;
         this.a = str;
         this.b = str2;
     }

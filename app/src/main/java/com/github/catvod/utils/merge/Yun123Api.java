@@ -1,423 +1,467 @@
 package com.github.catvod.utils.merge;
 
+import android.text.TextUtils;
 import android.util.Base64;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.Proxy;
+import com.github.catvod.utils.okhttp.OkHttpUtil;
 import com.github.catvod.utils.server.Server;
 import com.google.gson.Gson;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * 123 盘 API 客户端
+ */
 public final class Yun123Api {
-    private static final Pattern g = Pattern.compile("https://(?:www\\.123684\\.com|www\\.123865\\.com|www\\.123912\\.com|www\\.123pan\\.com|www\\.123pan\\.cn|www\\.123592\\.com)/s/([^/?]+)");
-    public static final /* synthetic */ int h = 0;
-    public final Map<String, String> a = new ConcurrentHashMap();
-    private final OkHttpClient b = com.github.catvod.spider.merge.f0.d.a();
-    private String c;
-    private String d;
-    private String e;
-    public com.github.catvod.spider.merge.R.c f;
+    private static class Holder { static final Yun123Api INSTANCE = new Yun123Api(); }
+
+    // ==================== 常量 ====================
+
+    private static final Pattern SHARE_URL_PATTERN = Pattern.compile(
+            "https://(?:www\\.123684\\.com|www\\.123865\\.com|www\\.123912\\.com|www\\.123pan\\.com|www\\.123pan\\.cn|www\\.123592\\.com)/s/([^/?]+)");
+    private static final String API_BASE = "https://www.123684.com/b/api/share";
+    private static final String LOGIN_URL = "https://login.123pan.com/api/user/sign_in";
+
+    // ==================== 实例字段 ====================
+
+    /**
+     * 下载链接缓存 {shareKey+fileId → downloadUrl}
+     */
+    public final Map<String, String> downloadCache = new ConcurrentHashMap<>();
+    private final OkHttpClient httpClient = OkHttpUtil.defaultClient();
+    private String shareKey;
+    private String sharePwd;
+    private String shareTitle;
+    public Yun123UserInfo userInfo;
+
+    // ==================== 构造与单例 ====================
 
     public Yun123Api() {
         try {
-            com.github.catvod.spider.merge.R.c cVar = (com.github.catvod.spider.merge.R.c) new Gson().fromJson(com.github.catvod.spider.merge.g.b.d(com.github.catvod.spider.merge.g.b.f("p123_user")), com.github.catvod.spider.merge.R.c.class);
-            this.f = cVar == null ? new com.github.catvod.spider.merge.R.c() : cVar;
-        } catch (Exception unused) {
+            Yun123UserInfo saved = new Gson().fromJson(
+                    LocalStorage.readJson("p123_user"),
+                    Yun123UserInfo.class);
+            this.userInfo = saved != null ? saved : new Yun123UserInfo();
+        } catch (Exception e) {
             SpiderDebug.log("p123授权初始化失败，请删除根目录TV文件夹下授权文件后重试");
         }
     }
 
-    public static Yun123Api a() {
-        return H0.a;
+    public static Yun123Api getInstance() {
+        return Holder.INSTANCE;
     }
 
-    private C0783y e(String str, List list) {
+    // ==================== 登录 ====================
+
+    /**
+     * 确保已登录（token 过期时自动重新登录）
+     */
+    public final ApiResult ensureLoggedIn() {
         try {
-            Response responseExecute = this.b.newCall(new Request.Builder().url(HttpUrl.parse("https://www.123684.com/b/api/share/get").newBuilder().addQueryParameter("limit", "10000").addQueryParameter("next", String.valueOf(0)).addQueryParameter("orderBy", "file_name").addQueryParameter("orderDirection", "asc").addQueryParameter("shareKey", str).addQueryParameter("SharePwd", this.d).addQueryParameter("ParentFileId", String.valueOf(0)).addQueryParameter("Page", "1").build()).get().build()).execute();
-            try {
-                if (!responseExecute.isSuccessful()) {
-                    C0783y c0783yB = C0783y.b("HTTP error: " + responseExecute.code());
-                    responseExecute.close();
-                    return c0783yB;
+            if (Long.parseLong(userInfo.b()) > System.currentTimeMillis() / 1000) {
+                return ApiResult.success("");
+            }
+        } catch (Exception ignored) {
+        }
+        try {
+            String username = userInfo.d();
+            String password = userInfo.e();
+            if (username == null || password == null) {
+                return ApiResult.error("Credentials not found");
+            }
+            JSONObject body = new JSONObject();
+            body.put("passport", username);
+            body.put("password", password);
+            body.put("remember", true);
+            try (Response resp = httpClient.newCall(new Request.Builder()
+                    .url(LOGIN_URL)
+                    .post(RequestBody.create(MediaType.parse("application/json"), body.toString()))
+                    .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36")
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("App-Version", "43")
+                    .addHeader("Referer", "https://login.123pan.com/centerlogin?redirect_url=https%3A%2F%2Fwww.123684.com&source_page=website")
+                    .build()).execute()) {
+                if (!resp.isSuccessful()) {
+                    return ApiResult.error("HTTP error: " + resp.code());
                 }
-                JSONObject jSONObject = new JSONObject(responseExecute.body().string()).getJSONObject("data");
-                ArrayList arrayList = new ArrayList();
-                JSONArray jSONArray = jSONObject.getJSONArray("InfoList");
-                this.e = jSONArray.getJSONObject(0).getString("FileName");
-                for (int i = 0; i < jSONArray.length(); i++) {
-                    JSONObject jSONObject2 = jSONArray.getJSONObject(i);
-                    if (jSONObject2.getInt("Category") == 0) {
-                        long j = jSONObject2.getLong("FileId");
-                        jSONObject.getInt("Next");
-                        arrayList.add(new com.github.catvod.spider.merge.M.I0(str, j));
-                    } else if (BaseApi.get().d.booleanValue() || (com.github.catvod.spider.merge.i0.GeneralUtils.m(jSONObject2.getString("FileName")) != null && !com.github.catvod.spider.merge.i0.GeneralUtils.m(jSONObject2.getString("FileName")).isEmpty())) {
-                        list.add((com.github.catvod.spider.merge.R.a) new Gson().fromJson(jSONObject2.toString(), com.github.catvod.spider.merge.R.a.class));
-                    }
+                JSONObject json = new JSONObject(resp.body().string());
+                if (json.getInt("code") == 200) {
+                    JSONObject data = json.getJSONObject("data");
+                    userInfo.h(data.getString("token"));
+                    userInfo.g(data.getString("refresh_token_expire_time"));
+                    userInfo.f();
                 }
-                if (!list.isEmpty()) {
-                    Collections.sort(list, new com.github.catvod.spider.merge.R.b());
-                }
-                C0783y c0783yK = C0783y.k(arrayList);
-                responseExecute.close();
-                return c0783yK;
-            } catch (Throwable th) {
-                if (responseExecute != null) {
-                    try {
-                        responseExecute.close();
-                    } catch (Throwable unused) {
-                    }
-                }
-                throw th;
+                return ApiResult.success("");
             }
         } catch (Exception e) {
-            StringBuilder sbB = new StringBuilder("Failed to get share info: ");
-            sbB.append(e.getMessage());
-            return C0783y.b(sbB.toString());
+            return ApiResult.error("Login failed: " + e.getMessage());
         }
     }
 
-    private C0783y f(String str, long j, Integer num) {
+    // ==================== URL 解析 ====================
+
+    /**
+     * 解析分享链接，提取 shareKey 和 sharePwd
+     *
+     * @param url 分享 URL，如 "https://www.123684.com/s/xxx?pwd=yyy"
+     * @return shareKey（失败返回 null）
+     */
+    public final ApiResult parseShareUrl(String url) {
         try {
-            Response responseExecute = this.b.newCall(new Request.Builder().url(HttpUrl.parse("https://www.123684.com/b/api/share/get").newBuilder().addQueryParameter("limit", "100").addQueryParameter("next", "0").addQueryParameter("orderBy", "file_name").addQueryParameter("orderDirection", "asc").addQueryParameter("shareKey", str).addQueryParameter("SharePwd", this.d).addQueryParameter("ParentFileId", String.valueOf(j)).addQueryParameter("Page", String.valueOf(num)).build()).get().build()).execute();
+            String normalized = url.replace("//123", "//www.123");
+            Matcher matcher = SHARE_URL_PATTERN.matcher(normalized);
+            if (!matcher.find()) {
+                return ApiResult.error("Invalid share URL");
+            }
+            Matcher keyMatcher = Pattern.compile("([A-Za-z0-9-]+)").matcher(matcher.group(1));
+            if (keyMatcher.find()) {
+                this.shareKey = keyMatcher.group(1);
+            }
+            // 提取密码
+            String pwdPart = normalized.replace("pwd=", "提取码:");
+            int pwdIndex = pwdPart.indexOf("提取码");
+            if (pwdIndex != -1) {
+                Matcher pwdMatcher = Pattern.compile("([A-Za-z0-9]+)").matcher(pwdPart.substring(pwdIndex + 1));
+                this.sharePwd = pwdMatcher.find() ? pwdMatcher.group(1) : "";
+            }
+            return ApiResult.success(this.shareKey);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    // ==================== 文件列表 ====================
+
+    /**
+     * 获取分享根目录文件列表
+     */
+    private ApiResult fetchRootFiles(String shareKey, List<Yun123File> fileList) {
+        try {
+            try (Response resp = httpClient.newCall(new Request.Builder()
+                    .url(HttpUrl.parse(API_BASE + "/get").newBuilder()
+                            .addQueryParameter("limit", "10000")
+                            .addQueryParameter("next", "0")
+                            .addQueryParameter("orderBy", "file_name")
+                            .addQueryParameter("orderDirection", "asc")
+                            .addQueryParameter("shareKey", shareKey)
+                            .addQueryParameter("SharePwd", this.sharePwd)
+                            .addQueryParameter("ParentFileId", "0")
+                            .addQueryParameter("Page", "1")
+                            .build()).get().build()).execute()) {
+                if (!resp.isSuccessful()) {
+                    return ApiResult.error("HTTP error: " + resp.code());
+                }
+                JSONObject data = new JSONObject(resp.body().string()).getJSONObject("data");
+                ArrayList<Yun123FolderRef> folders = new ArrayList<>();
+                JSONArray infoList = data.getJSONArray("InfoList");
+                this.shareTitle = infoList.getJSONObject(0).getString("FileName");
+                for (int i = 0; i < infoList.length(); i++) {
+                    JSONObject item = infoList.getJSONObject(i);
+                    if (item.getInt("Category") == 0) {
+                        // 文件夹
+                        long fileId = item.getLong("FileId");
+                        folders.add(new Yun123FolderRef(shareKey, fileId));
+                    } else if (BaseApi.get().d.booleanValue()
+                            || (getFileExtension(item.getString("FileName")) != null
+                            && !getFileExtension(item.getString("FileName")).isEmpty())) {
+                        // 视频文件
+                        fileList.add(new Gson().fromJson(item.toString(), Yun123File.class));
+                    }
+                }
+                if (!fileList.isEmpty()) {
+                    Collections.sort(fileList);
+                }
+                return ApiResult.success(folders);
+            }
+        } catch (Exception e) {
+            return ApiResult.error("Failed to get share info: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 获取指定文件夹中的文件列表（递归）
+     */
+    private ApiResult fetchFiles(String shareKey, long folderId, int page) {
+        try {
+            Response resp = httpClient.newCall(new Request.Builder()
+                    .url(HttpUrl.parse(API_BASE + "/get").newBuilder()
+                            .addQueryParameter("limit", "100")
+                            .addQueryParameter("next", "0")
+                            .addQueryParameter("orderBy", "file_name")
+                            .addQueryParameter("orderDirection", "asc")
+                            .addQueryParameter("shareKey", shareKey)
+                            .addQueryParameter("SharePwd", this.sharePwd)
+                            .addQueryParameter("ParentFileId", String.valueOf(folderId))
+                            .addQueryParameter("Page", String.valueOf(page))
+                            .build()).get().build()).execute();
             try {
-                if (!responseExecute.isSuccessful()) {
-                    C0783y c0783yB = C0783y.b("HTTP error: " + responseExecute.code());
-                    responseExecute.close();
-                    return c0783yB;
+                if (!resp.isSuccessful()) {
+                    return ApiResult.error("HTTP error: " + resp.code());
                 }
-                com.github.catvod.spider.merge.R.a aVar = (com.github.catvod.spider.merge.R.a) new Gson().fromJson(new JSONObject(responseExecute.body().string()).getJSONObject("data").toString(), com.github.catvod.spider.merge.R.a.class);
-                if (aVar.d().isEmpty()) {
-                    C0783y c0783yB2 = C0783y.b(" file list isEmpty");
-                    responseExecute.close();
-                    return c0783yB2;
+                Yun123File folder = (Yun123File) new Gson().fromJson(
+                        new JSONObject(resp.body().string()).getJSONObject("data").toString(),
+                        Yun123File.class);
+                if (folder.children().isEmpty()) {
+                    return ApiResult.error("file list isEmpty");
                 }
-                Collections.sort(aVar.d(), new com.github.catvod.spider.merge.R.b());
-                ArrayList arrayList = new ArrayList();
-                for (com.github.catvod.spider.merge.R.a aVar2 : aVar.d()) {
-                    if (aVar2.i().equals("file") && (BaseApi.get().d.booleanValue() || (com.github.catvod.spider.merge.i0.GeneralUtils.m(aVar2.e()) != null && !com.github.catvod.spider.merge.i0.GeneralUtils.m(aVar2.e()).isEmpty()))) {
-                        arrayList.add(aVar2);
-                    } else if (aVar2.i().equals("folder")) {
-                        for (int i = 1; i < Integer.MAX_VALUE; i++) {
-                            C0783y c0783yF = f(str, aVar2.c().longValue(), Integer.valueOf(i));
-                            if (!c0783yF.h()) {
-                                break;
-                            }
-                            arrayList.addAll((Collection) c0783yF.d());
+                Collections.sort(folder.children());
+                ArrayList<Yun123File> result = new ArrayList<>();
+                for (Yun123File file : folder.children()) {
+                    if (file.type().equals("file") && (BaseApi.get().d.booleanValue()
+                            || (getFileExtension(file.name()) != null
+                            && !getFileExtension(file.name()).isEmpty()))) {
+                        result.add(file);
+                    } else if (file.type().equals("folder")) {
+                        // 递归获取子文件夹
+                        for (int p = 1; p < Integer.MAX_VALUE; p++) {
+                            ApiResult subResult = fetchFiles(shareKey, file.fileId().longValue(), p);
+                            if (!subResult.isSuccess()) break;
+                            result.addAll((Collection<Yun123File>) subResult.getValue());
                         }
                     }
                 }
-                C0783y c0783yK = C0783y.k(arrayList);
-                responseExecute.close();
-                return c0783yK;
-            } catch (Throwable th) {
-                if (responseExecute != null) {
-                    try {
-                        responseExecute.close();
-                    } catch (Throwable unused) {
-                    }
-                }
-                throw th;
+                return ApiResult.success(result);
+            } finally {
+                resp.close();
             }
         } catch (Exception e) {
-            StringBuilder sbB = new StringBuilder("Failed to get file list: ");
-            sbB.append(e.getMessage());
-            return C0783y.b(sbB.toString());
+            return ApiResult.error("Failed to get file list: " + e.getMessage());
         }
     }
 
-    public final C0783y b(String str, long j, String str2, long j2, String str3) {
-        String str4;
+    /**
+     * 递归获取所有文件
+     */
+    public final ApiResult getAllFiles(String shareKey) {
         try {
-            h();
-            Response responseExecute = this.b.newCall(new Request.Builder().url("https://www.123684.com/b/api/share/download/info").post(RequestBody.create(MediaType.parse("application/json"), new JSONObject().put("ShareKey", str).put("FileID", j).put("S3KeyFlag", str2).put("Size", j2).put("Etag", str3).toString())).addHeader("Authorization", "Bearer " + this.f.c()).addHeader("User-Agent", "Mozilla/5.0").addHeader("platform", "android").build()).execute();
-            try {
-                if (!responseExecute.isSuccessful()) {
-                    SpiderDebug.log(responseExecute.body().string());
-                    C0783y c0783yB = C0783y.b("HTTP error: " + responseExecute.code());
-                    responseExecute.close();
-                    return c0783yB;
+            ArrayList<Yun123File> allFiles = new ArrayList<>();
+            for (Yun123FolderRef folder : (List<Yun123FolderRef>) fetchRootFiles(shareKey, allFiles).getValue()) {
+                for (int page = 1; page < Integer.MAX_VALUE; page++) {
+                    ApiResult pageResult = fetchFiles(folder.shareKey, folder.folderId, page);
+                    if (!pageResult.isSuccess()) break;
+                    allFiles.addAll((Collection<Yun123File>) pageResult.getValue());
                 }
-                String[] strArrSplit = new JSONObject(responseExecute.body().string()).getJSONObject("data").getString("DownloadURL").split("\\?")[1].split("&");
-                int length = strArrSplit.length;
-                int i = 0;
-                while (true) {
-                    if (i >= length) {
-                        str4 = null;
+            }
+            return ApiResult.success(allFiles);
+        } catch (Exception e) {
+            return ApiResult.error("Failed to get files: " + e.getMessage());
+        }
+    }
+
+    // ==================== 下载链接 ====================
+
+    /**
+     * 获取文件下载链接
+     */
+    public final ApiResult getDownloadInfo(String shareKey, long fileId, String s3KeyFlag, long size, String etag) {
+        try {
+            ensureLoggedIn();
+            JSONObject body = new JSONObject();
+            body.put("ShareKey", shareKey);
+            body.put("FileID", fileId);
+            body.put("S3KeyFlag", s3KeyFlag);
+            body.put("Size", size);
+            body.put("Etag", etag);
+            try (Response resp = httpClient.newCall(new Request.Builder()
+                    .url(API_BASE + "/download/info")
+                    .post(RequestBody.create(MediaType.parse("application/json"), body.toString()))
+                    .addHeader("Authorization", "Bearer " + userInfo.c())
+                    .addHeader("User-Agent", "Mozilla/5.0")
+                    .addHeader("platform", "android")
+                    .build()).execute()) {
+                if (!resp.isSuccessful()) {
+                    SpiderDebug.log(resp.body().string());
+                    return ApiResult.error("HTTP error: " + resp.code());
+                }
+                String downloadUrl = new JSONObject(resp.body().string())
+                        .getJSONObject("data").getString("DownloadURL");
+                // 从 URL 中提取 Base64 编码的参数
+                String[] queryParams = downloadUrl.split("\\?")[1].split("&");
+                String encodedParams = null;
+                for (String param : queryParams) {
+                    String[] kv = param.split("=");
+                    if (kv[0].equals("params")) {
+                        encodedParams = kv[1];
                         break;
                     }
-                    String[] strArrSplit2 = strArrSplit[i].split("=");
-                    if (strArrSplit2[0].equals("params")) {
-                        str4 = strArrSplit2[1];
-                        break;
-                    }
-                    i++;
                 }
-                C0783y c0783yK = C0783y.k(new String(Base64.decode(URLDecoder.decode(str4, "UTF-8"), 0)));
-                responseExecute.close();
-                return c0783yK;
-            } catch (Throwable th) {
-                if (responseExecute != null) {
-                    try {
-                        responseExecute.close();
-                    } catch (Throwable unused) {
-                    }
-                }
-                throw th;
+                String decoded = new String(Base64.decode(URLDecoder.decode(encodedParams, "UTF-8"), 0));
+                return ApiResult.success(decoded);
             }
         } catch (Exception e) {
             SpiderDebug.log(e);
-            return C0783y.b("Download failed: " + e.getMessage());
+            return ApiResult.error("Download failed: " + e.getMessage());
         }
     }
 
-    /* JADX WARN: Type inference failed for: r0v1, types: [java.util.Map<java.lang.String, java.lang.String>, java.util.concurrent.ConcurrentHashMap] */
-    public final String c(String str, String str2) {
+    /**
+     * 获取缓存的下载 URL
+     */
+    public final String getCachedUrl(String shareKey, String fileId) {
         try {
-            return (String) H0.a.a.get(str + str2);
+            return downloadCache.get(shareKey + fileId);
         } catch (Exception e) {
             e.printStackTrace();
             return "";
         }
     }
 
-    public final C0783y d(String str) {
-        try {
-            ArrayList arrayList = new ArrayList();
-            for (I0 i0 : (List) e(str, arrayList).d()) {
-                for (int i = 0; i < Integer.MAX_VALUE; i++) {
-                    C0783y c0783yF = f(i0.a, i0.b, Integer.valueOf(i));
-                    if (!c0783yF.h()) {
-                        break;
-                    }
-                    arrayList.addAll((Collection) c0783yF.d());
-                }
-            }
-            return C0783y.k(arrayList);
-        } catch (Exception e) {
-            StringBuilder sbB = new StringBuilder("Failed to get files: ");
-            sbB.append(e.getMessage());
-            return C0783y.b(sbB.toString());
-        }
-    }
+    // ==================== VodItem 构建 ====================
 
-    public final com.github.catvod.bean.VodItem g(String str) {
-        ArrayList arrayList = new ArrayList();
-        arrayList.add("p123原畫");
+    /**
+     * 构建视频详情 VodItem
+     */
+    public final com.github.catvod.bean.VodItem buildVodItem(String shareId) {
+        ArrayList<String> sourceNames = new ArrayList<>();
+        sourceNames.add("p123原畫");
         if (NetPan.containPuHua()) {
-            arrayList.add("p123普畫");
+            sourceNames.add("p123普畫");
         }
         try {
-            String str2 = (String) H0.a.i(str).d();
-            com.github.catvod.bean.VodItem iVar = new com.github.catvod.bean.VodItem();
-            List<com.github.catvod.spider.merge.R.a> list = (List) H0.a.d(str2).d();
-            ArrayList arrayList2 = new ArrayList();
-            for (com.github.catvod.spider.merge.R.a aVar : list) {
-                if ((com.github.catvod.spider.merge.i0.GeneralUtils.m(aVar.e()) != null && !com.github.catvod.spider.merge.i0.GeneralUtils.m(aVar.e()).isEmpty())) {
-                    arrayList2.add(aVar);
+            String key = (String) getInstance().parseShareUrl(shareId).getValue();
+            com.github.catvod.bean.VodItem vod = new com.github.catvod.bean.VodItem();
+            List<Yun123File> files = (List<Yun123File>) getInstance().getAllFiles(key).getValue();
+            // 过滤出有扩展名的文件
+            ArrayList<Yun123File> videoFiles = new ArrayList<>();
+            for (Yun123File file : files) {
+                String ext = getFileExtension(file.name());
+                if (ext != null && !ext.isEmpty()) {
+                    videoFiles.add(file);
                 }
             }
             SpiderDebug.log("Comparator.comparing");
-            ArrayList arrayList3 = new ArrayList();
-            ArrayList arrayList4 = new ArrayList();
-            for (int i = 0; i < arrayList2.size(); i++) {
-                com.github.catvod.spider.merge.R.a aVar2 = (com.github.catvod.spider.merge.R.a) arrayList2.get(i);
-                arrayList3.add(aVar2.a() + "$" + str2 + "+" + this.d + "+" + com.github.catvod.spider.merge.i0.GeneralUtils.y(this.e) + "+" + aVar2.e() + "+" + aVar2.b() + "+" + aVar2.c() + "+" + aVar2.f() + "+" + aVar2.g());
+            // 构建播放列表
+            ArrayList<String> episodeList = new ArrayList<>();
+            for (Yun123File file : videoFiles) {
+                episodeList.add(file.display() + "$" + key + "+" + sharePwd + "+"
+                        + getCleanFileName(shareTitle) + "+"
+                        + file.name() + "+" + file.etag() + "+" + file.fileId() + "+"
+                        + file.s3KeyFlag() + "+" + file.size());
             }
-            for (int i2 = 0; i2 < arrayList.size(); i2++) {
-                StringBuilder sb = new StringBuilder();
-                Iterator it = arrayList3.iterator();
-                if (it.hasNext()) {
-                    while (true) {
-                        sb.append((CharSequence) it.next());
-                        if (it.hasNext()) {
-                            sb.append((CharSequence) "#");
-                        }
-                    }
-                }
-                arrayList4.add(sb.toString());
+            ArrayList<String> playUrls = new ArrayList<>();
+            for (int i = 0; i < sourceNames.size(); i++) {
+                playUrls.add(TextUtils.join("#", episodeList));
             }
-            iVar.l(str);
-            iVar.j(str);
-            iVar.n("https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/c3/2b/fa/c32bfa72-c460-e1a4-d8a1-ba175f59bbce/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/350x350.png");
-            iVar.m(com.github.catvod.spider.merge.i0.GeneralUtils.y(this.e));
-            StringBuilder sb2 = new StringBuilder();
-            Iterator it2 = arrayList4.iterator();
-            if (it2.hasNext()) {
-                while (true) {
-                    sb2.append((CharSequence) it2.next());
-                    if (!it2.hasNext()) {
-                        break;
-                    }
-                    sb2.append((CharSequence) "$$$");
-                }
-            }
-            iVar.p(sb2.toString());
-            StringBuilder sb3 = new StringBuilder();
-            Iterator it3 = arrayList.iterator();
-            if (it3.hasNext()) {
-                while (true) {
-                    sb3.append((CharSequence) it3.next());
-                    if (!it3.hasNext()) {
-                        break;
-                    }
-                    sb3.append((CharSequence) "$$$");
-                }
-            }
-            iVar.o(sb3.toString());
-            iVar.g("p123");
-            return iVar;
+            // 组装 VodItem
+            vod.l(shareId);
+            vod.j(shareId);
+            vod.n("https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/c3/2b/fa/c32bfa72-c460-e1a4-d8a1-ba175f59bbce/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/350x350.png");
+            vod.m(getCleanFileName(shareTitle));
+            vod.p(TextUtils.join("$$$", playUrls));
+            vod.o(TextUtils.join("$$$", sourceNames));
+            vod.g("p123");
+            return vod;
         } catch (Exception e) {
             SpiderDebug.log(e.getMessage());
-            return BaseApi.fakeVod(arrayList, "p123");
+            return BaseApi.fakeVod(sourceNames, "p123");
         }
     }
 
-    public final C0783y h() {
-        C0783y c0783yK;
-        try {
-            if (Long.parseLong(this.f.b()) > System.currentTimeMillis() / 1000) {
-                return C0783y.k("");
-            }
-        } catch (Exception unused) {
-        }
-        try {
-            String strD = this.f.d();
-            String strE = this.f.e();
-            if (strD != null && strE != null) {
-                Response responseExecute = this.b.newCall(new Request.Builder().url("https://login.123pan.com/api/user/sign_in").post(RequestBody.create(MediaType.parse("application/json"), new JSONObject().put("passport", strD).put("password", strE).put("remember", true).toString())).addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36").addHeader("Content-Type", "application/json").addHeader("App-Version", "43").addHeader("Referer", "https://login.123pan.com/centerlogin?redirect_url=https%3A%2F%2Fwww.123684.com&source_page=website").build()).execute();
-                try {
-                    if (responseExecute.isSuccessful()) {
-                        JSONObject jSONObject = new JSONObject(responseExecute.body().string());
-                        if (jSONObject.getInt("code") == 200) {
-                            this.f.h(jSONObject.getJSONObject("data").getString("token"));
-                            this.f.g(jSONObject.getJSONObject("data").getString("refresh_token_expire_time"));
-                            this.f.f();
-                        }
-                        c0783yK = C0783y.k("");
-                    } else {
-                        c0783yK = C0783y.b("HTTP error: " + responseExecute.code());
-                    }
-                    responseExecute.close();
-                    return c0783yK;
-                } catch (Throwable th) {
-                    if (responseExecute != null) {
-                        try {
-                            responseExecute.close();
-                        } catch (Throwable unused2) {
-                        }
-                    }
-                    throw th;
-                }
-            }
-            return C0783y.b("Credentials not found");
-        } catch (Exception e) {
-            StringBuilder sbB = new StringBuilder("Login failed: ");
-            sbB.append(e.getMessage());
-            return C0783y.b(sbB.toString());
-        }
-    }
+    // ==================== 播放地址 ====================
 
-    public final C0783y i(String str) {
-        String strGroup;
+    /**
+     * 获取播放地址
+     *
+     * @param params 参数数组 [shareKey, ?, fileName, fileSize, etag, fileId, s3KeyFlag, size, ...]
+     * @return 播放信息 JSON
+     */
+    public final String getPlayUrl(String[] params) {
+        String playUrl;
         try {
-            String strReplace = str.replace("//123", "//www.123");
-            Matcher matcher = g.matcher(strReplace);
-            if (!matcher.find()) {
-                return C0783y.b("Invalid share URL");
-            }
-            Matcher matcher2 = Pattern.compile("([A-Za-z0-9-]+)").matcher(matcher.group(1));
-            if (matcher2.find()) {
-                this.c = matcher2.group(1);
-            }
-            String strReplace2 = strReplace.replace("pwd=", "提取码:");
-            int iIndexOf = strReplace2.indexOf("提取码");
-            if (iIndexOf != -1) {
-                Matcher matcher3 = Pattern.compile("([A-Za-z0-9]+)").matcher(strReplace2.substring(iIndexOf + 1));
-                strGroup = matcher3.find() ? matcher3.group(1) : "";
-                return C0783y.k(this.c);
-            }
-            this.d = strGroup;
-            return C0783y.k(this.c);
-        } catch (Exception unused) {
-            return null;
-        }
-    }
-
-    /* JADX WARN: Type inference failed for: r2v8, types: [java.util.Map<java.lang.String, java.lang.String>, java.util.concurrent.ConcurrentHashMap] */
-    /* JADX WARN: Type inference failed for: r3v6, types: [java.util.Map<java.lang.String, java.lang.String>, java.util.concurrent.ConcurrentHashMap] */
-    public final String j(String[] strArr) {
-        String isoDownloadUrl;
-        try {
-            if (!this.a.containsKey(strArr[0] + strArr[5])) {
-                String str = (String) b(strArr[0], Long.parseLong(strArr[5]), strArr[6], Long.parseLong(strArr[7]), strArr[4]).d();
-                SpiderDebug.log("p123 playerContent:" + str);
-                this.a.put(strArr[0] + strArr[5], str);
+            if (!downloadCache.containsKey(params[0] + params[5])) {
+                String url = (String) getDownloadInfo(params[0], Long.parseLong(params[5]),
+                        params[6], Long.parseLong(params[7]), params[4]).getValue();
+                SpiderDebug.log("p123 playerContent:" + url);
+                downloadCache.put(params[0] + params[5], url);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String strC = c(strArr[0], strArr[5]);
+        String cachedUrl = getCachedUrl(params[0], params[5]);
         if (BaseApi.get().d.booleanValue()) {
-            String str2 = strArr[2] + strArr[3];
-            BaseApi.get().downloadFileWithDownloadManager(strC, str2, com.github.catvod.spider.merge.f0.d.b());
-            SpiderDebug.log("正在下载 " + str2);
-            isoDownloadUrl = Server.B();
+            String fileName = params[2] + params[3];
+            BaseApi.get().downloadFileWithDownloadManager(cachedUrl, fileName, buildDefaultHeaders());
+            SpiderDebug.log("正在下载 " + fileName);
+            playUrl = Server.B();
         } else {
-            isoDownloadUrl = NetPan.getIsoDownloadUrl(strC);
+            playUrl = NetPan.getIsoDownloadUrl(cachedUrl);
         }
-        com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
-        gVar.w(isoDownloadUrl);
-        gVar.i();
-        gVar.a(C0773p.a.t(strArr));
-        gVar.g(com.github.catvod.spider.merge.f0.d.b());
-        ArrayList arrayList = new ArrayList();
-        for (String str3 : strArr) {
-            if (str3.contains("@@@")) {
-                String[] strArrSplit = str3.split("@@@");
-                String str4 = strArrSplit[0];
-                String str5 = strArrSplit[1];
-                String str6 = Proxy.getUrl() + "?do=ali&type=sub&shareId=" + strArr[0] + "&fileId=" + strArrSplit[2];
-                com.github.catvod.bean.h hVar = new com.github.catvod.bean.h();
-                hVar.b(str4);
-                com.github.catvod.bean.h hVarA = hVar.a(str5);
-                hVarA.c(str6);
-                arrayList.add(hVarA);
+        // 组装结果
+        PlayResult result = new PlayResult();
+        result.setUrl(playUrl);
+        result.setOctetStream();
+        result.setExtra(AliDriveHelper.getDanmakuUrl(params));
+        result.setHeaders(buildDefaultHeaders());
+        // 字幕
+        ArrayList<com.github.catvod.bean.h> subtitles = new ArrayList<>();
+        for (String param : params) {
+            if (param.contains("@@@")) {
+                String[] parts = param.split("@@@");
+                String subName = parts[0];
+                String subExt = parts[1];
+                String subUrl = Proxy.getUrl() + "?do=ali&type=sub&shareId=" + params[0] + "&fileId=" + parts[2];
+                com.github.catvod.bean.h sub = new com.github.catvod.bean.h();
+                sub.b(subName);
+                sub.a(subExt);
+                sub.c(subUrl);
+                subtitles.add(sub);
             }
         }
-        gVar.v(arrayList);
-        return gVar.toString();
+        result.setSubtitles(subtitles);
+        return result.toString();
     }
 
-    public final void k(String str, boolean z) {
-        if (com.github.catvod.spider.merge.P0.e.c(this.f.d()) || z) {
-            SpiderDebug.log("set new UserName:" + str);
-            if (str != null && str.startsWith("http")) {
-                str = com.github.catvod.spider.merge.f0.d.l(str).trim();
+    // ==================== 凭据管理 ====================
+
+    /**
+     * 设置 123 盘用户名和密码
+     *
+     * @param credentials "username|password" 格式
+     * @param force       是否强制更新
+     */
+    public final void setCredentials(String credentials, boolean force) {
+        if ((userInfo.d() == null || userInfo.d().isEmpty()) || force) {
+            SpiderDebug.log("set new UserName:" + credentials);
+            if (credentials != null && credentials.startsWith("http")) {
+                credentials = OkHttpUtil.string(credentials, new HashMap<>()).trim();
             }
-            if ((str != null && !str.isEmpty())) {
-                this.f.i(str.split("\\|")[0]);
-                this.f.j(str.split("\\|")[1]);
-                this.f.f();
+            if (credentials != null && !credentials.isEmpty()) {
+                userInfo.i(credentials.split("\\|")[0]);
+                userInfo.j(credentials.split("\\|")[1]);
+                userInfo.f();
             }
         }
+    }
+
+    // ==================== 辅助方法 ====================
+
+    /** 获取文件扩展名（小写），无扩展名返回 null */
+    private static String getFileExtension(String fileName) {
+        if (fileName == null || !fileName.contains(".")) return null;
+        String ext = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        return ext.isEmpty() ? null : ext;
+    }
+
+    /** 返回清理后的文件名（去除 # + $ 特殊字符） */
+    private static String getCleanFileName(String fileName) {
+        if (fileName == null || fileName.isEmpty()) return "";
+        return fileName.replaceAll("#", "").replaceAll("\\+", "").replaceAll("\\$", "");
+    }
+
+    /** 构建默认请求头 */
+    private static Map<String, String> buildDefaultHeaders() {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
+        return headers;
     }
 }

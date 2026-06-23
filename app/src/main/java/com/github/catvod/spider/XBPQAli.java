@@ -2,7 +2,7 @@ package com.github.catvod.spider;
 
 import android.content.Context;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.spider.merge.fb.FilterGroup;
+import com.github.catvod.bean.vod.FilterGroup;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -17,10 +17,10 @@ public class XBPQAli extends Spider {
     public static Object[] proxy(Map<String, String> map) throws UnsupportedEncodingException {
         String str = map.get("type");
         if (str.equals("sub")) {
-            return com.github.catvod.spider.merge.dp.p.o().H(map);
+            return com.github.catvod.internal.AliPlayerFilter.o().H(map);
         }
         if (str.equals("token")) {
-            return com.github.catvod.spider.merge.dp.p.o().w();
+            return com.github.catvod.internal.AliPlayerFilter.o().w();
         }
         return null;
     }
@@ -34,24 +34,24 @@ public class XBPQAli extends Spider {
             }
             String strGroup = matcher.group(1);
             String strGroup2 = matcher.groupCount() == 3 ? matcher.group(3) : "";
-            com.github.catvod.spider.merge.dp.p.o().K(strGroup);
-            return com.github.catvod.spider.merge.fb.FilterGroup.e(com.github.catvod.spider.merge.dp.p.o().z(strReplace, strGroup2));
+            com.github.catvod.internal.AliPlayerFilter.o().K(strGroup);
+            return com.github.catvod.bean.vod.FilterGroup.e(com.github.catvod.internal.AliPlayerFilter.o().z(strReplace, strGroup2));
         } catch (Exception unused) {
             return "";
         }
     }
 
     public void init(Context context, String str) {
-        com.github.catvod.spider.merge.dp.p.o().J(str);
+        com.github.catvod.internal.AliPlayerFilter.o().J(str);
     }
 
     public String playerContent(String str, String str2, List<String> list) {
         try {
             String[] strArrSplit = str2.split("\\+");
             if (!str.equals(">原画<")) {
-                return com.github.catvod.spider.merge.dp.p.o().F(strArrSplit, str);
+                return com.github.catvod.internal.AliPlayerFilter.o().F(strArrSplit, str);
             }
-            com.github.catvod.spider.merge.dp.p pVarO = com.github.catvod.spider.merge.dp.p.o();
+            com.github.catvod.internal.AliPlayerFilter pVarO = com.github.catvod.internal.AliPlayerFilter.o();
             pVarO.getClass();
             FilterGroup dVar = new FilterGroup();
             dVar.i(pVarO.p(strArrSplit[0]));

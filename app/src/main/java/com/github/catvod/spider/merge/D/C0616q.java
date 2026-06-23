@@ -12,7 +12,7 @@ public final class C0616q implements X, com.github.catvod.spider.merge.C.w {
     @Override // com.github.catvod.spider.merge.C.w
     public final <T> T c(com.github.catvod.spider.merge.B.b bVar, Type type, Object obj) {
         ((C0615p) bVar.t(C0615p.class, null)).getClass();
-        ?? r1 = (T) ByteBuffer.wrap(null);
+        ByteBuffer r1 = (T) ByteBuffer.wrap(null);
         r1.limit(0);
         r1.position(0);
         return r1;

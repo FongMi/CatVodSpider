@@ -2,7 +2,7 @@ package com.github.catvod.spider.merge.d1;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.d1.z0, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C1023z0 extends i1 {
+class C1023z0 extends i1 {
     C1023z0() {
         super("Rcdata", 2, null);
     }

@@ -43,7 +43,7 @@ public final class C1167p implements Serializable {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.Map<java.lang.Class<?>, java.lang.Object>, java.util.concurrent.ConcurrentHashMap] */
     final Object e(Class<?> cls) {
-        ?? r0 = this.c;
+        Object r0 = this.c;
         if (r0 == 0) {
             return null;
         }

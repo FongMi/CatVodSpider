@@ -115,7 +115,7 @@ public class V extends U {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.h1.y>] */
     public final int H0() {
-        ?? r0 = this.A;
+        Object r0 = this.A;
         if (r0 == 0) {
             return 0;
         }
@@ -183,7 +183,7 @@ public class V extends U {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.h1.S>] */
     public final int P0() {
-        ?? r0 = this.B;
+        Object r0 = this.B;
         if (r0 == 0) {
             return 0;
         }
@@ -206,7 +206,7 @@ public class V extends U {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.h1.c0>] */
     public final int T0() {
-        ?? r0 = this.C;
+        Object r0 = this.C;
         if (r0 == 0) {
             return 0;
         }

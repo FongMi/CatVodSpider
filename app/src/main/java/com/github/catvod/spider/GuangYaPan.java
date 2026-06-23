@@ -25,7 +25,7 @@ public class GuangYaPan extends Spider {
             if (!matcher.find()) {
                 return "";
             }
-            return VodResult.m(GuangYaPanApi.l().r(url,
+            return VodResult.m(GuangYaPanApi.getInstance().buildVodItem(url,
                     matcher.group(1) != null ? matcher.group(1) : "",
                     matcher.group(3) != null ? matcher.group(3) : "",
                     matcher.group(2) != null ? matcher.group(2) : "",
@@ -46,9 +46,9 @@ public class GuangYaPan extends Spider {
             return "";
         }
         String[] parts = playUrl.split("\\+");
-        GuangYaPanApi client = GuangYaPanApi.l();
+        GuangYaPanApi client = GuangYaPanApi.getInstance();
         try {
-            String downloadUrl = client.n(parts[0], parts[1], parts.length > 2 ? parts[2] : "");
+            String downloadUrl = client.getDownloadUrl(parts[0], parts[1], parts.length > 2 ? parts[2] : "");
             if (downloadUrl == null || downloadUrl.isEmpty()) {
                 return "";
             }
@@ -70,7 +70,7 @@ public class GuangYaPan extends Spider {
         if (!matcher.find()) {
             return "";
         }
-        return VodResult.m(GuangYaPanApi.l().r(url,
+        return VodResult.m(GuangYaPanApi.getInstance().buildVodItem(url,
                 matcher.group(1) != null ? matcher.group(1) : "",
                 matcher.group(3) != null ? matcher.group(3) : "",
                 matcher.group(2) != null ? matcher.group(2) : "",

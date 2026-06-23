@@ -7,14 +7,16 @@ import android.net.Uri;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import com.github.catvod.bean.quark.*;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
-import com.github.catvod.utils.merge.MergeUtils;
-import com.github.catvod.utils.merge.QrCodeUtils;
-import com.github.catvod.utils.merge.C1290c;
+import com.github.catvod.utils.MapHelper;
+import com.github.catvod.utils.PanHttpClient;
+import com.github.catvod.utils.PanStringUtils;
+import com.github.catvod.utils.PanTextUtils;
 import com.github.catvod.utils.server.Server;
 import com.google.gson.Gson;
 import org.json.JSONArray;
@@ -28,9 +30,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-/* JADX INFO: renamed from: com.github.catvod.spider.merge.I.f0, reason: case insensitive filesystem */
-/* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
 public final class QuarkDriveApi {
+    private static class Holder { static final QuarkDriveApi INSTANCE = new QuarkDriveApi(); }
     private static Map<String, String> n;
     private static Map<String, String> o;
     private final Map<String, String> a;
@@ -45,11 +46,11 @@ public final class QuarkDriveApi {
     private long j;
     private String k;
     private String l;
-    public com.github.catvod.spider.merge.S.e m;
+    public QuarkUser m;
 
     QuarkDriveApi() {
         try {
-            this.m = com.github.catvod.spider.merge.S.e.h(com.github.catvod.spider.merge.g.b.d(com.github.catvod.spider.merge.g.b.f("quark_user")));
+            this.m = QuarkUser.fromJson(LocalStorage.readJson("quark_user"));
         } catch (Exception unused) {
             SpiderDebug.log("夸克授权初始化失败，请删除根目录TV文件夹下授权文件后重试");
         }
@@ -77,11 +78,11 @@ public final class QuarkDriveApi {
         o = new HashMap(4096);
     }
 
-    private void A(HashMap<String, String> map, boolean z, com.github.catvod.spider.merge.S.a aVar, List<com.github.catvod.spider.merge.S.a> list, List<com.github.catvod.spider.merge.S.a> list2, List<com.github.catvod.spider.merge.S.a> list3) {
+    private void A(HashMap<String, String> map, boolean z, QuarkFile aVar, List<QuarkFile> list, List<QuarkFile> list2, List<QuarkFile> list3) {
         B(map, z, aVar, list, list2, list3, 1);
     }
 
-    private void B(HashMap<String, String> map, boolean z, com.github.catvod.spider.merge.S.a aVar, List<com.github.catvod.spider.merge.S.a> list, List<com.github.catvod.spider.merge.S.a> list2, List<com.github.catvod.spider.merge.S.a> list3, int i) {
+    private void B(HashMap<String, String> map, boolean z, QuarkFile aVar, List<QuarkFile> list, List<QuarkFile> list2, List<QuarkFile> list3, int i) {
         if (z) {
             try {
                 list3 = new ArrayList<>();
@@ -107,50 +108,50 @@ public final class QuarkDriveApi {
         String strP = p(sb.toString());
         SpiderDebug.log("listFiles >> " + strP);
         JSONObject jSONObject = new JSONObject(strP);
-        com.github.catvod.spider.merge.S.a aVarL = com.github.catvod.spider.merge.S.a.l(jSONObject.getJSONObject("data").toString());
+        QuarkFile aVarL = QuarkFile.l(jSONObject.getJSONObject("data").toString());
         try {
             if (aVarL.e().size() >= 1) {
-                com.github.catvod.spider.merge.S.d.a(aVarL.e());
+                QuarkSorter.a(aVarL.e());
             }
         } catch (Exception e2) {
             SpiderDebug.log("listFiles error" + e2.getMessage());
         }
-        for (com.github.catvod.spider.merge.S.a aVar2 : aVarL.e()) {
+        for (QuarkFile aVar2 : aVarL.e()) {
             if ("folder".equals(aVar2.k())) {
                 list3.add(aVar2);
-            } else if (BaseApi.get().d.booleanValue() || (com.github.catvod.spider.merge.i0.GeneralUtils.m(aVar2.f()) != null && !com.github.catvod.spider.merge.i0.GeneralUtils.m(aVar2.f()).isEmpty())) {
+            } else if (BaseApi.get().d.booleanValue() || PanStringUtils.isVideoFile(aVar2.f())) {
                 aVar2.m(aVar.f());
                 list.add(aVar2);
-            } else if (com.github.catvod.spider.merge.i0.m.r(aVar2.c())) {
+            } else if (PanStringUtils.isSubtitleExtension(aVar2.c())) {
                 list2.add(aVar2);
             }
         }
-        com.github.catvod.spider.merge.S.c cVar = (com.github.catvod.spider.merge.S.c) new Gson().fromJson(jSONObject.getJSONObject("metadata").toString(), com.github.catvod.spider.merge.S.c.class);
+        QuarkMetadata cVar = QuarkMetadata.fromJson(jSONObject.getJSONObject("metadata").toString());
         if (((cVar.b() - 1) * cVar.c()) + cVar.a() < cVar.d()) {
             B(map, z, aVar, list, list2, list3, cVar.b() + 1);
         }
         if (z) {
-            Iterator<com.github.catvod.spider.merge.S.a> it = list3.iterator();
+            Iterator<QuarkFile> it = list3.iterator();
             while (it.hasNext()) {
                 A(map, z, it.next(), list, list2, null);
             }
         }
     }
 
-    private com.github.catvod.spider.merge.f0.i F(String str, JSONObject jSONObject) throws InterruptedException {
+    private PanHttpClient.HttpResponse F(String str, JSONObject jSONObject) throws InterruptedException {
         if (!str.startsWith("https")) {
             str = UrlUtils.resolveUrl("https://drive-pc.quark.cn/", str);
         }
         HashMap map = new HashMap();
         HashMap<String, String> mapS = s(str);
-        com.github.catvod.spider.merge.f0.i iVar = new com.github.catvod.spider.merge.f0.i();
+        PanHttpClient.HttpResponse iVar = new PanHttpClient.HttpResponse();
         int i = 2;
         while (true) {
             int i2 = i - 1;
             if (i <= 0) {
                 break;
             }
-            iVar = com.github.catvod.spider.merge.f0.d.k(str, jSONObject.toString(), mapS, map);
+            iVar = PanHttpClient.post(str, jSONObject.toString(), mapS, map);
             if (iVar.a().length() > 10) {
                 break;
             }
@@ -176,7 +177,7 @@ public final class QuarkDriveApi {
                 int i = 3;
                 while (true) {
                     int i2 = i - 1;
-                    if (i <= 0 || !com.github.catvod.spider.merge.P0.e.c(this.m.d())) {
+                    if (i <= 0 || !PanTextUtils.isEmpty(this.m.getCookie())) {
                         break;
                     }
                     Thread.sleep(1000L);
@@ -185,14 +186,14 @@ public final class QuarkDriveApi {
                 JSONObject jSONObject = new JSONObject();
                 jSONObject.put("pwd_id", str);
                 jSONObject.put("passcode", str2);
-                com.github.catvod.spider.merge.f0.i iVarF = F("1/clouddrive/share/sharepage/token?pr=ucpro&fr=pc", jSONObject);
+                PanHttpClient.HttpResponse iVarF = F("1/clouddrive/share/sharepage/token?pr=ucpro&fr=pc", jSONObject);
                 JSONObject jSONObject2 = new JSONObject(iVarF.a());
                 System.out.println("resultJson" + jSONObject2);
                 if (jSONObject2.getInt("status") == 401) {
-                    SpiderDebug.log("cookie is invalid:" + this.m.d());
-                    SpiderDebug.log("cookie is invalid:" + this.m.d());
-                    this.m.j("");
-                    this.m.i();
+                    SpiderDebug.log("cookie is invalid:" + this.m.getCookie());
+                    SpiderDebug.log("cookie is invalid:" + this.m.getCookie());
+                    this.m.setCookie("");
+                    this.m.save();
                     this.h = "";
                     return false;
                 }
@@ -215,7 +216,7 @@ public final class QuarkDriveApi {
 
     private void I(String str) {
         try {
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(com.github.catvod.spider.merge.i0.GeneralUtils.f(240), com.github.catvod.spider.merge.i0.GeneralUtils.f(240));
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(PanStringUtils.dpToPx(240), PanStringUtils.dpToPx(240));
             ImageView imageView = new ImageView(Init.context());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setImageBitmap(QrCodeUtils.generateQrCode(str, 240, 2));
@@ -281,7 +282,7 @@ public final class QuarkDriveApi {
             r6.<init>()     // Catch: java.lang.Exception -> L76
             r4.put(r5, r6)     // Catch: java.lang.Exception -> L76
             java.lang.String r5 = "1/clouddrive/file/delete?pr=ucpro&fr=pc"
-            com.github.catvod.spider.merge.f0.i r4 = r7.F(r5, r4)     // Catch: java.lang.Exception -> L76
+            PanHttpClient.HttpResponse r4 = r7.F(r5, r4)     // Catch: java.lang.Exception -> L76
             java.lang.String r4 = r4.a()     // Catch: java.lang.Exception -> L76
             java.lang.String r5 = "文件已经删除"
             boolean r5 = r4.contains(r5)     // Catch: java.lang.Exception -> L76
@@ -305,7 +306,7 @@ public final class QuarkDriveApi {
         L7f:
             return
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.github.catvod.spider.merge.I.C0754f0.a(com.github.catvod.spider.merge.I.f0):void");
+        throw new UnsupportedOperationException("Method not decompiled: QuarkDriveApi.a(QuarkDriveApi):void");
     }
 
     public static void b(QuarkDriveApi c0754f0) {
@@ -355,12 +356,12 @@ public final class QuarkDriveApi {
     public static /* synthetic */ void g(QuarkDriveApi c0754f0, String str) {
         c0754f0.getClass();
         try {
-            String strL = com.github.catvod.spider.merge.f0.d.l("https://uop.quark.cn/cas/ajax/getServiceTicketByQrcodeToken?client_id=532&v=1.2&token=" + str);
+            String strL = PanHttpClient.get("https://uop.quark.cn/cas/ajax/getServiceTicketByQrcodeToken?client_id=532&v=1.2&token=" + str);
             if ("2000000".equals(new JSONObject(strL).getString("status"))) {
                 String string = new JSONObject(strL).getJSONObject("data").getJSONObject("members").getString("service_ticket");
                 SpiderDebug.log("serviceTicket>>" + string);
                 HashMap map = new HashMap();
-                String strM = com.github.catvod.spider.merge.f0.d.m("https://pan.quark.cn/account/info?st=" + string + "&lw=scan", null, map);
+                String strM = PanHttpClient.get("https://pan.quark.cn/account/info?st=" + string + "&lw=scan", null, map);
                 StringBuilder sb = new StringBuilder();
                 sb.append("respHeader");
                 sb.append(map);
@@ -370,7 +371,7 @@ public final class QuarkDriveApi {
                     HashMap map2 = new HashMap();
                     HashMap map3 = new HashMap();
                     map3.put("Cookie", string2);
-                    com.github.catvod.spider.merge.f0.d.m("https://drive-pc.quark.cn/1/clouddrive/file/sort?pr=ucpro&fr=pc&uc_param_str=&pdir_fid=0&_page=1&_size=50&_fetch_total=1&_fetch_sub_dirs=0&_sort=file_type:asc,updated_at:desc", map3, map2);
+                    PanHttpClient.get("https://drive-pc.quark.cn/1/clouddrive/file/sort?pr=ucpro&fr=pc&uc_param_str=&pdir_fid=0&_page=1&_size=50&_fetch_total=1&_fetch_sub_dirs=0&_sort=file_type:asc,updated_at:desc", map3, map2);
                     SpiderDebug.log(map2.toString());
                     c0754f0.H(((Object) c0754f0.q(map2)) + string2, true);
                     SpiderDebug.log("请重新进入播放页。。。" + strL);
@@ -398,13 +399,13 @@ public final class QuarkDriveApi {
     /* JADX WARN: Type inference failed for: r4v2, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
     private String k(String str, String str2, boolean z) throws Exception {
         String str3 = str;
-        if (com.github.catvod.spider.merge.P0.e.c(str)) {
+        if (PanTextUtils.isEmpty(str)) {
             throw new Exception();
         }
         SpiderDebug.log("Copy ... fileId:" + str);
         String[] strArrSplit = str.split("_");
         String str4 = (String) o.get(strArrSplit[0]);
-        if (!com.github.catvod.spider.merge.P0.e.c(str4)) {
+        if (!PanTextUtils.isEmpty(str4)) {
             strArrSplit[1] = str4;
         }
         JSONObject jSONObject = new JSONObject();
@@ -422,15 +423,15 @@ public final class QuarkDriveApi {
         }
         String str5 = "";
         try {
-            if (!com.github.catvod.spider.merge.P0.e.c(str)) {
+            if (!PanTextUtils.isEmpty(str)) {
                 if (str.contains("_")) {
                     str3 = str.split("_")[0];
                 }
                 JSONObject jSONObject2 = new JSONObject(p("1/clouddrive/share/sharepage/detail?pr=ucpro&fr=pc&pwd_id=" + this.k + "&stoken=" + URLEncoder.encode(this.h) + "&pdir_fid=0&force=0&_page=1&_size=50&_fetch_banner=1&_fetch_share=1&_fetch_total=1&_sort=file_type:asc,updated_at:desc")).getJSONObject("data");
-                ArrayList<com.github.catvod.spider.merge.S.a> arrayList = new ArrayList();
-                A(null, true, new com.github.catvod.spider.merge.S.a(u("", jSONObject2)), arrayList, new ArrayList<>(), null);
+                ArrayList<QuarkFile> arrayList = new ArrayList();
+                A(null, true, new QuarkFile(u("", jSONObject2)), arrayList, new ArrayList<>(), null);
                 String strA2 = "";
-                for (com.github.catvod.spider.merge.S.a aVar : arrayList) {
+                for (QuarkFile aVar : arrayList) {
                     o.put(aVar.d(), aVar.h());
                     if (aVar.d().equals(str3)) {
                         strA2 = aVar.a();
@@ -448,18 +449,18 @@ public final class QuarkDriveApi {
     private String l(String str, String str2) throws Exception {
         String string;
         try {
-            if ((System.currentTimeMillis() / 1000) - this.m.f() < 1800) {
+            if ((System.currentTimeMillis() / 1000) - this.m.getCacheTime() < 1800) {
                 SpiderDebug.log("Obtain drive id... return cached drive");
-                if (com.github.catvod.spider.merge.P0.e.c(this.l)) {
-                    this.l = this.m.e();
+                if (PanTextUtils.isEmpty(this.l)) {
+                    this.l = this.m.getDriveId();
                 }
             } else {
                 SpiderDebug.log("Obtain drive id...");
                 String string2 = new JSONObject(p("1/clouddrive/share/sharepage/dir?pr=ucpro&fr=pc&aver=1")).getJSONObject("data").getString("pdir_fid");
                 this.l = string2;
-                this.m.k(string2);
-                this.m.l(System.currentTimeMillis() / 1000);
-                this.m.i();
+                this.m.setDriveId(string2);
+                this.m.setCacheTime(System.currentTimeMillis() / 1000);
+                this.m.save();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -489,7 +490,6 @@ public final class QuarkDriveApi {
         return string;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void m() {
         try {
             AlertDialog alertDialog = this.g;
@@ -501,11 +501,11 @@ public final class QuarkDriveApi {
     }
 
     /* JADX WARN: Type inference failed for: r1v1, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    private String n(String str, List<com.github.catvod.spider.merge.S.a> list) {
-        ArrayList<com.github.catvod.spider.merge.S.a> arrayList = new ArrayList();
-        String lowerCase = com.github.catvod.spider.merge.i0.GeneralUtils.y(str).toLowerCase();
-        for (com.github.catvod.spider.merge.S.a aVar : list) {
-            String lowerCase2 = com.github.catvod.spider.merge.i0.GeneralUtils.y(aVar.f()).toLowerCase();
+    private String n(String str, List<QuarkFile> list) {
+        ArrayList<QuarkFile> arrayList = new ArrayList();
+        String lowerCase = PanStringUtils.cleanFilename(str).toLowerCase();
+        for (QuarkFile aVar : list) {
+            String lowerCase2 = PanStringUtils.cleanFilename(aVar.f()).toLowerCase();
             if (lowerCase.contains(lowerCase2) || lowerCase2.contains(lowerCase)) {
                 arrayList.add(aVar);
             }
@@ -514,10 +514,10 @@ public final class QuarkDriveApi {
             arrayList.addAll(list);
         }
         StringBuilder sb = new StringBuilder();
-        for (com.github.catvod.spider.merge.S.a aVar2 : arrayList) {
+        for (QuarkFile aVar2 : arrayList) {
             o.put(aVar2.d(), aVar2.h());
             sb.append("+");
-            sb.append(com.github.catvod.spider.merge.i0.GeneralUtils.y(aVar2.f()));
+            sb.append(PanStringUtils.cleanFilename(aVar2.f()));
             sb.append("@@@");
             sb.append(aVar2.c());
             sb.append("@@@");
@@ -527,7 +527,7 @@ public final class QuarkDriveApi {
     }
 
     public static QuarkDriveApi o() {
-        return C0752e0.a;
+        return Holder.INSTANCE;
     }
 
     private String p(String str) throws InterruptedException {
@@ -543,7 +543,7 @@ public final class QuarkDriveApi {
             if (i <= 0) {
                 break;
             }
-            strM = com.github.catvod.spider.merge.f0.d.m(str, mapS, map);
+            strM = PanHttpClient.get(str, mapS, map);
             SpiderDebug.log("quark get result:" + strM);
             if (strM.length() > 10) {
                 break;
@@ -574,7 +574,7 @@ public final class QuarkDriveApi {
 
     private String u(String str, JSONObject jSONObject) {
         try {
-            if (!com.github.catvod.spider.merge.P0.e.c(str)) {
+            if (!PanTextUtils.isEmpty(str)) {
                 return str;
             }
             JSONArray jSONArray = jSONObject.getJSONArray("list");
@@ -610,10 +610,10 @@ public final class QuarkDriveApi {
 
     private String w(String str, String str2) {
         StringBuilder sb = new StringBuilder("quark getRealDownUrl MD5:");
-        sb.append(com.github.catvod.spider.merge.i0.m.c(str2));
+        sb.append(PanStringUtils.md5(str2));
         SpiderDebug.log(sb.toString());
-        BaseApi.get().h.put(com.github.catvod.spider.merge.i0.m.c(str2), new Gson().toJson(s(str2)));
-        return str.contains("原畫") ? Server.z(str2, this.m.c().intValue(), com.github.catvod.spider.merge.S.b.a(this.m.g()).intValue()) : str2;
+        BaseApi.get().h.put(PanStringUtils.md5(str2), new Gson().toJson(s(str2)));
+        return str.contains("原畫") ? Server.z(str2, this.m.getCount().intValue(), QuarkQuality.a(this.m.getMemberType()).intValue()) : str2;
     }
 
     public final String C(Map<String, List<String>> map) {
@@ -639,11 +639,11 @@ public final class QuarkDriveApi {
             }
             i++;
         }
-        String strD = this.m.d();
+        String strD = this.m.getCookie();
         if ((strSubstring == null || strSubstring.isEmpty())) {
             return strD;
         }
-        String[] strArrSplit2 = this.m.d().split("; ");
+        String[] strArrSplit2 = this.m.getCookie().split("; ");
         StringBuilder sb = new StringBuilder();
         for (String str2 : strArrSplit2) {
             if (str2.startsWith("__puus=")) {
@@ -655,26 +655,26 @@ public final class QuarkDriveApi {
             sb.append("; ");
         }
         String string = new StringBuilder(sb.substring(0, sb.length() - 2)).toString();
-        this.m.j(string);
-        this.m.i();
+        this.m.setCookie(string);
+        this.m.save();
         return string;
     }
 
     public final String D(String[] strArr) {
         if (strArr[0].startsWith("http")) {
-            com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
-            gVar.w("");
+            PlayResult gVar = new PlayResult();
+            gVar.setUrl("");
             return gVar.toString();
         }
-        com.github.catvod.bean.g gVar2 = new com.github.catvod.bean.g();
+        PlayResult gVar2 = new PlayResult();
         QuarkDriveApi c0754f0 = C0752e0.a;
         String str = strArr[0];
         String str2 = strArr[1];
         c0754f0.getClass();
-        gVar2.w(Proxy.getUrl() + "?do=quark&type=dwnz&file_id=" + str2 + "&share_id=" + str);
-        gVar2.i();
-        gVar2.v(x(strArr));
-        gVar2.g(s(null));
+        gVar2.setUrl(Proxy.getUrl() + "?do=quark&type=dwnz&file_id=" + str2 + "&share_id=" + str);
+        gVar2.setOctetStream();
+        gVar2.setSubtitles(x(strArr));
+        gVar2.setHeaders(s(null));
         return gVar2.toString();
     }
 
@@ -682,8 +682,8 @@ public final class QuarkDriveApi {
         String isoDownloadUrl;
         try {
             if (strArr[0].startsWith("http")) {
-                com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
-                gVar.w("");
+                PlayResult gVar = new PlayResult();
+                gVar.setUrl("");
                 return gVar.toString();
             }
             String strW = w(str, r(strArr[1], strArr[0], str.contains("原畫")));
@@ -695,30 +695,30 @@ public final class QuarkDriveApi {
             } else {
                 isoDownloadUrl = NetPan.getIsoDownloadUrl(strW);
             }
-            com.github.catvod.bean.g gVar2 = new com.github.catvod.bean.g();
-            gVar2.w(isoDownloadUrl);
-            gVar2.a(C0773p.a.t(strArr));
-            gVar2.i();
-            gVar2.v(x(strArr));
-            gVar2.g(s(null));
+            PlayResult gVar2 = new PlayResult();
+            gVar2.setUrl(isoDownloadUrl);
+            gVar2.setExtra(AliDriveHelper.getDanmakuUrl(strArr));
+            gVar2.setOctetStream();
+            gVar2.setSubtitles(x(strArr));
+            gVar2.setHeaders(s(null));
             return gVar2.toString();
         } catch (Exception e) {
             SpiderDebug.log("夸克 playerContent：" + e);
-            com.github.catvod.bean.g gVar3 = new com.github.catvod.bean.g();
-            gVar3.w("");
+            PlayResult gVar3 = new PlayResult();
+            gVar3.setUrl("");
             return gVar3.toString();
         }
     }
 
     public final void H(String str, boolean z) {
-        if (com.github.catvod.spider.merge.P0.e.c(this.m.d()) || z) {
+        if (PanTextUtils.isEmpty(this.m.getCookie()) || z) {
             SpiderDebug.log("set new Cookie:" + str);
             if (str != null && str.startsWith("http")) {
-                str = com.github.catvod.spider.merge.f0.d.l(str).trim();
+                str = PanHttpClient.get(str).trim();
             }
-            this.m.j(str);
+            this.m.setCookie(str);
             t();
-            this.m.i();
+            this.m.save();
             n = new HashMap(512);
             o = new HashMap(4096);
         }
@@ -737,12 +737,12 @@ public final class QuarkDriveApi {
             Method dump skipped, instruction units count: 461
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.github.catvod.spider.merge.I.C0754f0.r(java.lang.String, java.lang.String, boolean):java.lang.String");
+        throw new UnsupportedOperationException("Method not decompiled: QuarkDriveApi.r(String, String, boolean):String");
     }
 
     public final HashMap<String, String> s(String str) {
-        HashMap<String, String> mapB = com.github.catvod.spider.merge.B.e.b("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) quark-cloud-drive/3.2.0 Chrome/100.0.4896.160 Electron/18.3.5.17-1a44cfa97d Safari/537.36 Channel/pckk_other_ch", "Referer", "https://drive.quark.cn/");
-        mapB.put("Cookie", this.m.d());
+        HashMap<String, String> mapB = MapHelper.of("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) quark-cloud-drive/3.2.0 Chrome/100.0.4896.160 Electron/18.3.5.17-1a44cfa97d Safari/537.36 Channel/pckk_other_ch", "Referer", "https://drive.quark.cn/");
+        mapB.put("Cookie", this.m.getCookie());
         mapB.put("Url", str);
         return mapB;
     }
@@ -753,8 +753,8 @@ public final class QuarkDriveApi {
             HashMap<String, String> mapS = s("https://drive-pc.quark.cn/1/clouddrive/member?pr=ucpro&fr=pc&uc_param_str=&fetch_subscribe=true&_ch=home&fetch_identity=true");
             String str = "__pus=" + CookieUtils.extractPusFromCookie(mapS.get("Cookie"));
             mapS.put("Cookie", str);
-            this.m.m(new JSONObject(com.github.catvod.spider.merge.f0.d.m("https://drive-pc.quark.cn/1/clouddrive/member?pr=ucpro&fr=pc&uc_param_str=&fetch_subscribe=true&_ch=home&fetch_identity=true", mapS, map)).getJSONObject("data").getString("member_type"));
-            this.m.j(CookieUtils.mergeCookies(map, str));
+            this.m.setMemberType(new JSONObject(PanHttpClient.get("https://drive-pc.quark.cn/1/clouddrive/member?pr=ucpro&fr=pc&uc_param_str=&fetch_subscribe=true&_ch=home&fetch_identity=true", mapS, map)).getJSONObject("data").getString("member_type"));
+            this.m.setCookie(CookieUtils.mergeCookies(map, str));
         } catch (Exception unused) {
         }
     }
@@ -794,8 +794,8 @@ public final class QuarkDriveApi {
                 break;
             }
             try {
-                if (!com.github.catvod.spider.merge.P0.e.c(this.m.d())) {
-                    if (!com.github.catvod.spider.merge.P0.e.c(this.h)) {
+                if (!PanTextUtils.isEmpty(this.m.getCookie())) {
+                    if (!PanTextUtils.isEmpty(this.h)) {
                         break;
                     }
                 } else {
@@ -808,16 +808,16 @@ public final class QuarkDriveApi {
             }
         }
         G(str2, "");
-        JSONObject jSONObject = new JSONObject(p("1/clouddrive/share/sharepage/detail?pr=ucpro&fr=pc&pwd_id=" + str2 + "&stoken=" + URLEncoder.encode(this.h) + "&pdir_fid=" + (com.github.catvod.spider.merge.P0.e.c(str3) ? "0" : str3) + "&force=0&_page=1&_size=50&_fetch_banner=1&_fetch_share=1&_fetch_total=1&_sort=file_type:asc,updated_at:desc")).getJSONObject("data");
-        String strY = (str4 == null || str4.isEmpty()) ? com.github.catvod.spider.merge.i0.GeneralUtils.y(jSONObject.getJSONObject("share").getString("title")) : str4;
-        ArrayList<com.github.catvod.spider.merge.S.a> arrayList4 = new ArrayList();
-        List<com.github.catvod.spider.merge.S.a> arrayList5 = new ArrayList<>();
-        com.github.catvod.spider.merge.S.a aVar = new com.github.catvod.spider.merge.S.a(u(str3, jSONObject));
-        List<com.github.catvod.spider.merge.S.a> list = arrayList5;
+        JSONObject jSONObject = new JSONObject(p("1/clouddrive/share/sharepage/detail?pr=ucpro&fr=pc&pwd_id=" + str2 + "&stoken=" + URLEncoder.encode(this.h) + "&pdir_fid=" + (PanTextUtils.isEmpty(str3) ? "0" : str3) + "&force=0&_page=1&_size=50&_fetch_banner=1&_fetch_share=1&_fetch_total=1&_sort=file_type:asc,updated_at:desc")).getJSONObject("data");
+        String strY = (str4 == null || str4.isEmpty()) ? PanStringUtils.cleanFilename(jSONObject.getJSONObject("share").getString("title")) : str4;
+        ArrayList<QuarkFile> arrayList4 = new ArrayList();
+        List<QuarkFile> arrayList5 = new ArrayList<>();
+        QuarkFile aVar = new QuarkFile(u(str3, jSONObject));
+        List<QuarkFile> list = arrayList5;
         String str6 = strY;
         try {
             A(null, true, aVar, arrayList4, list, null);
-            for (com.github.catvod.spider.merge.S.a aVar2 : arrayList4) {
+            for (QuarkFile aVar2 : arrayList4) {
                 o.put(aVar2.d(), aVar2.h());
                 StringBuilder sb = new StringBuilder();
                 sb.append(aVar2.b());
@@ -830,7 +830,7 @@ public final class QuarkDriveApi {
                 sb.append(str7);
                 sb.append('+');
                 sb.append(aVar2.f());
-                List<com.github.catvod.spider.merge.S.a> list2 = list;
+                List<QuarkFile> list2 = list;
                 sb.append(n(aVar2.f(), list2));
                 arrayList3.add(sb.toString());
                 list = list2;
@@ -901,6 +901,6 @@ public final class QuarkDriveApi {
             Method dump skipped, instruction units count: 330
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.github.catvod.spider.merge.I.C0754f0.z(com.github.catvod.bean.j):java.util.List");
+        throw new UnsupportedOperationException("Method not decompiled: QuarkDriveApi.z(JsonUtils):List");
     }
 }

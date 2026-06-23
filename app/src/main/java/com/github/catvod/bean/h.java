@@ -35,7 +35,7 @@ public final class h {
     }
 
     public final h b(String str) {
-        int i = com.github.catvod.spider.merge.i0.g.a;
+        int i = 0;
         this.b = str;
         return this;
     }

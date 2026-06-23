@@ -111,7 +111,7 @@ public final class U implements X, com.github.catvod.spider.merge.C.w {
                 return (T) com.github.catvod.spider.merge.H.A.u0(str);
             }
             if (type == SimpleDateFormat.class) {
-                ?? r10 = (T) new SimpleDateFormat(str, dVar.G());
+                Object r10 = (T) new SimpleDateFormat(str, dVar.G());
                 r10.setTimeZone(dVar.M());
                 return r10;
             }

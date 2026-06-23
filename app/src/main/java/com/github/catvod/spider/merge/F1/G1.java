@@ -66,13 +66,13 @@ final class G1 {
                         return h12.a(c1185v2, n2Var3, obj, g1);
                     }
                 });
-                ?? c1165o02 = this.e.e;
+                Object c1165o02 = this.e.e;
                 if (!this.f) {
                     c1165o02 = new C1165o0(n2Var, 1, new C1109Z(this, h1, i2));
                     c1165o02.B1();
                 }
                 this.b++;
-                ?? V = C1157l2.V(objB, "then", c1185v, n2Var);
+                Object V = C1157l2.V(objB, "then", c1185v, n2Var);
                 n2 n2Var3 = c1185v.v;
                 c1185v.v = null;
                 V.b(c1185v, n2Var, n2Var3, new Object[]{c1165o0, c1165o02});

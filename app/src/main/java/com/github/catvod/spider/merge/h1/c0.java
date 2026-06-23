@@ -39,7 +39,7 @@ public final class c0 extends AbstractC1239f {
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.h1.f>] */
     /* JADX WARN: Type inference failed for: r1v1, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.h1.f>] */
     public final void f0(List<AbstractC1239f> list) {
-        ?? r0 = this.o;
+        Object r0 = this.o;
         if (r0 != 0) {
             r0.clear();
         }

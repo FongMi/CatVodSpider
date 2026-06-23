@@ -5,7 +5,7 @@ import com.github.catvod.spider.merge.yZ.C1442g;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.Mp.u, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C0877u extends B {
+class C0877u extends B {
     C0877u() {
         super(ZrJ.d("302D03282921"), 3, null);
     }

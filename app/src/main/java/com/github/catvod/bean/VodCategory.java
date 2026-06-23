@@ -72,7 +72,6 @@ public abstract class VodCategory {
             return string;
         }
         StringBuilder sbB = b();
-        com.github.catvod.spider.merge.J.b.f(sbB);
         Object obj = string;
         while (true) {
             sbB.append(obj);
@@ -86,7 +85,6 @@ public abstract class VodCategory {
     }
 
     public static String g(StringBuilder sb) {
-        com.github.catvod.spider.merge.J.b.f(sb);
         String string = sb.toString();
         if (sb.length() > 8192) {
             sb = new StringBuilder(8192);

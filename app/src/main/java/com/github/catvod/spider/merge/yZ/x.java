@@ -57,7 +57,7 @@ public abstract class x extends C<E, S> {
         if (eO.getType() != -1) {
             this.e.j();
         }
-        ?? r1 = this.j;
+        Object r1 = this.j;
         boolean z = (r1 == 0 || r1.isEmpty()) ? false : true;
         if (this.h || z) {
             if (this.d.a) {
@@ -65,7 +65,7 @@ public abstract class x extends C<E, S> {
                 com.github.catvod.spider.merge.cz.a aVar = new com.github.catvod.spider.merge.cz.a(eO);
                 yVar.getClass();
                 yVar.g(aVar);
-                ?? r12 = this.j;
+                Object r12 = this.j;
                 if (r12 != 0) {
                     Iterator it = r12.iterator();
                     while (it.hasNext()) {
@@ -77,7 +77,7 @@ public abstract class x extends C<E, S> {
                 com.github.catvod.spider.merge.cz.g gVar = new com.github.catvod.spider.merge.cz.g(eO);
                 yVar2.getClass();
                 yVar2.g(gVar);
-                ?? r13 = this.j;
+                Object r13 = this.j;
                 if (r13 != 0) {
                     Iterator it2 = r13.iterator();
                     while (it2.hasNext()) {
@@ -94,7 +94,7 @@ public abstract class x extends C<E, S> {
         y yVar2;
         y yVar3;
         if (this.h && (yVar2 = this.g) != yVar && (yVar3 = (y) yVar2.a) != null) {
-            ?? r1 = yVar3.d;
+            Object r1 = yVar3.d;
             if (r1 != 0) {
                 r1.remove(r1.size() - 1);
             }
@@ -115,7 +115,7 @@ public abstract class x extends C<E, S> {
                 yVar3.g(yVar2);
             }
         }
-        ?? r2 = this.j;
+        Object r2 = this.j;
         if (r2 != 0) {
             for (com.github.catvod.spider.merge.cz.c cVar : r2) {
                 cVar.n(this.g);
@@ -137,7 +137,7 @@ public abstract class x extends C<E, S> {
             eF = this.e.f(-1);
         }
         yVar.f = eF;
-        ?? r0 = this.j;
+        Object r0 = this.j;
         if (r0 != 0) {
             for (int size = r0.size() - 1; size >= 0; size--) {
                 com.github.catvod.spider.merge.cz.c cVar = (com.github.catvod.spider.merge.cz.c) this.j.get(size);
@@ -191,7 +191,7 @@ public abstract class x extends C<E, S> {
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.cz.c>] */
     /* JADX WARN: Type inference failed for: r2v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.cz.c>] */
     public final void s(com.github.catvod.spider.merge.cz.c cVar) {
-        ?? r0 = this.j;
+        Object r0 = this.j;
         if (r0 != 0 && r0.remove(cVar) && this.j.isEmpty()) {
             this.j = null;
         }

@@ -17,7 +17,7 @@ public final class d {
 
     public d(String str, String str2, List<c> list) {
         this.a = str;
-        int i = com.github.catvod.spider.merge.i0.g.a;
+        int i = 0;
         this.b = str2;
         this.c = list;
     }

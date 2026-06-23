@@ -933,7 +933,7 @@ public abstract class p2 implements n2, y2, Serializable, InterfaceC1262a, Inter
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.HashMap, java.util.Map<java.lang.Object, java.lang.Object>] */
     public final Object d0(Object obj) {
-        ?? r0 = this.e;
+        Object r0 = this.e;
         if (r0 == 0) {
             return null;
         }

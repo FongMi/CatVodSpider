@@ -1,9 +1,5 @@
 package com.github.catvod.utils.server;
 
-import com.github.catvod.spider.merge.H0.i;
-import com.github.catvod.spider.merge.H0.o;
-import com.github.catvod.spider.merge.H0.t;
-
 import java.util.Map;
 
 
@@ -48,6 +44,6 @@ public class Server extends t {
 
     public static native String z(String str, int i, int i2);
 
-    @Override // com.github.catvod.spider.merge.H0.t
+    @Override // com.github.catvod.internal.NanoHttpServer
     public final native o p(i iVar);
 }

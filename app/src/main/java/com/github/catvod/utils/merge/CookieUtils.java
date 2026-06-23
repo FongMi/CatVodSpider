@@ -89,48 +89,48 @@ public final class CookieUtils {
     // ========== 以下方法仅供 merge 包内部使用，保留兼容性 ==========
 
     public static void throwError(String message) {
-        throw new com.github.catvod.spider.merge.a1.C0900e(message);
+        throw new java.lang.IllegalArgumentException(message);
     }
 
     public static void assertTrue(boolean condition) {
         if (!condition) {
-            throw new com.github.catvod.spider.merge.a1.C0900e("Must be true");
+            throw new java.lang.IllegalArgumentException("Must be true");
         }
     }
 
     public static void assertTrue(boolean condition, String message) {
         if (!condition) {
-            throw new com.github.catvod.spider.merge.a1.C0900e(message);
+            throw new java.lang.IllegalArgumentException(message);
         }
     }
 
     public static void assertFalse(boolean condition) {
         if (condition) {
-            throw new com.github.catvod.spider.merge.a1.C0900e("Must be false");
+            throw new java.lang.IllegalArgumentException("Must be false");
         }
     }
 
     public static void assertNotEmpty(String str) {
         if (str == null || str.isEmpty()) {
-            throw new com.github.catvod.spider.merge.a1.C0900e("String must not be empty");
+            throw new java.lang.IllegalArgumentException("String must not be empty");
         }
     }
 
     public static void assertNotEmpty(String str, String message) {
         if (str == null || str.isEmpty()) {
-            throw new com.github.catvod.spider.merge.a1.C0900e(message);
+            throw new java.lang.IllegalArgumentException(message);
         }
     }
 
     public static void assertNotNull(Object obj) {
         if (obj == null) {
-            throw new com.github.catvod.spider.merge.a1.C0900e("Object must not be null");
+            throw new java.lang.IllegalArgumentException("Object must not be null");
         }
     }
 
     public static void assertNotNull(Object obj, String paramName) {
         if (obj == null) {
-            throw new com.github.catvod.spider.merge.a1.C0900e(
+            throw new java.lang.IllegalArgumentException(
                     String.format("The parameter '%s' must not be null.", paramName));
         }
     }

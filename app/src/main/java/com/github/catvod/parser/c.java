@@ -1,6 +1,6 @@
 package com.github.catvod.parser;
 
-import com.github.catvod.spider.merge.C1200g;
+
 
 import java.io.ByteArrayOutputStream;
 
@@ -9,7 +9,7 @@ public class c {
     public static int a = -208;
 
     public static int b() {
-        return 270 ^ C1200g.a;
+        return 270 ^ -508;
     }
 
     public static int c(Object obj) {

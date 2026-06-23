@@ -56,7 +56,7 @@ public final class j implements f {
                     if (i5 <= i6) {
                         i iVar3 = i5 > i4 ? new i(i4, i5 - 1) : null;
                         i iVar4 = i3 < i6 ? new i(i3 + 1, i6) : null;
-                        ?? r2 = jVar3.a;
+                        Object r2 = jVar3.a;
                         if (iVar3 != null) {
                             r2.set(i, iVar3);
                             if (iVar4 != null) {
@@ -204,7 +204,7 @@ public final class j implements f {
 
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Mm.i>] */
     public final boolean f() {
-        ?? r0 = this.a;
+        Object r0 = this.a;
         return r0 == 0 || r0.isEmpty();
     }
 
@@ -278,7 +278,7 @@ public final class j implements f {
     /* JADX WARN: Type inference failed for: r1v3, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Mm.i>] */
     public final String l(H h) {
         StringBuilder sb = new StringBuilder();
-        ?? r1 = this.a;
+        Object r1 = this.a;
         if (r1 == 0 || r1.isEmpty()) {
             return "{}";
         }
@@ -322,7 +322,7 @@ public final class j implements f {
     /* JADX WARN: Type inference failed for: r1v3, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.Mm.i>] */
     public final String toString() {
         StringBuilder sb = new StringBuilder();
-        ?? r1 = this.a;
+        Object r1 = this.a;
         if (r1 == 0 || r1.isEmpty()) {
             return "{}";
         }

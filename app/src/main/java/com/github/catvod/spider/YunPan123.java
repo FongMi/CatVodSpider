@@ -13,7 +13,7 @@ import java.util.List;
 
 public class YunPan123 extends Spider {
     public String detailContent(String str, List<String> list) {
-        return VodResult.m(Yun123Api.a().g(list.get(0).trim()));
+        return VodResult.m(Yun123Api.getInstance().buildVodItem(list.get(0).trim()));
     }
 
     public String detailContent(List<String> list) {
@@ -28,10 +28,10 @@ public class YunPan123 extends Spider {
         if (BaseApi.isOk("yun123")) {
             return "";
         }
-        Yun123Api j0A = Yun123Api.a();
+        Yun123Api j0A = Yun123Api.getInstance();
         String[] strArrSplit = str2.split("\\+");
         str.split("#")[0].equals("p123原畫");
-        return j0A.j(strArrSplit);
+        return j0A.getPlayUrl(strArrSplit);
     }
 
     public void test() {

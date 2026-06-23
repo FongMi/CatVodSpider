@@ -78,7 +78,7 @@ public final class M extends g0 implements X {
     /* JADX WARN: Type inference failed for: r2v1, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.O>] */
     /* JADX WARN: Type inference failed for: r2v2, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.O>] */
     protected final boolean i(L l, String str) {
-        ?? r2 = l.g;
+        List<O> r2 = l.g;
         if (r2 != 0) {
             Iterator it = r2.iterator();
             while (it.hasNext()) {
@@ -87,7 +87,7 @@ public final class M extends g0 implements X {
                 }
             }
         }
-        ?? r22 = this.g;
+        List<O> r22 = this.g;
         if (r22 == 0) {
             return true;
         }
@@ -232,14 +232,14 @@ public final class M extends g0 implements X {
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.d>] */
     /* JADX WARN: Type inference failed for: r0v1, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.d>] */
     protected final char s(L l, Object obj, char c) {
-        ?? r0 = l.b;
+        List<AbstractC0603d> r0 = l.b;
         if (r0 != 0) {
             Iterator it = r0.iterator();
             while (it.hasNext()) {
                 c = ((AbstractC0603d) it.next()).f(l, obj, c);
             }
         }
-        ?? r02 = this.b;
+        List<AbstractC0603d> r02 = this.b;
         if (r02 != 0) {
             Iterator it2 = r02.iterator();
             while (it2.hasNext()) {
@@ -252,14 +252,14 @@ public final class M extends g0 implements X {
     /* JADX WARN: Type inference failed for: r0v0, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.l>] */
     /* JADX WARN: Type inference failed for: r0v1, types: [java.util.ArrayList, java.util.List<com.github.catvod.spider.merge.D.l>] */
     protected final char t(L l, Object obj, char c) {
-        ?? r0 = l.a;
+        List<AbstractC0611l> r0 = l.a;
         if (r0 != 0) {
             Iterator it = r0.iterator();
             while (it.hasNext()) {
                 c = ((AbstractC0611l) it.next()).f(l, obj, c);
             }
         }
-        ?? r02 = this.a;
+        List<AbstractC0611l> r02 = this.a;
         if (r02 != 0) {
             Iterator it2 = r02.iterator();
             while (it2.hasNext()) {

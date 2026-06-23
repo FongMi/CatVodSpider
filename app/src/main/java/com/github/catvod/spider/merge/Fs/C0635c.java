@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /* JADX INFO: renamed from: com.github.catvod.spider.merge.Fs.c, reason: case insensitive filesystem */
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum C0635c extends A {
+class C0635c extends A {
     C0635c() {
         super("InTableText", 9, null);
     }

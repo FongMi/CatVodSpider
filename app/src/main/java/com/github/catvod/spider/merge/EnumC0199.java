@@ -86,7 +86,7 @@ abstract class EnumC0199 {
     private static final /* synthetic */ EnumC0199[] f532;
 
     /* JADX INFO: renamed from: com.github.catvod.spider.merge.ז$ރ, reason: contains not printable characters */
-    enum C0210 extends EnumC0199 {
+    class C0210 extends EnumC0199 {
         C0210(String str, int i) {
             super(str, i, null);
         }

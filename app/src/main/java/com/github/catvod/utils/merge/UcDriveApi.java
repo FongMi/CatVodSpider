@@ -7,11 +7,21 @@ import android.net.Uri;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import com.github.catvod.bean.quark.QuarkFile;
+import com.github.catvod.bean.quark.QuarkMetadata;
+import com.github.catvod.bean.quark.QuarkQuality;
+import com.github.catvod.bean.quark.QuarkSorter;
+import com.github.catvod.bean.uc.UcQuality;
+import com.github.catvod.bean.uc.UcUser;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.spider.Init;
 import com.github.catvod.spider.Proxy;
+import com.github.catvod.utils.MapHelper;
+import com.github.catvod.utils.PanHttpClient;
+import com.github.catvod.utils.PanStringUtils;
+import com.github.catvod.utils.PanTextUtils;
 import com.github.catvod.utils.server.Server;
 import com.google.gson.Gson;
 import org.json.JSONArray;
@@ -25,8 +35,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-/* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
 public final class UcDriveApi {
+    private static class Holder { static final UcDriveApi INSTANCE = new UcDriveApi(); }
     private static Map<String, String> n;
     private static Map<String, String> o;
     private final Map<String, String> a;
@@ -41,11 +51,11 @@ public final class UcDriveApi {
     private long j;
     private String k;
     private String l;
-    public com.github.catvod.spider.merge.T.b m;
+    public UcUser m;
 
     UcDriveApi() {
         try {
-            this.m = com.github.catvod.spider.merge.T.b.i(com.github.catvod.spider.merge.g.b.d(com.github.catvod.spider.merge.g.b.f("uc_user")));
+            this.m = UcUser.fromJson(LocalStorage.readJson("uc_user"));
         } catch (Exception unused) {
             SpiderDebug.log("uc授权初始化失败，请删除根目录TV文件夹下授权文件后重试");
         }
@@ -74,11 +84,11 @@ public final class UcDriveApi {
         o = new HashMap(4096);
     }
 
-    private void C(HashMap<String, String> map, boolean z, com.github.catvod.spider.merge.S.a aVar, List<com.github.catvod.spider.merge.S.a> list, List<com.github.catvod.spider.merge.S.a> list2, List<com.github.catvod.spider.merge.S.a> list3) {
+    private void C(HashMap<String, String> map, boolean z, QuarkFile aVar, List<QuarkFile> list, List<QuarkFile> list2, List<QuarkFile> list3) {
         D(map, z, aVar, list, list2, list3, 1);
     }
 
-    private void D(HashMap<String, String> map, boolean z, com.github.catvod.spider.merge.S.a aVar, List<com.github.catvod.spider.merge.S.a> list, List<com.github.catvod.spider.merge.S.a> list2, List<com.github.catvod.spider.merge.S.a> list3, int i) {
+    private void D(HashMap<String, String> map, boolean z, QuarkFile aVar, List<QuarkFile> list, List<QuarkFile> list2, List<QuarkFile> list3, int i) {
         if (z) {
             try {
                 list3 = new ArrayList<>();
@@ -104,50 +114,50 @@ public final class UcDriveApi {
         String strS = s(sb.toString());
         SpiderDebug.log("listFiles >> " + strS);
         JSONObject jSONObject = new JSONObject(strS);
-        com.github.catvod.spider.merge.S.a aVarL = com.github.catvod.spider.merge.S.a.l(jSONObject.getJSONObject("data").toString());
+        QuarkFile aVarL = QuarkFile.l(jSONObject.getJSONObject("data").toString());
         try {
             if (aVarL.e().size() >= 1) {
-                com.github.catvod.spider.merge.S.d.a(aVarL.e());
+                QuarkSorter.a(aVarL.e());
             }
         } catch (Exception e2) {
             SpiderDebug.log("listFiles error" + e2.getMessage());
         }
-        for (com.github.catvod.spider.merge.S.a aVar2 : aVarL.e()) {
+        for (QuarkFile aVar2 : aVarL.e()) {
             if ("folder".equals(aVar2.k())) {
                 list3.add(aVar2);
-            } else if (BaseApi.get().d.booleanValue() || (com.github.catvod.spider.merge.i0.GeneralUtils.m(aVar2.f( != null && !com.github.catvod.spider.merge.i0.GeneralUtils.m(aVar2.f(.isEmpty())))) {
+            } else if (BaseApi.get().d.booleanValue() || PanStringUtils.isVideoFile(aVar2.f())) {
                 aVar2.m(aVar.f());
                 list.add(aVar2);
-            } else if (com.github.catvod.spider.merge.i0.m.r(aVar2.c())) {
+            } else if (PanStringUtils.isSubtitleExtension(aVar2.c())) {
                 list2.add(aVar2);
             }
         }
-        com.github.catvod.spider.merge.S.c cVar = (com.github.catvod.spider.merge.S.c) new Gson().fromJson(jSONObject.getJSONObject("metadata").toString(), com.github.catvod.spider.merge.S.c.class);
-        if (((cVar.b() - 1) * cVar.c()) + cVar.a() < cVar.d()) {
-            D(map, z, aVar, list, list2, list3, cVar.b() + 1);
+        QuarkMetadata cVar = QuarkMetadata.fromJson(jSONObject.getJSONObject("metadata").toString());
+        if (((cVar.getPage() - 1) * cVar.getPageSize()) + cVar.getCount() < cVar.getTotal()) {
+            D(map, z, aVar, list, list2, list3, cVar.getPage() + 1);
         }
         if (z) {
-            Iterator<com.github.catvod.spider.merge.S.a> it = list3.iterator();
+            Iterator<QuarkFile> it = list3.iterator();
             while (it.hasNext()) {
                 C(map, z, it.next(), list, list2, null);
             }
         }
     }
 
-    private com.github.catvod.spider.merge.f0.i H(String str, JSONObject jSONObject) throws InterruptedException {
+    private PanHttpClient.HttpResponse H(String str, JSONObject jSONObject) throws InterruptedException {
         if (!str.startsWith("https")) {
             str = UrlUtils.resolveUrl("https://pc-api.uc.cn/", str);
         }
         HashMap map = new HashMap();
         HashMap<String, String> mapV = v(str);
-        com.github.catvod.spider.merge.f0.i iVar = new com.github.catvod.spider.merge.f0.i();
+        PanHttpClient.HttpResponse iVar = new PanHttpClient.HttpResponse();
         int i = 2;
         while (true) {
             int i2 = i - 1;
             if (i <= 0) {
                 break;
             }
-            iVar = com.github.catvod.spider.merge.f0.d.k(str, jSONObject.toString(), mapV, map);
+            iVar = PanHttpClient.post(str, jSONObject.toString(), mapV, map);
             if (iVar.a().length() > 10) {
                 break;
             }
@@ -174,7 +184,7 @@ public final class UcDriveApi {
                 int i = 3;
                 while (true) {
                     int i2 = i - 1;
-                    if (i <= 0 || !com.github.catvod.spider.merge.P0.e.c(this.m.c())) {
+                    if (i <= 0 || !PanTextUtils.isEmpty(this.m.getCookie())) {
                         break;
                     }
                     Thread.sleep(1000L);
@@ -183,14 +193,14 @@ public final class UcDriveApi {
                 JSONObject jSONObject = new JSONObject();
                 jSONObject.put("pwd_id", str);
                 jSONObject.put("passcode", str2);
-                com.github.catvod.spider.merge.f0.i iVarH = H("1/clouddrive/share/sharepage/token?pr=UCBrowser&fr=pc", jSONObject);
+                PanHttpClient.HttpResponse iVarH = H("1/clouddrive/share/sharepage/token?pr=UCBrowser&fr=pc", jSONObject);
                 JSONObject jSONObject2 = new JSONObject(iVarH.a());
                 System.out.println("resultJson" + jSONObject2);
                 if (jSONObject2.getInt("status") == 401) {
-                    SpiderDebug.log("cookie is invalid:" + this.m.c());
-                    SpiderDebug.log("cookie is invalid:" + this.m.c());
-                    this.m.k("");
-                    this.m.j();
+                    SpiderDebug.log("cookie is invalid:" + this.m.getCookie());
+                    SpiderDebug.log("cookie is invalid:" + this.m.getCookie());
+                    this.m.setCookie("");
+                    this.m.save();
                     this.h = "";
                     return false;
                 }
@@ -210,17 +220,17 @@ public final class UcDriveApi {
     }
 
     private void K() {
-        String strL = com.github.catvod.spider.merge.f0.d.l(C0773p.a.c + "/api/ucGetRefreshToken");
+        String strL = PanHttpClient.get(AliDriveHelper.getProxyBaseUrl() + "/api/ucGetRefreshToken");
         if ((strL != null && !strL.isEmpty())) {
-            this.m.o(strL);
-            this.m.j();
+            this.m.setToken(strL);
+            this.m.save();
             O();
         }
     }
 
     private void N(String str) {
         try {
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(com.github.catvod.spider.merge.i0.GeneralUtils.f(240), com.github.catvod.spider.merge.i0.GeneralUtils.f(240));
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(PanStringUtils.dpToPx(240), PanStringUtils.dpToPx(240));
             ImageView imageView = new ImageView(Init.context());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setImageBitmap(QrCodeUtils.generateQrCode(str, 240, 2));
@@ -257,7 +267,7 @@ public final class UcDriveApi {
         v0Var.getClass();
         ScheduledExecutorService scheduledExecutorServiceNewScheduledThreadPool = Executors.newScheduledThreadPool(1);
         v0Var.c = scheduledExecutorServiceNewScheduledThreadPool;
-        scheduledExecutorServiceNewScheduledThreadPool.scheduleWithFixedDelay(new Runnable() { // from class: com.github.catvod.spider.merge.I.i0
+        scheduledExecutorServiceNewScheduledThreadPool.scheduleWithFixedDelay(new Runnable() {
             @Override // java.lang.Runnable
             public final void run() {
                 UcDriveApi.e(this.b, z, str);
@@ -271,14 +281,14 @@ public final class UcDriveApi {
             if (z) {
                 v0Var.K();
             } else {
-                String strL = com.github.catvod.spider.merge.f0.d.l("https://api.open.uc.cn/cas/ajax/getServiceTicketByQrcodeToken?client_id=381&v=1.2&token=" + str);
+                String strL = PanHttpClient.get("https://api.open.uc.cn/cas/ajax/getServiceTicketByQrcodeToken?client_id=381&v=1.2&token=" + str);
                 String string = new JSONObject(strL).getString("status");
                 SpiderDebug.log("params " + str);
                 if ("2000000".equals(string)) {
                     String string2 = new JSONObject(strL).getJSONObject("data").getJSONObject("members").getString("service_ticket");
                     SpiderDebug.log("serviceTicket>>" + string2);
                     HashMap map = new HashMap();
-                    String strM = com.github.catvod.spider.merge.f0.d.m("https://drive.uc.cn/account/info?st=" + string2 + "&lw=scan", null, map);
+                    String strM = PanHttpClient.get("https://drive.uc.cn/account/info?st=" + string2 + "&lw=scan", null, map);
                     StringBuilder sb = new StringBuilder();
                     sb.append("string");
                     sb.append(strM);
@@ -289,7 +299,7 @@ public final class UcDriveApi {
                         HashMap map2 = new HashMap();
                         HashMap map3 = new HashMap();
                         map3.put("Cookie", string3);
-                        SpiderDebug.log("string1" + com.github.catvod.spider.merge.f0.d.m("https://pc-api.uc.cn/1/clouddrive/file/sort?pr=UCBrowser&fr=pc&uc_param_str=&pdir_fid=0&_page=1&_size=50&_fetch_total=1&_fetch_sub_dirs=0&_sort=file_type:asc,updated_at:desc", map3, map2));
+                        SpiderDebug.log("string1" + PanHttpClient.get("https://pc-api.uc.cn/1/clouddrive/file/sort?pr=UCBrowser&fr=pc&uc_param_str=&pdir_fid=0&_page=1&_size=50&_fetch_total=1&_fetch_sub_dirs=0&_sort=file_type:asc,updated_at:desc", map3, map2));
                         v0Var.J(((Object) v0Var.t(map2)) + string3, true);
                         SpiderDebug.log("请重新进入播放页。。。" + strL);
                         v0Var.O();
@@ -320,7 +330,7 @@ public final class UcDriveApi {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static void h(com.github.catvod.spider.merge.I.UcDriveApi r7) throws org.json.JSONException, java.lang.InterruptedException {
+    public static void h(UcDriveApi r7) throws org.json.JSONException, java.lang.InterruptedException {
         /*
             r7.getClass()
             java.util.ArrayList r0 = new java.util.ArrayList
@@ -356,7 +366,7 @@ public final class UcDriveApi {
             r6.<init>()     // Catch: java.lang.Exception -> L76
             r4.put(r5, r6)     // Catch: java.lang.Exception -> L76
             java.lang.String r5 = "1/clouddrive/file/delete?pr=UCBrowser&fr=pc"
-            com.github.catvod.spider.merge.f0.i r4 = r7.H(r5, r4)     // Catch: java.lang.Exception -> L76
+            PanHttpClient.HttpResponse r4 = r7.H(r5, r4)     // Catch: java.lang.Exception -> L76
             java.lang.String r4 = r4.a()     // Catch: java.lang.Exception -> L76
             java.lang.String r5 = "文件已经删除"
             boolean r5 = r4.contains(r5)     // Catch: java.lang.Exception -> L76
@@ -380,7 +390,7 @@ public final class UcDriveApi {
         L7f:
             return
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.github.catvod.spider.merge.I.UcDriveApi.h(com.github.catvod.spider.merge.I.UcDriveApi):void");
+        throw new UnsupportedOperationException("Method not decompiled: UcDriveApi.h(UcDriveApi):void");
     }
 
     public static void i(EditText editText) {
@@ -403,7 +413,7 @@ public final class UcDriveApi {
                 intent.setClassName("com.UCMobile", "com.UCMobile.main.UCMobile");
                 intent.setData(Uri.parse(str2));
                 Init.getActivity().startActivity(intent);
-                runnable = new Runnable() { // from class: com.github.catvod.spider.merge.I.s0
+                runnable = new Runnable() {
                     @Override // java.lang.Runnable
                     public final void run() {
                         UcDriveApi.d(this.b, z, str);
@@ -411,7 +421,7 @@ public final class UcDriveApi {
                 };
             } catch (Exception unused) {
                 v0Var.N(str2);
-                runnable = new Runnable() { // from class: com.github.catvod.spider.merge.I.s0
+                runnable = new Runnable() {
                     @Override // java.lang.Runnable
                     public final void run() {
                         UcDriveApi.d(this.b, z, str);
@@ -420,7 +430,7 @@ public final class UcDriveApi {
             }
             Init.execute(runnable);
         } catch (Throwable th) {
-            Init.execute(new Runnable() { // from class: com.github.catvod.spider.merge.I.s0
+            Init.execute(new Runnable() {
                 @Override // java.lang.Runnable
                 public final void run() {
                     UcDriveApi.d(this.b, z, str);
@@ -448,13 +458,13 @@ public final class UcDriveApi {
     /* JADX WARN: Type inference failed for: r4v2, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
     private String n(String str, String str2, boolean z) throws Exception {
         String str3 = str;
-        if (com.github.catvod.spider.merge.P0.e.c(str)) {
+        if (PanTextUtils.isEmpty(str)) {
             throw new Exception();
         }
         SpiderDebug.log("Copy ... fileId:" + str);
         String[] strArrSplit = str.split("_");
         String str4 = (String) o.get(strArrSplit[0]);
-        if (!com.github.catvod.spider.merge.P0.e.c(str4)) {
+        if (!PanTextUtils.isEmpty(str4)) {
             strArrSplit[1] = str4;
         }
         JSONObject jSONObject = new JSONObject();
@@ -472,15 +482,15 @@ public final class UcDriveApi {
         }
         String str5 = "";
         try {
-            if (!com.github.catvod.spider.merge.P0.e.c(str)) {
+            if (!PanTextUtils.isEmpty(str)) {
                 if (str.contains("_")) {
                     str3 = str.split("_")[0];
                 }
                 JSONObject jSONObject2 = new JSONObject(s("1/clouddrive/share/sharepage/detail?pr=UCBrowser&fr=pc&pwd_id=" + this.k + "&stoken=" + URLEncoder.encode(this.h) + "&pdir_fid=0&force=0&_page=1&_size=50&_fetch_banner=1&_fetch_share=1&_fetch_total=1&_sort=file_type:asc,updated_at:desc")).getJSONObject("data");
-                ArrayList<com.github.catvod.spider.merge.S.a> arrayList = new ArrayList();
-                C(null, true, new com.github.catvod.spider.merge.S.a(x("", jSONObject2)), arrayList, new ArrayList<>(), null);
+                ArrayList<QuarkFile> arrayList = new ArrayList();
+                C(null, true, new QuarkFile(x("", jSONObject2)), arrayList, new ArrayList<>(), null);
                 String strA2 = "";
-                for (com.github.catvod.spider.merge.S.a aVar : arrayList) {
+                for (QuarkFile aVar : arrayList) {
                     o.put(aVar.d(), aVar.h());
                     if (aVar.d().equals(str3)) {
                         strA2 = aVar.a();
@@ -498,18 +508,18 @@ public final class UcDriveApi {
     private String o(String str, String str2) throws Exception {
         String string;
         try {
-            if ((System.currentTimeMillis() / 1000) - this.m.e() < 1800) {
+            if ((System.currentTimeMillis() / 1000) - this.m.getCacheTime() < 1800) {
                 SpiderDebug.log("Obtain drive id... return cached drive");
-                if (com.github.catvod.spider.merge.P0.e.c(this.l)) {
-                    this.l = this.m.d();
+                if (PanTextUtils.isEmpty(this.l)) {
+                    this.l = this.m.getDriveId();
                 }
             } else {
                 SpiderDebug.log("Obtain drive id...");
                 String string2 = new JSONObject(s("1/clouddrive/share/sharepage/dir?pr=UCBrowser&fr=pc&aver=1")).getJSONObject("data").getString("pdir_fid");
                 this.l = string2;
-                this.m.l(string2);
-                this.m.m(System.currentTimeMillis() / 1000);
-                this.m.j();
+                this.m.setDriveId(string2);
+                this.m.setCacheTime(System.currentTimeMillis() / 1000);
+                this.m.save();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -539,7 +549,6 @@ public final class UcDriveApi {
         return string;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     public void p() {
         try {
             AlertDialog alertDialog = this.g;
@@ -551,11 +560,11 @@ public final class UcDriveApi {
     }
 
     /* JADX WARN: Type inference failed for: r1v1, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.String>] */
-    private String q(String str, List<com.github.catvod.spider.merge.S.a> list) {
-        ArrayList<com.github.catvod.spider.merge.S.a> arrayList = new ArrayList();
-        String lowerCase = com.github.catvod.spider.merge.i0.m.x(str).toLowerCase();
-        for (com.github.catvod.spider.merge.S.a aVar : list) {
-            String lowerCase2 = com.github.catvod.spider.merge.i0.m.x(aVar.f()).toLowerCase();
+    private String q(String str, List<QuarkFile> list) {
+        ArrayList<QuarkFile> arrayList = new ArrayList();
+        String lowerCase = PanStringUtils.cleanFilename(str).toLowerCase();
+        for (QuarkFile aVar : list) {
+            String lowerCase2 = PanStringUtils.cleanFilename(aVar.f()).toLowerCase();
             if (lowerCase.contains(lowerCase2) || lowerCase2.contains(lowerCase)) {
                 arrayList.add(aVar);
             }
@@ -564,10 +573,10 @@ public final class UcDriveApi {
             arrayList.addAll(list);
         }
         StringBuilder sb = new StringBuilder();
-        for (com.github.catvod.spider.merge.S.a aVar2 : arrayList) {
+        for (QuarkFile aVar2 : arrayList) {
             o.put(aVar2.d(), aVar2.h());
             sb.append("+");
-            sb.append(com.github.catvod.spider.merge.i0.m.x(aVar2.f()));
+            sb.append(PanStringUtils.cleanFilename(aVar2.f()));
             sb.append("@@@");
             sb.append(aVar2.c());
             sb.append("@@@");
@@ -577,7 +586,7 @@ public final class UcDriveApi {
     }
 
     public static UcDriveApi r() {
-        return u0.a;
+        return Holder.INSTANCE;
     }
 
     private String s(String str) throws InterruptedException {
@@ -593,7 +602,7 @@ public final class UcDriveApi {
             if (i <= 0) {
                 break;
             }
-            strM = com.github.catvod.spider.merge.f0.d.m(str, mapV, map);
+            strM = PanHttpClient.get(str, mapV, map);
             SpiderDebug.log("quark get result:" + strM);
             if (strM.length() > 10) {
                 break;
@@ -625,7 +634,7 @@ public final class UcDriveApi {
 
     private String x(String str, JSONObject jSONObject) {
         try {
-            if (!com.github.catvod.spider.merge.P0.e.c(str)) {
+            if (!PanTextUtils.isEmpty(str)) {
                 return str;
             }
             JSONArray jSONArray = jSONObject.getJSONArray("list");
@@ -655,8 +664,8 @@ public final class UcDriveApi {
                 break;
             }
             try {
-                if (!com.github.catvod.spider.merge.P0.e.c(this.m.c())) {
-                    if (!com.github.catvod.spider.merge.P0.e.c(this.h)) {
+                if (!PanTextUtils.isEmpty(this.m.getCookie())) {
+                    if (!PanTextUtils.isEmpty(this.h)) {
                         break;
                     }
                 } else {
@@ -669,15 +678,15 @@ public final class UcDriveApi {
             }
         }
         I(str2, "");
-        JSONObject jSONObject = new JSONObject(s("1/clouddrive/share/sharepage/detail?pr=UCBrowser&fr=pc&pwd_id=" + str2 + "&stoken=" + URLEncoder.encode(this.h) + "&pdir_fid=" + (com.github.catvod.spider.merge.P0.e.c(str3) ? "0" : str3) + "&force=0&_page=1&_size=50&_fetch_banner=1&_fetch_share=1&_fetch_total=1&_sort=file_type:asc,updated_at:desc")).getJSONObject("data");
-        String strY = (str4 == null || str4.isEmpty()) ? com.github.catvod.spider.merge.i0.GeneralUtils.y(jSONObject.getJSONObject("share").getString("title")) : str4;
-        ArrayList<com.github.catvod.spider.merge.S.a> arrayList2 = new ArrayList();
-        List<com.github.catvod.spider.merge.S.a> arrayList3 = new ArrayList<>();
+        JSONObject jSONObject = new JSONObject(s("1/clouddrive/share/sharepage/detail?pr=UCBrowser&fr=pc&pwd_id=" + str2 + "&stoken=" + URLEncoder.encode(this.h) + "&pdir_fid=" + (PanTextUtils.isEmpty(str3) ? "0" : str3) + "&force=0&_page=1&_size=50&_fetch_banner=1&_fetch_share=1&_fetch_total=1&_sort=file_type:asc,updated_at:desc")).getJSONObject("data");
+        String strY = (str4 == null || str4.isEmpty()) ? PanStringUtils.cleanFilename(jSONObject.getJSONObject("share").getString("title")) : str4;
+        ArrayList<QuarkFile> arrayList2 = new ArrayList();
+        List<QuarkFile> arrayList3 = new ArrayList<>();
         try {
-            C(null, true, new com.github.catvod.spider.merge.S.a(x(str3, jSONObject)), arrayList2, arrayList3, null);
+            C(null, true, new QuarkFile(x(str3, jSONObject)), arrayList2, arrayList3, null);
             ArrayList arrayList4 = new ArrayList();
             ArrayList arrayList5 = new ArrayList();
-            for (com.github.catvod.spider.merge.S.a aVar : arrayList2) {
+            for (QuarkFile aVar : arrayList2) {
                 o.put(aVar.d(), aVar.h());
                 arrayList4.add(aVar.b() + "$" + str2 + '+' + aVar.a() + '+' + strY + '+' + aVar.f() + q(aVar.f(), arrayList3));
             }
@@ -741,12 +750,12 @@ public final class UcDriveApi {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public final java.util.List<com.github.catvod.bean.VodItem> B(com.github.catvod.bean.j r15) {
+    public final java.util.List<com.github.catvod.bean.VodItem> B(com.github.catvod.bean.JsonUtils r15) {
         /*
             Method dump skipped, instruction units count: 330
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.github.catvod.spider.merge.I.UcDriveApi.B(com.github.catvod.bean.j):java.util.List");
+        throw new UnsupportedOperationException("Method not decompiled: UcDriveApi.B(JsonUtils):List");
     }
 
     public final String E(Map<String, List<String>> map) {
@@ -772,11 +781,11 @@ public final class UcDriveApi {
             }
             i++;
         }
-        String strC = this.m.c();
+        String strC = this.m.getCookie();
         if ((strSubstring == null || strSubstring.isEmpty())) {
             return strC;
         }
-        String[] strArrSplit2 = this.m.c().split("; ");
+        String[] strArrSplit2 = this.m.getCookie().split("; ");
         StringBuilder sb = new StringBuilder();
         for (String str2 : strArrSplit2) {
             if (str2.startsWith("__puus=")) {
@@ -788,26 +797,26 @@ public final class UcDriveApi {
             sb.append("; ");
         }
         String string = new StringBuilder(sb.substring(0, sb.length() - 2)).toString();
-        this.m.k(string);
-        this.m.j();
+        this.m.setCookie(string);
+        this.m.save();
         return string;
     }
 
     public final String F(String[] strArr) {
         if (strArr[0].startsWith("http")) {
-            com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
-            gVar.w("");
+            PlayResult gVar = new PlayResult();
+            gVar.setUrl("");
             return gVar.toString();
         }
-        com.github.catvod.bean.g gVar2 = new com.github.catvod.bean.g();
+        PlayResult gVar2 = new PlayResult();
         UcDriveApi v0Var = u0.a;
         String str = strArr[0];
         String str2 = strArr[1];
         v0Var.getClass();
-        gVar2.w(Proxy.getUrl() + "?do=quark&type=dwnz&file_id=" + str2 + "&share_id=" + str);
-        gVar2.i();
-        gVar2.v(z(strArr));
-        gVar2.g(v(null));
+        gVar2.setUrl(Proxy.getUrl() + "?do=quark&type=dwnz&file_id=" + str2 + "&share_id=" + str);
+        gVar2.setOctetStream();
+        gVar2.setSubtitles(z(strArr));
+        gVar2.setHeaders(v(null));
         return gVar2.toString();
     }
 
@@ -815,15 +824,15 @@ public final class UcDriveApi {
         String isoDownloadUrl;
         try {
             if (strArr[0].startsWith("http")) {
-                com.github.catvod.bean.g gVar = new com.github.catvod.bean.g();
-                gVar.w("");
+                PlayResult gVar = new PlayResult();
+                gVar.setUrl("");
                 return gVar.toString();
             }
             String strU = u(strArr[1], strArr[0], str.contains("原畫"));
-            SpiderDebug.log("uc getRealDownUrl MD5:" + com.github.catvod.spider.merge.i0.m.c(strU));
-            BaseApi.get().h.put(com.github.catvod.spider.merge.i0.m.c(strU), new Gson().toJson(v(strU)));
+            SpiderDebug.log("uc getRealDownUrl MD5:" + PanStringUtils.md5(strU));
+            BaseApi.get().h.put(PanStringUtils.md5(strU), new Gson().toJson(v(strU)));
             if (str.contains("原畫")) {
-                strU = Server.z(strU, this.m.b().intValue(), com.github.catvod.spider.merge.T.a.a(this.m.f()).intValue());
+                strU = Server.z(strU, this.m.b().intValue(), UcQuality.a(this.m.getMemberType()).intValue());
             }
             if (BaseApi.get().d.booleanValue()) {
                 String str2 = strArr[2] + strArr[3];
@@ -833,56 +842,56 @@ public final class UcDriveApi {
             } else {
                 isoDownloadUrl = NetPan.getIsoDownloadUrl(strU);
             }
-            com.github.catvod.bean.g gVar2 = new com.github.catvod.bean.g();
-            gVar2.w(isoDownloadUrl);
-            gVar2.a(C0773p.a.t(strArr));
-            gVar2.i();
-            gVar2.v(z(strArr));
-            gVar2.g(v(null));
+            PlayResult gVar2 = new PlayResult();
+            gVar2.setUrl(isoDownloadUrl);
+            gVar2.setExtra(AliDriveHelper.getDanmakuUrl(strArr));
+            gVar2.setOctetStream();
+            gVar2.setSubtitles(z(strArr));
+            gVar2.setHeaders(v(null));
             return gVar2.toString();
         } catch (Exception e) {
             SpiderDebug.log(e.getMessage());
-            com.github.catvod.bean.g gVar3 = new com.github.catvod.bean.g();
-            gVar3.w("");
+            PlayResult gVar3 = new PlayResult();
+            gVar3.setUrl("");
             return gVar3.toString();
         }
     }
 
     public final void J(String str, boolean z) {
-        if (com.github.catvod.spider.merge.P0.e.c(this.m.c()) || z) {
+        if (PanTextUtils.isEmpty(this.m.getCookie()) || z) {
             SpiderDebug.log("set new Cookie:" + str);
             if (str != null && str.startsWith("http")) {
-                str = com.github.catvod.spider.merge.f0.d.l(str).trim();
+                str = PanHttpClient.get(str).trim();
             }
-            this.m.k(str);
+            this.m.setCookie(str);
             w();
-            this.m.j();
+            this.m.save();
             n = new HashMap(512);
             o = new HashMap(4096);
         }
     }
 
     public final void L(String str, boolean z) {
-        if (com.github.catvod.spider.merge.P0.e.c(this.m.g()) || z) {
+        if (PanTextUtils.isEmpty(this.m.getToken()) || z) {
             SpiderDebug.log("set new Token:" + str);
             if (str != null && str.startsWith("http")) {
-                str = com.github.catvod.spider.merge.f0.d.l(str).trim();
+                str = PanHttpClient.get(str).trim();
             }
-            this.m.o(str);
-            this.m.j();
+            this.m.setToken(str);
+            this.m.save();
             n = new HashMap(512);
             o = new HashMap(4096);
         }
     }
 
     public final void M(String str) {
-        if (com.github.catvod.spider.merge.P0.e.c(this.m.h())) {
+        if (PanTextUtils.isEmpty(this.m.getUt())) {
             SpiderDebug.log("setUt:" + str);
             if (str != null && str.startsWith("http")) {
-                str = com.github.catvod.spider.merge.f0.d.l(str).trim();
+                str = PanHttpClient.get(str).trim();
             }
-            this.m.p(str);
-            this.m.j();
+            this.m.setUt(str);
+            this.m.save();
             n = new HashMap(512);
             o = new HashMap(4096);
         }
@@ -900,7 +909,7 @@ public final class UcDriveApi {
                 this.d.lock();
                 SpiderDebug.log("getDownloadUrl... fileId:" + str + " shareId:" + str2);
                 String str3 = str.split("_")[0];
-                ?? r5 = n;
+                Map<String, String> r5 = n;
                 StringBuilder sb = new StringBuilder();
                 sb.append(str3);
                 sb.append(z ? "#DL" : "#VI");
@@ -914,13 +923,14 @@ public final class UcDriveApi {
                     I(str2, "");
                     str = o(str, str2);
                 }
-                if ((this.m.g( != null && !this.m.g(.isEmpty()))) {
-                    string = com.github.catvod.spider.merge.f0.d.l(C0773p.a.c + "/api/uclink?fid=" + str + "&refreshToken=" + this.m.g());
+                if (this.m.getToken() != null && !this.m.getToken().isEmpty()) {
+                    string = PanHttpClient.get(AliDriveHelper.getProxyBaseUrl() + "/api/uclink?fid=" + str + "&refreshToken=" + this.m.getToken());
                     K();
                 } else {
                     JSONObject jSONObject = new JSONObject();
                     jSONObject.put("fids", new JSONArray().put(str));
-                    String strA = H("1/clouddrive/file/download?pr=UCBrowser&fr=pc&sys=win32&ve=1.8.5&ut=" + ((this.m.h( != null && !this.m.h(.isEmpty())) ? this.m.h() : "Nk2oZFe20xVMub17UQTOKJdg4CHccNwuJJuwVL1gaHZIlw=="), jSONObject).a();
+                    String utValue = (this.m.getUt() != null && !this.m.getUt().isEmpty()) ? this.m.getUt() : "Nk2oZFe20xVMub17UQTOKJdg4CHccNwuJJuwVL1gaHZIlw==";
+                    String strA = H("1/clouddrive/file/download?pr=UCBrowser&fr=pc&sys=win32&ve=1.8.5&ut=" + utValue, jSONObject).a();
                     SpiderDebug.log("getDownloadUrl:" + str4);
                     string = new JSONObject(strA).getJSONArray("data").getJSONObject(0).getString("download_url");
                 }
@@ -940,8 +950,8 @@ public final class UcDriveApi {
                 return string;
             } catch (Exception unused) {
                 HashMap map = new HashMap();
-                map.put("Cookie", this.m.c());
-                String strM = com.github.catvod.spider.merge.f0.d.m("https://drive-pc.quark.cn/1/clouddrive/file/sort?pr=UCBrowser&fr=pc&uc_param_str=&pdir_fid=0&_page=1&_size=50&_fetch_total=1&_fetch_sub_dirs=0&_sort=file_type:asc,updated_at:desc", map, null);
+                map.put("Cookie", this.m.getCookie());
+                String strM = PanHttpClient.get("https://drive-pc.quark.cn/1/clouddrive/file/sort?pr=UCBrowser&fr=pc&uc_param_str=&pdir_fid=0&_page=1&_size=50&_fetch_total=1&_fetch_sub_dirs=0&_sort=file_type:asc,updated_at:desc", map, null);
                 SpiderDebug.log("playerContent> " + strM);
                 if (new JSONObject(strM).getInt("status") == 401) {
                     SpiderDebug.log("到配置中心配置UC cookie");
@@ -965,8 +975,8 @@ public final class UcDriveApi {
     }
 
     public final HashMap<String, String> v(String str) {
-        HashMap<String, String> mapC = t0.c("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) uc-cloud-drive/1.8.5 Chrome/100.0.4896.160 Electron/18.3.5.16-b62cf9c50d Safari/537.36 Channel/ucpan_other_ch");
-        mapC.put("Cookie", this.m.c());
+        HashMap<String, String> mapC = MapHelper.of("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) uc-cloud-drive/1.8.5 Chrome/100.0.4896.160 Electron/18.3.5.16-b62cf9c50d Safari/537.36 Channel/ucpan_other_ch");
+        mapC.put("Cookie", this.m.getCookie());
         mapC.put("Url", str);
         return mapC;
     }
@@ -975,13 +985,13 @@ public final class UcDriveApi {
         try {
             HashMap map = new HashMap();
             HashMap<String, String> mapV = v("https://pc-api.uc.cn/1/clouddrive/member?pr=UCBrowser&fr=pc&fetch_subscribe=true&_ch=home");
-            String str = "__pus=" + com.github.catvod.spider.merge.i0.m.i(mapV.get("Cookie"));
+            String str = "__pus=" + PanStringUtils.extractPusFromCookie(mapV.get("Cookie"));
             mapV.put("Cookie", str);
-            this.m.n(new JSONObject(com.github.catvod.spider.merge.f0.d.m("https://pc-api.uc.cn/1/clouddrive/member?pr=UCBrowser&fr=pc&fetch_subscribe=true&_ch=home", mapV, map)).getJSONObject("data").getString("member_type"));
-            this.m.k(com.github.catvod.spider.merge.i0.m.A(map, str));
+            this.m.setMemberType(new JSONObject(PanHttpClient.get("https://pc-api.uc.cn/1/clouddrive/member?pr=UCBrowser&fr=pc&fetch_subscribe=true&_ch=home", mapV, map)).getJSONObject("data").getString("member_type"));
+            this.m.setCookie(PanStringUtils.mergeCookies(map, str));
         } catch (Exception unused) {
-            com.github.catvod.spider.merge.T.b bVar = this.m;
-            com.github.catvod.spider.merge.T.a aVar = com.github.catvod.spider.merge.T.a.NORMAL;
+            UcUser bVar = this.m;
+            UcQuality aVar = UcQuality.NORMAL;
             bVar.n("NORMAL");
         }
     }
@@ -989,8 +999,8 @@ public final class UcDriveApi {
     public final String y(String str) {
         JSONObject jSONObject;
         try {
-            if ((this.m.g( != null && !this.m.g(.isEmpty()))) {
-                String strL = com.github.catvod.spider.merge.f0.d.l(C0773p.a.c + "/api/ucPre?fid=" + str + "&refreshToken=" + this.m.g());
+            if (this.m.getToken() != null && !this.m.getToken().isEmpty()) {
+                String strL = PanHttpClient.get(AliDriveHelper.getProxyBaseUrl() + "/api/ucPre?fid=" + str + "&refreshToken=" + this.m.getToken());
                 K();
                 StringBuilder sb = new StringBuilder();
                 sb.append("getPreviewVideoInfo:");

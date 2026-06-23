@@ -25,14 +25,14 @@ public final class C0607h implements X, com.github.catvod.spider.merge.C.w {
         bVar.q(c1413b, null);
         int i = 0;
         if (type == AtomicIntegerArray.class) {
-            ?? r4 = (T) new AtomicIntegerArray(c1413b.size());
+            AtomicIntegerArray r4 = (T) new AtomicIntegerArray(c1413b.size());
             while (i < c1413b.size()) {
                 r4.set(i, com.github.catvod.spider.merge.H.A.o(c1413b.get(i)).intValue());
                 i++;
             }
             return r4;
         }
-        ?? r42 = (T) new AtomicLongArray(c1413b.size());
+        AtomicLongArray r42 = (T) new AtomicLongArray(c1413b.size());
         while (i < c1413b.size()) {
             r42.set(i, com.github.catvod.spider.merge.H.A.q(c1413b.get(i)).longValue());
             i++;

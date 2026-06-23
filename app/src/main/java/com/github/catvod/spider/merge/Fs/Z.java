@@ -1,7 +1,7 @@
 package com.github.catvod.spider.merge.Fs;
 
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum Z extends h1 {
+class Z extends h1 {
     Z() {
         super("ScriptDataLessthanSign", 16, null);
     }

@@ -82,7 +82,7 @@ final class C0596b {
     /* JADX WARN: Type inference failed for: r0v4, types: [java.util.HashMap, java.util.Map<java.lang.String, java.lang.Integer>] */
     public final int k(String str) {
         if (((Integer) this.b.get(str)) == null) {
-            ?? r0 = this.b;
+            Map<String, Integer> r0 = this.b;
             int i = this.a;
             this.a = i + 1;
             r0.put(str, Integer.valueOf(i));

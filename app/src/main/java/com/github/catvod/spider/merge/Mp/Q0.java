@@ -3,7 +3,7 @@ package com.github.catvod.spider.merge.Mp;
 import com.github.catvod.spider.merge.ZrJ;
 
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum Q0 extends j1 {
+class Q0 extends j1 {
     Q0() {
         super(ZrJ.d("38253F283A0116203F34382037222628"), 53, null);
     }

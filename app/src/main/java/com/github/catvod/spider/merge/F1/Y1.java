@@ -379,9 +379,9 @@ public final class Y1 {
                 }
                 if (v0() == 165) {
                     int iQ = abstractC1239fO0.q();
-                    ?? r6 = this.k;
+                    Object r6 = this.k;
                     if (iQ == ((C1245l) r6.get(r6.size() - 1)).q()) {
-                        ?? r5 = this.k;
+                        Object r5 = this.k;
                         abstractC1239fO0.Y((AbstractC1239f) r5.get(r5.size() - 1));
                         this.h = 0;
                     }
@@ -1393,7 +1393,7 @@ public final class Y1 {
                         }
                     } else {
                         this.h = 0;
-                        ?? r7 = this.k;
+                        Object r7 = this.k;
                         abstractC1239fW = (AbstractC1239f) r7.get(r7.size() - 1);
                     }
                     c1242i.O(abstractC1239fW);

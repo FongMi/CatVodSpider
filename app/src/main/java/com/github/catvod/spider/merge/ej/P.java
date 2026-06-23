@@ -71,7 +71,7 @@ public final class P {
     /* JADX WARN: Type inference failed for: r4v5 */
     private void c(boolean z) {
         N c1072s;
-        ?? r4;
+        Object r4;
         this.a.d(z ? ":containsOwn" : ":contains");
         String strO = com.github.catvod.spider.merge.Fs.P.o(this.a.a('(', ')'));
         com.github.catvod.spider.merge.Dw.i.j(strO, ":contains(text) query must not be empty");
@@ -391,7 +391,7 @@ public final class P {
     /* JADX WARN: Type inference failed for: r4v5 */
     private void f(boolean z) {
         N k;
-        ?? r4;
+        Object r4;
         this.a.d(z ? ":matchesOwn" : ":matches");
         String strA = this.a.a('(', ')');
         com.github.catvod.spider.merge.Dw.i.j(strA, ":matches(regex) query must not be empty");

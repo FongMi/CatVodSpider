@@ -1,7 +1,7 @@
 package com.github.catvod.spider.merge.Fs;
 
 /* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
-enum I0 extends h1 {
+class I0 extends h1 {
     I0() {
         super("CommentEnd", 48, null);
     }

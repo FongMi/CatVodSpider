@@ -1,4 +1,5 @@
 package com.github.catvod.utils.merge;
+import com.github.catvod.utils.PanStringUtils;
 
 import android.text.TextUtils;
 import com.google.gson.annotations.SerializedName;
@@ -7,6 +8,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 115 网盘文件/文件夹
+ */
 public final class Yun115File implements Comparable<Yun115File> {
 
     @SerializedName("list")
@@ -42,88 +46,91 @@ public final class Yun115File implements Comparable<Yun115File> {
     @SerializedName(alternate = {"big_thumbnail"}, value = "thumb")
     private String thumbnail;
 
-    public Yun115File(String str) {
-        this.fileId = str;
-        this.categoryId = str;
+    public Yun115File(String id) {
+        this.fileId = id;
+        this.categoryId = id;
     }
 
-    public final String a() {
-        if (TextUtils.isEmpty(this.fileId)) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.fileId);
-        sb.append("_");
-        sb.append(TextUtils.isEmpty(this.sha) ? "" : this.sha);
-        return sb.toString();
+    /** 返回 "fileId_sha" 格式的唯一标识 */
+    public final String id() {
+        if (TextUtils.isEmpty(this.fileId)) return "";
+        return this.fileId + "_" + (TextUtils.isEmpty(this.sha) ? "" : this.sha);
     }
 
-    public final String b() {
-        return TextUtils.join(" ", Arrays.asList(com.github.catvod.spider.merge.i0.GeneralUtils.v(f()), j(), g(), f())).trim();
+    /** 返回带大小和扩展名的显示名称，如 "[1.2G] movie.mkv" */
+    public final String display() {
+        return TextUtils.join(" ", Arrays.asList(
+                PanStringUtils.extractEpisodeNumber(name()),
+                sizeLabel(), categoryId(), name())).trim();
     }
 
-    public final String c() {
-        if (!this.fileName.contains(".")) {
-            return "";
-        }
-        String str = this.fileName;
-        return str.substring(str.lastIndexOf(".") + 1).toLowerCase();
+    /** 返回文件扩展名（小写），无扩展名返回空串 */
+    public final String extension() {
+        if (!this.fileName.contains(".")) return "";
+        return this.fileName.substring(this.fileName.lastIndexOf(".") + 1).toLowerCase();
     }
 
     @Override
     public final int compareTo(Yun115File other) {
-        return k().compareTo(other.k());
+        return sortKey().compareTo(other.sortKey());
     }
 
-    public final String d() {
+    /** 返回 fileId，为空返回空串 */
+    public final String fileId() {
         return TextUtils.isEmpty(this.fileId) ? "" : this.fileId;
     }
 
-    public final List<Yun115File> e() {
+    /** 返回子文件/文件夹列表，为 null 返回空列表 */
+    public final List<Yun115File> children() {
         List<Yun115File> list = this.children;
         return list == null ? Collections.emptyList() : list;
     }
 
-    public final String f() {
-        return TextUtils.isEmpty(this.fileName) ? "" : com.github.catvod.spider.merge.i0.GeneralUtils.y(this.fileName);
+    /** 返回清理后的文件名（去除路径前缀） */
+    public final String name() {
+        return TextUtils.isEmpty(this.fileName) ? ""
+                : PanStringUtils.cleanFilename(this.fileName);
     }
 
-    public final String g() {
+    /** 返回 categoryId（目录 ID） */
+    public final String categoryId() {
         return TextUtils.isEmpty(this.categoryId) ? "" : this.categoryId;
     }
 
-    public final String h() {
+    /** 返回 SHA 哈希值 */
+    public final String sha() {
         return this.sha;
     }
 
-    public final double i() {
+    /** 返回文件大小 */
+    public final double size() {
         return this.size;
     }
 
-    public final String j() {
-        if (this.size == 0.0d) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder("[");
-        sb.append(com.github.catvod.spider.merge.i0.GeneralUtils.n(this.size));
-        sb.append("]");
-        return sb.toString();
+    /** 返回格式化的大小标签，如 "[1.2G]"，大小为 0 返回空串 */
+    public final String sizeLabel() {
+        if (this.size == 0.0d) return "";
+        return "[" + PanStringUtils.formatFileSize(this.size) + "]";
     }
 
-    public final String k() {
-        return com.github.catvod.spider.merge.i0.GeneralUtils.v(f());
+    /** 返回排序用的 key（文件名拼音） */
+    public final String sortKey() {
+        return PanStringUtils.extractEpisodeNumber(name());
     }
 
-    public final String l() {
+    /** 返回缩略图 URL */
+    public final String thumbnail() {
         return this.thumbnail;
     }
 
-    public final String m() {
+    /** 返回类型："folder" 或 "file" */
+    public final String type() {
         return this.fileCount == 0 ? "folder" : "file";
     }
 
-    public final Yun115File n(String str) {
-        this.categoryId = str;
+    /** 设置 categoryId（链式调用） */
+    public final Yun115File n(String categoryId) {
+        this.categoryId = categoryId;
         return this;
     }
 }

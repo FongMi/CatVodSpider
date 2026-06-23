@@ -88,7 +88,7 @@ abstract class EnumC0064Gi {
     private static final /* synthetic */ EnumC0064Gi[] f382yS;
 
     /* renamed from: com.github.catvod.spider.merge.Gi$N */
-    enum N extends EnumC0064Gi {
+    class N extends EnumC0064Gi {
         N(String str, int i) {
             super(str, i, null);
         }
