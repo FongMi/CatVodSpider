@@ -1,0 +1,38 @@
+package com.github.catvod.spider.merge.z;
+
+/* JADX INFO: loaded from: /tmp/decompiler/61445fe823f54055bb8486d86e79a950/classes.dex */
+public final class a {
+    private static volatile b d = b.q;
+    private final StringBuffer a;
+    private final Object b;
+    private final b c;
+
+    public a(Object obj) {
+        b bVar = d;
+        StringBuffer stringBuffer = new StringBuffer(512);
+        this.a = stringBuffer;
+        this.c = bVar;
+        this.b = obj;
+        bVar.m(stringBuffer, obj);
+    }
+
+    public final a a(Object obj) {
+        this.c.a(this.a, obj);
+        return this;
+    }
+
+    public final a b(String str, boolean z) {
+        this.c.b(this.a, str, z);
+        return this;
+    }
+
+    public final String toString() {
+        Object obj = this.b;
+        if (obj == null) {
+            this.a.append(this.c.s());
+        } else {
+            this.c.h(this.a, obj);
+        }
+        return this.a.toString();
+    }
+}

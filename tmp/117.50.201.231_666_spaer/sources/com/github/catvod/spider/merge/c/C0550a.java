@@ -1,0 +1,52 @@
+package com.github.catvod.spider.merge.c;
+
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+import java.util.List;
+
+/* JADX INFO: renamed from: com.github.catvod.spider.merge.c.a, reason: case insensitive filesystem */
+/* JADX INFO: loaded from: /tmp/decompiler/61445fe823f54055bb8486d86e79a950/classes.dex */
+public final class C0550a {
+
+    @SerializedName("type_id")
+    private String a;
+
+    @SerializedName("type_name")
+    private String b;
+
+    @SerializedName("type_flag")
+    private String c;
+
+    /* JADX INFO: renamed from: com.github.catvod.spider.merge.c.a$a, reason: collision with other inner class name */
+    class C0031a extends TypeToken<List<C0550a>> {
+        C0031a() {
+        }
+    }
+
+    public C0550a(String str, String str2) {
+        this.a = str;
+        this.b = str2;
+        this.c = null;
+    }
+
+    public C0550a(String str, String str2, String str3) {
+        this.a = str;
+        this.b = str2;
+        this.c = str3;
+    }
+
+    public static List<C0550a> a(String str) {
+        return (List) new Gson().fromJson(str, new C0031a().getType());
+    }
+
+    public final boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof C0550a) {
+            return this.a.equals(((C0550a) obj).a);
+        }
+        return false;
+    }
+}
