@@ -65,7 +65,7 @@ public final class GuangYaPanApi {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(com.github.catvod.spider.merge.i0.GeneralUtils.f(240), com.github.catvod.spider.merge.i0.GeneralUtils.f(240));
             ImageView imageView = new ImageView(Init.context());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setImageBitmap(QrCodeUtils.a(str, 240, 2));
+            imageView.setImageBitmap(QrCodeUtils.generateQrCode(str, 240, 2));
             FrameLayout frameLayout = new FrameLayout(Init.context());
             layoutParams.gravity = 17;
             frameLayout.addView(imageView, layoutParams);

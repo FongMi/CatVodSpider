@@ -139,7 +139,7 @@ public final class QuarkDriveApi {
 
     private com.github.catvod.spider.merge.f0.i F(String str, JSONObject jSONObject) throws InterruptedException {
         if (!str.startsWith("https")) {
-            str = C1290c.a("https://drive-pc.quark.cn/", str);
+            str = UrlUtils.resolveUrl("https://drive-pc.quark.cn/", str);
         }
         HashMap map = new HashMap();
         HashMap<String, String> mapS = s(str);
@@ -218,7 +218,7 @@ public final class QuarkDriveApi {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(com.github.catvod.spider.merge.i0.GeneralUtils.f(240), com.github.catvod.spider.merge.i0.GeneralUtils.f(240));
             ImageView imageView = new ImageView(Init.context());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setImageBitmap(QrCodeUtils.a(str, 240, 2));
+            imageView.setImageBitmap(QrCodeUtils.generateQrCode(str, 240, 2));
             FrameLayout frameLayout = new FrameLayout(Init.context());
             layoutParams.gravity = 17;
             frameLayout.addView(imageView, layoutParams);
@@ -532,7 +532,7 @@ public final class QuarkDriveApi {
 
     private String p(String str) throws InterruptedException {
         if (!str.startsWith("https")) {
-            str = C1290c.a("https://drive-pc.quark.cn/", str);
+            str = UrlUtils.resolveUrl("https://drive-pc.quark.cn/", str);
         }
         HashMap map = new HashMap();
         HashMap<String, String> mapS = s(str);
@@ -751,10 +751,10 @@ public final class QuarkDriveApi {
         try {
             HashMap map = new HashMap();
             HashMap<String, String> mapS = s("https://drive-pc.quark.cn/1/clouddrive/member?pr=ucpro&fr=pc&uc_param_str=&fetch_subscribe=true&_ch=home&fetch_identity=true");
-            String str = "__pus=" + MergeUtils.b(mapS.get("Cookie"));
+            String str = "__pus=" + CookieUtils.extractPusFromCookie(mapS.get("Cookie"));
             mapS.put("Cookie", str);
             this.m.m(new JSONObject(com.github.catvod.spider.merge.f0.d.m("https://drive-pc.quark.cn/1/clouddrive/member?pr=ucpro&fr=pc&uc_param_str=&fetch_subscribe=true&_ch=home&fetch_identity=true", mapS, map)).getJSONObject("data").getString("member_type"));
-            this.m.j(MergeUtils.l(map, str));
+            this.m.j(CookieUtils.mergeCookies(map, str));
         } catch (Exception unused) {
         }
     }

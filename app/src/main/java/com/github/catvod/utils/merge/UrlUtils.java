@@ -3,11 +3,18 @@ package com.github.catvod.utils.merge;
 import java.net.URI;
 
 /**
- * URL resolution utility (replaces missing merge.l.C1290c)
+ * URL 解析工具
  */
-public final class C1290c {
+public final class UrlUtils {
 
-    public static String a(String baseUrl, String relativeUrl) {
+    /**
+     * 将相对 URL 解析为绝对 URL
+     *
+     * @param baseUrl     基础 URL，如 "https://drive-pc.quark.cn/"
+     * @param relativeUrl 相对路径，如 "/api/list" 或完整 URL
+     * @return 解析后的绝对 URL
+     */
+    public static String resolveUrl(String baseUrl, String relativeUrl) {
         if (relativeUrl == null || relativeUrl.isEmpty()) {
             return baseUrl;
         }
@@ -23,12 +30,5 @@ public final class C1290c {
         } catch (Exception e) {
             return baseUrl + relativeUrl;
         }
-    }
-
-    public static StringBuilder b(StringBuilder sb, String... parts) {
-        for (String part : parts) {
-            sb.append(part);
-        }
-        return sb;
     }
 }

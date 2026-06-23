@@ -60,7 +60,7 @@ public final class Yun189Api {
 
     private String c(String str) {
         if (!str.startsWith("https")) {
-            str = C1290c.a("https://cloud.189.cn/api/open/share/", str);
+            str = UrlUtils.resolveUrl("https://cloud.189.cn/api/open/share/", str);
         }
         String strM = com.github.catvod.spider.merge.f0.d.m(str, com.github.catvod.spider.merge.B.e.b("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36", "accept", "application/json;charset=UTF-8"), null);
         SpiderDebug.log("getString:" + strM);
@@ -171,7 +171,7 @@ public final class Yun189Api {
         String strEncode = URLEncoder.encode(com.github.catvod.spider.merge.M.M0.M0.a.a.split("\\|")[0]);
         String strEncode2 = URLEncoder.encode(com.github.catvod.spider.merge.M.M0.M0.a.a.split("\\|")[1]);
         int i = Server.l;
-        String apiUrl = C1290c.a(com.github.catvod.spider.merge.I.C0773p.a.c,
+        String apiUrl = UrlUtils.resolveUrl(com.github.catvod.spider.merge.I.C0773p.a.c,
                 "/api/yun189GetFileInfo?do=189&type=video&cate=open&shareId=" + str + "&fileId=" + str2 + "&userName=" + strEncode + "&pwd=" + strEncode2);
         String strL = com.github.catvod.spider.merge.f0.d.l(apiUrl);
         if (BaseApi.get().d.booleanValue()) {

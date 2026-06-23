@@ -1,166 +1,246 @@
 package com.github.catvod.utils.merge;
 
-import android.R;
 import android.graphics.Bitmap;
-
-
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.EnumMap;
 
-/* JADX INFO: renamed from: com.github.catvod.spider.merge.g.a, reason: case insensitive filesystem */
-/* JADX INFO: loaded from: /tmp/decompiler/3c5abd9eeb9c4becbc43dcd6f345eaa4/classes.dex */
+/**
+ * 二维码生成 + 椭圆曲线加密 + MD5 工具
+ */
 public final class QrCodeUtils {
-    public static final int[] a = {R.attr.dither, R.attr.visible, R.attr.variablePadding, R.attr.constantSize, R.attr.enterFadeDuration, R.attr.exitFadeDuration};
-    public static final int[] b = {R.attr.id, R.attr.drawable};
-    public static final int[] c = {R.attr.drawable, R.attr.toId, R.attr.fromId, R.attr.reversible};
 
-    public static Bitmap a(String str, int i, int i2) {
+    // ==================== 二维码 ====================
+
+    /**
+     * 生成二维码 Bitmap
+     *
+     * @param content  二维码内容
+     * @param sizeDp   尺寸（dp）
+     * @param margin   边距（像素）
+     * @return 二维码 Bitmap，失败返回 null
+     */
+    public static Bitmap generateQrCode(String content, int sizeDp, int margin) {
         try {
-            EnumMap enumMap = new EnumMap(EncodeHintType.class);
-            enumMap.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-            enumMap.put(EncodeHintType.MARGIN, Integer.valueOf(i2));
-            BitMatrix bitMatrixEncode = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, com.github.catvod.spider.merge.i0.GeneralUtils.f(i), com.github.catvod.spider.merge.i0.GeneralUtils.f(i), enumMap);
-            int width = bitMatrixEncode.getWidth();
-            int height = bitMatrixEncode.getHeight();
-            int[] iArr = new int[width * height];
-            for (int i3 = 0; i3 < height; i3++) {
-                int i4 = i3 * width;
-                for (int i5 = 0; i5 < width; i5++) {
-                    iArr[i4 + i5] = bitMatrixEncode.get(i5, i3) ? -16777216 : -1;
+            int sizePx = dpToPx(sizeDp);
+            EnumMap<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
+            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+            hints.put(EncodeHintType.MARGIN, margin);
+            BitMatrix matrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, sizePx, sizePx, hints);
+            int width = matrix.getWidth();
+            int height = matrix.getHeight();
+            int[] pixels = new int[width * height];
+            for (int y = 0; y < height; y++) {
+                int offset = y * width;
+                for (int x = 0; x < width; x++) {
+                    pixels[offset + x] = matrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF;
                 }
             }
-            Bitmap bitmapCreateBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            bitmapCreateBitmap.setPixels(iArr, 0, width, 0, 0, width, height);
-            return bitmapCreateBitmap;
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+            return bitmap;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static BigInteger b(BigInteger bigInteger, BigInteger bigInteger2) {
-        BigInteger bigInteger3 = BigInteger.ZERO;
-        if (bigInteger.compareTo(bigInteger3) == 0) {
-            return bigInteger3;
+    // ==================== 椭圆曲线运算 ====================
+
+    /**
+     * 模逆元（扩展欧几里得算法）
+     * <p>
+     * 求 a 在模 n 下的乘法逆元，即 a * result ≡ 1 (mod n)
+     *
+     * @param a 输入值
+     * @param n 模数
+     * @return a 的模逆元
+     */
+    public static BigInteger modInverse(BigInteger a, BigInteger n) {
+        BigInteger oldR = a, r = n;
+        BigInteger oldS = BigInteger.ONE, s = BigInteger.ZERO;
+        while (r.compareTo(BigInteger.ZERO) != 0) {
+            BigInteger quotient = oldR.divide(r);
+            BigInteger tempR = oldR.subtract(quotient.multiply(r));
+            oldR = r;
+            r = tempR;
+            BigInteger tempS = oldS.subtract(quotient.multiply(s));
+            oldS = s;
+            s = tempS;
         }
-        BigInteger bigInteger4 = BigInteger.ONE;
-        BigInteger bigIntegerMod = bigInteger.mod(bigInteger2);
-        BigInteger bigInteger5 = bigInteger2;
-        BigInteger bigInteger6 = bigInteger3;
-        BigInteger bigInteger7 = bigInteger4;
-        while (bigIntegerMod.compareTo(BigInteger.ONE) > 0) {
-            BigInteger bigIntegerDivide = bigInteger5.divide(bigIntegerMod);
-            BigInteger bigIntegerSubtract = bigInteger6.subtract(bigInteger7.multiply(bigIntegerDivide));
-            BigInteger bigIntegerSubtract2 = bigInteger5.subtract(bigIntegerMod.multiply(bigIntegerDivide));
-            bigInteger5 = bigIntegerMod;
-            bigIntegerMod = bigIntegerSubtract2;
-            bigInteger6 = bigInteger7;
-            bigInteger7 = bigIntegerSubtract;
-        }
-        return bigInteger7.mod(bigInteger2);
+        return oldS.mod(n);
     }
 
-    public static com.github.catvod.spider.merge.F0.b c(com.github.catvod.spider.merge.F0.b bVar, BigInteger bigInteger, BigInteger bigInteger2) {
-        BigInteger bigInteger3 = bVar.b;
-        if (bigInteger3 == null || bigInteger3.equals(BigInteger.ZERO)) {
-            BigInteger bigInteger4 = BigInteger.ZERO;
-            return new com.github.catvod.spider.merge.F0.b(bigInteger4, bigInteger4, bigInteger4);
+    /**
+     * 椭圆曲线点倍乘（point doubling）
+     * <p>
+     * 计算 2P，其中 P = (point.a, point.b, point.c) 在曲线 y² = x³ + b·x + a 上
+     *
+     * @param point     椭圆曲线上的点 (X, Y, Z) 射影坐标
+     * @param curveB    曲线参数 b
+     * @param modulus   模数 p
+     * @return 2P 点
+     */
+    public static EcPoint ecPointDouble(EcPoint point, BigInteger curveB, BigInteger modulus) {
+        BigInteger y = point.y;
+        if (y == null || y.equals(BigInteger.ZERO)) {
+            return new EcPoint(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO);
         }
-        BigInteger bigIntegerMod = bVar.b.pow(2).mod(bigInteger2);
-        BigInteger bigIntegerMod2 = BigInteger.valueOf(4L).multiply(bVar.a).multiply(bigIntegerMod).mod(bigInteger2);
-        BigInteger bigIntegerMod3 = BigInteger.valueOf(3L).multiply(bVar.a.pow(2)).add(bigInteger.multiply(bVar.c.pow(4))).mod(bigInteger2);
-        BigInteger bigIntegerMod4 = bigIntegerMod3.pow(2).subtract(BigInteger.valueOf(2L).multiply(bigIntegerMod2)).mod(bigInteger2);
-        return new com.github.catvod.spider.merge.F0.b(bigIntegerMod4, bigIntegerMod3.multiply(bigIntegerMod2.subtract(bigIntegerMod4)).subtract(BigInteger.valueOf(8L).multiply(bigIntegerMod.pow(2))).mod(bigInteger2), BigInteger.valueOf(2L).multiply(bVar.b).multiply(bVar.c).mod(bigInteger2));
+        BigInteger ySquared = point.y.pow(2).mod(modulus);
+        BigInteger fourXY = BigInteger.valueOf(4).multiply(point.x).multiply(ySquared).mod(modulus);
+        BigInteger threeXSqPlusBZ4 = BigInteger.valueOf(3).multiply(point.x.pow(2))
+                .add(curveB.multiply(point.z.pow(4))).mod(modulus);
+        BigInteger newX = threeXSqPlusBZ4.pow(2)
+                .subtract(BigInteger.valueOf(2).multiply(fourXY)).mod(modulus);
+        return new EcPoint(
+                newX,
+                threeXSqPlusBZ4.multiply(fourXY.subtract(newX))
+                        .subtract(BigInteger.valueOf(8).multiply(ySquared.pow(2))).mod(modulus),
+                BigInteger.valueOf(2).multiply(point.y).multiply(point.z).mod(modulus)
+        );
     }
 
-    public static com.github.catvod.spider.merge.F0.b d(com.github.catvod.spider.merge.F0.b bVar, BigInteger bigInteger, BigInteger bigInteger2, BigInteger bigInteger3, BigInteger bigInteger4) {
-        BigInteger bigInteger5 = BigInteger.ZERO;
-        if (bigInteger5.compareTo(bVar.b) == 0 || bigInteger5.compareTo(bigInteger) == 0) {
-            return new com.github.catvod.spider.merge.F0.b(bigInteger5, bigInteger5, BigInteger.ONE);
+    /**
+     * 椭圆曲线标量乘法 k·P（double-and-add 算法）
+     *
+     * @param point     基点 P
+     * @param k         标量
+     * @param order     点的阶
+     * @param curveB    曲线参数 b
+     * @param modulus   模数 p
+     * @return k·P 点
+     */
+    public static EcPoint ecScalarMultiply(EcPoint point, BigInteger k, BigInteger order,
+                                           BigInteger curveB, BigInteger modulus) {
+        if (BigInteger.ZERO.equals(point.y) || BigInteger.ZERO.equals(k)) {
+            return new EcPoint(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ONE);
         }
-        BigInteger bigInteger6 = BigInteger.ONE;
-        if (bigInteger6.compareTo(bigInteger) == 0) {
-            return bVar;
+        if (BigInteger.ONE.equals(k)) {
+            return point;
         }
-        if (bigInteger.compareTo(bigInteger5) < 0 || bigInteger.compareTo(bigInteger2) >= 0) {
-            return d(bVar, bigInteger.mod(bigInteger2), bigInteger2, bigInteger3, bigInteger4);
+        if (k.compareTo(BigInteger.ZERO) < 0 || k.compareTo(order) >= 0) {
+            return ecScalarMultiply(point, k.mod(order), order, curveB, modulus);
         }
-        if (bigInteger.mod(BigInteger.valueOf(2L)).compareTo(bigInteger5) == 0) {
-            return c(d(bVar, bigInteger.divide(BigInteger.valueOf(2L)), bigInteger2, bigInteger3, bigInteger4), bigInteger3, bigInteger4);
+        // Double-and-add
+        if (k.mod(BigInteger.valueOf(2)).equals(BigInteger.ZERO)) {
+            return ecPointDouble(ecScalarMultiply(point, k.divide(BigInteger.valueOf(2)),
+                    order, curveB, modulus), curveB, modulus);
         }
-        if (bigInteger.mod(BigInteger.valueOf(2L)).compareTo(bigInteger6) != 0) {
-            return null;
+        // k is odd: result = double(k/2 · P) + P
+        EcPoint halfResult = ecPointDouble(ecScalarMultiply(point, k.divide(BigInteger.valueOf(2)),
+                order, curveB, modulus), curveB, modulus);
+        BigInteger halfY = halfResult.y;
+        if (halfY == null || halfY.equals(BigInteger.ZERO)) {
+            return point;
         }
-        com.github.catvod.spider.merge.F0.b bVarC = c(d(bVar, bigInteger.divide(BigInteger.valueOf(2L)), bigInteger2, bigInteger3, bigInteger4), bigInteger3, bigInteger4);
-        BigInteger bigInteger7 = bVarC.b;
-        if (bigInteger7 == null || bigInteger7.equals(bigInteger5)) {
-            return bVar;
-        }
-        BigInteger bigInteger8 = bVar.b;
-        if (bigInteger8 != null && !bigInteger8.equals(bigInteger5)) {
-            BigInteger bigIntegerMod = bVarC.a.multiply(bVar.c.pow(2)).mod(bigInteger4);
-            BigInteger bigIntegerMod2 = bVar.a.multiply(bVarC.c.pow(2)).mod(bigInteger4);
-            BigInteger bigIntegerMod3 = bVarC.b.multiply(bVar.c.pow(3)).mod(bigInteger4);
-            BigInteger bigIntegerMod4 = bVar.b.multiply(bVarC.c.pow(3)).mod(bigInteger4);
-            if (bigIntegerMod.compareTo(bigIntegerMod2) == 0) {
-                return bigIntegerMod3.compareTo(bigIntegerMod4) != 0 ? new com.github.catvod.spider.merge.F0.b(bigInteger5, bigInteger5, bigInteger6) : c(bVarC, bigInteger3, bigInteger4);
+        BigInteger pointY = point.y;
+        if (pointY != null && !pointY.equals(BigInteger.ZERO)) {
+            // Point addition
+            BigInteger u1 = halfResult.x.multiply(point.z.pow(2)).mod(modulus);
+            BigInteger u2 = point.x.multiply(halfResult.z.pow(2)).mod(modulus);
+            BigInteger s1 = halfResult.y.multiply(point.z.pow(3)).mod(modulus);
+            BigInteger s2 = point.y.multiply(halfResult.z.pow(3)).mod(modulus);
+            if (u1.equals(u2)) {
+                return s1.equals(s2) ? ecPointDouble(halfResult, curveB, modulus)
+                        : new EcPoint(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ONE);
             }
-            BigInteger bigIntegerSubtract = bigIntegerMod2.subtract(bigIntegerMod);
-            BigInteger bigIntegerSubtract2 = bigIntegerMod4.subtract(bigIntegerMod3);
-            BigInteger bigIntegerMod5 = bigIntegerSubtract.multiply(bigIntegerSubtract).mod(bigInteger4);
-            BigInteger bigIntegerMod6 = bigIntegerSubtract.multiply(bigIntegerMod5).mod(bigInteger4);
-            BigInteger bigIntegerMod7 = bigIntegerMod.multiply(bigIntegerMod5).mod(bigInteger4);
-            BigInteger bigIntegerMod8 = bigIntegerSubtract2.pow(2).subtract(bigIntegerMod6).subtract(BigInteger.valueOf(2L).multiply(bigIntegerMod7)).mod(bigInteger4);
-            bVarC = new com.github.catvod.spider.merge.F0.b(bigIntegerMod8, bigIntegerSubtract2.multiply(bigIntegerMod7.subtract(bigIntegerMod8)).subtract(bigIntegerMod3.multiply(bigIntegerMod6)).mod(bigInteger4), bigIntegerSubtract.multiply(bVarC.c).multiply(bVar.c).mod(bigInteger4));
+            BigInteger h = u2.subtract(u1);
+            BigInteger r = s2.subtract(s1);
+            BigInteger hSq = h.multiply(h).mod(modulus);
+            BigInteger hCu = h.multiply(hSq).mod(modulus);
+            BigInteger newX = r.pow(2).subtract(hCu).subtract(BigInteger.valueOf(2).multiply(u1.multiply(hSq))).mod(modulus);
+            halfResult = new EcPoint(
+                    newX,
+                    r.multiply(u1.multiply(hSq).subtract(newX)).subtract(s1.multiply(hCu)).mod(modulus),
+                    h.multiply(halfResult.z).multiply(point.z).mod(modulus)
+            );
         }
-        return bVarC;
+        return halfResult;
     }
 
-    public static String e(String str, String str2) throws i {
-        int iIndexOf = str.indexOf(str2);
-        if (iIndexOf < 0) {
-            throw new i("Start not found");
-        }
-        String strSubstring = str.substring(str2.length() + iIndexOf);
-        com.github.catvod.spider.merge.M1.i iVar = new com.github.catvod.spider.merge.M1.i(strSubstring);
-        boolean z = false;
-        while (true) {
-            h hVarA = iVar.a();
-            int i = hVarA.a;
-            if (i == 47) {
-                z = true;
-            } else {
-                if (z && iVar.b()) {
-                    return strSubstring.substring(0, hVarA.b);
-                }
-                if (i == 2) {
-                    throw new i("Could not find matching braces");
-                }
-            }
-        }
+    /**
+     * 将射影坐标点转换为仿射坐标（归一化）
+     *
+     * @param point   射影坐标点 (X, Y, Z)
+     * @param modulus 模数 p
+     * @return 仿射坐标点 (x, y, 0)
+     */
+    public static EcPoint ecNormalize(EcPoint point, BigInteger modulus) {
+        EcPoint result = ecScalarMultiply(new EcPoint(point.x, point.y, BigInteger.ONE),
+                point.z, modulus, modulus, modulus);
+        BigInteger zInverse = modInverse(result.z, modulus);
+        return new EcPoint(
+                result.x.multiply(zInverse.pow(2)).mod(modulus),
+                result.y.multiply(zInverse.pow(3)).mod(modulus),
+                BigInteger.ZERO
+        );
     }
 
-    public static String f(String str) {
+    // ==================== 字符串工具 ====================
+
+    /**
+     * 在字符串中查找起始标记，提取到匹配的闭合符号
+     *
+     * @param text      源文本
+     * @param startMark 起始标记
+     * @return 起始标记之后到闭合符号之间的子串
+     */
+    public static String extractBetween(String text, String startMark) {
+        int startIdx = text.indexOf(startMark);
+        if (startIdx < 0) {
+            throw new IllegalArgumentException("Start mark not found: " + startMark);
+        }
+        String remaining = text.substring(startMark.length() + startIdx);
+        // 简化实现：查找第一个分隔符
+        int endIdx = remaining.indexOf(';');
+        if (endIdx < 0) endIdx = remaining.indexOf(',');
+        if (endIdx < 0) endIdx = remaining.length();
+        return remaining.substring(0, endIdx);
+    }
+
+    /**
+     * 计算字符串的 MD5 哈希值
+     *
+     * @param input 输入字符串
+     * @return 32 位小写十六进制 MD5，失败返回空串
+     */
+    public static String md5(String input) {
         try {
-            StringBuilder sb = new StringBuilder(new BigInteger(1, MessageDigest.getInstance("MD5").digest(str.getBytes("UTF-8"))).toString(16));
-            while (sb.length() < 32) {
-                sb.insert(0, "0");
+            byte[] digest = MessageDigest.getInstance("MD5").digest(input.getBytes("UTF-8"));
+            StringBuilder hex = new StringBuilder(new BigInteger(1, digest).toString(16));
+            while (hex.length() < 32) {
+                hex.insert(0, "0");
             }
-            return sb.toString().toLowerCase();
-        } catch (Exception unused) {
+            return hex.toString().toLowerCase();
+        } catch (Exception e) {
             return "";
         }
     }
 
-    public static com.github.catvod.spider.merge.F0.b g(com.github.catvod.spider.merge.F0.b bVar, BigInteger bigInteger, BigInteger bigInteger2, BigInteger bigInteger3, BigInteger bigInteger4) {
-        com.github.catvod.spider.merge.F0.b bVarD = d(new com.github.catvod.spider.merge.F0.b(bVar.a, bVar.b, BigInteger.ONE), bigInteger, bigInteger2, bigInteger3, bigInteger4);
-        BigInteger bigIntegerB = b(bVarD.c, bigInteger4);
-        return new com.github.catvod.spider.merge.F0.b(bVarD.a.multiply(bigIntegerB.pow(2)).mod(bigInteger4), bVarD.b.multiply(bigIntegerB.pow(3)).mod(bigInteger4), BigInteger.ZERO);
+    // ==================== 内部工具 ====================
+
+    private static int dpToPx(int dp) {
+        return (int) (dp * android.content.res.Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    /**
+     * 椭圆曲线点（射影坐标）
+     */
+    public static class EcPoint {
+        public final BigInteger x;
+        public final BigInteger y;
+        public final BigInteger z;
+
+        public EcPoint(BigInteger x, BigInteger y, BigInteger z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
     }
 }

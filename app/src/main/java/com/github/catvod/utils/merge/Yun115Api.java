@@ -88,7 +88,7 @@ public final class Yun115Api {
 
     private String d(String str) throws InterruptedException {
         if (!str.startsWith("https")) {
-            str = C1290c.a("https://115cdn.com/webapi/", str);
+            str = UrlUtils.resolveUrl("https://115cdn.com/webapi/", str);
         }
         HashMap map = new HashMap();
         HashMap<String, String> mapE = e();

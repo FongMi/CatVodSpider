@@ -136,7 +136,7 @@ public final class UcDriveApi {
 
     private com.github.catvod.spider.merge.f0.i H(String str, JSONObject jSONObject) throws InterruptedException {
         if (!str.startsWith("https")) {
-            str = C1290c.a("https://pc-api.uc.cn/", str);
+            str = UrlUtils.resolveUrl("https://pc-api.uc.cn/", str);
         }
         HashMap map = new HashMap();
         HashMap<String, String> mapV = v(str);
@@ -223,7 +223,7 @@ public final class UcDriveApi {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(com.github.catvod.spider.merge.i0.GeneralUtils.f(240), com.github.catvod.spider.merge.i0.GeneralUtils.f(240));
             ImageView imageView = new ImageView(Init.context());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setImageBitmap(QrCodeUtils.a(str, 240, 2));
+            imageView.setImageBitmap(QrCodeUtils.generateQrCode(str, 240, 2));
             FrameLayout frameLayout = new FrameLayout(Init.context());
             layoutParams.gravity = 17;
             frameLayout.addView(imageView, layoutParams);
@@ -582,7 +582,7 @@ public final class UcDriveApi {
 
     private String s(String str) throws InterruptedException {
         if (!str.startsWith("https")) {
-            str = C1290c.a("https://drive-pc.quark.cn/", str);
+            str = UrlUtils.resolveUrl("https://drive-pc.quark.cn/", str);
         }
         HashMap map = new HashMap();
         HashMap<String, String> mapV = v(str);

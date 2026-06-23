@@ -62,7 +62,7 @@ public final class Yun139Api {
         HashMap<String, String> mapD;
         String str3;
         if (!str.startsWith("https")) {
-            str = C1290c.a("https://caiyun.139.com/", str);
+            str = UrlUtils.resolveUrl("https://caiyun.139.com/", str);
         }
         com.github.catvod.spider.merge.i0.m.g(str2);
         String strG = com.github.catvod.spider.merge.i0.m.g(str2);
