@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * UC Browser cloud drive user information and authentication state.
  * Persisted to local storage as JSON.
- * Replaces obfuscated class: com.github.catvod.spider.merge.T.b
+ * Replaces obfuscated class: com.github.catvod.spider.merge.T.pkg.b
  *
  * API client usage (UcDriveApi):
  *   UcUser.fromJson(json)         - deserialize from saved JSON (was: b.i())
@@ -49,7 +49,7 @@ public class UcUser {
 
     /**
      * Deserialize a UcUser from a JSON string.
-     * Replaces: merge.T.b.i(String)
+     * Replaces: merge.T.pkg.b.i(String)
      */
     public static UcUser fromJson(String json) {
         return new Gson().fromJson(json, UcUser.class);
@@ -135,8 +135,8 @@ public class UcUser {
      * Returns the member type Integer (used as getMemberType().intValue()).
      * Replaces: obfuscated method f()
      */
-    public Integer getMemberType() {
-        return memberType != null && !memberType.isEmpty() ? Integer.valueOf(memberType) : null;
+    public String getMemberType() {
+        return memberType;
     }
 
     /**
@@ -165,6 +165,17 @@ public class UcUser {
     public void setUt(String ut) {
         this.ut = ut;
     }
+
+    // ==================== Obfuscated Aliases ====================
+
+    /** Alias for getCookie() - returns cookie string. */
+    public String b() { return getCookie(); }
+
+    /** Returns count for Server.z() (returns 0). */
+    public int c() { return 0; }
+
+    /** Alias for setMemberType(). */
+    public void n(String value) { setMemberType(value); }
 
     // ==================== Persistence ====================
 

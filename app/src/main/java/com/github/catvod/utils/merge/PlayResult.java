@@ -58,6 +58,11 @@ public final class PlayResult {
         this.subtitles = subs;
     }
 
+    /** Obfuscated alias for setSubtitles(). */
+    public void v(List<?> subs) {
+        setSubtitles(subs);
+    }
+
     @Override
     public String toString() {
         return new Gson().newBuilder().disableHtmlEscaping().create().toJson(this);

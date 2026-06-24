@@ -84,6 +84,14 @@ public final class VodResult {
         return gVar.toString();
     }
 
+    /** Overload accepting JSONObject directly (used by PTT and similar spiders). */
+    public static String o(List<VodCategory> list, org.json.JSONObject jSONObject) {
+        VodResult gVar = new VodResult();
+        gVar.a = list;
+        gVar.e(jSONObject);
+        return gVar.toString();
+    }
+
     public static String p(List<VodCategory> list, LinkedHashMap<String, List<d>> linkedHashMap) {
         VodResult gVar = new VodResult();
         gVar.a = list;
@@ -230,6 +238,37 @@ public final class VodResult {
 
     public final VodResult y(List<VodItem> list) {
         this.b = list;
+        return this;
+    }
+
+    /** Setter for vod_id (obfuscation name f). */
+    public final VodResult f(String str) {
+        // vod_id is set via VodItem, not directly on VodResult.
+        // This is a stub for obfuscated code compatibility.
+        return this;
+    }
+
+    /** Setter for vod_name (obfuscation name g, String overload). */
+    public final VodResult g(String str) {
+        this.o = str;
+        return this;
+    }
+
+    /** Setter for image URL (obfuscation name h, String overload). */
+    public final VodResult h(String str) {
+        this.n = str;
+        return this;
+    }
+
+    /** Setter for play_from (obfuscation name i, String overload). */
+    public final VodResult i(String str) {
+        this.d = str;
+        return this;
+    }
+
+    /** Setter for play_url (obfuscation name j, String overload). */
+    public final VodResult j(String str) {
+        this.f = str;
         return this;
     }
 }

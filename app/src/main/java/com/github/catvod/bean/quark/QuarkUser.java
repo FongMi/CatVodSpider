@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Quark cloud drive user information and authentication state.
  * Persisted to local storage as JSON.
- * Replaces obfuscated class: com.github.catvod.spider.merge.S.e
+ * Replaces obfuscated class: com.github.catvod.spider.merge.S.pkg.e
  *
  * API client usage (QuarkDriveApi):
  *   QuarkUser.fromJson(json)      - deserialize from saved JSON (was: e.h())
@@ -44,7 +44,7 @@ public class QuarkUser {
 
     /**
      * Deserialize a QuarkUser from a JSON string.
-     * Replaces: merge.S.e.h(String)
+     * Replaces: merge.S.pkg.e.h(String)
      */
     public static QuarkUser fromJson(String json) {
         return new Gson().fromJson(json, QuarkUser.class);

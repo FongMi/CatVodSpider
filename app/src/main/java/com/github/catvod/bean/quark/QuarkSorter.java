@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Quark file list sorter (replaces com.github.catvod.spider.merge.S.d)
+ * Quark file list sorter (replaces com.github.catvod.spider.merge.S.pkg.d)
  */
 public final class QuarkSorter {
 

@@ -1,4 +1,5 @@
 package com.github.catvod.utils;
+import com.github.catvod.utils.okhttp.OkHttpUtil;
 
 import com.github.catvod.crawler.SpiderDebug;
 
@@ -35,12 +36,15 @@ public final class PanHttpClient {
         private final String body;
         private final int code;
 
-        public HttpResponse(String body, int code) {
+        public HttpResponse() { this.body = ""; this.code = -1; }
+    public HttpResponse(String body, int code) {
             this.body = body;
             this.code = code;
         }
 
         /** 响应体（替代 .a()） */
+    /** @deprecated Use body() instead */
+    public String a() { return body; }
         public String body() { return body; }
 
         /** HTTP 状态码（替代 .b()） */

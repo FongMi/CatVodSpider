@@ -5,7 +5,7 @@ import com.github.catvod.spider.Init;
 import com.google.gson.Gson;
 
 /**
- * 本地持久化存储工具（替代 merge.g.b 的 SharedPreferences 读写功能）
+ * 本地持久化存储工具（替代 merge.gb 的 SharedPreferences 读写功能）
  */
 public final class LocalStorage {
 

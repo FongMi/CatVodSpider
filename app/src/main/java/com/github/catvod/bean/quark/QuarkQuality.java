@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Quark quality mapping utility (replaces com.github.catvod.spider.merge.S.b)
+ * Quark quality mapping utility (replaces com.github.catvod.spider.merge.S.pkg.b)
  */
 public final class QuarkQuality {
 

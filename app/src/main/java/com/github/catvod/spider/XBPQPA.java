@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import com.github.catvod.bean.VodResult;
 import com.github.catvod.bean.vod.FilterGroup;
-import com.github.catvod.bean.vod.StringUtils;
+import com.github.catvod.bean.h;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import java.util.List;
 
 
 public class XBPQPA extends XBPQAli {
-    private List<StringUtils> a(String str) {
+    private List<h> a(String str) {
         ArrayList arrayList = new ArrayList();
         if (str.startsWith("file://")) {
             File file = new File(str.replace("file://", ""));
@@ -27,13 +27,13 @@ public class XBPQPA extends XBPQAli {
                     String strB = name.substring(name.lastIndexOf(".") + 1);
                     if (strB.equals("srt") || strB.equals("ass") || strB.equals("ssa")) {
                         String baseName = name.contains(".") ? name.substring(0, name.lastIndexOf(".")) : name;
-                        StringUtils eVar = new StringUtils();
-                        eVar.c(baseName);
-                        StringUtils eVarA = eVar.a(strB);
+                        h hVar = new h();
+                        hVar.b(baseName);
+                        h hVarA = hVar.a(strB);
                         StringBuilder sbB = new StringBuilder("file://");
                         sbB.append(file2.getAbsolutePath());
-                        eVarA.d(sbB.toString());
-                        arrayList.add(eVarA);
+                        hVarA.c(sbB.toString());
+                        arrayList.add(hVarA);
                     }
                 }
             }
@@ -47,11 +47,11 @@ public class XBPQPA extends XBPQAli {
                         String strConcat = (str.contains(".") ? str.substring(0, str.lastIndexOf(".")) : str).concat(".").concat(str2);
                         if (OkHttpUtil.string(strConcat) != null) {
                             String lastPathSegment = Uri.parse(strConcat).getLastPathSegment();
-                            StringUtils eVar2 = new StringUtils();
-                            eVar2.c(lastPathSegment);
-                            StringUtils eVarA2 = eVar2.a(str2);
-                            eVarA2.d(strConcat);
-                            arrayList.add(eVarA2);
+                            h hVar2 = new h();
+                            hVar2.b(lastPathSegment);
+                            h hVarA2 = hVar2.a(str2);
+                            hVarA2.c(strConcat);
+                            arrayList.add(hVarA2);
                         }
                     }
                 }
@@ -105,7 +105,7 @@ public class XBPQPA extends XBPQAli {
             if (str.equals("直连")) {
                 FilterGroup dVar2 = new FilterGroup();
                 dVar2.i(str2);
-                dVar2.h(a(str2));
+                dVar2.v(a(str2));
                 return dVar2.toString();
             }
             if (str.equals("嗅探")) {

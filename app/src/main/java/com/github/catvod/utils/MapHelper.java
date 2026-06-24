@@ -5,7 +5,7 @@ import java.util.HashMap;
 /**
  * HashMap 构建工具类
  * <p>
- * 替代 merge.I.BuilderUtils.c() 和 merge.B.e.b()
+ * 替代 merge.IBuilderUtils.c() 和 merge.Be.b()
  */
 public final class MapHelper {
 

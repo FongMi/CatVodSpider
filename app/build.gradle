@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation "com.google.code.findbugs:jsr305:3.0.2"
     implementation 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
     implementation 'com.github.thegrizzlylabs:sardine-android:0.9'
     implementation 'wang.harlon.quickjs:wrapper-android:1.0.0'

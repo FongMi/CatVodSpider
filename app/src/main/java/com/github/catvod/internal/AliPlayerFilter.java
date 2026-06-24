@@ -46,4 +46,19 @@ public final class AliPlayerFilter {
     public String F(String[] params, String quality) {
         return "";
     }
+
+    /** 获取播放 URL */
+    public String p(String fileId) {
+        return "";
+    }
+
+    /** 获取字幕列表 */
+    public java.util.List<com.github.catvod.bean.h> v(String[] params) {
+        return new java.util.ArrayList<>();
+    }
+
+    /** 获取默认 headers */
+    public java.util.Map<String, String> q() {
+        return new java.util.HashMap<>();
+    }
 }

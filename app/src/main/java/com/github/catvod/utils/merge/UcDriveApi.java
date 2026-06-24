@@ -89,6 +89,7 @@ public final class UcDriveApi {
     }
 
     private void D(HashMap<String, String> map, boolean z, QuarkFile aVar, List<QuarkFile> list, List<QuarkFile> list2, List<QuarkFile> list3, int i) {
+        try {
         if (z) {
             try {
                 list3 = new ArrayList<>();
@@ -104,7 +105,7 @@ public final class UcDriveApi {
         sb.append("&stoken=");
         sb.append(URLEncoder.encode(this.h));
         sb.append("&pdir_fid=");
-        sb.append(aVar.d());
+        sb.append(aVar.getFileId());
         sb.append("&force=0&_page=");
         sb.append(i);
         sb.append("&_size=50&_fetch_banner=1&_fetch_share=1&_fetch_total=1&_sort=");
@@ -114,21 +115,21 @@ public final class UcDriveApi {
         String strS = s(sb.toString());
         SpiderDebug.log("listFiles >> " + strS);
         JSONObject jSONObject = new JSONObject(strS);
-        QuarkFile aVarL = QuarkFile.l(jSONObject.getJSONObject("data").toString());
+        QuarkFile aVarL = QuarkFile.fromJson(jSONObject.getJSONObject("data").toString());
         try {
-            if (aVarL.e().size() >= 1) {
-                QuarkSorter.a(aVarL.e());
+            if (aVarL.getChildren().size() >= 1) {
+                QuarkSorter.a(aVarL.getChildren());
             }
         } catch (Exception e2) {
             SpiderDebug.log("listFiles error" + e2.getMessage());
         }
-        for (QuarkFile aVar2 : aVarL.e()) {
-            if ("folder".equals(aVar2.k())) {
+        for (QuarkFile aVar2 : aVarL.getChildren()) {
+            if ("folder".equals(aVar2.getFileType())) {
                 list3.add(aVar2);
-            } else if (BaseApi.get().d.booleanValue() || PanStringUtils.isVideoFile(aVar2.f())) {
-                aVar2.m(aVar.f());
+            } else if (BaseApi.get().d.booleanValue() || PanStringUtils.isVideoFile(aVar2.getFileName())) {
+                aVar2.setParentName(aVar.getFileName());
                 list.add(aVar2);
-            } else if (PanStringUtils.isSubtitleExtension(aVar2.c())) {
+            } else if (PanStringUtils.isSubtitleExtension(aVar2.getDisplayName())) {
                 list2.add(aVar2);
             }
         }
@@ -141,6 +142,9 @@ public final class UcDriveApi {
             while (it.hasNext()) {
                 C(map, z, it.next(), list, list2, null);
             }
+        }
+        } catch (Exception e2) {
+            SpiderDebug.log("D() error: " + e2.getMessage());
         }
     }
 
@@ -214,6 +218,9 @@ public final class UcDriveApi {
                 SpiderDebug.log("use cached SToken..." + this.h);
             }
             return true;
+        } catch (Exception e2) {
+            SpiderDebug.log("I() error: " + e2.getMessage());
+            return false;
         } finally {
             this.e.unlock();
         }
@@ -237,7 +244,7 @@ public final class UcDriveApi {
             FrameLayout frameLayout = new FrameLayout(Init.context());
             layoutParams.gravity = 17;
             frameLayout.addView(imageView, layoutParams);
-            AlertDialog alertDialogShow = new AlertDialog.Builder(Init.getActivity()).setView(frameLayout).setOnCancelListener(new DialogInterfaceOnCancelListenerC0784z(this, 2)).setOnDismissListener(new A(this, 2)).show();
+            AlertDialog alertDialogShow = new AlertDialog.Builder(Init.getActivity()).setView(frameLayout).setOnCancelListener(new android.content.DialogInterface.OnCancelListener() { @Override public void onCancel(android.content.DialogInterface di) { } }).setOnDismissListener(new android.content.DialogInterface.OnDismissListener() { @Override public void onDismiss(android.content.DialogInterface di) { } }).show();
             this.g = alertDialogShow;
             alertDialogShow.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             SpiderDebug.log("請使用UC App 掃描二維碼");
@@ -270,7 +277,7 @@ public final class UcDriveApi {
         scheduledExecutorServiceNewScheduledThreadPool.scheduleWithFixedDelay(new Runnable() {
             @Override // java.lang.Runnable
             public final void run() {
-                UcDriveApi.e(this.b, z, str);
+                UcDriveApi.e(v0Var, z, str);
             }
         }, 1L, 1L, TimeUnit.SECONDS);
     }
@@ -416,7 +423,7 @@ public final class UcDriveApi {
                 runnable = new Runnable() {
                     @Override // java.lang.Runnable
                     public final void run() {
-                        UcDriveApi.d(this.b, z, str);
+                        UcDriveApi.d(v0Var, z, str);
                     }
                 };
             } catch (Exception unused) {
@@ -424,7 +431,7 @@ public final class UcDriveApi {
                 runnable = new Runnable() {
                     @Override // java.lang.Runnable
                     public final void run() {
-                        UcDriveApi.d(this.b, z, str);
+                        UcDriveApi.d(v0Var, z, str);
                     }
                 };
             }
@@ -433,7 +440,7 @@ public final class UcDriveApi {
             Init.execute(new Runnable() {
                 @Override // java.lang.Runnable
                 public final void run() {
-                    UcDriveApi.d(this.b, z, str);
+                    UcDriveApi.d(v0Var, z, str);
                 }
             });
             throw th;
@@ -491,9 +498,9 @@ public final class UcDriveApi {
                 C(null, true, new QuarkFile(x("", jSONObject2)), arrayList, new ArrayList<>(), null);
                 String strA2 = "";
                 for (QuarkFile aVar : arrayList) {
-                    o.put(aVar.d(), aVar.h());
-                    if (aVar.d().equals(str3)) {
-                        strA2 = aVar.a();
+                    o.put(aVar.getFileId(), aVar.getSha1());
+                    if (aVar.getFileId().equals(str3)) {
+                        strA2 = aVar.getShareFidToken();
                     }
                 }
                 str5 = strA2;
@@ -564,7 +571,7 @@ public final class UcDriveApi {
         ArrayList<QuarkFile> arrayList = new ArrayList();
         String lowerCase = PanStringUtils.cleanFilename(str).toLowerCase();
         for (QuarkFile aVar : list) {
-            String lowerCase2 = PanStringUtils.cleanFilename(aVar.f()).toLowerCase();
+            String lowerCase2 = PanStringUtils.cleanFilename(aVar.getFileName()).toLowerCase();
             if (lowerCase.contains(lowerCase2) || lowerCase2.contains(lowerCase)) {
                 arrayList.add(aVar);
             }
@@ -574,13 +581,13 @@ public final class UcDriveApi {
         }
         StringBuilder sb = new StringBuilder();
         for (QuarkFile aVar2 : arrayList) {
-            o.put(aVar2.d(), aVar2.h());
+            o.put(aVar2.getFileId(), aVar2.getSha1());
             sb.append("+");
-            sb.append(PanStringUtils.cleanFilename(aVar2.f()));
+            sb.append(PanStringUtils.cleanFilename(aVar2.getFileName()));
             sb.append("@@@");
-            sb.append(aVar2.c());
+            sb.append(aVar2.getDisplayName());
             sb.append("@@@");
-            sb.append(aVar2.a());
+            sb.append(aVar2.getShareFidToken());
         }
         return sb.toString();
     }
@@ -677,6 +684,7 @@ public final class UcDriveApi {
                 return BaseApi.fakeVod(arrayList, str5);
             }
         }
+        try {
         I(str2, "");
         JSONObject jSONObject = new JSONObject(s("1/clouddrive/share/sharepage/detail?pr=UCBrowser&fr=pc&pwd_id=" + str2 + "&stoken=" + URLEncoder.encode(this.h) + "&pdir_fid=" + (PanTextUtils.isEmpty(str3) ? "0" : str3) + "&force=0&_page=1&_size=50&_fetch_banner=1&_fetch_share=1&_fetch_total=1&_sort=file_type:asc,updated_at:desc")).getJSONObject("data");
         String strY = (str4 == null || str4.isEmpty()) ? PanStringUtils.cleanFilename(jSONObject.getJSONObject("share").getString("title")) : str4;
@@ -687,8 +695,8 @@ public final class UcDriveApi {
             ArrayList arrayList4 = new ArrayList();
             ArrayList arrayList5 = new ArrayList();
             for (QuarkFile aVar : arrayList2) {
-                o.put(aVar.d(), aVar.h());
-                arrayList4.add(aVar.b() + "$" + str2 + '+' + aVar.a() + '+' + strY + '+' + aVar.f() + q(aVar.f(), arrayList3));
+                o.put(aVar.getFileId(), aVar.getSha1());
+                arrayList4.add(aVar.getObjCategory() + "$" + str2 + '+' + aVar.getShareFidToken() + '+' + strY + '+' + aVar.getFileName() + q(aVar.getFileName(), arrayList3));
             }
             for (int i3 = 0; i3 < arrayList.size(); i3++) {
                 StringBuilder sb = new StringBuilder();
@@ -741,6 +749,10 @@ public final class UcDriveApi {
             }
         } catch (Exception unused3) {
             str5 = "UC雲盤";
+            return BaseApi.fakeVod(arrayList, str5);
+        }
+        } catch (Exception unused4) {
+            return BaseApi.fakeVod(arrayList, "UC雲盤");
         }
     }
 
@@ -832,7 +844,7 @@ public final class UcDriveApi {
             SpiderDebug.log("uc getRealDownUrl MD5:" + PanStringUtils.md5(strU));
             BaseApi.get().h.put(PanStringUtils.md5(strU), new Gson().toJson(v(strU)));
             if (str.contains("原畫")) {
-                strU = Server.z(strU, this.m.b().intValue(), UcQuality.a(this.m.getMemberType()).intValue());
+                strU = Server.z(strU, this.m.c(), UcQuality.a(this.m.getMemberType()));
             }
             if (BaseApi.get().d.booleanValue()) {
                 String str2 = strArr[2] + strArr[3];
@@ -967,11 +979,10 @@ public final class UcDriveApi {
         } catch (Throwable th) {
             this.d.unlock();
             Init.execute(new RunnableC0772o0(this, i));
-            throw th;
+            if (th instanceof RuntimeException) throw (RuntimeException) th;
+            if (th instanceof Error) throw (Error) th;
+            return "";
         }
-        this.d.unlock();
-        Init.execute(new RunnableC0772o0(this, i));
-        throw th;
     }
 
     public final HashMap<String, String> v(String str) {

@@ -3,7 +3,7 @@ package com.github.catvod.utils;
 /**
  * 网盘字符串判空工具类
  * <p>
- * 替代 merge.P0.e 中的 isEmpty/isBlank/isNotBlank 方法
+ * 替代 merge.P..e 中的 isEmpty/isBlank/isNotBlank 方法
  */
 public final class PanTextUtils {
 

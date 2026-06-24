@@ -128,6 +128,16 @@ public final class Yun115File implements Comparable<Yun115File> {
         return this.fileCount == 0 ? "folder" : "file";
     }
 
+    /** Returns the format type string (e.g. mime type), or null if unknown. Obfuscated alias: j() */
+    public final String j() {
+        return this.formatType;
+    }
+
+    /** Returns the format type string. */
+    public final String getFormatType() {
+        return this.formatType;
+    }
+
     /** 设置 categoryId（链式调用） */
     public final Yun115File n(String categoryId) {
         this.categoryId = categoryId;

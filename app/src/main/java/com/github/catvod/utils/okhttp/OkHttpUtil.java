@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 
 public class OkHttpUtil {
@@ -100,6 +101,13 @@ public class OkHttpUtil {
 
     public static String string(String url, Map<String, String> headerMap) {
         return string(defaultClient(), url, null, null, headerMap, null);
+    }
+
+    /**
+     * Convenience: GET with no headers.
+     */
+    public static String string(String url) {
+        return string(defaultClient(), url, null, null, null, null);
     }
 
     public static String string(String url, String tag, Map<String, String> headerMap) {

@@ -8,7 +8,7 @@ import com.github.catvod.en.BaseApi;
 import com.github.catvod.en.NetPan;
 import com.github.catvod.parser.MixDemo;
 import com.github.catvod.utils.M3uPlaylistParser;
-import com.github.catvod.utils.merge.AliDriveFacade;
+import com.github.catvod.utils.merge.AiDriveFacade;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
 import java.io.ByteArrayInputStream;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class Proxy extends Spider {
     private static int serverPort = -1;
 
-    public class AnonymousClass3 extends Spider {
+    public static class AnonymousClass3 extends Spider {
 
         public static int proxyPort = -1;
 
@@ -48,22 +48,26 @@ public class Proxy extends Spider {
                     return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes(charset))};
                 }
                 if (action.equals("push")) {
-                    return xc.vod(params);
+                    // xc class removed - stub returns null
+                    return null;
                 }
                 boolean isParseWeb = action.equals("parseWeb");
                 String flag = "flag";
                 String urlKey = "url";
                 if (isParseWeb) {
-                    return MixWeb.loadHtml(params.get(flag), params.get(urlKey));
+                    // MixWeb class not available - return null
+                    return null;
                 }
                 if (action.equals("parseMix")) {
                     return MixDemo.loadHtml(params.get(flag), params.get(urlKey));
                 }
                 if (action.equals("czspp")) {
-                    return Czsapp.loadsub(params.get(urlKey));
+                    // Czsapp class not available - return null
+                    return null;
                 }
                 if (action.equals("ddys")) {
-                    return Ddys.loadsub(params.get(urlKey));
+                    // Ddys class not available - return null
+                    return null;
                 }
                 return null;
             } catch (Throwable unused) {
@@ -83,6 +87,13 @@ public class Proxy extends Spider {
                 }
             }
         }
+    }
+
+    public static int getPort() {
+        if (serverPort <= 0) {
+            getUrl(); // triggers port discovery
+        }
+        return serverPort > 0 ? serverPort : 9978;
     }
 
     public static String getUrl() {
@@ -107,17 +118,18 @@ public class Proxy extends Spider {
     }
 
     public static Object[] processPush(Map<String, String> params) {
+        try {
         if (params.get("url") != null && !params.get("url").isEmpty()) {
-            AliDriveFacade.getApi().r = AliDriveFacade.getApi().F(params.get("url"), "1");
+            AiDriveFacade.getApi().r = AiDriveFacade.getApi().F(params.get("url"), "1");
             StringBuilder urlBuilder = new StringBuilder("弹幕来自推送 地址：");
-            urlBuilder.append(AliDriveFacade.getApi().r);
+            urlBuilder.append(AiDriveFacade.getApi().r);
             urlBuilder.append(" 可能需要重新刷新播放页");
             Log.w("Spider", urlBuilder.toString());
-            OkHttpUtil.string("http://127.0.0.1:9978/action?do=refresh&type=danmaku&path=" + URLEncoder.encode(AliDriveFacade.getApi().r));
+            OkHttpUtil.string("http://127.0.0.1:9978/action?do=refresh&type=danmaku&path=" + URLEncoder.encode(AiDriveFacade.getApi().r));
             return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
         }
         if (params.get("input") != null && !params.get("input").isEmpty()) {
-            BaseApi.get().VodResult.setText(params.get("input"));
+            BaseApi.get().g.setText(params.get("input"));
             return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
         }
         if (!(params.get("subtitleContent") != null && !params.get("subtitleContent").isEmpty())) {
@@ -127,9 +139,13 @@ public class Proxy extends Spider {
         com.github.catvod.utils.PathHelper.writeFile(new File(subtitlePath), params.get("subtitleContent"));
         OkHttpUtil.string("http://127.0.0.1:9978/action?do=refresh&type=subtitle&path=http://127.0.0.1:9978/file/" + subtitlePath);
         return new Object[]{200, "text/plain; charset=utf-8", new ByteArrayInputStream("ok".getBytes("UTF-8"))};
+        } catch (Exception e) {
+            return new Object[]{500, "text/plain; charset=utf-8", new ByteArrayInputStream("error".getBytes())};
+        }
     }
 
     public static Object[] proxy(Map<String, String> params) {
+        try {
         SpiderDebug.log("proxy" + params);
         String action = params.get("do");
         action.getClass();
@@ -144,6 +160,9 @@ public class Proxy extends Spider {
                 return NetPan.proxy(params);
             default:
                 return null;
+        }
+        } catch (Exception e) {
+            return null;
         }
     }
 }

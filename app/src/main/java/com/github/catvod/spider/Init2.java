@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.utils.TraditionalChinese;
 
-import com.github.catvod.utils.RemoteImageView;
+import com.github.catvod.utils.fS;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +76,7 @@ public class Init2 {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 LinearLayout linearLayout = new LinearLayout(getActivity());
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                RemoteImageView fSVar = new fS(getActivity());
+                fS fSVar = new fS(getActivity());
                 fSVar.setMaxHeight(300);
                 fSVar.HM(imageUrl);
                 EditText editText = new EditText(getActivity());

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * UC quality mapping utility (replaces com.github.catvod.spider.merge.T.a)
+ * UC quality mapping utility (replaces com.github.catvod.spider.merge.T.pkg.a)
  */
 public final class UcQuality {
 

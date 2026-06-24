@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * GuangYa (guangyapan.com) cloud drive user authentication state.
  * Persisted to local storage as JSON.
- * Replaces obfuscated class: com.github.catvod.spider.merge.P.a
+ * Replaces obfuscated class: com.github.catvod.spider.merge.P.pkg.a
  *
  * API client usage (GuangYaPanApi):
  *   Gson.fromJson(json, GuangYaUser.class)   - deserialize from saved JSON
@@ -65,6 +65,23 @@ public final class GuangYaUser {
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
+
+    // ==================== Obfuscated Aliases ====================
+
+    /** Alias for getAccessToken(). */
+    public String b() { return getAccessToken(); }
+
+    /** Alias for getRefreshToken(). */
+    public String c() { return getRefreshToken(); }
+
+    /** Alias for save(). */
+    public void d() { save(); }
+
+    /** Alias for setAccessToken(). */
+    public void e(String value) { setAccessToken(value); }
+
+    /** Alias for setRefreshToken(). */
+    public void f(String value) { setRefreshToken(value); }
 
     // ==================== Persistence ====================
 

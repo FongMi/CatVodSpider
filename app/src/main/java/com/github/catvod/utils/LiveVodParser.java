@@ -5,7 +5,7 @@ import android.net.UrlQuerySanitizer;
 import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.utils.okhttp3.Callback;
+import okhttp3.Callback;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,18 +72,17 @@ public class LiveVodParser extends Spider {
             }
             reentrantLock.unlock();
             new HashMap();
-            okhttp3.Callback.aA aAVar = new okhttp3.Callback.aA() { // from class: com.github.catvod.spider.merge.zm.1
-                @Override // com.github.catvod.spider.merge.okhttp3.Callback
+            OkHttpCallback.aA aAVar = new OkHttpCallback.aA() {
+                @Override
                 protected void onFailure(Call call, Exception exc) {
                 }
-
-                @Override // com.github.catvod.spider.merge.okhttp3.Callback
-                public String onResponse(Response response) {
-                    return null;
-                }
             };
-            Yy.b(Yy.T4(), str4, null, l8(), aAVar);
-            return new Object[]{200, "video/MP2T", aAVar.getResult().body().byteStream()};
+            b(T4(), str4, null, l8(), aAVar);
+            Response resultResponse = aAVar.getResult();
+            if (resultResponse == null) {
+                return null;
+            }
+            return new Object[]{200, "video/MP2T", resultResponse.body().byteStream()};
         } catch (Exception e) {
             SpiderDebug.log(e);
             return null;
@@ -91,17 +90,17 @@ public class LiveVodParser extends Spider {
     }
 
     private static String S(String str, String str2, Map<String, String> map) {
-        okhttp3.Callback.ut utVar = new okhttp3.Callback.ut() { // from class: com.github.catvod.spider.merge.zm.2
-            @Override // com.github.catvod.spider.merge.okhttp3.Callback
+        OkHttpCallback.ut utVar = new OkHttpCallback.ut() {
+            @Override
             protected void onFailure(Call call, Exception exc) {
             }
 
-            @Override // com.github.catvod.spider.merge.okhttp3.Callback
+            @Override
             public String onResponse(String str3) {
                 return str3;
             }
         };
-        Yy.N(Yy.T4(), str, str2, map, utVar);
+        Yy.N(T4(), str, str2, map, utVar);
         return utVar.getResult();
     }
 
@@ -110,6 +109,32 @@ public class LiveVodParser extends Spider {
     }
 
     private static String b(String str, String str2, String str3) {
+        return b_impl(str, str2, str3);
+    }
+
+    private static void b(long timeout, String url, String body, HashMap<String, String> headers, OkHttpCallback.aA callback) {
+        try {
+            okhttp3.Request.Builder reqBuilder = new okhttp3.Request.Builder().url(url);
+            if (body != null && !body.isEmpty()) {
+                reqBuilder.post(okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), body));
+            } else {
+                reqBuilder.get();
+            }
+            if (headers != null) {
+                for (Map.Entry<String, String> entry : headers.entrySet()) {
+                    reqBuilder.addHeader(entry.getKey(), entry.getValue());
+                }
+            }
+            try (Response resp = com.github.catvod.utils.okhttp.OkHttpUtil.defaultClient().newCall(reqBuilder.build()).execute()) {
+                callback.S(resp);
+            }
+        } catch (Exception e) {
+            SpiderDebug.log(e);
+            callback.S(null);
+        }
+    }
+
+    private static String b_impl(String str, String str2, String str3) {
         int i;
         JSONObject jSONObjectOptJSONObject;
         try {
@@ -240,7 +265,7 @@ public class LiveVodParser extends Spider {
         String str8;
         String str9;
         String str10;
-        String str11;
+        String str11 = "";
         String str12;
         String str13;
         String str14 = "";
@@ -544,7 +569,11 @@ public class LiveVodParser extends Spider {
     }
 
     public void init(Context context, String str) {
+        try {
         super.init(context, str);
+        } catch (Exception e) {
+            SpiderDebug.log(e);
+        }
         if (str.startsWith("http")) {
             HM = Yy.v(str, null);
         } else {
@@ -643,7 +672,7 @@ public class LiveVodParser extends Spider {
                 }
             }
         } catch (Exception e3) {
-            e = e3;
+            SpiderDebug.log(e3);
         }
     }
 
@@ -670,6 +699,7 @@ public class LiveVodParser extends Spider {
             e.printStackTrace();
             SpiderDebug.log(e);
         }
+        try {
         if (b2 == 0) {
             JSONObject jSONObject = new JSONObject();
             jSONObject.put("parse", 1);
@@ -701,6 +731,9 @@ public class LiveVodParser extends Spider {
             jSONObject4.put("url", str3);
             jSONObject4.put("header", "");
             return jSONObject4.toString();
+        }
+        } catch (Exception e2) {
+            SpiderDebug.log(e2);
         }
         return "";
     }

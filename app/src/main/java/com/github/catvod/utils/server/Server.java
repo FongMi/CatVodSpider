@@ -6,7 +6,7 @@ import java.util.Map;
 public class Server extends t {
     public static final /* synthetic */ int l = 0;
 
-    public native Server(int i);
+    public Server(int i) { super(i); }
 
     public static native String A(String str);
 

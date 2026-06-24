@@ -17,7 +17,7 @@ public class Uc extends Spider {
 
     public String detailContent(String str, List<String> list) {
         String strReplace = list.get(0).trim().replace("?public=1", "");
-        SpiderDebug.log("quark detailContent url:", strReplace);
+        SpiderDebug.log("quark detailContent url:" + strReplace);
         Matcher matcher = a.matcher(strReplace);
         if (matcher.find()) {
             return VodResult.m(UcDriveApi.r().A(strReplace, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", str));
@@ -48,7 +48,7 @@ public class Uc extends Spider {
 
     public String detailContent(List<String> list) {
         String strReplace = list.get(0).trim().replace("?public=1", "");
-        SpiderDebug.log("quark detailContent url:", strReplace);
+        SpiderDebug.log("quark detailContent url:" + strReplace);
         Matcher matcher = a.matcher(strReplace);
         if (matcher.find()) {
             return VodResult.m(UcDriveApi.r().A(strReplace, matcher.group(1), matcher.groupCount() == 3 ? matcher.group(3) : "", ""));

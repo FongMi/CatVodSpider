@@ -57,8 +57,27 @@ public final class FilterGroup {
     @SerializedName("danmaku")
     private String o;
 
+    public FilterGroup() {
+    }
+
+    /** 构造筛选组（替代 merge.fb.FilterGroup 的 key, name, options 构造函数） */
+    public FilterGroup(String key, String name, List<com.github.catvod.bean.dm84.FilterValue> options) {
+        this.d = key;
+        this.e = name;
+        // Store as JSON string in format field for serialization
+        try {
+            this.f = new Gson().toJson(options);
+        } catch (Exception ignored) {
+        }
+    }
+
     public static String e(FilterGroup result) {
         return result.toString();
+    }
+
+    /** Passthrough: if already a String, return as-is. */
+    public static String e(String result) {
+        return result;
     }
 
     public static String f(List<VodItem> list) {
@@ -112,6 +131,23 @@ public final class FilterGroup {
     @Override
     public String toString() {
         return new Gson().newBuilder().disableHtmlEscaping().create().toJson(this);
+    }
+
+    /** Setter for subtitle list (accepts bean.h list). */
+    public final FilterGroup v(List<com.github.catvod.bean.h> subs) {
+        if (subs == null || subs.isEmpty()) return this;
+        if (this.g == null) this.g = new java.util.ArrayList<>();
+        for (com.github.catvod.bean.h sub : subs) {
+            SubtitleEntry entry = new SubtitleEntry();
+            entry.name = sub != null ? String.valueOf(sub) : "";
+            this.g.add(entry);
+        }
+        return this;
+    }
+
+    /** Static helper: convert VodResult to JSON string. */
+    public static String e(com.github.catvod.bean.VodResult result) {
+        return result.toString();
     }
 
     // Inner classes

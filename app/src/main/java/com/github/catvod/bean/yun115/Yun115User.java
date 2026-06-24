@@ -25,6 +25,9 @@ public final class Yun115User {
     /** Cache password / access key. Accessed directly as a public field. */
     public String password = "";
 
+    /** Obfuscated alias field for password (was: b). */
+    public String b = "";
+
     public Yun115User() {
     }
 
@@ -57,6 +60,17 @@ public final class Yun115User {
         com.github.catvod.utils.merge.LocalStorage.saveJson("115_user", this);
         return this;
     }
+
+    // ==================== Obfuscated Aliases ====================
+
+    /** Alias for getCookie(). */
+    public String b() { return getCookie(); }
+
+    /** Alias for persist(). */
+    public Yun115User c() { return persist(); }
+
+    /** Alias for setCookie(). */
+    public void d(String cookie) { setCookie(cookie); }
 
     // ==================== Utility ====================
 

@@ -3,7 +3,6 @@ package com.github.catvod.spider;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
-import com.github.catvod.bean.VodCategory;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 import com.github.catvod.bean.VodItem;
@@ -66,7 +65,7 @@ public class PTT extends Spider {
         StringBuilder sb = new StringBuilder();
         sb.append(baseUrl);
         Document doc = Jsoup.parse(OkHttpUtil.string(sb.toString() + list.get(0) + "/1", buildHeader()));
-        LinkedHashMap linkedHashMap = new LinkedHashMap();
+        LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
         ArrayList arrayList = new ArrayList();
         for (Element mVar : doc.select("ul#w1 > li > a")) {
             linkedHashMap.put(mVar.attr("href").split("/")[3], mVar.attr("title"));
@@ -93,12 +92,16 @@ public class PTT extends Spider {
     }
 
     public String homeContent(boolean z) {
+        try {
         Document doc = Jsoup.parse(OkHttpUtil.string(baseUrl, buildHeader()));
         ArrayList arrayList = new ArrayList();
         for (Element mVar : doc.select("li > a.px-2.px-sm-3.py-2.nav-link")) {
-            arrayList.add(new VodCategory(mVar.attr("href").replace("/p/", ""), mVar.text()));
+            arrayList.add(new CategoryItem(mVar.attr("href").replace("/p/", ""), mVar.text()));
         }
         return VodResult.o(arrayList, new JSONObject(TextUtils.isEmpty(this.b) ? "{}" : OkHttpUtil.string(this.b)));
+        } catch (Exception e) {
+            return new VodResult().toString();
+        }
     }
 
     public void init(Context context, String str) {
@@ -133,5 +136,12 @@ public class PTT extends Spider {
             }
         }
         return VodResult.n(arrayList);
+    }
+
+    /** Concrete VodCategory implementation with id and name. */
+    static class CategoryItem extends com.github.catvod.bean.VodCategory {
+        private final String id;
+        private final String name;
+        CategoryItem(String id, String name) { this.id = id; this.name = name; }
     }
 }

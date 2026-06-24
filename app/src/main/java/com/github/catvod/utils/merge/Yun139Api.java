@@ -59,10 +59,10 @@ public final class Yun139Api {
             Iterator<Yun139Folder> it = list2.iterator();
             while (it.hasNext()) {
                 Yun139Response eVar2 = GsonHelper.fromJson(h("yun-share/richlifeApp/devapp/IOutLink/getOutLinkInfoV6", String.format("{\"getOutLinkInfoReq\":{\"extInfo\":{\"isReturnCdnDownloadUrl\":\"1\"},\"account\":\"\",\"linkID\":\"%s\",\"passwd\":\"\",\"caSrt\":0,\"coSrt\":0,\"srtDr\":1,\"bNum\":1,\"pCaID\":\"%s\",\"eNum\":200}}", str, it.next().f), false), Yun139Response.class);
-                List<Yun139File> list3 = eVar2.c.c;
+                List<Yun139File> list3 = eVar2.data.c;
                 if (list3 != null) {
                     Collections.sort(list3, new Yun139Comparator());
-                    list.addAll(eVar2.c.c);
+                    list.addAll(eVar2.data.c);
                 }
                 f(str, list, eVar2);
             }
@@ -162,8 +162,8 @@ public final class Yun139Api {
             List<Yun139File> listB = b(str3, iVar);
             SpiderDebug.log("getCoLsts(shareId)");
             ArrayList arrayList = new ArrayList();
-            for (Yun139File bVar : (ArrayList) listB) {
-                if ((PanStringUtils.isVideoFile(bVar.a()) != null && !PanStringUtils.isVideoFile(bVar.a()).isEmpty())) {
+            for (Yun139File bVar : listB) {
+                if (bVar.a() != null) {
                     arrayList.add(bVar);
                 }
             }

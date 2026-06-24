@@ -22,7 +22,7 @@ public class Yun115 extends Spider {
     public String detailContent(String str, List<String> list) {
         String[] strArrSplit = list.get(0).trim().split("_");
         String str2 = strArrSplit[0];
-        SpiderDebug.log("115 detailContent url:", str2);
+        SpiderDebug.log("115 detailContent url:" + str2);
         Matcher matcher = a.matcher(str2);
         if (!matcher.find()) {
             return "";
@@ -49,7 +49,7 @@ public class Yun115 extends Spider {
 
     public String detailContent(List<String> list) {
         String strTrim = list.get(0).trim();
-        SpiderDebug.log("115 detailContent url:", strTrim);
+        SpiderDebug.log("115 detailContent url:" + strTrim);
         Matcher matcher = a.matcher(strTrim);
         if (!matcher.find()) {
             return "";

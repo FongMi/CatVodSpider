@@ -6,6 +6,8 @@ import com.github.catvod.en.NetPan;
 
 import com.github.catvod.bean.VodItem;
 import com.github.catvod.bean.VodResult;
+import com.github.catvod.bean.c;
+import com.github.catvod.bean.d;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,7 +74,7 @@ public class GuaZi extends NetPan {
         try {
             String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
             String encryptedData = encryptAes(requestData.toString());
-            String signature = m("token_id=,token=1be86e8e18a9fa18b2b8d5432699dad0.ac008ed650fd087bfbecf2fda9d82e9835253ef24843e6b18fcd128b10763497bcf9d53e959f5377cde038c20ccf9d17f604c9b8bb6e61041def86729b2fc7408bd241e23c213ac57f0226ee656e2bb0a583ae0e4f3bf6c6ab6c490c9a6f0d8cdfd366aacf5d83193671a8f77cd1af1ff2e9145de92ec43ec87cf4bdc563f6e919fe32861b0e93b118ec37d8035fbb3c.59dd05c5d9a8ae726528783128218f15fe6f2c0c8145eddab112b374fcfe3d79,phone_type=1,request_key=" + encryptedData + ",app_id=1,time=" + timestamp + ",keys=Qmxi5ciWXbQzkr7o+SUNiUuQxQEf8/AVyUWY4T/BGhcXBIUz4nOyHBGf9A4KbM0iKF3yp9M7WAY0rrs5PzdTAOB45plcS2zZ0wUibcXuGJ29VVGRWKGwE9zu2vLwhfgjTaaDpXo4rby+7GxXTktzJmxvneOUdYeHi+PZsThlvPI=*&zvdvdvddbfikkkumtmdwqppp?|4Y!s!2br");
+            String signature = md5Hash("token_id=,token=1be86e8e18a9fa18b2b8d5432699dad0.ac008ed650fd087bfbecf2fda9d82e9835253ef24843e6b18fcd128b10763497bcf9d53e959f5377cde038c20ccf9d17f604c9b8bb6e61041def86729b2fc7408bd241e23c213ac57f0226ee656e2bb0a583ae0e4f3bf6c6ab6c490c9a6f0d8cdfd366aacf5d83193671a8f77cd1af1ff2e9145de92ec43ec87cf4bdc563f6e919fe32861b0e93b118ec37d8035fbb3c.59dd05c5d9a8ae726528783128218f15fe6f2c0c8145eddab112b374fcfe3d79,phone_type=1,request_key=" + encryptedData + ",app_id=1,time=" + timestamp + ",keys=Qmxi5ciWXbQzkr7o+SUNiUuQxQEf8/AVyUWY4T/BGhcXBIUz4nOyHBGf9A4KbM0iKF3yp9M7WAY0rrs5PzdTAOB45plcS2zZ0wUibcXuGJ29VVGRWKGwE9zu2vLwhfgjTaaDpXo4rby+7GxXTktzJmxvneOUdYeHi+PZsThlvPI=*&zvdvdvddbfikkkumtmdwqppp?|4Y!s!2br");
             HashMap<String, String> params = new HashMap<>();
             params.put("token", "1be86e8e18a9fa18b2b8d5432699dad0.ac008ed650fd087bfbecf2fda9d82e9835253ef24843e6b18fcd128b10763497bcf9d53e959f5377cde038c20ccf9d17f604c9b8bb6e61041def86729b2fc7408bd241e23c213ac57f0226ee656e2bb0a583ae0e4f3bf6c6ab6c490c9a6f0d8cdfd366aacf5d83193671a8f77cd1af1ff2e9145de92ec43ec87cf4bdc563f6e919fe32861b0e93b118ec37d8035fbb3c.59dd05c5d9a8ae726528783128218f15fe6f2c0c8145eddab112b374fcfe3d79");
             params.put("token_id", "");
@@ -93,7 +95,7 @@ public class GuaZi extends NetPan {
                 return null;
             }
             JSONObject data = responseJson.getJSONObject("data");
-            JSONObject keys = new JSONObject(n(data.getString("keys")));
+            JSONObject keys = new JSONObject(rsaDecrypt(data.getString("keys")));
             return new JSONObject(decryptAes(data.getString("response_key"), keys.getString("key"), keys.getString("iv")));
         } catch (Exception unused) {
             return null;
@@ -109,7 +111,7 @@ public class GuaZi extends NetPan {
         return mapB;
     }
 
-    private int getQualityScore(String quality) {
+    public static int getQualityScore(String quality) {
         String normalized = quality.toLowerCase().replace("p", "");
         if (normalized.equals("8k")) {
             return 100;
@@ -242,8 +244,9 @@ public class GuaZi extends NetPan {
     }
 
     @Override // com.github.catvod.en.NetPan
-    public String detailContent(List<String> list) throws JSONException {
-        String str = list.get(0).split("/")[0];
+    public String detailContent(List list) {
+        try {
+        String str = ((String) list.get(0)).split("/")[0];
         JSONObject jSONObject = new JSONObject();
         jSONObject.put("token_id", "1649412");
         jSONObject.put("vod_id", str);
@@ -289,7 +292,7 @@ public class GuaZi extends NetPan {
                         Collections.sort(arrayList2, new Comparator() {
                             @Override // java.util.Comparator
                             public final int compare(Object obj, Object obj2) {
-                                return GuaZi.f(this.b, (String) obj, (String) obj2);
+                                return GuaZi.compareDesc(null, (String) obj, (String) obj2);
                             }
                         });
                         String strOptString = jSONArray.length() == 1 ? "正片" : jSONObject4.optString("name", String.valueOf(i + 1));
@@ -300,47 +303,51 @@ public class GuaZi extends NetPan {
         }
         iVar.p(TextUtils.join("#", arrayList));
         return VodResult.m(iVar);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public String homeContent(boolean z) {
         ArrayList<com.github.catvod.bean.VodCategory> arrayList = new ArrayList();
-        arrayList.add(new com.github.catvod.bean.VodCategory("1", "电影"));
-        arrayList.add(new com.github.catvod.bean.VodCategory("2", "电视剧"));
-        arrayList.add(new com.github.catvod.bean.VodCategory("4", "动漫"));
-        arrayList.add(new com.github.catvod.bean.VodCategory("3", "综艺"));
-        arrayList.add(new com.github.catvod.bean.VodCategory("64", "短剧"));
+        arrayList.add(new CategoryItem("1", "电影"));
+        arrayList.add(new CategoryItem("2", "电视剧"));
+        arrayList.add(new CategoryItem("4", "动漫"));
+        arrayList.add(new CategoryItem("3", "综艺"));
+        arrayList.add(new CategoryItem("64", "短剧"));
         LinkedHashMap linkedHashMap = new LinkedHashMap();
-        for (com.github.catvod.bean.VodCategory bVar : arrayList) {
+        for (com.github.catvod.bean.VodCategory bVar0 : arrayList) {
+            CategoryItem bVar = (CategoryItem) bVar0;
             ArrayList arrayList2 = new ArrayList();
             ArrayList arrayList3 = new ArrayList();
-            arrayList3.add(new com.github.catvod.bean.FilterValue("全部", "0"));
+            arrayList3.add(new c("全部", "0"));
             for (int i = 2025; i >= 2005; i--) {
-                arrayList3.add(new com.github.catvod.bean.FilterValue(String.valueOf(i), String.valueOf(i)));
+                arrayList3.add(new c(String.valueOf(i), String.valueOf(i)));
             }
-            arrayList3.add(new com.github.catvod.bean.FilterValue("更早", "2004"));
-            arrayList2.add(new com.github.catvod.bean.FilterGroup("year", "年份", arrayList3));
-            if (!bVar.b().equals("64")) {
+            arrayList3.add(new c("更早", "2004"));
+            arrayList2.add(new d("year", "年份", arrayList3));
+            if (!bVar.id().equals("64")) {
                 ArrayList arrayList4 = new ArrayList();
-                arrayList4.add(new com.github.catvod.bean.FilterValue("全部", "0"));
+                arrayList4.add(new c("全部", "0"));
                 String[] strArr = {"大陆", "香港", "台湾", "美国", "韩国", "日本", "英国", "法国", "泰国", "印度", "其他"};
                 for (int i2 = 0; i2 < 11; i2++) {
                     String str = strArr[i2];
-                    arrayList4.add(new com.github.catvod.bean.FilterValue(str, str));
+                    arrayList4.add(new c(str, str));
                 }
-                arrayList2.add(new com.github.catvod.bean.FilterGroup("area", "地区", arrayList4));
+                arrayList2.add(new d("area", "地区", arrayList4));
             }
             ArrayList arrayList5 = new ArrayList();
-            arrayList5.add(new com.github.catvod.bean.FilterValue("最新", "d_id"));
-            arrayList5.add(new com.github.catvod.bean.FilterValue("最热", "d_hits"));
-            arrayList5.add(new com.github.catvod.bean.FilterValue("推荐", "d_score"));
-            arrayList2.add(new com.github.catvod.bean.FilterGroup("sort", "排序", arrayList5));
-            linkedHashMap.put(bVar.b(), arrayList2);
+            arrayList5.add(new c("最新", "d_id"));
+            arrayList5.add(new c("最热", "d_hits"));
+            arrayList5.add(new c("推荐", "d_score"));
+            arrayList2.add(new d("sort", "排序", arrayList5));
+            linkedHashMap.put(bVar.id(), arrayList2);
         }
         return VodResult.p(arrayList, linkedHashMap);
     }
 
     @Override // com.github.catvod.en.NetPan
-    public String playerContent(String str, String str2, List<String> list) {
+    public String playerContent(String str, String str2, List list) {
         String[] strArrSplit = str2.split("\\|\\|");
         if (strArrSplit.length < 2) {
             VodResult gVar = new VodResult();
@@ -360,7 +367,7 @@ public class GuaZi extends NetPan {
             Collections.sort(arrayList, new Comparator() {
                 @Override // java.util.Comparator
                 public final int compare(Object obj, Object obj2) {
-                    return GuaZi.g(this.b, (String) obj, (String) obj2);
+                    return GuaZi.compareDesc2(null, (String) obj, (String) obj2);
                 }
             });
             map.put("resolution", (String) arrayList.get(0));
@@ -377,7 +384,8 @@ public class GuaZi extends NetPan {
         return searchContent(str, z, "1");
     }
 
-    public String searchContent(String str, boolean z, String str2) throws JSONException {
+    public String searchContent(String str, boolean z, String str2) {
+        try {
         VodResult gVar;
         String string;
         JSONObject jSONObject = new JSONObject();
@@ -416,5 +424,32 @@ public class GuaZi extends NetPan {
         }
         gVar.j(1, 1, 0, 1);
         return gVar.toString();
+        } catch (Exception e) {
+            return new VodResult().toString();
+        }
+    }
+
+    /** Concrete VodCategory implementation with id and name. */
+    static class CategoryItem extends com.github.catvod.bean.VodCategory {
+        private final String id;
+        private final String name;
+        CategoryItem(String id, String name) { this.id = id; this.name = name; }
+        public String id() { return id; }
+        public String name() { return name; }
+    }
+
+    /** Obfuscation stub: returns headers map for player content. */
+    private Map<String, String> k() {
+        return new HashMap<>();
+    }
+
+    /** Obfuscation alias for compareDesc. */
+    public static /* synthetic */ int f(GuaZi guaZi, String a, String b) {
+        return guaZi.getQualityScore(b) - guaZi.getQualityScore(a);
+    }
+
+    /** Obfuscation alias for compareDesc2. */
+    public static /* synthetic */ int g(GuaZi guaZi, String a, String b) {
+        return guaZi.getQualityScore(b) - guaZi.getQualityScore(a);
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Represents a file or folder from the Quark/UC cloud drive share API.
- * Replaces obfuscated class: com.github.catvod.spider.merge.S.a
+ * Replaces obfuscated class: com.github.catvod.spider.merge.S.pkg.a
  *
  * API JSON keys are preserved exactly via @SerializedName.
  * Getter methods use meaningful names matching API client usage patterns:
@@ -72,7 +72,7 @@ public class QuarkFile {
 
     /**
      * Deserialize a QuarkFile from a JSON string (supports nested "list").
-     * Replaces: merge.S.a.l(String)
+     * Replaces: merge.S.pkg.a.l(String)
      */
     public static QuarkFile fromJson(String json) {
         return new Gson().fromJson(json, QuarkFile.class);

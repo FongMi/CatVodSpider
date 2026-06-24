@@ -70,7 +70,7 @@ public class BaseApi {
     }
 
     class Loader {
-        static volatile BaseApi a = new BaseApi();
+        volatile BaseApi a = new BaseApi();
     }
 
     @FunctionalInterface

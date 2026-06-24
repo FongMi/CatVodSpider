@@ -126,15 +126,16 @@ public class Push extends NetPan {
     }
 
     @Override // com.github.catvod.en.NetPan
-    public String detailContent(List<String> list) {
+    public String detailContent(List list) {
         String strJoin;
-        if (NetPan.isNetPan(list.get(0))) {
+        String item0 = (String) list.get(0);
+        if (NetPan.isNetPan(item0)) {
             return super.detailContent("", "", list);
         }
-        if (list.get(0) != null && !list.get(0).isEmpty() && Youtube.hasYouTube(list.get(0))) {
+        if (item0 != null && !item0.isEmpty() && Youtube.hasYouTube(item0)) {
             return Youtube.get().detailContent(list);
         }
-        String str = list.get(0);
+        String str = item0;
         VodItem iVar = new VodItem();
         iVar.l(str);
         iVar.g("FongMi");
@@ -187,7 +188,7 @@ public class Push extends NetPan {
     }
 
     @Override // com.github.catvod.en.NetPan
-    public String playerContent(String str, String str2, List<String> list) {
+    public String playerContent(String str, String str2, List list) {
         if (str.equals("直連")) {
             VodResult gVar = new VodResult();
             gVar.w(str2);

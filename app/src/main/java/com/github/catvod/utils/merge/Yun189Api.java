@@ -108,7 +108,7 @@ public final class Yun189Api {
             List<Yun189File> listB = b(jSONObject);
             SpiderDebug.log("getCoLsts(shareId)");
             ArrayList arrayList2 = new ArrayList();
-            for (Yun189File c0891b : (ArrayList) listB) {
+            for (Yun189File c0891b : listB) {
                 String ext = PanStringUtils.getMimeType(c0891b.mediaId());
                 if (ext != null && !ext.isEmpty()) {
                     arrayList2.add(c0891b);
@@ -173,8 +173,8 @@ public final class Yun189Api {
         String isoDownloadUrl;
         String str = strArr[0];
         String str2 = strArr[1];
-        String strEncode = URLEncoder.encode(getInstance().a.split("\\|")[0]);
-        String strEncode2 = URLEncoder.encode(getInstance().a.split("\\|")[1]);
+        String strEncode = URLEncoder.encode(a().a.split("\\|")[0]);
+        String strEncode2 = URLEncoder.encode(a().a.split("\\|")[1]);
         int i = Server.l;
         String apiUrl = UrlUtils.resolveUrl(AliDriveHelper.getProxyBaseUrl(),
                 "/api/yun189GetFileInfo?do=189&type=video&cate=open&shareId=" + str + "&fileId=" + str2 + "&userName=" + strEncode + "&pwd=" + strEncode2);

@@ -127,7 +127,7 @@ public final class GuangYaPanApi {
             body.put("scope", "user");
             body.put("client_id", CLIENT_ID);
             JSONObject resp = new JSONObject(
-                    PanHttpClient.post(AUTH_BASE + "/device/code", body.toString(), client.buildHeaders()).body());
+                    PanHttpClient.post(AUTH_BASE + "/device/code", body.toString(), client.buildHeaders()).a());
             String verificationUrl = resp.getString("verification_uri_complete");
             String deviceCode = resp.getString("device_code");
             Init.run(new RunnableC0755g(client, verificationUrl, 2));
@@ -163,7 +163,7 @@ public final class GuangYaPanApi {
             body.put("grant_type", "urn:ietf:params:oauth:grant-type:device_code");
             body.put("device_code", deviceCode);
             body.put("client_id", CLIENT_ID);
-            String resp = PanHttpClient.post(AUTH_BASE + "/token", body.toString(), client.buildHeaders()).body();
+            String resp = PanHttpClient.post(AUTH_BASE + "/token", body.toString(), client.buildHeaders()).a();
             if (resp.contains("access_token") && resp.contains("refresh_token")) {
                 JSONObject json = new JSONObject(resp);
                 client.onTokenReceived(json.getString("access_token"), json.getString("refresh_token"));
@@ -240,7 +240,7 @@ public final class GuangYaPanApi {
             body.put("client_id", CLIENT_ID);
             body.put("grant_type", "refresh_token");
             body.put("refresh_token", refreshToken);
-            String resp = PanHttpClient.post(AUTH_BASE + "/token", body.toString(), headers).body();
+            String resp = PanHttpClient.post(AUTH_BASE + "/token", body.toString(), headers).a();
             if (resp != null && !resp.isEmpty() && resp.contains("access_token")) {
                 JSONObject json = new JSONObject(resp);
                 String newAccess = json.getString("access_token");
@@ -305,13 +305,13 @@ public final class GuangYaPanApi {
             String bodyStr = body.toString();
             Map<String, String> headers = buildHeaders();
             PanHttpClient.HttpResponse resp = PanHttpClient.post(url, bodyStr, headers);
-            SpiderDebug.log("光鸭云盘 POST " + url + " body:" + body + " result:" + resp.body());
+            SpiderDebug.log("光鸭云盘 POST " + url + " body:" + body + " result:" + resp.a());
             if (retry401) {
                 boolean needRetry = false;
                 if (resp.code() == 401) {
                     needRetry = true;
                 } else {
-                    String respBody = resp.body();
+                    String respBody = resp.a();
                     if (respBody != null && !respBody.isEmpty()) {
                         int code = new JSONObject(respBody).optInt("code", 200);
                         if (code == 401 || code == 207) {
@@ -323,7 +323,7 @@ public final class GuangYaPanApi {
                     return apiPost(url, body, false);
                 }
             }
-            return resp.body();
+            return resp.a();
         } catch (Exception e) {
             logError("光鸭云盘 POST 异常: ", e);
             return "";

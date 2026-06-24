@@ -7,21 +7,18 @@ import okhttp3.Response;
 public abstract class OkHttpCallback<T> {
     private T l8 = null;
 
-    public static abstract class aA extends xx<Response> {
-        @Override // com.github.catvod.spider.merge.xx
+    public static abstract class aA extends OkHttpCallback<Response> {
         public Response onParseResponse(Call call, Response response) {
             return response;
         }
     }
 
-    public static abstract class ut extends xx<String> {
-        @Override // com.github.catvod.spider.merge.xx
+    public static abstract class ut extends OkHttpCallback<String> {
         public void onError(Call call, Exception exc) {
             S("");
             super.onError(call, exc);
         }
 
-        @Override // com.github.catvod.spider.merge.xx
         public String onParseResponse(Call call, Response response) {
             try {
                 return response.body().string();
@@ -53,5 +50,7 @@ public abstract class OkHttpCallback<T> {
 
     protected abstract T onParseResponse(Call call, Response response);
 
-    protected abstract String onResponse(T t);
+    protected String onResponse(T t) {
+        return t != null ? t.toString() : "";
+    }
 }

@@ -5,7 +5,7 @@ public class ServerStart {
     private Server a;
     private int b = 8877;
 
-    class Loader {
+    static class Loader {
         static volatile ServerStart a = new ServerStart();
     }
 

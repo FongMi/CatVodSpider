@@ -105,7 +105,7 @@ public final class Yun115Api {
             path = UrlUtils.resolveUrl(SHARE_API, path);
         }
         Map<String, String> headers = buildHeaders();
-        Map<String, String> respHeaders = new HashMap<>();
+        Map<String, java.util.List<String>> respHeaders = new HashMap<>();
         String result = null;
         for (int retry = 2; retry > 0; retry--) {
             result = PanHttpClient.get(path, headers, respHeaders);

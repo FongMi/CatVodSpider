@@ -3,6 +3,7 @@ package com.github.catvod.spider;
 import android.content.Context;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.bean.vod.FilterGroup;
+import com.github.catvod.internal.AliPlayerFilter;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -17,10 +18,10 @@ public class XBPQAli extends Spider {
     public static Object[] proxy(Map<String, String> map) throws UnsupportedEncodingException {
         String str = map.get("type");
         if (str.equals("sub")) {
-            return com.github.catvod.internal.AliPlayerFilter.o().H(map);
+            return new Object[]{200, "application/octet-stream", AliPlayerFilter.o().H(map)};
         }
         if (str.equals("token")) {
-            return com.github.catvod.internal.AliPlayerFilter.o().w();
+            return new Object[]{200, "application/json", AliPlayerFilter.o().w()};
         }
         return null;
     }
@@ -35,7 +36,7 @@ public class XBPQAli extends Spider {
             String strGroup = matcher.group(1);
             String strGroup2 = matcher.groupCount() == 3 ? matcher.group(3) : "";
             com.github.catvod.internal.AliPlayerFilter.o().K(strGroup);
-            return com.github.catvod.bean.vod.FilterGroup.e(com.github.catvod.internal.AliPlayerFilter.o().z(strReplace, strGroup2));
+            return FilterGroup.e(com.github.catvod.internal.AliPlayerFilter.o().z(strReplace, strGroup2));
         } catch (Exception unused) {
             return "";
         }
@@ -55,8 +56,8 @@ public class XBPQAli extends Spider {
             pVarO.getClass();
             FilterGroup dVar = new FilterGroup();
             dVar.i(pVarO.p(strArrSplit[0]));
-            dVar.h(pVarO.v(strArrSplit));
-            dVar.a(pVarO.q());
+            dVar.v(pVarO.v(strArrSplit));
+            dVar.a("");
             return dVar.toString();
         } catch (Exception unused) {
             return "";

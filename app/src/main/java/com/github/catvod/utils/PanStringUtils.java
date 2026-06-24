@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 /**
  * 网盘/视频相关的字符串工具类
  * <p>
- * 替代 merge.I0.GeneralUtils 和 merge.i0.m 中的工具方法
+ * 替代 merge.I.GeneralUtils 和 merge.i0.m 中的工具方法
  */
 public final class PanStringUtils {
 
@@ -238,6 +238,11 @@ public final class PanStringUtils {
     }
 
     // ==================== 内部工具 ====================
+
+    /** Public null-or-empty check for String. */
+    public static boolean isEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
 
     private static boolean isBlank(CharSequence cs) {
         if (cs == null || cs.length() == 0) return true;

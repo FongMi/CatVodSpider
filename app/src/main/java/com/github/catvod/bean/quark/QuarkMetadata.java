@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 /**
  * Quark/UC share page pagination metadata.
- * Replaces obfuscated class: com.github.catvod.spider.merge.S.c
+ * Replaces obfuscated class: com.github.catvod.spider.merge.S.pkg.c
  *
  * API client usage (QuarkDriveApi / UcDriveApi):
  *   if (((getPage() - 1) * getPageSize()) + getCount() < getTotal()) { ... }

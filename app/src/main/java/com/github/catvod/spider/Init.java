@@ -8,10 +8,12 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.webkit.*;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.en.BaseApi;
-import com.github.catvod.utils.merge.AliDriveFacade;
+import com.github.catvod.utils.okhttp.OkHttpUtil;
+
 import com.github.catvod.utils.ActionRunnable1;
 import com.github.catvod.utils.ActionRunnable2;
 
@@ -25,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -44,6 +47,12 @@ public class Init {
     public Application application;
     public String baseUrl = "";
     public String proxyUrl = "";
+    /** Reference to self, used by anonymous inner classes as this.b */
+    final Init b = this;
+    /** Background task executor, used as FilterGroup */
+    final ExecutorService FilterGroup = Executors.newCachedThreadPool();
+    /** UI thread handler wrapper */
+    final Handler StringUtils = new Handler(Looper.getMainLooper());
     public final AtomicBoolean isRunning = new AtomicBoolean(false);
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     public final ExecutorService threadPool = Executors.newFixedThreadPool(5);
@@ -107,7 +116,7 @@ public class Init {
         }
     }
 
-    class Loader {
+    static class Loader {
         static volatile Init instance = new Init();
 
         private Loader() {
@@ -133,7 +142,7 @@ public class Init {
 
     public static void execGoProxyFallback(Init init, Context context, boolean showOutput) {
         init.execGoProxy(context, showOutput, "goProxy_arm64");
-        String pingResult = OkHttpUtil.string(AliDriveFacade.getProxyBaseUrl() + "/api/ping", new HashMap<>());
+        String pingResult = OkHttpUtil.string("http://127.0.0.1:9966" + "/api/ping", new HashMap<>());
         if (pingResult == null || pingResult.isEmpty()) {
             init.execGoProxy(context, showOutput, "goProxy_armV7");
         }
@@ -242,7 +251,7 @@ public class Init {
         return Loader.instance;
     }
 
-    public static Activity getActivity() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException, InvocationTargetException {
+    public static Activity getActivity() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException {
         Class<?> cls = Class.forName("android.app.ActivityThread");
         Object activityThread = cls.getMethod("currentActivityThread", new Class[0]).invoke(null, new Object[0]);
         Field activitiesField = cls.getDeclaredField("mActivities");
@@ -264,7 +273,7 @@ public class Init {
         return null;
     }
 
-    public static Activity getConfigActivity() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException, InvocationTargetException {
+    public static Activity getConfigActivity() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException {
         Class<?> cls = Class.forName("android.app.ActivityThread");
         Object activityThread = cls.getMethod("currentActivityThread", new Class[0]).invoke(null, new Object[0]);
         Field activitiesField = cls.getDeclaredField("mActivities");
@@ -287,7 +296,7 @@ public class Init {
 
     private void execGoProxy(Context context, boolean showOutput, String binaryName) {
         try {
-            if (!(binaryName) != null && !binaryName.isEmpty()) {
+            if (binaryName == null || binaryName.isEmpty()) {
                 binaryName = getArchBinary("goProxy_linux", "goProxy_arm64", "goProxy_armV7");
             }
             goProxyBinary = binaryName;
@@ -324,7 +333,7 @@ public class Init {
         Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(ActionRunnable2.g, 1L, 1L, TimeUnit.SECONDS);
     }
 
-    public static void interceptActivityStart() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException, InvocationTargetException {
+    public static void interceptActivityStart() throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException {
         Class<?> cls = Class.forName("android.app.ActivityThread");
         Object activityThread = cls.getMethod("currentActivityThread", new Class[0]).invoke(null, new Object[0]);
         Field activitiesField = cls.getDeclaredField("mActivities");
@@ -343,7 +352,7 @@ public class Init {
     }
 
     private void extractBinary(String binaryName, File targetFile) throws NoSuchAlgorithmException, IOException {
-        StringBuilder logMsg;
+        StringBuilder logMsg = new StringBuilder();
         InputStream fileInputStream;
         String localPath = context().getFilesDir().getAbsolutePath() + "/tv/lib/" + binaryName;
         if (new File(localPath).exists()) {
@@ -419,7 +428,7 @@ public class Init {
                 if (idx >= 1) {
                     break;
                 }
-                if ((logFileArr[idx]) == null || logFileArr[idx].isEmpty()) {
+                if (String.valueOf(logFileArr[idx]).isEmpty() || String.valueOf(logFileArr[idx]).equals("null")) {
                     hasLogFile = true;
                     break;
                 }
@@ -468,7 +477,7 @@ public class Init {
 
     private static void readProcessOutput(InputStream inputStream, String tag, boolean showOutput) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        Subtitle.b(tag, ":");
+        SpiderDebug.log(tag + ":");
         while (true) {
             String line = reader.readLine();
             if (line == null) {
@@ -559,6 +568,13 @@ public class Init {
         this.FilterGroup.execute(new RunnableC0747c(this, enabled, 5));
     }
 
+    static class RunnableC0747c implements Runnable {
+        private final Init b;
+        private final Boolean enabled;
+        RunnableC0747c(Init init, Boolean enabled, int unused) { this.b = init; this.enabled = enabled; }
+        @Override public void run() { /* Stub: original handled FileBrowser proxy */ }
+    }
+
     public void exeGoProxy(final Context context, final boolean showOutput) {
         if (context.getApplicationContext().getApplicationInfo().targetSdkVersion >= 29) {
             return;
@@ -566,7 +582,7 @@ public class Init {
         new Thread(new Runnable() {
             @Override
             public final void run() {
-                Init.execGoProxyFallback(this.b, context, showOutput);
+                Init.execGoProxyFallback(Init.this, context, showOutput);
             }
         }).start();
     }
@@ -599,7 +615,7 @@ public class Init {
         this.FilterGroup.execute(new Runnable() {
             @Override
             public final void run() {
-                Init.execTgSou(this.b, showOutput, jsonObj);
+                Init.execTgSou(Init.this, showOutput, jsonObj);
             }
         });
     }
@@ -609,5 +625,50 @@ public class Init {
             return;
         }
         this.FilterGroup.execute(new RunnableC0750d0(this, jsonObj, enabled, 1));
+    }
+
+    // --- Inner class stubs (original implementation depended on deleted merge classes) ---
+
+    static class B implements Runnable {
+        private final Init b;
+        private final int delay;
+        B(Init init, int delay) { this.b = init; this.delay = delay; }
+        @Override public void run() { /* Stub: original handled sing-box proxy */ }
+    }
+
+    static class C implements Runnable {
+        private final Init b;
+        private final Boolean enabled;
+        C(Init init, Boolean enabled, int unused) { this.b = init; this.enabled = enabled; }
+        @Override public void run() { /* Stub: original handled AllInOne proxy */ }
+    }
+
+    static class RunnableC0746b0 implements Runnable {
+        private final String message;
+        RunnableC0746b0(String message, int unused) { this.message = message; }
+        @Override public void run() {
+            try {
+                android.widget.Toast.makeText(context(), message, android.widget.Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                SpiderDebug.log("show toast error: " + e);
+            }
+        }
+    }
+
+    static class RunnableC0750d0 implements Runnable {
+        private final Init b;
+        private final JSONObject jsonObj;
+        private final Boolean enabled;
+        RunnableC0750d0(Init init, JSONObject jsonObj, Boolean enabled, int unused) {
+            this.b = init; this.jsonObj = jsonObj; this.enabled = enabled;
+        }
+        @Override public void run() { /* Stub: original handled TgSouGo proxy */ }
+    }
+
+    static class RunnableC0755g implements Runnable {
+        private final Init b;
+        private final Boolean enabled;
+        RunnableC0755g(Init init, Boolean enabled, int unused) { this.b = init; this.enabled = enabled; }
+        @Override public void run() { /* Stub: original handled AList proxy */ }
     }
 }
