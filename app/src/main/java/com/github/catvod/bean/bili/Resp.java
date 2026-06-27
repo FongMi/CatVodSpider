@@ -46,7 +46,7 @@ public class Resp {
         private String length;
 
         public static List<Result> arrayFrom(JsonElement str) {
-            Type listType = new TypeToken<List<Result>>() {}.getType();
+            Type listType = TypeToken.getParameterized(List.class, Result.class).getType();
             return new Gson().fromJson(str, listType);
         }
 

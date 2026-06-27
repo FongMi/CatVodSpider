@@ -17,7 +17,7 @@ public class Class {
     private String typeFlag;
 
     public static List<Class> arrayFrom(String str) {
-        Type listType = new TypeToken<List<Class>>() {}.getType();
+        Type listType = TypeToken.getParameterized(List.class, Class.class).getType();
         return new Gson().fromJson(str, listType);
     }
 

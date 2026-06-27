@@ -19,7 +19,7 @@ public class Group {
     private String name;
 
     public static List<Group> arrayFrom(String str) {
-        Type listType = new TypeToken<List<Group>>() {}.getType();
+        Type listType = TypeToken.getParameterized(List.class, Group.class).getType();
         List<Group> items = new Gson().fromJson(str, listType);
         return items == null ? Collections.emptyList() : items;
     }

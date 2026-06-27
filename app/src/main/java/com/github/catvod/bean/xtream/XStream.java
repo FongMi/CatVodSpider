@@ -31,7 +31,7 @@ public class XStream {
     private String containerExtension;
 
     public static List<XStream> arrayFrom(String str) {
-        Type listType = new TypeToken<List<XStream>>() {}.getType();
+        Type listType = TypeToken.getParameterized(List.class, XStream.class).getType();
         List<XStream> items = new Gson().fromJson(str, listType);
         return items == null ? Collections.emptyList() : items;
     }

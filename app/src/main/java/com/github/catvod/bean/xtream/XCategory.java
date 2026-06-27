@@ -18,7 +18,7 @@ public class XCategory {
     private String categoryName;
 
     public static List<XCategory> arrayFrom(String str) {
-        Type listType = new TypeToken<List<XCategory>>() {}.getType();
+        Type listType = TypeToken.getParameterized(List.class, XCategory.class).getType();
         List<XCategory> items = new Gson().fromJson(str, listType);
         return items == null ? Collections.emptyList() : items;
     }

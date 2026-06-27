@@ -128,15 +128,17 @@ public class Result {
 
     public Result filters(JSONObject object) {
         if (object == null) return this;
-        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {}.getType();
-        this.filters = new Gson().fromJson(object.toString(), listType);
+        Type filterList = TypeToken.getParameterized(List.class, Filter.class).getType();
+        Type filterMap = TypeToken.getParameterized(LinkedHashMap.class, String.class, filterList).getType();
+        this.filters = new Gson().fromJson(object.toString(), filterMap);
         return this;
     }
 
     public Result filters(JsonElement element) {
         if (element == null) return this;
-        Type listType = new TypeToken<LinkedHashMap<String, List<Filter>>>() {}.getType();
-        this.filters = new Gson().fromJson(element.toString(), listType);
+        Type filterList = TypeToken.getParameterized(List.class, Filter.class).getType();
+        Type filterMap = TypeToken.getParameterized(LinkedHashMap.class, String.class, filterList).getType();
+        this.filters = new Gson().fromJson(element.toString(), filterMap);
         return this;
     }
 

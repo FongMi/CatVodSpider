@@ -32,7 +32,7 @@ public class Drive {
     private Sardine webdav;
 
     public static List<Drive> arrayFrom(String str) {
-        Type listType = new TypeToken<List<Drive>>() {}.getType();
+        Type listType = TypeToken.getParameterized(List.class, Drive.class).getType();
         return new Gson().fromJson(str, listType);
     }
 

@@ -21,7 +21,7 @@ public class Data {
     private List<Item> list;
 
     public static List<Data> arrayFrom(String str) {
-        Type listType = new TypeToken<ArrayList<Data>>() {}.getType();
+        Type listType = TypeToken.getParameterized(ArrayList.class, Data.class).getType();
         return new Gson().fromJson(str, listType);
     }
 

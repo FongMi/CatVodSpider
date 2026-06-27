@@ -28,7 +28,7 @@ public class Config {
     private Uri uri;
 
     public static List<Config> arrayFrom(String str) {
-        Type listType = new TypeToken<List<Config>>() {}.getType();
+        Type listType = TypeToken.getParameterized(List.class, Config.class).getType();
         return new Gson().fromJson(str, listType);
     }
 

@@ -44,6 +44,7 @@ try {
     }
 
     $catvod = Join-Path $smali "com\github\catvod"
+    if (-not (Test-Path -LiteralPath $catvod)) { Fail "missing catvod package" }
     $unexpected = Get-ChildItem -Force -LiteralPath $catvod | Where-Object {
         $_.Name -notin @("js", "spider")
     }
@@ -53,9 +54,17 @@ try {
     $refs = [Collections.Generic.HashSet[string]]::new()
     $classPattern = '(?m)^\.class[ \t]+(?:[^ \t\r\n]+[ \t]+)*L([^;\r\n]+);'
     $typePattern = '(?<![A-Za-z0-9_$])L([A-Za-z_$][A-Za-z0-9_$]*(?:/[A-Za-z_$][A-Za-z0-9_$]*)+(?:\$[A-Za-z0-9_$]+)?);'
+    $forbiddenText = [ordered]@{
+        "Lcom/google/gson/reflect/TypeToken;-><init>()V" = "illegal Gson TypeToken constructor call; use TypeToken.getParameterized"
+    }
 
     foreach ($file in Get-ChildItem -Recurse -Filter "*.smali" -LiteralPath $smali) {
         $text = Get-Content -Raw -LiteralPath $file.FullName
+        foreach ($pattern in $forbiddenText.Keys) {
+            if ($text.Contains($pattern)) {
+                Fail "$($forbiddenText[$pattern]): $($file.FullName)"
+            }
+        }
         foreach ($match in [regex]::Matches($text, $classPattern)) { [void] $defs.Add($match.Groups[1].Value) }
         foreach ($match in [regex]::Matches($text, $typePattern)) { [void] $refs.Add($match.Groups[1].Value) }
     }
@@ -86,6 +95,7 @@ try {
         "org/xmlpull/v1/",
         "kotlin/"
     )
+    # jsoup can reference re2j as an optional regex backend; the jar does not require it.
     $optional = @("com/google/re2j/")
     $missing = foreach ($ref in $refs) {
         if (-not $defs.Contains($ref) -and -not (StartsWithAny $ref $allowed) -and -not (StartsWithAny $ref $optional)) {
@@ -100,7 +110,7 @@ try {
         }
     }
     if ($optionalRefs) {
-        Write-Host ("WARN optional refs: " + (($optionalRefs | Sort-Object -Unique) -join ", "))
+        Write-Host ("WARN optional refs (jsoup optional regex backend): " + (($optionalRefs | Sort-Object -Unique) -join ", "))
     }
 
     Write-Host "OK $([IO.Path]::GetFileName($Jar)) $size bytes $actualMd5"

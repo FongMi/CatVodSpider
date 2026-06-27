@@ -15,7 +15,7 @@ public class Danmaku {
     private String url;
 
     public static List<Danmaku> arrayFrom(String str) {
-        Type listType = new TypeToken<List<Danmaku>>() {}.getType();
+        Type listType = TypeToken.getParameterized(List.class, Danmaku.class).getType();
         return new Gson().fromJson(str, listType);
     }
 
