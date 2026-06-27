@@ -1,58 +1,49 @@
 plugins {
-    id 'com.android.application'
-    id 'ru.cleverpumpkin.proguard-dictionaries-generator'
+    alias(libs.plugins.android.application)
 }
 
 android {
-    namespace 'com.github.catvod'
+    namespace = 'com.github.catvod'
 
-    compileSdk {
-        version = release(36) {
-            it.minorApiLevel = 1
-        }
-    }
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        applicationId "com.github.catvod.demo"
-        minSdk 21
-        targetSdk 36
+        applicationId = "com.github.catvod.demo"
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
     }
 
     buildFeatures {
-        viewBinding true
+        viewBinding = true
     }
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled = true
             proguardFiles 'proguard-rules.pro'
-            proguardDictionaries {
-                dictionaryNames = ["build/class-dictionary", "build/package-dictionary", "build/obfuscation-dictionary"]
-                minLineLength 1
-                maxLineLength 3
-                linesCountInDictionary 100000
-            }
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     configurations.configureEach {
         resolutionStrategy {
-            force 'com.squareup.okhttp3:okhttp:' + okhttpVersion
+            force "com.squareup.okhttp3:okhttp:${libs.versions.okhttp.get()}"
         }
     }
 }
 
 dependencies {
-    implementation 'com.squareup.okhttp3:okhttp:' + okhttpVersion
-    implementation 'com.github.thegrizzlylabs:sardine-android:0.9'
-    implementation 'wang.harlon.quickjs:wrapper-android:3.2.3'
-    implementation 'com.google.code.gson:gson:2.13.2'
-    implementation 'com.hierynomus:smbj:0.14.0'
-    implementation 'com.orhanobut:logger:2.2.0'
-    implementation 'org.jsoup:jsoup:1.22.1'
+    implementation libs.okhttp
+    implementation libs.sardine.android
+    implementation libs.quickjs.wrapper
+    implementation libs.gson
+    implementation libs.smbj
+    implementation libs.jsoup
+    implementation(libs.logger) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
 }

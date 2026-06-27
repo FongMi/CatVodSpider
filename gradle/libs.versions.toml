@@ -1,0 +1,26 @@
+[versions]
+agp = "9.2.1"
+minSdk = "21"
+targetSdk = "37"
+compileSdk = "37"
+
+gson = "2.14.0"
+jsoup = "1.22.2"
+logger = "2.2.0"
+okhttp = "5.4.0"
+quickjsWrapper = "3.2.3"
+sardineAndroid = "0.9"
+smbj = "0.14.0"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+
+[libraries]
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+logger = { module = "com.orhanobut:logger", version.ref = "logger" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+quickjs-wrapper = { module = "wang.harlon.quickjs:wrapper-android", version.ref = "quickjsWrapper" }
+sardine-android = { module = "com.github.thegrizzlylabs:sardine-android", version.ref = "sardineAndroid" }
+smbj = { module = "com.hierynomus:smbj", version.ref = "smbj" }

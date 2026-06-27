@@ -18,7 +18,12 @@ public class Notify {
     }
 
     public static void show(String text) {
-        Init.post(() -> get().makeText(text));
+        Init.post(new Runnable() {
+            @Override
+            public void run() {
+                get().makeText(text);
+            }
+        });
     }
 
     private void makeText(String message) {
