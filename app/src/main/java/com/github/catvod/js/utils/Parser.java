@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,7 +96,7 @@ public class Parser {
             String result = "";
             for (String s : option.split("[||]")) {
                 result = elements.attr(s);
-                if (s.toLowerCase().contains("style") && result.contains("url(")) {
+                if (s.toLowerCase(Locale.ROOT).contains("style") && result.contains("url(")) {
                     Matcher m = URL.matcher(result);
                     if (m.find()) result = m.group(1);
                     result = result.replaceAll("^['|\"](.*)['|\"]$", "$1");

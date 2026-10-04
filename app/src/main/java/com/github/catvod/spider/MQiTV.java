@@ -29,10 +29,10 @@ public class MQiTV extends Spider {
     public String liveContent(String url) {
         StringBuilder sb = new StringBuilder();
         for (Config config : getConfigs()) {
-            if (config.getData().isEmpty()) continue;
+            if (config.getData(net).isEmpty()) continue;
             sb.append(config.getName()).append(",#genre#").append("\n");
             boolean hasPort = config.getUri().getPort() != -1;
-            for (Data item : config.getData()) {
+            for (Data item : config.getData(net)) {
                 String port = hasPort ? item.getPort() : "5003";
                 String proxy = Proxy.getUrl(siteKey, "&id=" + item.getId() + "&ip=" + config.getUrl() + "&playing=" + item.getPlaying() + "&port=" + port + "&type=m3u8");
                 sb.append(item.getName()).append(",").append(proxy).append("\n");
@@ -43,20 +43,25 @@ public class MQiTV extends Spider {
 
     @Override
     public Object[] proxy(Map<String, String> params) {
+        return proxy(params, true);
+    }
+
+    private Object[] proxy(Map<String, String> params, boolean refresh) {
         String ip = params.get("ip");
         String port = params.get("port");
         String playing = params.get("playing");
         if (port == null) port = "5003";
         Config config = getConfig(ip);
-        String token = config.getUser().getToken();
+        String token = config.getUser(net).getToken();
         if (token.isEmpty()) {
             return get302(config.getPlayUrl(port, playing));
         } else {
             String id = params.get("id");
-            String auth = config.getAuth(id, token);
+            String auth = config.getAuth(net, id, token);
             if (!"OK".equals(auth)) config.clear();
-            if (!"OK".equals(auth)) return proxy(params);
-            String m3u8 = config.getM3U8(id, token, port);
+            if (!"OK".equals(auth) && refresh) return proxy(params, false);
+            if (!"OK".equals(auth)) throw new IllegalStateException("串流授權失敗：" + auth);
+            String m3u8 = config.getM3U8(net, id, token, port);
             return m3u8.isEmpty() ? get302(config.getPlayUrl(port, playing)) : get200(m3u8);
         }
     }

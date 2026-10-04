@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
-import com.github.catvod.net.OkHttp;
+import com.github.catvod.net.Net;
 import com.github.catvod.utils.Util;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -126,13 +126,9 @@ public class Drive {
         return getHost() + (isNew() ? "/api/fs/search" : "/api/public/search");
     }
 
-    public String searchApi(String param) {
-        return getHost() + "/search?box=" + param + "&url=&type=video";
-    }
-
-    public Drive check() {
+    public Drive check(Net net) {
         if (path == null) setPath(Uri.parse(getServer()).getPath());
-        if (version == 0) setVersion(OkHttp.string(settingsApi()).contains("v2.") ? 2 : 3);
+        if (version == 0) setVersion(net.get(settingsApi()).contains("v2.") ? 2 : 3);
         return this;
     }
 

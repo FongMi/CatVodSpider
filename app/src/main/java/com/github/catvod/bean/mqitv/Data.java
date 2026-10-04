@@ -1,6 +1,7 @@
 package com.github.catvod.bean.mqitv;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Collections;
@@ -22,12 +23,10 @@ public class Data {
     private Stat stat;
 
     public static Data objectFrom(String str) {
-        try {
-            Data data = new Gson().fromJson(str, Data.class);
-            return data == null ? new Data() : data;
-        } catch (Exception e) {
-            return new Data();
-        }
+        Gson gson = new Gson();
+        JsonObject data = gson.fromJson(str, JsonObject.class);
+        if (data == null || !data.has("data")) throw new IllegalArgumentException("直播回應缺少 data");
+        return gson.fromJson(data, Data.class);
     }
 
     public List<Data> getData() {

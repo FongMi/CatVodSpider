@@ -1,38 +1,34 @@
 package com.github.catvod.spider;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 
+import com.github.catvod.Init;
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Result;
 import com.github.catvod.bean.market.Data;
 import com.github.catvod.bean.market.Item;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttp;
+import com.github.catvod.net.Net;
 import com.github.catvod.utils.FileUtil;
-import com.github.catvod.utils.Notify;
 import com.github.catvod.utils.Path;
-import com.github.catvod.utils.Util;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import okhttp3.Response;
-
 public class Market extends Spider {
 
-    private static final String TAG = Market.class.getSimpleName();
+    private Net download;
     private List<Data> datas;
 
     @Override
     public void init(Context context, String extend) {
-        if (extend.startsWith("http")) extend = OkHttp.string(extend);
+        if (extend.startsWith("http")) extend = net.get(extend);
         datas = Data.arrayFrom(extend);
     }
 
@@ -51,31 +47,24 @@ public class Market extends Spider {
 
     @Override
     public String action(String action) {
-        try {
-            OkHttp.cancel(TAG);
+        try (Net flow = download()) {
             String name = Uri.parse(action).getLastPathSegment();
-            Notify.show("正在下載..." + name);
-            Response response = OkHttp.newCall(action, TAG);
-            File file = Path.create(new File(Path.download(), name));
-            download(file, response.body().byteStream());
-            if (file.getName().endsWith(".zip")) FileUtil.unzip(file, Path.download());
+            Init.toast("正在下載..." + name);
+            File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File file = Path.create(new File(folder, name));
+            flow.download(action, "{\"timeout\":15000}", file);
+            if (file.getName().endsWith(".zip")) FileUtil.unzip(file, folder);
             if (file.getName().endsWith(".apk")) FileUtil.openFile(file);
             checkCopy(action);
-            response.close();
             return Result.notify("下載完成");
         } catch (Exception e) {
             return Result.notify(e.getMessage());
         }
     }
 
-    private void download(File file, InputStream is) throws IOException {
-        try (BufferedInputStream input = new BufferedInputStream(is); FileOutputStream os = new FileOutputStream(file)) {
-            byte[] buffer = new byte[16384];
-            int readBytes;
-            while ((readBytes = input.read(buffer)) != -1) {
-                os.write(buffer, 0, readBytes);
-            }
-        }
+    private synchronized Net download() {
+        if (download != null) download.close();
+        return download = net.session();
     }
 
     private void checkCopy(String url) {
@@ -83,13 +72,12 @@ public class Market extends Spider {
             int index = data.getList().indexOf(new Item(url));
             if (index == -1) continue;
             String text = data.getList().get(index).getCopy();
-            if (!text.isEmpty()) Util.copy(text);
+            if (!text.isEmpty()) {
+                ClipboardManager manager = (ClipboardManager) Init.context().getSystemService(Context.CLIPBOARD_SERVICE);
+                manager.setPrimaryClip(ClipData.newPlainText("fongmi", text));
+                Init.toast("已複製 " + text);
+            }
             break;
         }
-    }
-
-    @Override
-    public void destroy() {
-        OkHttp.cancel(TAG);
     }
 }

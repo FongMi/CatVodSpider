@@ -7,12 +7,14 @@ import com.github.catvod.bean.Class;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
+import com.hierynomus.protocol.commons.IOUtils;
 import com.hierynomus.smbj.SMBClient;
 import com.hierynomus.smbj.auth.AuthenticationContext;
 import com.hierynomus.smbj.connection.Connection;
 import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -23,11 +25,11 @@ public class Drive {
     @SerializedName("server")
     private String server;
 
-    private Connection connection;
-    private SMBClient smbClient;
-    private DiskShare diskShare;
-    private Session session;
-    private String subPath;
+    private transient Connection connection;
+    private transient SMBClient smbClient;
+    private transient DiskShare diskShare;
+    private transient Session session;
+    private transient String subPath;
 
     public static List<Drive> arrayFrom(String str) {
         Type listType = TypeToken.getParameterized(List.class, Drive.class).getType();
@@ -50,7 +52,7 @@ public class Drive {
         return TextUtils.isEmpty(subPath) ? "" : subPath;
     }
 
-    public DiskShare getShare() {
+    public DiskShare getShare() throws IOException {
         if (diskShare == null) init();
         return diskShare;
     }
@@ -59,7 +61,7 @@ public class Drive {
         return new Class(getName(), getName(), "1");
     }
 
-    private void init() {
+    private void init() throws IOException {
         try {
             smbClient = new SMBClient();
             Uri uri = Uri.parse(getServer());
@@ -68,8 +70,9 @@ public class Drive {
             session = connection.authenticate(getAuthentication(uri));
             diskShare = (DiskShare) session.connectShare(parts[0]);
             subPath = parts.length > 1 ? parts[1] : "";
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | RuntimeException e) {
+            release();
+            throw e;
         }
     }
 
@@ -83,19 +86,11 @@ public class Drive {
     }
 
     public void release() {
-        try {
-            if (diskShare != null) diskShare.close();
-            if (session != null) session.close();
-            if (connection != null) connection.close();
-            if (smbClient != null) smbClient.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            connection = null;
-            diskShare = null;
-            smbClient = null;
-            session = null;
-        }
+        IOUtils.closeQuietly(diskShare, session, connection, smbClient);
+        connection = null;
+        diskShare = null;
+        smbClient = null;
+        session = null;
     }
 
     @Override

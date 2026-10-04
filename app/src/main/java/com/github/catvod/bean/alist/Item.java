@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.github.catvod.bean.Vod;
 import com.github.catvod.utils.Image;
-import com.github.catvod.utils.Util;
+import com.github.catvod.utils.VodUtil;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -45,10 +45,6 @@ public class Item {
         return TextUtils.isEmpty(name) ? "" : name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getPath() {
         return TextUtils.isEmpty(path) ? "" : path;
     }
@@ -61,20 +57,12 @@ public class Item {
         return type;
     }
 
-    public void setType(int type) {
-        this.type = type;
-    }
-
     public long getSize() {
         return size;
     }
 
     public String getThumb() {
         return TextUtils.isEmpty(thumb) ? "" : thumb;
-    }
-
-    public void setThumb(String thumb) {
-        this.thumb = thumb;
     }
 
     public String getUrl() {
@@ -123,7 +111,7 @@ public class Item {
     }
 
     public String getRemark() {
-        return Util.getSize(getSize());
+        return VodUtil.getSize(getSize());
     }
 
     public Vod getVod(String id) {

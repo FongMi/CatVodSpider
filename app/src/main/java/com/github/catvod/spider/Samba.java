@@ -8,18 +8,18 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.samba.Drive;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Image;
-import com.github.catvod.utils.Util;
+import com.github.catvod.utils.VodUtil;
 import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.protocol.commons.EnumWithValue;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class Samba extends Spider {
 
@@ -28,7 +28,7 @@ public class Samba extends Spider {
 
     private void fetchRule() {
         if (drives != null && !drives.isEmpty()) return;
-        if (extend.startsWith("http")) extend = OkHttp.string(extend);
+        if (extend.startsWith("http")) extend = net.get(extend);
         drives = Drive.arrayFrom(extend);
     }
 
@@ -58,7 +58,7 @@ public class Samba extends Spider {
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> hashMap) {
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> hashMap) throws IOException {
         String key = tid.contains("/") ? tid.substring(0, tid.indexOf("/")) : tid;
         String path = tid.contains("/") ? tid.substring(tid.indexOf("/") + 1) : "";
         Drive drive = getDrive(key);
@@ -72,7 +72,7 @@ public class Samba extends Spider {
     }
 
     @Override
-    public String detailContent(List<String> ids) {
+    public String detailContent(List<String> ids) throws IOException {
         String tid = ids.get(0);
         String key = tid.contains("/") ? tid.substring(0, tid.indexOf("/")) : tid;
         String path = tid.contains("/") ? tid.substring(tid.indexOf("/") + 1) : "";
@@ -104,18 +104,18 @@ public class Samba extends Spider {
         return TextUtils.join("/", items);
     }
 
-    private List<FileIdBothDirectoryInformation> getList(Drive drive, String path) {
+    private List<FileIdBothDirectoryInformation> getList(Drive drive, String path) throws IOException {
         List<FileIdBothDirectoryInformation> items = drive.getShare().list(getPath(drive.getSubPath(), path));
         Iterator<FileIdBothDirectoryInformation> iterator = items.iterator();
         while (iterator.hasNext()) {
             FileIdBothDirectoryInformation item = iterator.next();
             if (isFolder(item) && item.getFileName().startsWith(".")) iterator.remove();
-            if (isFile(item) && !Util.isMedia(item.getFileName())) iterator.remove();
+            if (isFile(item) && !VodUtil.isMedia(item.getFileName())) iterator.remove();
         }
-        Collections.sort(items, (o1, o2) -> {
+        items.sort((o1, o2) -> {
             if (isFolder(o1) && isFile(o2)) return -1;
             if (isFile(o1) && isFolder(o2)) return 1;
-            return o1.getFileName().toLowerCase().compareTo(o2.getFileName().toLowerCase());
+            return o1.getFileName().toLowerCase(Locale.ROOT).compareTo(o2.getFileName().toLowerCase(Locale.ROOT));
         });
         return items;
     }

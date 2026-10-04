@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Vod;
-import com.github.catvod.utils.Util;
+import com.github.catvod.utils.VodUtil;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -29,7 +29,7 @@ public class Drive {
     @SerializedName("path")
     private String path;
 
-    private Sardine webdav;
+    private transient Sardine webdav;
 
     public static List<Drive> arrayFrom(String str) {
         Type listType = TypeToken.getParameterized(List.class, Drive.class).getType();
@@ -84,7 +84,7 @@ public class Drive {
     }
 
     public Vod vod(DavResource item, String vodPic) {
-        return new Vod(getName() + item.getPath(), item.getName(), vodPic, Util.getSize(item.getContentLength()), item.isDirectory());
+        return new Vod(getName() + item.getPath(), item.getName(), vodPic, VodUtil.getSize(item.getContentLength()), item.isDirectory());
     }
 
     @Override

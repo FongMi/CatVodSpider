@@ -1,5 +1,7 @@
 param(
-    [string] $Jar = (Join-Path $PSScriptRoot "custom_spider.jar")
+    [string] $Jar = (Join-Path $PSScriptRoot "custom_spider.jar"),
+    [string] $Sdk = (Join-Path $PSScriptRoot "..\app\libs\catvod-api.jar"),
+    [string] $Apk = (Join-Path $PSScriptRoot "..\app\build\outputs\apk\release\app-release-unsigned.apk")
 )
 
 $ErrorActionPreference = "Stop"
@@ -18,16 +20,57 @@ function StartsWithAny([string] $Value, [string[]] $Prefixes) {
     return $false
 }
 
+function GetDexHeaders([string] $Path) {
+    $archive = [IO.Compression.ZipFile]::OpenRead((Resolve-Path -LiteralPath $Path).Path)
+    try {
+        foreach ($entry in $archive.Entries | Where-Object { $_.FullName -match '^classes[0-9]*\.dex$' } | Sort-Object FullName) {
+            $reader = [IO.BinaryReader]::new($entry.Open())
+            try {
+                $header = $reader.ReadBytes(8)
+                if ($header.Length -ne 8) { Fail "truncated DEX header: $($entry.FullName)" }
+                "$($entry.FullName):$([BitConverter]::ToString($header))"
+            } finally {
+                $reader.Dispose()
+            }
+        }
+    } finally {
+        $archive.Dispose()
+    }
+}
+
 $apktool = Join-Path $PSScriptRoot "3rd\apktool_2.11.0.jar"
 if (-not (Test-Path -LiteralPath $Jar)) { Fail "missing jar: $Jar" }
 if (-not (Test-Path -LiteralPath $apktool)) { Fail "missing apktool: $apktool" }
+if (-not (Test-Path -LiteralPath $Sdk)) { Fail "missing SDK: $Sdk" }
+if (-not (Test-Path -LiteralPath $Apk)) { Fail "missing release APK: $Apk" }
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$apkHeaders = @(GetDexHeaders $Apk)
+$jarHeaders = @(GetDexHeaders $Jar)
+if ($apkHeaders.Count -eq 0) { Fail "missing release DEX" }
+if (($apkHeaders -join ',') -ne ($jarHeaders -join ',')) { Fail "DEX names or versions differ from release APK" }
+
+$sdkClasses = [Collections.Generic.HashSet[string]]::new()
+$sdkArchive = [IO.Compression.ZipFile]::OpenRead((Resolve-Path -LiteralPath $Sdk).Path)
+try {
+    foreach ($entry in $sdkArchive.Entries) {
+        if ($entry.FullName.EndsWith('.class')) { [void] $sdkClasses.Add($entry.FullName.Substring(0, $entry.FullName.Length - 6)) }
+    }
+} finally {
+    $sdkArchive.Dispose()
+}
 
 $Jar = (Resolve-Path -LiteralPath $Jar).Path
 $size = (Get-Item -LiteralPath $Jar).Length
 
 $md5Path = "$Jar.md5"
 if (-not (Test-Path -LiteralPath $md5Path)) { Fail "missing md5: $md5Path" }
-$actualMd5 = (Get-FileHash -Algorithm MD5 -LiteralPath $Jar).Hash.ToLowerInvariant()
+$md5 = [Security.Cryptography.MD5]::Create()
+try {
+    $actualMd5 = [BitConverter]::ToString($md5.ComputeHash([IO.File]::ReadAllBytes($Jar))).Replace("-", "").ToLowerInvariant()
+} finally {
+    $md5.Dispose()
+}
 $expectedMd5 = (Get-Content -Raw -LiteralPath $md5Path).Trim().ToLowerInvariant()
 if ($actualMd5 -ne $expectedMd5) { Fail "md5 mismatch: $actualMd5 != $expectedMd5" }
 
@@ -74,7 +117,6 @@ try {
         "androidx/annotation/",
         "androidx/startup/",
         "androidx/tracing/",
-        "com/github/catvod/crawler/",
         "com/google/gson/",
         "com/hierynomus/",
         "com/thegrizzlylabs/sardineandroid/",
@@ -97,8 +139,12 @@ try {
     )
     # jsoup can reference re2j as an optional regex backend; the jar does not require it.
     $optional = @("com/google/re2j/")
+    $hostClasses = @("androidx/core/content/FileProvider")
+    foreach ($def in $defs) {
+        if ($sdkClasses.Contains($def)) { Fail "SDK class packaged in spider JAR: $def" }
+    }
     $missing = foreach ($ref in $refs) {
-        if (-not $defs.Contains($ref) -and -not (StartsWithAny $ref $allowed) -and -not (StartsWithAny $ref $optional)) {
+        if (-not $defs.Contains($ref) -and -not $sdkClasses.Contains($ref) -and $ref -notin $hostClasses -and -not (StartsWithAny $ref $allowed) -and -not (StartsWithAny $ref $optional)) {
             $ref
         }
     }
@@ -116,6 +162,7 @@ try {
     Write-Host "OK $([IO.Path]::GetFileName($Jar)) $size bytes $actualMd5"
 } finally {
     if (Test-Path -LiteralPath $work) {
+        if ([IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($work)) -ne [IO.Path]::GetTempPath().TrimEnd('\')) { throw "Unexpected temporary directory: $work" }
         Remove-Item -LiteralPath $work -Recurse -Force
     }
 }

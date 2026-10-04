@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
-import com.github.catvod.net.OkHttp;
+import com.github.catvod.net.Net;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -48,8 +48,8 @@ public class Config {
         return users = users == null ? new ArrayList<>() : users;
     }
 
-    public List<Data> getData() {
-        return data = data == null ? Data.objectFrom(OkHttp.string(getApi(), 3000)).getData() : data;
+    public List<Data> getData(Net net) {
+        return data = data == null ? Data.objectFrom(net.get(getApi(), 3000)).getData() : data;
     }
 
     public Uri getUri() {
@@ -64,10 +64,10 @@ public class Config {
         return "http://" + getUri().getHost() + ":" + port + "/" + playing.replace(":/", "");
     }
 
-    public void loadUser() {
+    public void loadUser(Net net) {
         Pattern userPattern = Pattern.compile(".*?([0-9a-zA-Z]{11,}).*", Pattern.CASE_INSENSITIVE);
         Pattern macPattern = Pattern.compile(".*?(([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}).*", Pattern.CASE_INSENSITIVE);
-        for (Data item : getData()) {
+        for (Data item : getData(net)) {
             for (String userIp : item.getStat().getUserIpList()) {
                 if (getUsers().size() >= 5) continue;
                 Matcher userMatcher = userPattern.matcher(userIp);
@@ -75,28 +75,28 @@ public class Config {
                 String user = userMatcher.matches() ? userMatcher.group(1) : "";
                 String mac = macMatcher.matches() ? macMatcher.group(1) : "";
                 if (!user.isEmpty() && !mac.isEmpty()) {
-                    User u = new User(user, mac).getToken(getUrl());
+                    User u = new User(user, mac).getToken(net, getUrl());
                     if (!u.getToken().isEmpty()) getUsers().add(u);
                 }
             }
         }
     }
 
-    public User getUser() {
-        if (getUsers().isEmpty()) loadUser();
+    public User getUser(Net net) {
+        if (getUsers().isEmpty()) loadUser(net);
         return getUsers().isEmpty() ? new User("", "") : getUsers().get(ThreadLocalRandom.current().nextInt(getUsers().size()));
     }
 
-    public String getAuth(String id, String token) {
-        String data = OkHttp.string(getUrl() + "/ualive?cid=" + id + "&token=" + token);
+    public String getAuth(Net net, String id, String token) {
+        String data = net.get(getUrl() + "/ualive?cid=" + id + "&token=" + token);
         Matcher matcher = Pattern.compile("\"Reason\":\"(.*?)\"", Pattern.CASE_INSENSITIVE).matcher(data);
         if (matcher.find()) return matcher.group(1);
         return "";
     }
 
-    public String getM3U8(String id, String token, String port) {
+    public String getM3U8(Net net, String id, String token, String port) {
         String base = "http://" + getUri().getHost() + ":" + port + "/";
-        String m3u8 = OkHttp.string(base + id + ".m3u8?token=" + token);
+        String m3u8 = net.get(base + id + ".m3u8?token=" + token);
         if (m3u8.isEmpty() || m3u8.contains("\"Reason\"")) return "";
         String[] lines = m3u8.split("\\r?\\n");
         StringBuilder sb = new StringBuilder();
@@ -108,8 +108,6 @@ public class Config {
     }
 
     public void clear() {
-        this.data.clear();
-        this.users.clear();
         this.data = null;
         this.users = null;
     }
@@ -117,8 +115,7 @@ public class Config {
     @Override
     public boolean equals(@Nullable Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Config)) return false;
-        Config it = (Config) obj;
+        if (!(obj instanceof Config it)) return false;
         return getUrl().equals(it.getUrl());
     }
 }

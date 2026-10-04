@@ -16,7 +16,7 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Image;
 import com.github.catvod.utils.Path;
-import com.github.catvod.utils.Util;
+import com.github.catvod.utils.VodUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,6 +24,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -58,7 +59,7 @@ public class Local extends Spider {
         List<File> files = Path.list(new File(tid));
         for (File file : files) {
             if (file.getName().startsWith(".")) continue;
-            if (file.isDirectory() || Util.isMedia(file.getName())) items.add(create(file));
+            if (file.isDirectory() || VodUtil.isMedia(file.getName())) items.add(create(file));
         }
         return Result.get().vod(items).page().string();
     }
@@ -72,7 +73,7 @@ public class Local extends Spider {
         } else {
             File file = new File(ids.get(0));
             File parent = file.getParentFile();
-            List<File> files = Path.list(parent);
+            List<File> files = parent == null ? Collections.emptyList() : Path.list(parent);
             return Result.string(create(parent != null ? parent : file, files));
         }
     }
@@ -115,7 +116,7 @@ public class Local extends Spider {
         vod.setVodPic(Image.VIDEO);
         vod.setVodPlayFrom("播放");
         List<String> playUrls = new ArrayList<>();
-        for (File f : files) if (f.isFile() && Util.isMedia(f.getName())) playUrls.add(f.getName() + "$" + f.getAbsolutePath());
+        for (File f : files) if (f.isFile() && VodUtil.isMedia(f.getName())) playUrls.add(f.getName() + "$" + f.getAbsolutePath());
         vod.setVodPlayUrl(TextUtils.join("#", playUrls));
         return vod;
     }
@@ -140,9 +141,11 @@ public class Local extends Spider {
 
     private List<Sub> getSubs(String path) {
         List<Sub> subs = new ArrayList<>();
-        for (File f : Path.list(new File(path).getParentFile())) {
-            String ext = Util.getExt(f.getName());
-            if (f.isFile() && Util.isSub(ext)) subs.add(Sub.create().name(Util.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
+        File parent = new File(path).getParentFile();
+        if (parent == null) return subs;
+        for (File f : Path.list(parent)) {
+            String ext = VodUtil.getExt(f.getName());
+            if (f.isFile() && VodUtil.isSub(ext)) subs.add(Sub.create().name(VodUtil.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
         }
         return subs;
     }

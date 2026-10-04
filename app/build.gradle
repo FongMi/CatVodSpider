@@ -2,20 +2,30 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
-def robolectricJvmArgs = [
-        '--add-opens=java.base/java.lang=ALL-UNNAMED',
-        '--add-opens=java.base/java.util=ALL-UNNAMED',
-        '--add-opens=java.base/java.io=ALL-UNNAMED',
-        '--add-opens=java.base/java.net=ALL-UNNAMED',
-        '--add-opens=java.base/java.security=ALL-UNNAMED',
-        '--add-opens=java.base/java.text=ALL-UNNAMED',
-        '--add-opens=java.base/jdk.internal.access=ALL-UNNAMED',
-        '--add-opens=java.desktop/java.awt.font=ALL-UNNAMED',
-        '--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
-]
+configurations {
+    sardine {
+        canBeConsumed = false
+        transitive = false
+    }
+}
+
+def sardineJar = layout.buildDirectory.file('libs/sardine.jar')
+def extractSardine = tasks.register('extractSardine') {
+    inputs.files(configurations.sardine)
+    outputs.file(sardineJar)
+    doLast {
+        copy {
+            from zipTree(configurations.sardine.singleFile)
+            include 'classes.jar'
+            rename 'classes.jar', 'sardine.jar'
+            into sardineJar.get().asFile.parentFile
+        }
+    }
+}
 
 android {
     namespace = 'com.github.catvod'
+    enableKotlin = false
 
     compileSdk libs.versions.compileSdk.get().toInteger()
 
@@ -37,16 +47,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-        unitTests.all {
-            jvmArgs += robolectricJvmArgs
-            outputs.upToDateWhen { false }
-        }
-    }
-
     configurations.configureEach {
         resolutionStrategy {
             force "com.squareup.okhttp3:okhttp:${libs.versions.okhttp.get()}"
@@ -55,18 +55,15 @@ android {
 }
 
 dependencies {
+    sardine libs.sardine.android
+    compileOnly files('libs/catvod-api.jar')
     compileOnly libs.androidx.annotation
-    implementation libs.okhttp
-    implementation libs.sardine.android
-    implementation libs.quickjs.wrapper
-    implementation libs.gson
-    implementation libs.smbj
+    compileOnly libs.androidx.core
+    compileOnly(libs.okhttp) { transitive = false }
+    compileOnly files(sardineJar).builtBy(extractSardine)
+    compileOnly libs.quickjs.wrapper
+    compileOnly libs.gson
+    compileOnly libs.smbj
+    compileOnly libs.slf4j
     implementation libs.jsoup
-    testImplementation libs.junit
-    testImplementation libs.robolectric
-}
-
-tasks.register('siteTest') {
-    group = 'verification'
-    dependsOn 'testDebugUnitTest'
 }

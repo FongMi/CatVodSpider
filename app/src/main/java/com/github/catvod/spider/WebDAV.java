@@ -11,9 +11,8 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.webdav.Drive;
 import com.github.catvod.bean.webdav.Sorter;
 import com.github.catvod.crawler.Spider;
-import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Image;
-import com.github.catvod.utils.Util;
+import com.github.catvod.utils.VodUtil;
 import com.thegrizzlylabs.sardineandroid.DavResource;
 
 import java.io.IOException;
@@ -41,16 +40,16 @@ public class WebDAV extends Spider {
 
     private void fetchRule() {
         if (drives != null && !drives.isEmpty()) return;
-        if (extend.startsWith("http")) extend = OkHttp.string(extend);
+        if (extend.startsWith("http")) extend = net.get(extend);
         drives = Drive.arrayFrom(extend);
     }
 
     private String getExt(DavResource item) {
-        return Util.getExt(item.getName());
+        return VodUtil.getExt(item.getName());
     }
 
     private String removeExt(DavResource item) {
-        return Util.removeExt(item.getName());
+        return VodUtil.removeExt(item.getName());
     }
 
     private Drive getDrive(String name) {
@@ -60,7 +59,7 @@ public class WebDAV extends Spider {
     @Override
     public void init(Context context, String extend) {
         this.allExt = new ArrayList<>(Arrays.asList("ass", "ssa", "srt"));
-        this.allExt.addAll(Util.MEDIA);
+        this.allExt.addAll(VodUtil.MEDIA);
         this.extend = extend;
         fetchRule();
     }
@@ -84,7 +83,7 @@ public class WebDAV extends Spider {
         List<DavResource> files = new ArrayList<>();
         List<Vod> list = new ArrayList<>();
         Drive drive = getDrive(key);
-        for (DavResource item : getList(drive, path, Util.MEDIA)) {
+        for (DavResource item : getList(drive, path, VodUtil.MEDIA)) {
             if (item.isDirectory()) folders.add(item);
             else files.add(item);
         }
@@ -110,7 +109,7 @@ public class WebDAV extends Spider {
         Sorter.sort("name", "asc", parents);
         List<String> playUrls = new ArrayList<>();
         for (DavResource item : parents) {
-            if (Util.isMedia(item.getName())) {
+            if (VodUtil.isMedia(item.getName())) {
                 playUrls.add(item.getName() + "$" + drive.getName() + item.getPath() + findSubs(drive, item, subs));
             }
         }
@@ -145,7 +144,7 @@ public class WebDAV extends Spider {
     private List<DavResource> getList(Drive drive, String path, List<String> ext) throws IOException {
         path = drive.getHost() + (path.startsWith(drive.getPath()) ? path : drive.getPath() + path);
         List<DavResource> items = drive.getWebdav().list(path);
-        items.remove(0); //Remove parent
+        if (!items.isEmpty()) items.remove(0); //Remove parent
         Iterator<DavResource> iterator = items.iterator();
         while (iterator.hasNext()) {
             DavResource item = iterator.next();
@@ -157,7 +156,7 @@ public class WebDAV extends Spider {
 
     private List<DavResource> getSubs(List<DavResource> items) {
         List<DavResource> subs = new ArrayList<>();
-        for (DavResource item : items) if (Util.isSub(item.getName())) subs.add(item);
+        for (DavResource item : items) if (VodUtil.isSub(item.getName())) subs.add(item);
         return subs;
     }
 

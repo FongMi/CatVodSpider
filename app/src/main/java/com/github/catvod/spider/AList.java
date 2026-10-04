@@ -14,15 +14,14 @@ import com.github.catvod.bean.alist.Item;
 import com.github.catvod.bean.alist.Sorter;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
-import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Util;
+import com.github.catvod.utils.VodUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -49,12 +48,12 @@ public class AList extends Spider {
 
     private void fetchRule() {
         if (drives != null && !drives.isEmpty()) return;
-        if (ext.startsWith("http")) ext = OkHttp.string(ext);
+        if (ext.startsWith("http")) ext = net.get(ext);
         drives = Drive.arrayFrom(ext);
     }
 
     private Drive getDrive(String name) {
-        return drives.get(drives.indexOf(new Drive(name))).check();
+        return drives.get(drives.indexOf(new Drive(name))).check(net);
     }
 
     private String post(Drive drive, String url, String param) {
@@ -62,7 +61,7 @@ public class AList extends Spider {
     }
 
     private String post(Drive drive, String url, String param, boolean retry) {
-        String response = OkHttp.post(url, param, drive.getHeader()).getBody();
+        String response = net.post(url, param, drive.getHeader());
         SpiderDebug.log(response);
         if (retry && response.contains("Guest user is disabled") && login(drive)) return post(drive, url, param, false);
         return response;
@@ -85,7 +84,7 @@ public class AList extends Spider {
     }
 
     @Override
-    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
+    public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws JSONException {
         String type = extend.containsKey("type") ? extend.get("type") : "";
         String order = extend.containsKey("order") ? extend.get("order") : "";
         List<Item> folders = new ArrayList<>();
@@ -107,7 +106,7 @@ public class AList extends Spider {
     }
 
     @Override
-    public String detailContent(List<String> ids) {
+    public String detailContent(List<String> ids) throws JSONException {
         String id = ids.get(0);
         String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
         String path = id.substring(0, id.lastIndexOf("/"));
@@ -138,13 +137,13 @@ public class AList extends Spider {
     public String searchContent(String keyword, boolean quick) throws Exception {
         List<Vod> list = new ArrayList<>();
         List<Job> jobs = new ArrayList<>();
-        for (Drive drive : drives) if (drive.search()) jobs.add(new Job(drive.check(), keyword));
+        for (Drive drive : drives) if (drive.search()) jobs.add(new Job(drive.check(net), keyword));
         for (Future<List<Vod>> future : executor.invokeAll(jobs, 15, TimeUnit.SECONDS)) list.addAll(future.get());
-        return Result.string(list);
+        return Result.get().vod(list).string();
     }
 
     @Override
-    public String playerContent(String flag, String id, List<String> vipFlags) {
+    public String playerContent(String flag, String id, List<String> vipFlags) throws JSONException {
         String[] ids = decodeVodId(id).split("~~~");
         String url = getDetail(ids[0]).getUrl();
         return Result.get().url(url).header(getPlayHeader(url)).subs(getSubs(ids)).string();
@@ -156,15 +155,12 @@ public class AList extends Spider {
     }
 
     private static Map<String, String> getPlayHeader(String url) {
-        try {
-            Uri uri = Uri.parse(url);
-            Map<String, String> header = new HashMap<>();
-            if (uri.getHost().contains("115")) header.put("User-Agent", Util.CHROME);
-            if (uri.getHost().contains("baidupcs.com")) header.put("User-Agent", "pan.baidu.com");
-            return header;
-        } catch (Exception e) {
-            return new HashMap<>();
-        }
+        Map<String, String> header = new HashMap<>();
+        String host = Uri.parse(url).getHost();
+        if (host == null) return header;
+        if (host.contains("115")) header.put("User-Agent", Util.CHROME);
+        if (host.contains("baidupcs.com")) header.put("User-Agent", "pan.baidu.com");
+        return header;
     }
 
     private boolean login(Drive drive) {
@@ -172,7 +168,7 @@ public class AList extends Spider {
             JSONObject params = new JSONObject();
             params.put("username", drive.getLogin().getUsername());
             params.put("password", drive.getLogin().getPassword());
-            String response = OkHttp.post(drive.loginApi(), params.toString());
+            String response = net.post(drive.loginApi(), params.toString());
             drive.setToken(new JSONObject(response).getJSONObject("data").getString("token"));
             return true;
         } catch (Exception e) {
@@ -181,47 +177,38 @@ public class AList extends Spider {
         }
     }
 
-    private Item getDetail(String id) {
-        try {
-            String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
-            String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
-            Drive drive = getDrive(key);
-            path = path.startsWith(drive.getPath()) ? path : drive.getPath() + path;
-            JSONObject params = new JSONObject();
-            params.put("path", path);
-            params.put("password", drive.findPass(path));
-            String response = post(drive, drive.getApi(), params.toString());
-            return Item.objectFrom(getDetailJson(drive.isNew(), response));
-        } catch (Exception e) {
-            return new Item();
-        }
+    private Item getDetail(String id) throws JSONException {
+        String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
+        String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
+        Drive drive = getDrive(key);
+        path = path.startsWith(drive.getPath()) ? path : drive.getPath() + path;
+        JSONObject params = new JSONObject();
+        params.put("path", path);
+        params.put("password", drive.findPass(path));
+        String response = post(drive, drive.getApi(), params.toString());
+        return Item.objectFrom(getDetailJson(drive.isNew(), response));
     }
 
-    private List<Item> getList(String id, boolean filter) {
-        try {
-            String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
-            String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
-            Drive drive = getDrive(key);
-            path = path.startsWith(drive.getPath()) ? path : drive.getPath() + path;
-            JSONObject params = new JSONObject();
-            params.put("path", path);
-            params.put("password", drive.findPass(path));
-            String response = post(drive, drive.listApi(), params.toString());
-            List<Item> items = Item.arrayFrom(getListJson(drive.isNew(), response));
-            Iterator<Item> iterator = items.iterator();
-            if (filter) while (iterator.hasNext()) if (iterator.next().ignore(drive.isNew())) iterator.remove();
-            return items;
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
+    private List<Item> getList(String id, boolean filter) throws JSONException {
+        String key = id.contains("/") ? id.substring(0, id.indexOf("/")) : id;
+        String path = id.contains("/") ? id.substring(id.indexOf("/")) : "";
+        Drive drive = getDrive(key);
+        path = path.startsWith(drive.getPath()) ? path : drive.getPath() + path;
+        JSONObject params = new JSONObject();
+        params.put("path", path);
+        params.put("password", drive.findPass(path));
+        String response = post(drive, drive.listApi(), params.toString());
+        List<Item> items = Item.arrayFrom(getListJson(drive.isNew(), response));
+        Iterator<Item> iterator = items.iterator();
+        if (filter) while (iterator.hasNext()) if (iterator.next().ignore(drive.isNew())) iterator.remove();
+        return items;
     }
 
     private String getListJson(boolean isNew, String response) throws JSONException {
-        if (isNew) {
-            return new JSONObject(response).getJSONObject("data").getJSONArray("content").toString();
-        } else {
-            return new JSONObject(response).getJSONObject("data").getJSONArray("files").toString();
-        }
+        JSONObject data = new JSONObject(response).getJSONObject("data");
+        String key = isNew ? "content" : "files";
+        if (data.has(key) && data.isNull(key)) return "[]";
+        return data.getJSONArray(key).toString();
     }
 
     private String getDetailJson(boolean isNew, String response) throws JSONException {
@@ -233,23 +220,22 @@ public class AList extends Spider {
     }
 
     private String getSearchJson(boolean isNew, String response) throws JSONException {
-        if (isNew) {
-            return new JSONObject(response).getJSONObject("data").getJSONArray("content").toString();
-        } else {
-            return new JSONObject(response).getJSONArray("data").toString();
-        }
+        if (isNew) return getListJson(true, response);
+        JSONObject data = new JSONObject(response);
+        if (data.has("data") && data.isNull("data")) return "[]";
+        return data.getJSONArray("data").toString();
     }
 
     private String findSubs(String path, List<Item> items) {
         StringBuilder sb = new StringBuilder();
         for (Item item : items) {
-            String ext = Util.getExt(item.getName());
-            if (Util.isSub(ext)) sb.append("~~~").append(item.getName()).append("@@@").append(ext).append("@@@").append(item.getVodId(path));
+            String ext = VodUtil.getExt(item.getName());
+            if (VodUtil.isSub(ext)) sb.append("~~~").append(item.getName()).append("@@@").append(ext).append("@@@").append(item.getVodId(path));
         }
         return sb.toString();
     }
 
-    private List<Sub> getSubs(String[] ids) {
+    private List<Sub> getSubs(String[] ids) throws JSONException {
         List<Sub> sub = new ArrayList<>();
         for (String text : ids) {
             if (!text.contains("@@@")) continue;
@@ -273,16 +259,12 @@ public class AList extends Spider {
         }
 
         @Override
-        public List<Vod> call() {
-            try {
-                List<Vod> list = new ArrayList<>();
-                String response = post(drive, drive.searchApi(), drive.params(keyword));
-                List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
-                for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive));
-                return list;
-            } catch (Exception e) {
-                return Collections.emptyList();
-            }
+        public List<Vod> call() throws JSONException {
+            List<Vod> list = new ArrayList<>();
+            String response = post(drive, drive.searchApi(), drive.params(keyword));
+            List<Item> items = Item.arrayFrom(getSearchJson(drive.isNew(), response));
+            for (Item item : items) if (!item.ignore(drive.isNew())) list.add(item.getVod(drive));
+            return list;
         }
     }
 }

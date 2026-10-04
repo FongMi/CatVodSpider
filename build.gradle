@@ -3,7 +3,6 @@ import java.nio.file.StandardCopyOption
 
 plugins {
     alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.android.library) apply false
 }
 
 def apktoolJar = layout.projectDirectory.file('jar/3rd/apktool_2.11.0.jar')
@@ -56,10 +55,11 @@ def generateSpiderJar = tasks.register('generateSpiderJar', JavaExec) {
     inputs.file(stagedDir.map { it.file('apktool.yml') })
     inputs.dir(stagedDir.map { it.dir('original') })
     inputs.dir(stagedDir.map { it.dir('smali') })
+    inputs.property('minSdk', libs.versions.minSdk)
     outputs.file(spiderJarFile)
     doFirst {
         Files.deleteIfExists(spiderJarFile.asFile.toPath())
-        setArgs(['b', stagedDir.get().asFile.absolutePath, '-c', '-o', spiderJarFile.asFile.absolutePath])
+        setArgs(['b', stagedDir.get().asFile.absolutePath, '-f', '--api-level', libs.versions.minSdk.get(), '-c', '-o', spiderJarFile.asFile.absolutePath])
     }
 }
 
@@ -67,18 +67,19 @@ def verifySpiderJar = tasks.register('verifySpiderJar', Exec) {
     group = 'verification'
     description = 'Checks the generated spider JAR structure and references.'
     dependsOn generateSpiderJar
-    inputs.files(spiderJarFile, spiderCheckScript, apktoolJar)
+    inputs.files(spiderJarFile, spiderCheckScript, apktoolJar, releaseApk, project(':app').layout.projectDirectory.file('libs/catvod-api.jar'))
     outputs.file(spiderMd5File)
     outputs.upToDateWhen { false }
     doFirst {
         ant.checksum(file: spiderJarFile.asFile, algorithm: 'MD5', fileext: '.md5', forceOverwrite: true)
+        spiderMd5File.asFile.setText(spiderMd5File.asFile.text.trim() + '\r\n', 'UTF-8')
     }
     commandLine 'powershell', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', spiderCheckScript.asFile.absolutePath, '-Jar', spiderJarFile.asFile.absolutePath
 }
 
 tasks.register('spiderJar') {
     group = 'build'
-    description = 'Tests, builds, verifies, and optionally exports custom_spider.jar.'
+    description = 'Builds, verifies, and optionally exports custom_spider.jar.'
     dependsOn verifySpiderJar
     doLast {
         def output = providers.gradleProperty('spiderOutput').getOrNull()
