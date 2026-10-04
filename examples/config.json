@@ -1,0 +1,94 @@
+{
+  "sites": [
+    {
+      "key": "PythonDemo",
+      "name": "Python 完整範例",
+      "type": 3,
+      "api": "./python/spider.py",
+      "lang": "zh-TW",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 0.75
+      },
+      "ext": {
+        "image_base": "",
+        "web_url": "https://example.com/",
+        "cookie_name": "session_id"
+      }
+    },
+    {
+      "key": "QuickJSDemo",
+      "name": "QuickJS 完整範例",
+      "type": 3,
+      "api": "./javascript/spider.js",
+      "lang": "zh-TW",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 0.75
+      },
+      "ext": {
+        "image_base": "",
+        "web_url": "https://example.com/",
+        "cookie_name": "session_id"
+      }
+    },
+    {
+      "key": "JavaDemo",
+      "name": "Java 完整範例",
+      "type": 3,
+      "api": "csp_Demo",
+      "lang": "zh-TW",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 0.75
+      },
+      "ext": {
+        "image_base": "",
+        "web_url": "https://example.com/",
+        "cookie_name": "session_id"
+      }
+    }
+  ],
+  "spider": "../jar/custom_spider.jar",
+  "lives": [
+    {
+      "name": "Python 完整範例",
+      "api": "./python/spider.py",
+      "ext": {
+        "image_base": "",
+        "web_url": "https://example.com/",
+        "cookie_name": "session_id"
+      }
+    },
+    {
+      "name": "QuickJS 完整範例",
+      "api": "./javascript/spider.js",
+      "ext": {
+        "image_base": "",
+        "web_url": "https://example.com/",
+        "cookie_name": "session_id"
+      }
+    },
+    {
+      "name": "Java 完整範例",
+      "api": "csp_Demo",
+      "ext": {
+        "image_base": "",
+        "web_url": "https://example.com/",
+        "cookie_name": "session_id"
+      }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "CatVodSpider 爬蟲開發"
+  short_description: "以 TV 共用接口開發 Python、QuickJS、Java 爬蟲並驗證實際載入與分頁"
+  default_prompt: "請用 $catvod-spider 開發這個站點的爬蟲，使用 TV 共用接口並支援分類、篩選與搜尋分頁。"
