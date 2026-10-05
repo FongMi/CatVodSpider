@@ -21,7 +21,7 @@
 
 Python 資料方法回傳 dict／list；QuickJS 回傳物件／陣列，Promise 由 App 等待；Java 回傳 JSON 字串，可用 Result、Vod、Filter。proxy 與布林接口維持各自格式。QuickJS 的 detail 收單一 ID，Python／Java 收 ID 集合。
 
-分類與搜尋回傳 `list、page、pagecount、limit、total`。`page < pagecount` 才會繼續載入，不另寫 loadMore。`filters` 的鍵對應分類 `type_id`，只加入站點支援的篩選。
+分類與搜尋回傳 `list、page、pagecount、limit`；有精確總筆數時加 `total`。`page < pagecount` 才會繼續載入，不另寫 loadMore。網站已分頁時直接回傳當頁，不再次切片，也不以頁數乘頁大小推算 total；最小 JSON 見[技能的分頁範例](../.agents/skills/catvod-spider/SKILL.md#網站已分頁)。`filters` 的鍵對應分類 `type_id`，只加入站點支援的篩選。
 
 線路用 `$$$` 分隔，每線集數用 `#`，每集為 `名稱$播放值`。清理名稱中的分隔符；播放值可用自訂 ID，在播放時取得實際網址。
 
@@ -68,7 +68,7 @@ const data = await net.json(url, {params: {page: 1}});
 String data = net.json(url, "{\"params\":{\"page\":1}}");
 ```
 
-連線失敗、HTTP 非 2xx 或無效 JSON 會拋出例外。需要自行處理狀態碼、錯誤正文或 bytes 時，用 Python `self.net.req`、QuickJS `await net.http`、Java `net.req`；分開檢查回應的 error 與 code。Java 先解析回傳的 JSON 字串。
+連線失敗、HTTP 非 2xx 或無效 JSON 會拋出例外。需要自行處理狀態碼、錯誤正文或 bytes 時，用 Python `self.net.req`、QuickJS `await net.http`、Java `net.req`；分開檢查回應的 error 與 code。Java 先解析回傳的 JSON 字串。回應格式與不依賴 TV repo 的主機驗證方法見[接口驗證](../.agents/skills/catvod-spider/references/validation.md)。
 
 | HTTP options | 用途 |
 | --- | --- |
@@ -108,7 +108,7 @@ WebSocket 用 `net.ws(url, options)`，成功回應 code=101，首個完整文�
 
 Local 保存小型設定：Python `self.local`、QuickJS／Java `local` 使用 `get(key)、set(key, value)、delete(key)`，App 按 Site.key 隔離。Python／QuickJS 直接存 JSON 值，Java 使用 JSON 字串；不存在的 key 回傳 None／null。清快取不會刪除 Local。
 
-完整清單分頁使用 Python `self.page(items, pg, limit)`、QuickJS `page(items, pg, limit)`、Java `Result.page(items, page, limit).string()`。API 已分頁時，Python／QuickJS 加 total，Java 直接設定 Result 的分頁欄位。超連結用 Python `self.link`、QuickJS `link`、Java `Json.link`。
+完整清單分頁使用 Python `self.page(items, pg, limit)`、QuickJS `page(items, pg, limit)`、Java `Result.page(items, page, limit).string()`。網站已分頁時依網站值組裝分頁欄位。超連結用 Python `self.link`、QuickJS `link`、Java `Json.link`。
 
 ## 網頁、直播與 proxy
 
