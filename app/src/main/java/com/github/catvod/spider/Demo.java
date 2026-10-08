@@ -57,7 +57,7 @@ public class Demo extends Spider {
             """;
     private static final String ACTIONS = """
             [
-                ["web_view", "開啟獨立內容", "mode=view，返回直接關閉"],
+                ["web_view", "開啟獨立內容", "mode=view，返回依網頁歷史"],
                 ["native_toast", "執行中 Toast", "呼叫 App 的 Init.toast"],
                 ["json", "JSON 請求", "net.json 驗證 HTTP 與 JSON"],
                 ["request_sync", "同步 HTTP", "同步取得完整回應"],

@@ -54,19 +54,7 @@ VOD 的 `style.type` 支援 rect／oval／list，同頁保持一致；分類使�
 
 Python 使用 `self.net`；QuickJS 使用注入的 `net`；Java 使用繼承的 `net`。下文以 net 簡寫，Java 的 options 使用 JSON 字串。
 
-只取 JSON 時：
-
-```python
-data = self.net.json(url, {"params": {"page": 1}})
-```
-
-```javascript
-const data = await net.json(url, {params: {page: 1}});
-```
-
-```java
-String data = net.json(url, "{\"params\":{\"page\":1}}");
-```
+只取 JSON 時使用 `net.json(url, options)`，實作見三語言 Demo 的 JSON 請求操作。
 
 連線失敗、HTTP 非 2xx 或無效 JSON 會拋出例外。需要自行處理狀態碼、錯誤正文或 bytes 時，用 Python `self.net.req`、QuickJS `await net.http`、Java `net.req`；分開檢查回應的 error 與 code。Java 先解析回傳的 JSON 字串。回應格式與不依賴 TV repo 的主機驗證方法見[接口驗證](../.agents/skills/catvod-spider/references/validation.md)。
 
@@ -92,41 +80,7 @@ WebSocket 一次交換用 `net.ws(url, options)`，成功回應 code=101，首�
 
 持續收訊用 `net.connect(url, options, callback)`，立即回傳連線；callback 接收 `(socket, event)`。使用回呼傳入的 socket，避免 open 早於外部變數賦值。切台或 destroy 時呼叫 `close()`；需立即中斷時用 `cancel()`。站點或 session 釋放時也會取消其連線，不自動重連。
 
-```python
-def on_socket(socket, event):
-    if event["type"] == "open":
-        socket.send("subscribe")
-        socket.send(bytes([0, 127, 128, 255]))
-    elif event["type"] == "message":
-        print("binary" if event["binary"] else "text", len(event["content"]))
-    elif event["type"] == "error":
-        print(event["error"])
-
-self.socket = self.net.connect(url, {"timeout": 10000, "ping": 30000}, on_socket)
-```
-
-```javascript
-socket = net.connect(url, {timeout: 10000, ping: 30000}, (connection, event) => {
-    if (event.type === "open") {
-        connection.send("subscribe");
-        connection.send(new Uint8Array([0, 127, 128, 255]));
-    } else if (event.type === "message") {
-        console.log(event.binary ? "binary" : "text", event.content.length);
-    } else if (event.type === "error") console.error(event.error);
-});
-```
-
-```java
-socket = net.connect(url, "{\"timeout\":10000,\"ping\":30000}", (connection, event) -> {
-    if (event.type.equals("open")) {
-        connection.send("subscribe");
-        connection.send(new byte[]{0, 127, (byte) 128, (byte) 255});
-    } else if (event.type.equals("message")) {
-        int size = event.binary ? ((byte[]) event.content).length : ((String) event.content).length();
-        SpiderDebug.log((event.binary ? "binary " : "text ") + size);
-    } else if (event.type.equals("error")) SpiderDebug.log(event.error);
-});
-```
+實作見三語言 Demo 的 `socket-start`、`socket-state` 與 `socket-stop` 操作。
 
 事件為 open／message／error／close；open 的 code=101，message 包含 binary 與 content，error 包含 error，close 包含 code 與 reason。二進位 content 在 Python 是 bytes、QuickJS 是 Uint8Array、Java 是 byte[]；文字為字串。send 接受文字或上述二進位資料，回傳 false 表示未接受發送，不能當成已送達伺服器。
 

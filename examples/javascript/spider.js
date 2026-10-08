@@ -627,7 +627,7 @@ function createSpider(site = {}) {
 
     function actionCards() {
         return [
-            ["web_view", "開啟獨立內容", "mode=view，返回直接關閉"],
+            ["web_view", "開啟獨立內容", "mode=view，返回依網頁歷史"],
             ["json", "JSON 請求", "net.json 驗證 HTTP 與 JSON"],
             ["request_sync", "同步 HTTP", "同步取得完整回應"],
             ["session", "隔離 Session", "在獨立 Cookie 流程完成請求並關閉"],
