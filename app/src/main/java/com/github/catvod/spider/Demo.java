@@ -12,6 +12,7 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.Net;
+import com.github.catvod.net.NetSocket;
 import com.github.catvod.utils.Crypto;
 import com.github.catvod.utils.Json;
 import com.google.gson.JsonObject;
@@ -33,6 +34,9 @@ import java.util.Map;
 
 /** TV Java 功能範例；配置與接口說明見 docs/development.md。 */
 public class Demo extends Spider {
+
+    private NetSocket socket;
+    private JsonObject socketState = new JsonObject();
 
     private static final int PAGE_SIZE = 4;
     private static final String CATALOG = """
@@ -74,6 +78,9 @@ public class Demo extends Spider {
                 ["cookie_clear", "清除登入 Cookie", "寫入過期 Cookie 並確認結果"],
                 ["request", "HTTP + Cookie 請求", "使用 net.req，只顯示狀態與長度"],
                 ["websocket", "WebSocket 訊息交換", "使用 net.ws，只顯示狀態與長度"],
+                ["socket-start", "WebSocket 持續連線", "持續收訊並發送二進位範例"],
+                ["socket-state", "WebSocket 連線狀態", "查看文字與二進位訊息數"],
+                ["socket-stop", "WebSocket 停止連線", "關閉連線並釋放資源"],
                 ["sleep", "可取消等待", "等待 250 毫秒；爬蟲關閉或任務中斷會取消"],
                 ["ttl_cache", "TTL 快取", "有效期內重用資料；過期背景更新"],
                 ["ttl_peek", "讀取已有快取", "只讀已有值，不發出請求或延長 TTL"],
@@ -284,6 +291,18 @@ public class Demo extends Spider {
     }
 
     private String networkAction(String value) throws Exception {
+        if (value.equals("socket-start")) return connectSocket();
+        if (value.equals("socket-stop")) {
+            if (socket != null) socket.close();
+            socket = null;
+            return Result.notify("WebSocket 已停止");
+        }
+        if (value.equals("socket-state")) {
+            JsonObject state = socketState;
+            synchronized (state) {
+                return Result.notify(state.toString());
+            }
+        }
         if (value.equals("json")) return Result.notify("JSON 請求成功：" + JsonParser.parseString(net.json(httpUrl(options.optString("json_url"), "json_url"), "{}")).getClass().getSimpleName());
         if (value.equals("websocket")) return websocket();
         String url = httpUrl(options.optString("request_url", options.optString("web_url")), "request_url");
@@ -325,6 +344,36 @@ public class Demo extends Spider {
         JSONObject response = new JSONObject(net.ws(options.getString("ws_url"), ws.toString()));
         if (response.has("error")) throw new IllegalStateException(response.getString("error"));
         return Result.notify("WebSocket " + response.getInt("code") + "，回應長度 " + response.getString("content").length());
+    }
+
+    private String connectSocket() throws Exception {
+        if (options.optString("ws_url").isEmpty()) return Result.notify("請先在 ext 設定 ws_url");
+        if (socket != null) socket.cancel();
+        JsonObject state = new JsonObject();
+        state.addProperty("state", "連線中");
+        state.addProperty("text", 0);
+        state.addProperty("binary", 0);
+        socketState = state;
+        JSONObject settings = new JSONObject().put("data", options.opt("ws_data")).put("headers", options.optJSONObject("ws_headers")).put("timeout", 15000).put("ping", 30000);
+        socket = net.connect(options.getString("ws_url"), settings.toString(), (connection, event) -> socketEvent(connection, event, state));
+        return Result.notify("WebSocket 已開始連線");
+    }
+
+    private void socketEvent(NetSocket connection, NetSocket.Event event, JsonObject state) {
+        synchronized (state) {
+            switch (event.type) {
+                case "open" -> {
+                    state.addProperty("state", "已連線");
+                    connection.send(new byte[]{0, 127, (byte) 128, (byte) 255});
+                }
+                case "message" -> {
+                    String key = event.binary ? "binary" : "text";
+                    state.addProperty(key, state.get(key).getAsInt() + 1);
+                }
+                case "error" -> state.addProperty("error", event.error);
+                case "close" -> state.addProperty("state", "已關閉");
+            }
+        }
     }
 
     private void checkResponse(JSONObject value) throws Exception {
@@ -525,5 +574,7 @@ public class Demo extends Spider {
 
     @Override
     public void destroy() {
+        if (socket != null) socket.cancel();
+        socket = null;
     }
 }

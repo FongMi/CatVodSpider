@@ -88,7 +88,51 @@ Java 只要正文可用 `net.get(url)`、`net.get(url, headers)`、`net.post(url
 
 批次用 `net.batch(requests, limit)`，每筆為 `{url, options}`，預設最多 4 筆並行、按輸入順序回傳。Python／QuickJS 回傳結果陣列；Java 傳 requests JSON、回傳 Net.Result[]。每筆結果都要檢查狀態。
 
-WebSocket 用 `net.ws(url, options)`，成功回應 code=101，首個完整文字訊息放在 content；不自動重連。
+WebSocket 一次交換用 `net.ws(url, options)`，成功回應 code=101，首個完整訊息放在 content 後關閉。
+
+持續收訊用 `net.connect(url, options, callback)`，立即回傳連線；callback 接收 `(socket, event)`。使用回呼傳入的 socket，避免 open 早於外部變數賦值。切台或 destroy 時呼叫 `close()`；需立即中斷時用 `cancel()`。站點或 session 釋放時也會取消其連線，不自動重連。
+
+```python
+def on_socket(socket, event):
+    if event["type"] == "open":
+        socket.send("subscribe")
+        socket.send(bytes([0, 127, 128, 255]))
+    elif event["type"] == "message":
+        print("binary" if event["binary"] else "text", len(event["content"]))
+    elif event["type"] == "error":
+        print(event["error"])
+
+self.socket = self.net.connect(url, {"timeout": 10000, "ping": 30000}, on_socket)
+```
+
+```javascript
+socket = net.connect(url, {timeout: 10000, ping: 30000}, (connection, event) => {
+    if (event.type === "open") {
+        connection.send("subscribe");
+        connection.send(new Uint8Array([0, 127, 128, 255]));
+    } else if (event.type === "message") {
+        console.log(event.binary ? "binary" : "text", event.content.length);
+    } else if (event.type === "error") console.error(event.error);
+});
+```
+
+```java
+socket = net.connect(url, "{\"timeout\":10000,\"ping\":30000}", (connection, event) -> {
+    if (event.type.equals("open")) {
+        connection.send("subscribe");
+        connection.send(new byte[]{0, 127, (byte) 128, (byte) 255});
+    } else if (event.type.equals("message")) {
+        int size = event.binary ? ((byte[]) event.content).length : ((String) event.content).length();
+        SpiderDebug.log((event.binary ? "binary " : "text ") + size);
+    } else if (event.type.equals("error")) SpiderDebug.log(event.error);
+});
+```
+
+事件為 open／message／error／close；open 的 code=101，message 包含 binary 與 content，error 包含 error，close 包含 code 與 reason。二進位 content 在 Python 是 bytes、QuickJS 是 Uint8Array、Java 是 byte[]；文字為字串。send 接受文字或上述二進位資料，回傳 false 表示未接受發送，不能當成已送達伺服器。
+
+connect 沿用 headers／params／cookie／session；data 或 body 可指定開啟後的首個文字封包。timeout 為建立連線的期限，成功後不限制連線總時長。ping 是協定 Ping 的間隔，單位毫秒，預設 0 關閉；平台要求的訂閱與應用層心跳仍由爬蟲處理。
+
+Java／Python 回呼不保證在主執行緒，操作 UI 時須切回主執行緒。QuickJS 回呼回到其 JS 執行緒，並在爬蟲方法返回後繼續有效。回呼保持簡短；QuickJS 待處理事件超過 256 筆會回報錯誤並取消連線。
 
 下載用 Python／QuickJS `net.download(url, path, options)`、Java `net.download(url, optionsJson, file)`，直接寫檔。相對路徑以 App cache 為基準，父目錄需存在，失敗後的部分檔案由呼叫者處理。
 

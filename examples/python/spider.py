@@ -143,6 +143,8 @@ class Spider(BaseSpider):
             raise ValueError("Site.ext 必須是 JSON 物件")
 
         self.options = options
+        self.socket = None
+        self.socket_state = {"state": "未連線", "text": 0, "binary": 0}
         self.cache_key = CACHE_KEY
         self.image_base = str(options.get("image_base") or "").rstrip("/")
         self.web_url = str(options.get("web_url") or "https://example.com/")
@@ -415,6 +417,15 @@ class Spider(BaseSpider):
                     response["code"], len(response["content"].encode("utf-8") if isinstance(response["content"], str) else response["content"]))}
             except Exception as error:
                 return {"msg": "HTTP 請求失敗：" + type(error).__name__}
+        if action == "socket-stop":
+            if self.socket is not None:
+                self.socket.close()
+                self.socket = None
+            return {"msg": "WebSocket 已停止"}
+        if action == "socket-state":
+            return {"msg": json.dumps(self.socket_state, ensure_ascii=False)}
+        if action == "socket-start":
+            return self._connect_socket()
         if action == "websocket":
             if not self.options.get("ws_url"):
                 return {"msg": "請先在 ext 設定 ws_url"}
@@ -537,7 +548,40 @@ class Spider(BaseSpider):
         )
 
     def destroy(self):
+        if self.socket is not None:
+            self.socket.cancel()
+            self.socket = None
         self.options = {}
+
+    def _connect_socket(self):
+        if not self.options.get("ws_url"):
+            return {"msg": "請先在 ext 設定 ws_url"}
+        if self.socket is not None:
+            self.socket.cancel()
+        state = {"state": "連線中", "text": 0, "binary": 0}
+        self.socket_state = state
+        settings = {
+            "headers": self._string_map(self.options.get("ws_headers"), "ws_headers"),
+            "timeout": REQUEST_TIMEOUT_MS,
+            "ping": 30000,
+        }
+        if "ws_data" in self.options:
+            settings["data"] = self.options["ws_data"]
+        self.socket = self.net.connect(self.options["ws_url"], settings,
+                                       lambda socket, event: self._socket_event(socket, event, state))
+        return {"msg": "WebSocket 已開始連線"}
+
+    @staticmethod
+    def _socket_event(socket, event, state):
+        if event["type"] == "open":
+            state["state"] = "已連線"
+            socket.send(bytes([0, 127, 128, 255]))
+        elif event["type"] == "message":
+            state["binary" if event["binary"] else "text"] += 1
+        elif event["type"] == "error":
+            state["error"] = event["error"]
+        elif event["type"] == "close":
+            state["state"] = "已關閉"
 
     def _show_dialog(self):
         from android.app import AlertDialog
@@ -665,6 +709,9 @@ class Spider(BaseSpider):
                 ("cookie_clear", "清除登入 Cookie", "寫入過期 Cookie 並確認結果"),
                 ("request", "HTTP + Cookie 請求", "使用 self.net.req，只顯示狀態與長度"),
                 ("websocket", "WebSocket 訊息交換", "使用 self.net.ws，只顯示狀態與長度"),
+                ("socket-start", "WebSocket 持續連線", "持續收訊並發送二進位範例"),
+                ("socket-state", "WebSocket 連線狀態", "查看文字與二進位訊息數"),
+                ("socket-stop", "WebSocket 停止連線", "關閉連線並釋放資源"),
                 ("sleep", "可取消等待", "等待 250 毫秒；爬蟲關閉或任務中斷會取消"),
                 ("ttl_cache", "TTL 快取", "有效期內重用資料；過期背景更新"),
                 ("ttl_peek", "讀取已有快取", "只讀已有值，不發出請求或延長 TTL"),

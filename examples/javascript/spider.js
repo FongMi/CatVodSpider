@@ -74,6 +74,8 @@ const CATALOG = [
 function createSpider(site = {}) {
     const siteKey = isObject(site) ? stringValue(site.key).trim() : "";
     let options = {};
+    let socket = null;
+    let socketState = {state: "未連線", text: 0, binary: 0};
 
     function init(ext) {
         options = parseOptions(ext);
@@ -344,6 +346,13 @@ function createSpider(site = {}) {
                 return {msg: `HTTP 請求失敗：${errorName(error)}`};
             }
         }
+        if (value === "socket-stop") {
+            socket?.close();
+            socket = null;
+            return {msg: "WebSocket 已停止"};
+        }
+        if (value === "socket-state") return {msg: JSON.stringify(socketState)};
+        if (value === "socket-start") return connectSocket();
         if (value === "websocket") {
             const url = stringValue(options.ws_url).trim();
             if (!url) return {msg: "請先在 ext 設定 ws_url"};
@@ -477,7 +486,37 @@ function createSpider(site = {}) {
     }
 
     function destroy() {
+        socket?.cancel();
+        socket = null;
         options = {};
+    }
+
+    function connectSocket() {
+        const url = stringValue(options.ws_url).trim();
+        if (!url) return {msg: "請先在 ext 設定 ws_url"};
+        socket?.cancel();
+        const state = {state: "連線中", text: 0, binary: 0};
+        socketState = state;
+        socket = net.connect(url, {
+            data: options.ws_data,
+            headers: stringMap(options.ws_headers, "ws_headers"),
+            timeout: REQUEST_TIMEOUT_MS,
+            ping: 30000,
+        }, (connection, event) => socketEvent(connection, event, state));
+        return {msg: "WebSocket 已開始連線"};
+    }
+
+    function socketEvent(connection, event, state) {
+        if (event.type === "open") {
+            state.state = "已連線";
+            connection.send(new Uint8Array([0, 127, 128, 255]));
+        } else if (event.type === "message") {
+            state[event.binary ? "binary" : "text"]++;
+        } else if (event.type === "error") {
+            state.error = event.error;
+        } else if (event.type === "close") {
+            state.state = "已關閉";
+        }
     }
 
     function filterRows() {
@@ -607,6 +646,9 @@ function createSpider(site = {}) {
             ["cookie_clear", "清除登入 Cookie", "寫入過期 Cookie 並確認結果"],
             ["request", "HTTP + Cookie 請求", "使用 net.http Promise，只顯示狀態與長度"],
             ["websocket", "WebSocket 訊息交換", "使用 net.ws Promise，只顯示狀態與長度"],
+            ["socket-start", "WebSocket 持續連線", "持續收訊並發送二進位範例"],
+            ["socket-state", "WebSocket 連線狀態", "查看文字與二進位訊息數"],
+            ["socket-stop", "WebSocket 停止連線", "關閉連線並釋放資源"],
             ["sleep", "可取消等待", "等待 250 毫秒；爬蟲關閉或任務中斷會取消"],
             ["ttl_cache", "TTL 快取", "有效期內重用資料；過期背景更新"],
             ["ttl_peek", "讀取已有快取", "只讀已有值，不發出請求或延長 TTL"],
