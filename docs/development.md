@@ -158,8 +158,10 @@ Cookie 同組全部需要、不同組任一組即可；需有新值且頁面同�
 
 ## Android UI
 
-Java／Python 的 `getActivity()` 即時取得目前 Activity，可能為 null／None。自訂 Dialog 在主執行緒執行時才取得，不保存 Activity 或自行註冊生命週期 callback。Java 工具類可用 `Init.activity()`，Application Context 用 `Init.context()`。
+Java／Python 的 `getActivity()` 即時取得目前 Activity，可能為 null／None。自訂 Dialog 在主執行緒執行時才取得，不保存 Activity 或自行註冊生命週期 callback。Java 工具類可用 `Runtime.activity()`，Application Context 用 `Runtime.context()`。
 
-Java 的執行中提示用 `Init.toast("訊息")`；Python 可用 `jclass("com.github.catvod.Init").toast("訊息")`，需先 `from java import jclass`。App 自動切主執行緒。QuickJS 使用 action JSON，沒有 Java 反射。
+Java 的執行中提示用 `Runtime.toast("訊息")`；Python 可用 `jclass("com.github.catvod.Runtime").toast("訊息")`，需先 `from java import jclass`。App 自動切主執行緒。QuickJS 使用 action JSON，沒有 Java 反射。
+
+共用 SDK 使用 `com.github.catvod.Runtime` 提供 Context、Activity 與 Toast，Java 需匯入這個類別。JAR 自己的 `com.github.catvod.spider.Init.init(Context)` 是獨立的可選初始化入口。
 
 Java 分享檔案使用 AndroidX FileProvider，authority 為 `context.getPackageName() + ".provider"`，Intent 加 `FLAG_GRANT_READ_URI_PERMISSION`；可分享目錄由 TV 的 file_paths.xml 決定。新增 Android 呼叫需在 TV 的混淆版驗證。

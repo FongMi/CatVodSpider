@@ -6,7 +6,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 
-import com.github.catvod.Init;
+import com.github.catvod.Runtime;
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.market.Data;
 import com.github.catvod.bean.market.Item;
@@ -49,7 +49,7 @@ public class Market extends Spider {
     public String action(String action) {
         try (Net flow = download()) {
             String name = Uri.parse(action).getLastPathSegment();
-            Init.toast("正在下載..." + name);
+            Runtime.toast("正在下載..." + name);
             File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
             File file = Path.create(new File(folder, name));
             flow.download(action, "{\"timeout\":15000}", file);
@@ -73,9 +73,9 @@ public class Market extends Spider {
             if (index == -1) continue;
             String text = data.getList().get(index).getCopy();
             if (!text.isEmpty()) {
-                ClipboardManager manager = (ClipboardManager) Init.context().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipboardManager manager = (ClipboardManager) Runtime.context().getSystemService(Context.CLIPBOARD_SERVICE);
                 manager.setPrimaryClip(ClipData.newPlainText("fongmi", text));
-                Init.toast("已複製 " + text);
+                Runtime.toast("已複製 " + text);
             }
             break;
         }

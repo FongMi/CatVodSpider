@@ -357,7 +357,7 @@ class Spider(BaseSpider):
             return {"msg": "本機 proxy：" + value["name"]}
         if action == "native_toast":
             from java import jclass
-            jclass("com.github.catvod.Init").toast("Python 執行中的提示")
+            jclass("com.github.catvod.Runtime").toast("Python 執行中的提示")
             return {}
         if action == "runtime":
             from java import jclass
@@ -689,7 +689,7 @@ class Spider(BaseSpider):
             }
             for action, name, remark in (
                 ("web_view", "開啟獨立內容", "mode=view，返回依網頁歷史"),
-                ("native_toast", "執行中 Toast", "呼叫 App 的 Init.toast"),
+                ("native_toast", "執行中 Toast", "呼叫 App 的 Runtime.toast"),
                 ("json", "JSON 請求", "net.json 驗證 HTTP 與 JSON"),
                 ("request_sync", "同步 HTTP", "同步取得完整回應"),
                 ("session", "隔離 Session", "在獨立 Cookie 流程完成請求並關閉"),

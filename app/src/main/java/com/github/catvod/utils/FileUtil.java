@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import androidx.core.content.FileProvider;
 
-import com.github.catvod.Init;
+import com.github.catvod.Runtime;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +20,7 @@ import java.util.zip.ZipFile;
 public class FileUtil {
 
     public static void openFile(File file) {
-        Context context = Init.context();
+        Context context = Runtime.context();
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

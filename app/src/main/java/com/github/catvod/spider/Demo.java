@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.github.catvod.Init;
+import com.github.catvod.Runtime;
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Style;
@@ -211,7 +211,7 @@ public class Demo extends Spider {
             case "toast":
                 return Response.notify("這是 Java action 回傳、由 App 顯示的 Toast");
             case "native_toast":
-                Init.toast("Java 執行中的提示");
+                Runtime.toast("Java 執行中的提示");
                 return "{}";
             case "dialog":
                 showDialog();
@@ -411,7 +411,7 @@ public class Demo extends Spider {
     }
 
     private String download() throws Exception {
-        File file = File.createTempFile("spider-demo-", ".bin", Init.context().getCacheDir());
+        File file = File.createTempFile("spider-demo-", ".bin", Runtime.context().getCacheDir());
         try {
             net.download(httpUrl(option("request_url"), "request_url"), "{}", file);
             return Response.notify("下載完成：" + file.length() + " bytes");
