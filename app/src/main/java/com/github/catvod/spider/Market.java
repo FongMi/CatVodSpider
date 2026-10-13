@@ -8,13 +8,13 @@ import android.os.Environment;
 
 import com.github.catvod.Init;
 import com.github.catvod.bean.Class;
-import com.github.catvod.bean.Result;
 import com.github.catvod.bean.market.Data;
 import com.github.catvod.bean.market.Item;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.Net;
 import com.github.catvod.utils.FileUtil;
 import com.github.catvod.utils.Path;
+import com.github.catvod.utils.Response;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,12 +36,12 @@ public class Market extends Spider {
     public String homeContent(boolean filter) {
         List<Class> classes = new ArrayList<>();
         if (datas.size() > 1) for (int i = 1; i < datas.size(); i++) classes.add(datas.get(i).type());
-        return Result.string(classes, datas.get(0).getVod());
+        return Response.create().classes(classes).vods(datas.get(0).getVod()).string();
     }
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
-        for (Data data : datas) if (data.getName().equals(tid)) return Result.get().page().vod(data.getVod()).string();
+        for (Data data : datas) if (data.getName().equals(tid)) return Response.create().page().vods(data.getVod()).string();
         return "";
     }
 
@@ -56,9 +56,9 @@ public class Market extends Spider {
             if (file.getName().endsWith(".zip")) FileUtil.unzip(file, folder);
             if (file.getName().endsWith(".apk")) FileUtil.openFile(file);
             checkCopy(action);
-            return Result.notify("下載完成");
+            return Response.notify("下載完成");
         } catch (Exception e) {
-            return Result.notify(e.getMessage());
+            return Response.notify(e.getMessage());
         }
     }
 

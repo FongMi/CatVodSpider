@@ -6,14 +6,15 @@ import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
-import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
+import com.github.catvod.bean.Value;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.alist.Drive;
 import com.github.catvod.bean.alist.Item;
 import com.github.catvod.bean.alist.Sorter;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
+import com.github.catvod.utils.Response;
 import com.github.catvod.utils.Util;
 import com.github.catvod.utils.VodUtil;
 
@@ -41,8 +42,8 @@ public class AList extends Spider {
 
     private List<Filter> getFilter() {
         List<Filter> items = new ArrayList<>();
-        items.add(new Filter("type", "排序類型", Arrays.asList(new Filter.Value("預設", ""), new Filter.Value("名稱", "name"), new Filter.Value("大小", "size"), new Filter.Value("修改時間", "date"))));
-        items.add(new Filter("order", "排序方式", Arrays.asList(new Filter.Value("預設", ""), new Filter.Value("⬆", "asc"), new Filter.Value("⬇", "desc"))));
+        items.add(new Filter("type", "排序類型", Arrays.asList(new Value("預設", ""), new Value("名稱", "name"), new Value("大小", "size"), new Value("修改時間", "date"))));
+        items.add(new Filter("order", "排序方式", Arrays.asList(new Value("預設", ""), new Value("⬆", "asc"), new Value("⬇", "desc"))));
         return items;
     }
 
@@ -80,7 +81,7 @@ public class AList extends Spider {
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (Drive drive : drives) if (!drive.hidden()) classes.add(drive.toType());
         for (Class item : classes) filters.put(item.getTypeId(), getFilter());
-        return Result.string(classes, filters);
+        return Response.create().classes(classes).filters(filters).string();
     }
 
     @Override
@@ -102,7 +103,7 @@ public class AList extends Spider {
 
         for (Item item : folders) list.add(item.getVod(tid));
         for (Item item : files) list.add(item.getVod(tid));
-        return Result.get().vod(list).page().string();
+        return Response.create().vods(list).page().string();
     }
 
     @Override
@@ -112,15 +113,12 @@ public class AList extends Spider {
         String path = id.substring(0, id.lastIndexOf("/"));
         String name = path.substring(path.lastIndexOf("/") + 1);
         Drive drive = getDrive(key);
-        Vod vod = new Vod();
-        vod.setVodPlayFrom(key);
-        vod.setVodId(id);
-        vod.setVodName(name);
+        Vod vod = new Vod().setPlayFrom(key).setId(id).setName(name);
         List<String> playUrls = new ArrayList<>();
         List<Item> parents = getList(path, false);
         for (Item item : parents) if (item.isMedia(drive.isNew())) playUrls.add(item.getName() + "$" + encodeVodId(item.getVodId(path) + findSubs(path, parents)));
-        vod.setVodPlayUrl(TextUtils.join("#", playUrls));
-        return Result.string(vod);
+        vod.setPlayUrl(TextUtils.join("#", playUrls));
+        return Response.create().vod(vod).string();
     }
 
     private String encodeVodId(String vodId) {
@@ -139,14 +137,14 @@ public class AList extends Spider {
         List<Job> jobs = new ArrayList<>();
         for (Drive drive : drives) if (drive.search()) jobs.add(new Job(drive.check(net), keyword));
         for (Future<List<Vod>> future : executor.invokeAll(jobs, 15, TimeUnit.SECONDS)) list.addAll(future.get());
-        return Result.get().vod(list).string();
+        return Response.create().vods(list).string();
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws JSONException {
         String[] ids = decodeVodId(id).split("~~~");
         String url = getDetail(ids[0]).getUrl();
-        return Result.get().url(url).header(getPlayHeader(url)).subs(getSubs(ids)).string();
+        return Response.create().url(url).header(getPlayHeader(url)).subs(getSubs(ids)).string();
     }
 
     @Override
@@ -243,7 +241,7 @@ public class AList extends Spider {
             String name = split[0];
             String ext = split[1];
             String url = getDetail(split[2]).getUrl();
-            sub.add(Sub.create().name(name).ext(ext).url(url));
+            sub.add(new Sub().setName(name).setFormat(VodUtil.getSubMimeType(ext)).setUrl(url));
         }
         return sub;
     }

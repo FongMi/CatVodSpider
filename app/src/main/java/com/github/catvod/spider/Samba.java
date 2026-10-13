@@ -4,11 +4,11 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
-import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.samba.Drive;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Image;
+import com.github.catvod.utils.Response;
 import com.github.catvod.utils.VodUtil;
 import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
@@ -54,7 +54,7 @@ public class Samba extends Spider {
     public String homeContent(boolean filter) {
         List<Class> classes = new ArrayList<>();
         for (Drive drive : drives) classes.add(drive.toType());
-        return Result.string(classes);
+        return Response.create().classes(classes).string();
     }
 
     @Override
@@ -65,10 +65,10 @@ public class Samba extends Spider {
         List<Vod> list = new ArrayList<>();
         for (FileIdBothDirectoryInformation item : getList(drive, path)) {
             String vodId = getPath(key, path, item.getFileName());
-            if (isFolder(item)) list.add(new Vod(vodId, item.getFileName(), Image.FOLDER, "", true));
-            if (isFile(item)) list.add(new Vod(vodId, item.getFileName(), Image.VIDEO, "", false));
+            boolean folder = isFolder(item);
+            list.add(new Vod(vodId, item.getFileName(), folder ? Image.FOLDER : Image.VIDEO, "").setTag(folder ? "folder" : "file"));
         }
-        return Result.get().vod(list).page().string();
+        return Response.create().vods(list).page().string();
     }
 
     @Override
@@ -85,17 +85,13 @@ public class Samba extends Spider {
                 playUrls.add(item.getFileName() + "$" + getPath(drive.getServer(), parent, item.getFileName()));
             }
         }
-        Vod vod = new Vod();
-        vod.setVodId(name);
-        vod.setVodName(name);
-        vod.setVodPlayFrom(key);
-        vod.setVodPlayUrl(TextUtils.join("#", playUrls));
-        return Result.string(vod);
+        Vod vod = new Vod().setId(name).setName(name).setPlayFrom(key).setPlayUrl(TextUtils.join("#", playUrls));
+        return Response.create().vod(vod).string();
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
-        return Result.get().url(id).string();
+        return Response.create().url(id).string();
     }
 
     private String getPath(String... texts) {

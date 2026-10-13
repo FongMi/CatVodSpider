@@ -115,10 +115,10 @@ public class Item {
     }
 
     public Vod getVod(String id) {
-        return new Vod(getVodId(id), getName(), getPic(), getRemark(), isFolder());
+        return new Vod(getVodId(id), getName(), getPic(), getRemark()).setTag(isFolder() ? "folder" : "file");
     }
 
     public Vod getVod(Drive drive) {
-        return new Vod(getVodPath(drive.getName()), getName(), getPic(), drive.getName(), isFolder());
+        return new Vod(getVodPath(drive.getName()), getName(), getPic(), drive.getName()).setTag(isFolder() ? "folder" : "file");
     }
 }

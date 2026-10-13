@@ -34,14 +34,17 @@ RESPONSES = Path(__file__).with_name("responses.json")
 
 
 class BaseSpider:
-    def page(self, items, pg, limit):
-        pg = int(pg)
-        if pg < 1 or limit < 1:
-            raise ValueError("頁碼與頁大小必須大於零")
-        start = (pg - 1) * limit
-        return {"list": items[start:start + limit], "page": pg,
-                "pagecount": (len(items) + limit - 1) // limit,
-                "limit": limit, "total": len(items)}
+    @staticmethod
+    def page(items, pg, limit, total=None):
+        pg = max(1, int(pg))
+        if isinstance(limit, bool) or not isinstance(limit, int) or limit < 1:
+            raise ValueError("page requires a positive limit")
+        if total is None:
+            total = len(items)
+            items = items[(pg - 1) * limit:pg * limit]
+        if isinstance(total, bool) or not isinstance(total, int) or total < 0:
+            raise ValueError("page requires a nonnegative total")
+        return {'list': items, 'page': pg, 'pagecount': max(1, (total + limit - 1) // limit), 'limit': limit, 'total': total}
 
 
 class Net:

@@ -3,13 +3,13 @@ package com.github.catvod.spider;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Image;
 import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Path;
+import com.github.catvod.utils.Response;
 import com.github.catvod.utils.VodUtil;
 import com.google.gson.JsonObject;
 
@@ -25,43 +25,31 @@ public class Push extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        return Result.string(vod(ids.get(0)));
+        return Response.create().vod(vod(ids.get(0))).string();
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         if (id.contains("://") && id.contains("***")) id = id.replace("***", "#");
         return switch (flag) {
-            case "直連" -> Result.get().url(id).subs(getSubs(id)).string();
-            case "解析" -> Result.get().parse().jx().url(id).string();
-            case "嗅探" -> Result.get().parse().url(id).string();
-            default -> Result.get().url(id).string();
+            case "直連" -> Response.create().url(id).subs(getSubs(id)).string();
+            case "解析" -> Response.create().parse().jx().url(id).string();
+            case "嗅探" -> Response.create().parse().url(id).string();
+            default -> Response.create().url(id).string();
         };
     }
 
     private Vod vod(String url) {
-        Vod vod = new Vod();
-        vod.setVodId(url);
-        vod.setVodPic(Image.PUSH);
-        vod.setTypeName("FongMi");
-        vod.setVodName(url.startsWith("file://") ? new File(url).getName() : "");
+        Vod vod = new Vod(url, url.startsWith("file://") ? new File(url).getName() : "", Image.PUSH).setTypeName("FongMi");
         if (url.contains("://") && url.contains("#")) url = url.replace("#", "***");
         if (isThunder(url)) {
-            vod.setVodPlayUrl(url);
-            vod.setVodPlayFrom("迅雷");
-            return vod;
+            return vod.setPlayUrl(url).setPlayFrom("迅雷");
         } else if (url.contains("youtube.com")) {
-            vod.setVodPlayUrl(url);
-            vod.setVodPlayFrom("YouTube");
-            return vod;
+            return vod.setPlayUrl(url).setPlayFrom("YouTube");
         } else if (url.contains("$")) {
-            vod.setVodPlayFrom("直連");
-            vod.setVodPlayUrl(TextUtils.join("#", url.split("\n")));
-            return vod;
+            return vod.setPlayFrom("直連").setPlayUrl(TextUtils.join("#", url.split("\n")));
         } else {
-            vod.setVodPlayUrl(TextUtils.join("$$$", Arrays.asList(url, url, url)));
-            vod.setVodPlayFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
-            return vod;
+            return vod.setPlayUrl(TextUtils.join("$$$", Arrays.asList(url, url, url))).setPlayFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
         }
     }
 
@@ -92,7 +80,7 @@ public class Push extends Spider {
         JsonObject result = Json.parse(net.req(url, "{\"timeout\":15000}")).getAsJsonObject();
         if (!"200".equals(result.get("code").getAsString()) || result.get("content").getAsString().length() < 100) return;
         String name = Uri.parse(url).getLastPathSegment();
-        subs.add(Sub.create().name(name).ext(ext).url(url));
+        subs.add(new Sub().setName(name).setFormat(VodUtil.getSubMimeType(ext)).setUrl(url));
     }
 
     private void setFileSub(String url, List<Sub> subs) {
@@ -100,7 +88,8 @@ public class Push extends Spider {
         if (parent == null) return;
         for (File f : Path.list(parent)) {
             String ext = VodUtil.getExt(f.getName());
-            if (f.isFile() && VodUtil.isSub(ext)) subs.add(Sub.create().name(VodUtil.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
+            if (!f.isFile() || !VodUtil.isSub(ext)) continue;
+            subs.add(new Sub().setName(VodUtil.removeExt(f.getName())).setFormat(VodUtil.getSubMimeType(ext)).setUrl("file://" + f.getAbsolutePath()));
         }
     }
 }

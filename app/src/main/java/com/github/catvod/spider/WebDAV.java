@@ -5,13 +5,14 @@ import android.text.TextUtils;
 
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Filter;
-import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
+import com.github.catvod.bean.Value;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.webdav.Drive;
 import com.github.catvod.bean.webdav.Sorter;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Image;
+import com.github.catvod.utils.Response;
 import com.github.catvod.utils.VodUtil;
 import com.thegrizzlylabs.sardineandroid.DavResource;
 
@@ -33,8 +34,8 @@ public class WebDAV extends Spider {
 
     private List<Filter> getFilter() {
         List<Filter> items = new ArrayList<>();
-        items.add(new Filter("type", "排序類型", Arrays.asList(new Filter.Value("預設", ""), new Filter.Value("名稱", "name"), new Filter.Value("大小", "size"), new Filter.Value("修改時間", "date"))));
-        items.add(new Filter("order", "排序方式", Arrays.asList(new Filter.Value("預設", ""), new Filter.Value("⬆", "asc"), new Filter.Value("⬇", "desc"))));
+        items.add(new Filter("type", "排序類型", Arrays.asList(new Value("預設", ""), new Value("名稱", "name"), new Value("大小", "size"), new Value("修改時間", "date"))));
+        items.add(new Filter("order", "排序方式", Arrays.asList(new Value("預設", ""), new Value("⬆", "asc"), new Value("⬇", "desc"))));
         return items;
     }
 
@@ -70,7 +71,7 @@ public class WebDAV extends Spider {
         LinkedHashMap<String, List<Filter>> filters = new LinkedHashMap<>();
         for (Drive drive : drives) classes.add(drive.toType());
         for (Class item : classes) filters.put(item.getTypeId(), getFilter());
-        return Result.string(classes, filters);
+        return Response.create().classes(classes).filters(filters).string();
     }
 
     @Override
@@ -93,7 +94,7 @@ public class WebDAV extends Spider {
         }
         for (DavResource item : folders) list.add(drive.vod(item, Image.FOLDER));
         for (DavResource item : files) list.add(drive.vod(item, Image.VIDEO));
-        return Result.get().vod(list).page().string();
+        return Response.create().vods(list).page().string();
     }
 
     @Override
@@ -113,19 +114,14 @@ public class WebDAV extends Spider {
                 playUrls.add(item.getName() + "$" + drive.getName() + item.getPath() + findSubs(drive, item, subs));
             }
         }
-        Vod vod = new Vod();
-        vod.setVodId(name);
-        vod.setVodName(name);
-        vod.setVodPlayFrom(key);
-        vod.setVodPic(Image.VIDEO);
-        vod.setVodPlayUrl(TextUtils.join("#", playUrls));
-        return Result.string(vod);
+        Vod vod = new Vod(name, name, Image.VIDEO).setPlayFrom(key).setPlayUrl(TextUtils.join("#", playUrls));
+        return Response.create().vod(vod).string();
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         String[] ids = id.split("~~~");
-        return Result.get().url(Proxy.getUrl(siteKey, "&url=" + ids[0])).subs(getSub(ids)).string();
+        return Response.create().url(Proxy.getUrl(siteKey, "&url=" + ids[0])).subs(getSub(ids)).string();
     }
 
     @Override
@@ -180,7 +176,7 @@ public class WebDAV extends Spider {
             String name = split[0];
             String ext = split[1];
             String url = Proxy.getUrl(siteKey, "&url=" + split[2]);
-            sub.add(Sub.create().name(name).ext(ext).url(url));
+            sub.add(new Sub().setName(name).setFormat(VodUtil.getSubMimeType(ext)).setUrl(url));
         }
         return sub;
     }

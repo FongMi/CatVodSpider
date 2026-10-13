@@ -19,9 +19,13 @@
 | 嗅探判斷 | `manualVideoCheck()`／`isVideoFormat(url)` | `sniffer()`／`isVideo(url)` | `manualVideoCheck()`／`isVideoFormat(url)` |
 | 釋放 | `destroy()` | `destroy()` | `destroy()` |
 
-Python 資料方法回傳 dict／list；QuickJS 回傳物件／陣列，Promise 由 App 等待；Java 回傳 JSON 字串，可用 Result、Vod、Filter。proxy 與布林接口維持各自格式。QuickJS 的 detail 收單一 ID，Python／Java 收 ID 集合。
+Python 資料方法回傳 dict／list；QuickJS 回傳物件／陣列，Promise 由 App 等待；Java Demo 用 Gson 組裝標準 JSON 字串。proxy 與布林接口維持各自格式。QuickJS 的 detail 收單一 ID，Python／Java 收 ID 集合。
 
-分類與搜尋回傳 `list、page、pagecount、limit`；有精確總筆數時加 `total`。`page < pagecount` 才會繼續載入，不另寫 loadMore。網站已分頁時直接回傳當頁，不再次切片，也不以頁數乘頁大小推算 total；最小 JSON 見[技能的分頁範例](../.agents/skills/catvod-spider/SKILL.md#網站已分頁)。`filters` 的鍵對應分類 `type_id`，只加入站點支援的篩選。
+Java 使用本專案 `com.github.catvod.bean` 的純資料模型，建構子與鏈式 setter 填值；篩選選項使用 `Value`，影片樣式使用 `Style`。`com.github.catvod.utils.Response` 用 Gson 組裝 JSON、分頁與輸出，兩者隨爬蟲 JAR 打包；App 的 `Result` 只負責接收及解析。
+
+`Response.create().vod(vod).string()` 回傳詳情，`Response.create().classes(classes).filters(filters).string()` 回傳分類與篩選。其他欄位可用 `put(name, value)`；明確的 `0`／`false` 保留，值為 `null` 的模型欄位省略。也可直接使用 Gson 組裝標準 JSON，不必依賴 App 的 Java 模型。
+
+有分頁的分類與搜尋回傳 `list、page、pagecount、limit`；有精確總筆數時加 `total`。完整單頁清單回傳 `list、page=1、pagecount=1`，`limit` 與 `total` 可省略。`page < pagecount` 才會繼續載入，不另寫 loadMore。網站已分頁時直接回傳當頁，不再次切片，也不以頁數乘頁大小推算 total；最小 JSON 見[技能的分頁範例](../.agents/skills/catvod-spider/SKILL.md#網站已分頁)。`filters` 的鍵對應分類 `type_id`，只加入站點支援的篩選。
 
 線路用 `$$$` 分隔，每線集數用 `#`，每集為 `名稱$播放值`。清理名稱中的分隔符；播放值可用自訂 ID，在播放時取得實際網址。
 
@@ -106,7 +110,7 @@ Java／Python 回呼不保證在主執行緒，操作 UI 時須切回主執行�
 
 Local 保存小型設定：Python `self.local`、QuickJS／Java `local` 使用 `get(key)、set(key, value)、delete(key)`，App 按 Site.key 隔離。Python／QuickJS 直接存 JSON 值，Java 使用 JSON 字串；不存在的 key 回傳 None／null。清快取不會刪除 Local。
 
-完整清單分頁使用 Python `self.page(items, pg, limit)`、QuickJS `page(items, pg, limit)`、Java `Result.page(items, page, limit).string()`。網站已分頁時依網站值組裝分頁欄位。超連結用 Python `self.link`、QuickJS `link`、Java `Json.link`。
+完整清單分頁使用 Python `self.page(items, pg, limit)`、QuickJS `page(items, pg, limit)`、Java `Response.page(items, page, limit).string()`。網站已分頁時使用 `Response.create().vods(items).page(page, pagecount, limit, total).string()`，未知 total 時只填已知欄位。完整單頁清單可用 `.page()`，只輸出 page=1 與 pagecount=1。超連結用 Python `self.link`、QuickJS `link`、Java `Json.link`。
 
 ## 網頁、直播與 proxy
 
@@ -116,7 +120,7 @@ action 回傳 JSON 即可開網頁或顯示提示：
 {"web": {"url": "https://example.com/login", "cookie": [{"keys": ["sid", "token"]}]}}
 ```
 
-url 限 HTTP(S)。一般網頁省略 mode，獨立內容使用 `"mode": "view"`，不啟動外部 App、不自動全螢幕。返回先退出全螢幕，再依網頁歷史回上一頁，沒有歷史才關閉。提示回傳 `{"msg": "訊息"}`。
+url 限 HTTP(S)。一般網頁省略 mode，獨立內容使用 `"mode": "view"`，不啟動外部 App、不自動全螢幕。返回先退出全螢幕，再依網頁歷史回上一頁，沒有歷史才關閉。提示回傳 `{"msg": "訊息"}`；Java 可用 `Response.notify("訊息")`。
 
 Cookie 同組全部需要、不同組任一組即可；需有新值且頁面同源。各組可指定 url，未指定時用開啟網址。這是登入完成條件，與 HTTP 的 cookie:true 分開。
 

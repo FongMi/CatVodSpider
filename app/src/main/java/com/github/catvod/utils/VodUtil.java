@@ -21,6 +21,15 @@ public class VodUtil {
         return SUB.contains(getExt(text));
     }
 
+    public static String getSubMimeType(String ext) {
+        return switch (ext) {
+            case "vtt" -> "text/vtt";
+            case "ass", "ssa" -> "text/x-ssa";
+            case "ttml", "xml", "dfxp" -> "application/ttml+xml";
+            default -> "application/x-subrip";
+        };
+    }
+
     public static boolean isMedia(String text) {
         return MEDIA.contains(getExt(text));
     }

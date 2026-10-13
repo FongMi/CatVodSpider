@@ -26,6 +26,10 @@ Java 最低支援 Android 7.0。在本專案根目錄執行：
 
 打包會執行 R8，成品為 `jar/custom_spider.jar` 與 `jar/custom_spider.jar.md5`。
 
+共用接口 SDK 由 TV 專案根目錄的 `./gradlew apiJar` 產出，路徑為 `build/outputs/api/catvod-api.jar`。更新接口時，將該檔案同步到本專案的 `app/libs/catvod-api.jar`，再重新打包。
+
+Java 的資料模型由本專案 `com.github.catvod.bean` 維護，[Response](app/src/main/java/com/github/catvod/utils/Response.java) 使用 Gson 組裝標準 JSON。bean 與 Response 隨爬蟲 JAR 打包，SDK 只提供執行接口，使用 `compileOnly`。
+
 匯出到其他目錄可執行 `build.bat "D:\Output"`，也可傳入完整 JAR 路徑。
 
 ## 使用 AI

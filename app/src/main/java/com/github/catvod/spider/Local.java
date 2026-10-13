@@ -10,12 +10,12 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.github.catvod.bean.Class;
-import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.utils.Image;
 import com.github.catvod.utils.Path;
+import com.github.catvod.utils.Response;
 import com.github.catvod.utils.VodUtil;
 
 import java.io.ByteArrayInputStream;
@@ -44,13 +44,13 @@ public class Local extends Spider {
         List<Class> classes = new ArrayList<>();
         classes.add(new Class(Environment.getExternalStorageDirectory().getAbsolutePath(), "本地文件", "1"));
         File[] files = new File("/storage").listFiles();
-        if (files == null) return Result.string(classes);
+        if (files == null) return Response.create().classes(classes).string();
         List<String> exclude = Arrays.asList("emulated", "sdcard", "self");
         for (File file : files) {
             if (exclude.contains(file.getName())) continue;
             classes.add(new Class(file.getAbsolutePath(), file.getName(), "1"));
         }
-        return Result.string(classes);
+        return Response.create().classes(classes).string();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class Local extends Spider {
             if (file.getName().startsWith(".")) continue;
             if (file.isDirectory() || VodUtil.isMedia(file.getName())) items.add(create(file));
         }
-        return Result.get().vod(items).page().string();
+        return Response.create().vods(items).page().string();
     }
 
     @Override
@@ -69,21 +69,21 @@ public class Local extends Spider {
         String url = ids.get(0);
         if (url.startsWith("http")) {
             String name = Uri.parse(url).getLastPathSegment();
-            return Result.string(create(name, url));
+            return Response.create().vod(create(name, url)).string();
         } else {
             File file = new File(ids.get(0));
             File parent = file.getParentFile();
             List<File> files = parent == null ? Collections.emptyList() : Path.list(parent);
-            return Result.string(create(parent != null ? parent : file, files));
+            return Response.create().vod(create(parent != null ? parent : file, files)).string();
         }
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         if (id.startsWith("http")) {
-            return Result.get().url(id).string();
+            return Response.create().url(id).string();
         } else {
-            return Result.get().url("file://" + id).subs(getSubs(id)).string();
+            return Response.create().url("file://" + id).subs(getSubs(id)).string();
         }
     }
 
@@ -98,37 +98,19 @@ public class Local extends Spider {
     }
 
     private Vod create(String name, String url) {
-        Vod vod = new Vod();
-        vod.setTypeName("FongMi");
-        vod.setVodId(url);
-        vod.setVodName(name);
-        vod.setVodPic(Image.VIDEO);
-        vod.setVodPlayFrom("播放");
-        vod.setVodPlayUrl(1 + "$" + url);
-        return vod;
+        return new Vod(url, name, Image.VIDEO).setTypeName("FongMi").setPlayFrom("播放").setPlayUrl(1 + "$" + url);
     }
 
     private Vod create(File file, List<File> files) {
-        Vod vod = new Vod();
-        vod.setTypeName("FongMi");
-        vod.setVodId(file.getName());
-        vod.setVodName(file.getName());
-        vod.setVodPic(Image.VIDEO);
-        vod.setVodPlayFrom("播放");
+        Vod vod = new Vod(file.getName(), file.getName(), Image.VIDEO).setTypeName("FongMi").setPlayFrom("播放");
         List<String> playUrls = new ArrayList<>();
         for (File f : files) if (f.isFile() && VodUtil.isMedia(f.getName())) playUrls.add(f.getName() + "$" + f.getAbsolutePath());
-        vod.setVodPlayUrl(TextUtils.join("#", playUrls));
-        return vod;
+        return vod.setPlayUrl(TextUtils.join("#", playUrls));
     }
 
     private Vod create(File file) {
-        Vod vod = new Vod();
-        vod.setVodId(file.getAbsolutePath());
-        vod.setVodName(file.getName());
-        vod.setVodPic(file.isFile() ? Proxy.getUrl(siteKey, "&path=" + Base64.encodeToString(file.getAbsolutePath().getBytes(), Base64.DEFAULT | Base64.URL_SAFE)) : Image.FOLDER);
-        vod.setVodRemarks(format.format(file.lastModified()));
-        vod.setVodTag(file.isDirectory() ? "folder" : "file");
-        return vod;
+        String pic = file.isFile() ? Proxy.getUrl(siteKey, "&path=" + Base64.encodeToString(file.getAbsolutePath().getBytes(), Base64.DEFAULT | Base64.URL_SAFE)) : Image.FOLDER;
+        return new Vod(file.getAbsolutePath(), file.getName(), pic, format.format(file.lastModified())).setTag(file.isDirectory() ? "folder" : "file");
     }
 
     private byte[] getBase64(String path) {
@@ -145,7 +127,8 @@ public class Local extends Spider {
         if (parent == null) return subs;
         for (File f : Path.list(parent)) {
             String ext = VodUtil.getExt(f.getName());
-            if (f.isFile() && VodUtil.isSub(ext)) subs.add(Sub.create().name(VodUtil.removeExt(f.getName())).ext(ext).url("file://" + f.getAbsolutePath()));
+            if (!f.isFile() || !VodUtil.isSub(ext)) continue;
+            subs.add(new Sub().setName(VodUtil.removeExt(f.getName())).setFormat(VodUtil.getSubMimeType(ext)).setUrl("file://" + f.getAbsolutePath()));
         }
         return subs;
     }

@@ -84,7 +84,7 @@ public class Drive {
     }
 
     public Vod vod(DavResource item, String vodPic) {
-        return new Vod(getName() + item.getPath(), item.getName(), vodPic, VodUtil.getSize(item.getContentLength()), item.isDirectory());
+        return new Vod(getName() + item.getPath(), item.getName(), vodPic, VodUtil.getSize(item.getContentLength())).setTag(item.isDirectory() ? "folder" : "file");
     }
 
     @Override
