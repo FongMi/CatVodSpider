@@ -102,10 +102,10 @@ public class Local extends Spider {
     }
 
     private Vod create(File file, List<File> files) {
-        Vod vod = new Vod(file.getName(), file.getName(), Image.VIDEO).setTypeName("FongMi").setPlayFrom("播放");
+        String name = file.getName();
         List<String> playUrls = new ArrayList<>();
         for (File f : files) if (f.isFile() && VodUtil.isMedia(f.getName())) playUrls.add(f.getName() + "$" + f.getAbsolutePath());
-        return vod.setPlayUrl(TextUtils.join("#", playUrls));
+        return new Vod(name, name, Image.VIDEO).setTypeName("FongMi").setPlayFrom("播放").setPlayUrl(TextUtils.join("#", playUrls));
     }
 
     private Vod create(File file) {

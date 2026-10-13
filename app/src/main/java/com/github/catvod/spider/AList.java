@@ -113,11 +113,10 @@ public class AList extends Spider {
         String path = id.substring(0, id.lastIndexOf("/"));
         String name = path.substring(path.lastIndexOf("/") + 1);
         Drive drive = getDrive(key);
-        Vod vod = new Vod().setPlayFrom(key).setId(id).setName(name);
         List<String> playUrls = new ArrayList<>();
         List<Item> parents = getList(path, false);
         for (Item item : parents) if (item.isMedia(drive.isNew())) playUrls.add(item.getName() + "$" + encodeVodId(item.getVodId(path) + findSubs(path, parents)));
-        vod.setPlayUrl(TextUtils.join("#", playUrls));
+        Vod vod = new Vod().setPlayFrom(key).setId(id).setName(name).setPlayUrl(TextUtils.join("#", playUrls));
         return Response.create().vod(vod).string();
     }
 
