@@ -40,6 +40,15 @@ public class AList extends Spider {
     private List<Drive> drives;
     private String ext;
 
+    private static Map<String, String> getPlayHeader(String url) {
+        Map<String, String> header = new HashMap<>();
+        String host = Uri.parse(url).getHost();
+        if (host == null) return header;
+        if (host.contains("115")) header.put("User-Agent", Util.CHROME);
+        if (host.contains("baidupcs.com")) header.put("User-Agent", "pan.baidu.com");
+        return header;
+    }
+
     private List<Filter> getFilter() {
         List<Filter> items = new ArrayList<>();
         items.add(Filter.create().key("type").name("排序類型").value(Arrays.asList(Value.create().n("預設").v(""), Value.create().n("名稱").v("name"), Value.create().n("大小").v("size"), Value.create().n("修改時間").v("date"))));
@@ -149,15 +158,6 @@ public class AList extends Spider {
     @Override
     public void destroy() {
         executor.shutdownNow();
-    }
-
-    private static Map<String, String> getPlayHeader(String url) {
-        Map<String, String> header = new HashMap<>();
-        String host = Uri.parse(url).getHost();
-        if (host == null) return header;
-        if (host.contains("115")) header.put("User-Agent", Util.CHROME);
-        if (host.contains("baidupcs.com")) header.put("User-Agent", "pan.baidu.com");
-        return header;
     }
 
     private boolean login(Drive drive) {

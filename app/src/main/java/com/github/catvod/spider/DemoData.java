@@ -20,61 +20,61 @@ final class DemoData {
             """;
 
     static final String[][] CATEGORIES = {
-        {"vod_portrait", "VOD 直式"},
-        {"vod_landscape", "VOD 橫式"},
-        {"vod_oval", "VOD 圓形"},
-        {"vod_list", "VOD 列表"},
-        {"class_landscape", "分類橫式"},
-        {"class_oval", "分類圓形"},
-        {"folders", "資料夾"},
-        {"actions", "互動功能"}
+            {"vod_portrait", "VOD 直式"},
+            {"vod_landscape", "VOD 橫式"},
+            {"vod_oval", "VOD 圓形"},
+            {"vod_list", "VOD 列表"},
+            {"class_landscape", "分類橫式"},
+            {"class_oval", "分類圓形"},
+            {"folders", "資料夾"},
+            {"actions", "互動功能"}
     };
 
     static final String[][] FILTERS = {
-        {"genre", "類型", "動畫", "戲劇", "綜藝", "紀錄"},
-        {"area", "地區", "台灣", "日本", "韓國"},
-        {"year", "年份", "2026", "2025", "2024", "2023", "2022", "2021"}
+            {"genre", "類型", "動畫", "戲劇", "綜藝", "紀錄"},
+            {"area", "地區", "台灣", "日本", "韓國"},
+            {"year", "年份", "2026", "2025", "2024", "2023", "2022", "2021"}
     };
 
     static final String[][] FOLDERS = {
-        {"genre", "動畫", "戲劇", "綜藝", "紀錄"},
-        {"area", "台灣", "日本", "韓國"}
+            {"genre", "動畫", "戲劇", "綜藝", "紀錄"},
+            {"area", "台灣", "日本", "韓國"}
     };
 
     static final String[][] ACTIONS = {
-        {"web_view", "開啟獨立內容", "mode=view，返回依網頁歷史"},
-        {"native_toast", "執行中 Toast", "呼叫 App 的 Init.toast"},
-        {"json", "JSON 請求", "net.json 驗證 HTTP 與 JSON"},
-        {"request_sync", "同步 HTTP", "同步取得完整回應"},
-        {"session", "隔離 Session", "在獨立 Cookie 流程完成請求並關閉"},
-        {"parallel", "並行請求", "同時取得 3 份回應"},
-        {"download", "下載檔案", "Net.download 寫入 App 快取，用完移除"},
-        {"binary", "二進位回應", "buffer=1，取得 byte 陣列"},
-        {"ttl_persist", "持久化快取", "重建爬蟲後仍可讀取"},
-        {"ttl_background", "立即回快取、背景更新", "先 peek，再交給 refresh 背景更新"},
-        {"ttl_clear_all", "清除全部 TTL 快取", "只清目前站點的 TTL 資料"},
-        {"proxy", "本機 proxy", "透過 App HTTP server 呼叫此爬蟲"},
-        {"runtime", "測試 App 與加密 bridge", "驗證 SHA-256 與 AES-GCM"},
-        {"toast", "顯示 Toast", "action 回傳 msg，由 App 顯示"},
-        {"dialog", "顯示 Dialog", "主執行緒取得目前 Activity，再建立對話框"},
-        {"site_key", "顯示 Site key", "由 App 在 init 前注入的 siteKey"},
-        {"web", "開啟網頁", "action 回傳 web，由 App 開啟"},
-        {"cookie", "檢查登入 Cookie", "只顯示是否存在，不顯示 Cookie 內容"},
-        {"cookie_clear", "清除登入 Cookie", "寫入過期 Cookie 並確認結果"},
-        {"request", "HTTP + Cookie 請求", "使用 net.req，只顯示狀態與長度"},
-        {"websocket", "WebSocket 訊息交換", "使用 net.ws，只顯示狀態與長度"},
-        {"socket-start", "WebSocket 持續連線", "持續收訊並發送二進位範例"},
-        {"socket-state", "WebSocket 連線狀態", "查看文字與二進位訊息數"},
-        {"socket-stop", "WebSocket 停止連線", "關閉連線並釋放資源"},
-        {"sleep", "可取消等待", "等待 250 毫秒；爬蟲關閉或任務中斷會取消"},
-        {"ttl_cache", "TTL 快取", "有效期內重用資料；過期背景更新"},
-        {"ttl_peek", "讀取已有快取", "只讀已有值，不發出請求或延長 TTL"},
-        {"ttl_clear", "清除 TTL 快取", "清除同一個 key，並取消正在載入的資料"},
-        {"cache_write", "寫入 Local", "保存 JSON 物件、陣列及純量"},
-        {"cache_read", "讀取 Local", "使用 local.get 讀取相同 key"},
-        {"cache_delete", "刪除 Local", "使用 local.delete 清除資料"},
-        {"text_get", "GET 正文", "使用 net.get"},
-        {"text_post", "POST 正文", "使用 net.post"}
+            {"web_view", "開啟獨立內容", "mode=view，返回依網頁歷史"},
+            {"native_toast", "執行中 Toast", "呼叫 App 的 Init.toast"},
+            {"json", "JSON 請求", "net.json 驗證 HTTP 與 JSON"},
+            {"request_sync", "同步 HTTP", "同步取得完整回應"},
+            {"session", "隔離 Session", "在獨立 Cookie 流程完成請求並關閉"},
+            {"parallel", "並行請求", "同時取得 3 份回應"},
+            {"download", "下載檔案", "Net.download 寫入 App 快取，用完移除"},
+            {"binary", "二進位回應", "buffer=1，取得 byte 陣列"},
+            {"ttl_persist", "持久化快取", "重建爬蟲後仍可讀取"},
+            {"ttl_background", "立即回快取、背景更新", "先 peek，再交給 refresh 背景更新"},
+            {"ttl_clear_all", "清除全部 TTL 快取", "只清目前站點的 TTL 資料"},
+            {"proxy", "本機 proxy", "透過 App HTTP server 呼叫此爬蟲"},
+            {"runtime", "測試 App 與加密 bridge", "驗證 SHA-256 與 AES-GCM"},
+            {"toast", "顯示 Toast", "action 回傳 msg，由 App 顯示"},
+            {"dialog", "顯示 Dialog", "主執行緒取得目前 Activity，再建立對話框"},
+            {"site_key", "顯示 Site key", "由 App 在 init 前注入的 siteKey"},
+            {"web", "開啟網頁", "action 回傳 web，由 App 開啟"},
+            {"cookie", "檢查登入 Cookie", "只顯示是否存在，不顯示 Cookie 內容"},
+            {"cookie_clear", "清除登入 Cookie", "寫入過期 Cookie 並確認結果"},
+            {"request", "HTTP + Cookie 請求", "使用 net.req，只顯示狀態與長度"},
+            {"websocket", "WebSocket 訊息交換", "使用 net.ws，只顯示狀態與長度"},
+            {"socket-start", "WebSocket 持續連線", "持續收訊並發送二進位範例"},
+            {"socket-state", "WebSocket 連線狀態", "查看文字與二進位訊息數"},
+            {"socket-stop", "WebSocket 停止連線", "關閉連線並釋放資源"},
+            {"sleep", "可取消等待", "等待 250 毫秒；爬蟲關閉或任務中斷會取消"},
+            {"ttl_cache", "TTL 快取", "有效期內重用資料；過期背景更新"},
+            {"ttl_peek", "讀取已有快取", "只讀已有值，不發出請求或延長 TTL"},
+            {"ttl_clear", "清除 TTL 快取", "清除同一個 key，並取消正在載入的資料"},
+            {"cache_write", "寫入 Local", "保存 JSON 物件、陣列及純量"},
+            {"cache_read", "讀取 Local", "使用 local.get 讀取相同 key"},
+            {"cache_delete", "刪除 Local", "使用 local.delete 清除資料"},
+            {"text_get", "GET 正文", "使用 net.get"},
+            {"text_post", "POST 正文", "使用 net.post"}
     };
 
     private DemoData() {

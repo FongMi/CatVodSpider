@@ -38,14 +38,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/** TV Java 功能範例；配置與接口說明見 docs/development.md。 */
+/**
+ * TV Java 功能範例；配置與接口說明見 docs/development.md。
+ */
 public class Demo extends Spider {
-
-    private NetSocket socket;
-    private JsonObject socketState = new JsonObject();
 
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
     private static final int PAGE_SIZE = 4;
+    private NetSocket socket;
+    private JsonObject socketState = new JsonObject();
     private JsonObject options;
     private JsonArray catalog;
 
@@ -148,8 +149,11 @@ public class Demo extends Spider {
         if (parts.length != 4 || !parts[0].equals("play") || !List.of("main", "backup", "proxy").contains(parts[3])) return Response.notify("無效的範例播放 ID");
         JsonObject record = record(parts[1]);
         int episode;
-        try { episode = Integer.parseInt(parts[2]); }
-        catch (NumberFormatException e) { episode = 0; }
+        try {
+            episode = Integer.parseInt(parts[2]);
+        } catch (NumberFormatException e) {
+            episode = 0;
+        }
         if (record == null || episode < 1 || episode > record.getAsJsonArray("episodes").size()) return Response.notify("找不到此範例集數");
         String key = parts[3].equals("backup") ? "backup_media_url" : "media_url";
         String url = option(key);
@@ -202,46 +206,79 @@ public class Demo extends Spider {
     @Override
     public String action(String value) throws Exception {
         switch (value) {
-            case "site_key": return Response.notify("目前 Site key：" + siteKey);
-            case "toast": return Response.notify("這是 Java action 回傳、由 App 顯示的 Toast");
-            case "native_toast": Init.toast("Java 執行中的提示"); return "{}";
-            case "dialog": showDialog(); return "{}";
-            case "web": return web(false);
-            case "web_view": return web(true);
-            case "cookie": return Response.notify("指定的 WebView Cookie " + (cookieExists() ? "已存在" : "不存在"));
+            case "site_key":
+                return Response.notify("目前 Site key：" + siteKey);
+            case "toast":
+                return Response.notify("這是 Java action 回傳、由 App 顯示的 Toast");
+            case "native_toast":
+                Init.toast("Java 執行中的提示");
+                return "{}";
+            case "dialog":
+                showDialog();
+                return "{}";
+            case "web":
+                return web(false);
+            case "web_view":
+                return web(true);
+            case "cookie":
+                return Response.notify("指定的 WebView Cookie " + (cookieExists() ? "已存在" : "不存在"));
             case "cookie_clear":
                 String name = cookieName();
                 if (!net.setCookie(webUrl(), name + "=; Path=/; Max-Age=0")) throw new IllegalStateException("Cookie 清除失敗");
                 return Response.notify(cookieExists() ? "WebView Cookie 清除失敗" : "已清除指定的 WebView Cookie");
-            case "sleep": net.sleep(250); return Response.notify("等待完成（250 毫秒）");
+            case "sleep":
+                net.sleep(250);
+                return Response.notify("等待完成（250 毫秒）");
             case "ttl_cache", "ttl_peek", "ttl_clear", "ttl_clear_all", "ttl_persist", "ttl_background",
-                    "cache_write", "cache_read", "cache_delete": return cacheAction(value);
-            case "proxy": return Response.notify("本機 proxy：" + JsonParser.parseString(net.json(getProxyUrl(Map.of("demo", "json")), "{}")).getAsJsonObject().get("name").getAsString());
-            case "download": return download();
-            case "runtime": return runtime();
+                 "cache_write", "cache_read", "cache_delete":
+                return cacheAction(value);
+            case "proxy":
+                return Response.notify("本機 proxy：" + JsonParser.parseString(net.json(getProxyUrl(Map.of("demo", "json")), "{}")).getAsJsonObject().get("name").getAsString());
+            case "download":
+                return download();
+            case "runtime":
+                return runtime();
             default:
-                try { return networkAction(value); }
-                catch (Exception e) { return Response.notify("網路示範失敗：" + e.getMessage()); }
+                try {
+                    return networkAction(value);
+                } catch (Exception e) {
+                    return Response.notify("網路示範失敗：" + e.getMessage());
+                }
         }
     }
 
     private String cacheAction(String value) throws Exception {
         switch (value) {
-            case "ttl_cache": return Response.notify("TTL 快取：" + JsonParser.parseString(net.cached("demo:ttl", "{\"ttl\":60000}", () -> GSON.toJson(Map.of("value", "範例資料")))).getAsJsonObject().get("value").getAsString());
+            case "ttl_cache":
+                return Response.notify("TTL 快取：" + JsonParser.parseString(net.cached("demo:ttl", "{\"ttl\":60000}", () -> GSON.toJson(Map.of("value", "範例資料")))).getAsJsonObject().get("value").getAsString());
             case "ttl_peek":
                 String cached = net.peek("demo:ttl");
                 return Response.notify(cached == null ? "目前沒有 TTL 快取" : "已有 TTL 快取：" + JsonParser.parseString(cached).getAsJsonObject().get("value").getAsString());
-            case "ttl_clear": net.clearCache("demo:ttl"); return Response.notify("已清除 TTL 快取");
-            case "ttl_clear_all": net.clearCache(); return Response.notify("已清除目前站點的全部 TTL 快取");
-            case "ttl_persist": return Response.notify("持久化快取：" + JsonParser.parseString(net.cached("demo:persist", "{\"ttl\":60000,\"stale\":false,\"persist\":true}", this::cacheValue)).getAsJsonObject().get("updated").getAsLong());
+            case "ttl_clear":
+                net.clearCache("demo:ttl");
+                return Response.notify("已清除 TTL 快取");
+            case "ttl_clear_all":
+                net.clearCache();
+                return Response.notify("已清除目前站點的全部 TTL 快取");
+            case "ttl_persist":
+                return Response.notify("持久化快取：" + JsonParser.parseString(net.cached("demo:persist", "{\"ttl\":60000,\"stale\":false,\"persist\":true}", this::cacheValue)).getAsJsonObject().get("updated").getAsLong());
             case "ttl_background":
                 String saved = net.peek("demo:background");
-                net.refresh("demo:background", "{\"ttl\":1000,\"stale\":false,\"persist\":true}", () -> { net.sleep(250); return cacheValue(); });
+                net.refresh("demo:background", "{\"ttl\":1000,\"stale\":false,\"persist\":true}", () -> {
+                    net.sleep(250);
+                    return cacheValue();
+                });
                 return Response.notify("背景更新已安排；目前值：" + (saved == null ? "尚未載入" : JsonParser.parseString(saved).getAsJsonObject().get("updated").getAsLong()));
-            case "cache_write": local.set("demo:local", GSON.toJson(Map.of("value", "範例資料", "items", Arrays.asList(1, true, null)))); return Response.notify("Local 已寫入");
-            case "cache_read": return Response.notify("Local：" + local.get("demo:local"));
-            case "cache_delete": local.delete("demo:local"); return Response.notify("Local 已刪除");
-            default: throw new IllegalArgumentException(value);
+            case "cache_write":
+                local.set("demo:local", GSON.toJson(Map.of("value", "範例資料", "items", Arrays.asList(1, true, null))));
+                return Response.notify("Local 已寫入");
+            case "cache_read":
+                return Response.notify("Local：" + local.get("demo:local"));
+            case "cache_delete":
+                local.delete("demo:local");
+                return Response.notify("Local 已刪除");
+            default:
+                throw new IllegalArgumentException(value);
         }
     }
 
@@ -263,8 +300,10 @@ public class Demo extends Spider {
         String url = httpUrl(option("request_url", option("web_url")), "request_url");
         switch (value) {
 
-            case "text_get": return Response.notify("GET 正文長度：" + net.get(url).length());
-            case "text_post": return Response.notify("POST 正文長度：" + net.post(url, GSON.toJson(Map.of("value", "demo"))).length());
+            case "text_get":
+                return Response.notify("GET 正文長度：" + net.get(url).length());
+            case "text_post":
+                return Response.notify("POST 正文長度：" + net.post(url, GSON.toJson(Map.of("value", "demo"))).length());
             case "parallel":
                 JsonArray requests = new JsonArray();
                 for (int i = 0; i < 3; i++) requests.add(GSON.toJsonTree(Map.of("url", url, "options", Map.of("timeout", 15000))));
@@ -279,8 +318,10 @@ public class Demo extends Spider {
                     checkResponse(JsonParser.parseString(flow.req(url, "{\"timeout\":15000}")).getAsJsonObject());
                     return Response.notify("隔離 Session 請求完成，Cookie " + (flow.getCookie(url).contains("demo_session=1") ? "存在" : "不存在"));
                 }
-            case "binary", "request_sync", "request": return request(url, value);
-            default: return Response.notify("範例不支援此操作");
+            case "binary", "request_sync", "request":
+                return request(url, value);
+            default:
+                return Response.notify("範例不支援此操作");
         }
     }
 
@@ -374,7 +415,9 @@ public class Demo extends Spider {
         try {
             net.download(httpUrl(option("request_url"), "request_url"), "{}", file);
             return Response.notify("下載完成：" + file.length() + " bytes");
-        } finally { file.delete(); }
+        } finally {
+            file.delete();
+        }
     }
 
     private String cacheValue() throws Exception {
@@ -484,8 +527,9 @@ public class Demo extends Spider {
     private List<Vod> folderCards() throws Exception {
         List<Vod> items = new ArrayList<>();
         for (String[] group : DemoData.FOLDERS) {
-            for (int i = 1; i < group.length; i++) items.add(Vod.create().id("folder/" + group[0] + "/" + Uri.encode(group[i])).name(group[i] + "資料夾").pic("").remarks("依分類開啟")
-                    .tag("folder").style(style("list")));
+            for (int i = 1; i < group.length; i++)
+                items.add(Vod.create().id("folder/" + group[0] + "/" + Uri.encode(group[i])).name(group[i] + "資料夾").pic("").remarks("依分類開啟")
+                        .tag("folder").style(style("list")));
         }
         return items;
     }
