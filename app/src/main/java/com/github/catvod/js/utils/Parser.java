@@ -28,18 +28,16 @@ public class Parser {
     private final Cache cache;
 
     public Parser() {
-        cache = new Cache();
+        cache = Cache.create();
     }
 
     private Info getParseInfo(String rule) {
-        Info info = new Info(rule);
+        Info info = Info.create().rule(rule);
         if (rule.contains(":eq")) {
-            info.setRule(rule.split(":")[0]);
-            info.setInfo(rule.split(":")[1]);
+            info.rule(rule.split(":")[0]).info(rule.split(":")[1]);
         } else if (rule.contains("--")) {
             String[] rules = rule.split("--");
-            info.setExcludes(rules);
-            info.setRule(rules[0]);
+            info.excludes(rules).rule(rules[0]);
         }
         return info;
     }

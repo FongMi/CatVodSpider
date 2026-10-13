@@ -10,22 +10,25 @@ public class Info {
     public String rule;
     public List<String> excludes;
 
-    public Info(String rule) {
-        this.rule = rule;
+    private Info() {
     }
 
-    public void setRule(String rule) {
-        this.rule = rule;
+    public static Info create() {
+        return new Info();
     }
 
-    public void setInfo(String pos) {
+    public Info rule(String rule) {
+        this.rule = rule;
+        return this;
+    }
+
+    public Info info(String pos) {
         if (rule.contains("--")) {
             String[] rules = rule.split("--");
-            setExcludes(rules);
-            setRule(rules[0]);
+            excludes(rules).rule(rules[0]);
         } else if (pos.contains("--")) {
             String[] rules = pos.split("--");
-            setExcludes(rules);
+            excludes(rules);
             pos = rules[0];
         }
         try {
@@ -33,10 +36,12 @@ public class Info {
         } catch (Exception ignored) {
             index = 0;
         }
+        return this;
     }
 
-    public void setExcludes(String[] rules) {
+    public Info excludes(String[] rules) {
         excludes = new ArrayList<>(Arrays.asList(rules));
         excludes.remove(0);
+        return this;
     }
 }

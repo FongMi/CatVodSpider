@@ -1,6 +1,5 @@
 package com.github.catvod.bean;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 public class Vod {
@@ -34,7 +33,7 @@ public class Vod {
     @SerializedName("action")
     private String action;
     @SerializedName("cate")
-    private JsonObject cate;
+    private Cate cate;
     @SerializedName("style")
     private Style style;
     @SerializedName("land")
@@ -44,111 +43,104 @@ public class Vod {
     @SerializedName("ratio")
     private Float ratio;
 
-    public Vod() {
+    private Vod() {
     }
 
-    public Vod(String vodId, String vodName, String vodPic) {
-        this.vodId = vodId;
-        this.vodName = vodName;
-        this.vodPic = vodPic;
+    public static Vod create() {
+        return new Vod();
     }
 
-    public Vod(String vodId, String vodName, String vodPic, String vodRemarks) {
-        this(vodId, vodName, vodPic);
-        this.vodRemarks = vodRemarks;
-    }
-
-    public Vod setId(String vodId) {
+    public Vod id(String vodId) {
         this.vodId = vodId;
         return this;
     }
 
-    public Vod setName(String vodName) {
+    public Vod name(String vodName) {
         this.vodName = vodName;
         return this;
     }
 
-    public Vod setTypeName(String typeName) {
+    public Vod typeName(String typeName) {
         this.typeName = typeName;
         return this;
     }
 
-    public Vod setPic(String vodPic) {
+    public Vod pic(String vodPic) {
         this.vodPic = vodPic;
         return this;
     }
 
-    public Vod setRemarks(String vodRemarks) {
+    public Vod remarks(String vodRemarks) {
         this.vodRemarks = vodRemarks;
         return this;
     }
 
-    public Vod setYear(String vodYear) {
+    public Vod year(String vodYear) {
         this.vodYear = vodYear;
         return this;
     }
 
-    public Vod setArea(String vodArea) {
+    public Vod area(String vodArea) {
         this.vodArea = vodArea;
         return this;
     }
 
-    public Vod setDirector(String vodDirector) {
+    public Vod director(String vodDirector) {
         this.vodDirector = vodDirector;
         return this;
     }
 
-    public Vod setActor(String vodActor) {
+    public Vod actor(String vodActor) {
         this.vodActor = vodActor;
         return this;
     }
 
-    public Vod setContent(String vodContent) {
+    public Vod content(String vodContent) {
         this.vodContent = vodContent;
         return this;
     }
 
-    public Vod setPlayFrom(String vodPlayFrom) {
+    public Vod playFrom(String vodPlayFrom) {
         this.vodPlayFrom = vodPlayFrom;
         return this;
     }
 
-    public Vod setPlayUrl(String vodPlayUrl) {
+    public Vod playUrl(String vodPlayUrl) {
         this.vodPlayUrl = vodPlayUrl;
         return this;
     }
 
-    public Vod setTag(String vodTag) {
+    public Vod tag(String vodTag) {
         this.vodTag = vodTag;
         return this;
     }
 
-    public Vod setAction(String action) {
+    public Vod action(String action) {
         this.action = action;
         return this;
     }
 
-    public Vod setCate(JsonObject cate) {
+    public Vod cate(Cate cate) {
         this.cate = cate;
         return this;
     }
 
-    public Vod setStyle(Style style) {
+    public Vod style(Style style) {
         this.style = style;
         return this;
     }
 
-    public Vod setLand(int land) {
+    public Vod land(int land) {
         this.land = land;
         return this;
     }
 
-    public Vod setCircle(int circle) {
+    public Vod circle(int circle) {
         this.circle = circle;
         return this;
     }
 
-    public Vod setRatio(float ratio) {
+    public Vod ratio(float ratio) {
         this.ratio = ratio;
         return this;
     }

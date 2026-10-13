@@ -21,9 +21,37 @@
 
 Python 資料方法回傳 dict／list；QuickJS 回傳物件／陣列，Promise 由 App 等待；Java Demo 用 Gson 組裝標準 JSON 字串。proxy 與布林接口維持各自格式。QuickJS 的 detail 收單一 ID，Python／Java 收 ID 集合。
 
-Java 使用本專案 `com.github.catvod.bean` 的純資料模型，建構子與鏈式 setter 填值；篩選選項使用 `Value`，影片樣式使用 `Style`。`com.github.catvod.utils.Response` 用 Gson 組裝 JSON、分頁與輸出，兩者隨爬蟲 JAR 打包；App 的 `Result` 只負責接收及解析。
+Java 使用本專案 `com.github.catvod.bean` 的純資料模型，以 `Vod.create().id("123").name("影片")` 填值；模型統一以 `create()` 建立，鏈式方法不加 `set` 前綴。篩選選項使用 `Value`，影片樣式使用 `Style`，資料夾分類樣式使用 `Cate`。`com.github.catvod.utils.Response` 用 Gson 組裝 JSON、分頁與輸出，兩者隨爬蟲 JAR 打包；App 的 `Result` 只負責接收及解析。
 
 `Response.create().vod(vod).string()` 回傳詳情，`Response.create().classes(classes).filters(filters).string()` 回傳分類與篩選。其他欄位可用 `put(name, value)`；明確的 `0`／`false` 保留，值為 `null` 的模型欄位省略。也可直接使用 Gson 組裝標準 JSON，不必依賴 App 的 Java 模型。
+
+`Response.url()` 接受播放網址字串或 `Url` 多畫質模型，傳入 `null` 時移除 URL 欄位。
+
+| 回傳資料 | Java 模型與方法 |
+| --- | --- |
+| 分類、影片 | `Class.create().id().name().flag()`、`Vod.create().id().name().pic().remarks()` |
+| 篩選、選項 | `Filter.create().key().name().value().init()`、`Value.create().n().v()` |
+| 樣式 | `Style.create().type().ratio()`、`Cate.create().land().circle().ratio()` |
+| 字幕 | `Sub.create().url().name().lang().format(ext).flag()`，交給 `Response.subs()` |
+| 彈幕 | `Danmaku.create().name().url()`，交給 `Response.danmaku()` |
+| DRM | `Drm.create().key().type().header().forceKey()`，交給 `Response.drm()` |
+| 跳過片段 | `SkipSegment.create().type().start().end()`，交給 `Response.skips()` |
+| 多畫質 | `Url.create().values().position()`，values 使用 `Value`，交給 `Response.url()` |
+| 網頁 | `Web.create().url().mode().cookie()`，cookie 使用 `Web.Cookie.create().url().keys()`，交給 `Response.web()` |
+
+例如播放回傳可直接鏈式組裝：
+
+```java
+return Response.create().url("https://example.com/video.m3u8")
+        .danmaku(List.of(Danmaku.create().name("彈幕").url("https://example.com/danmaku.xml")))
+        .subs(List.of(Sub.create().name("繁體中文").url("https://example.com/sub.vtt").format("vtt").flag(1)))
+        .skips(List.of(SkipSegment.create().type("opening").start(0).end(90000)))
+        .position(0).string();
+```
+
+`Response` 也提供 `playUrl、artwork、jxFrom、flag、desc、format、click、key、position、code、msg` 鏈式方法。上述播放與網頁模型未填的可選欄位省略；`ending` 片段可不呼叫 `.end()`，Web Cookie 未填 `.url()` 時使用網頁網址。多畫質的 position 是從 0 開始的索引，與回應頂層以毫秒計的起播 position 不同。
+
+Java 的 `Sub.format(ext)` 傳入字幕副檔名，例如 `vtt`、`srt`、`ass`，由模型呼叫 `VodUtil.getSubMimeType(ext)` 轉成 MIME；回傳 JSON 的 `subs[].format` 仍使用 MIME。
 
 有分頁的分類與搜尋回傳 `list、page、pagecount、limit`；有精確總筆數時加 `total`。完整單頁清單回傳 `list、page=1、pagecount=1`，`limit` 與 `total` 可省略。`page < pagecount` 才會繼續載入，不另寫 loadMore。網站已分頁時直接回傳當頁，不再次切片，也不以頁數乘頁大小推算 total；最小 JSON 見[技能的分頁範例](../.agents/skills/catvod-spider/SKILL.md#網站已分頁)。`filters` 的鍵對應分類 `type_id`，只加入站點支援的篩選。
 

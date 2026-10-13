@@ -67,7 +67,7 @@ public class MQiTV extends Spider {
     }
 
     private Config getConfig(String ip) {
-        Config config = new Config(ip);
+        Config config = Config.create().url(ip);
         int index = getConfigs().indexOf(config);
         if (index != -1) return getConfigs().get(index);
         else getConfigs().add(config);

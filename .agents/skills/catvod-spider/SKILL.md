@@ -11,9 +11,10 @@ description: Develop or refactor Java, Python and QuickJS TV spiders in CatVodSp
 
 - 優先官方 API，確認分類、篩選、搜尋、詳情與播放的資料來源。列表 ID 接到 detail，每集播放值接到 play；只實現站點支援的功能與權限。
 - 使用 App 注入的 Python `self.net`、QuickJS `net`、Java 繼承的 `net`。不要另建網路封裝或複製 App 的內部實作。
-- Java 使用本專案 `com.github.catvod.bean` 的純資料模型及鏈式 setter，`Response` 用 Gson 組裝標準 JSON。模型隨爬蟲 JAR 打包，不引用 App bean；App 的 `Result` 只負責接收解析，不放爬蟲 builder。
+- Java 使用本專案 `com.github.catvod.bean` 的純資料模型，以 `Vod.create().id(...).name(...)` 鏈式填值，模型統一以 `create()` 建立，方法不加 `set` 前綴。播放附加資料使用 `Sub`、`Danmaku`、`Drm`、`SkipSegment`、`Url`，網頁操作使用 `Web`；`Response` 用 Gson 組裝標準 JSON。模型隨爬蟲 JAR 打包，不引用 App bean；App 的 `Result` 只負責接收解析，不放爬蟲 builder。
 - JSON API 優先用 `net.json`；需要狀態碼、錯誤正文或 bytes 時用 `net.req`／QuickJS `net.http`。網路失敗、403、登入頁及解析失敗不可偽裝成成功空列表，不增加無根據的重試或站點 workaround。
 - 保持精簡、扁平，按實際操作切 function。不要為一個簡單操作增加類別或抽象層。
+- Java 字幕用 `Sub.create().format(ext)` 傳副檔名，由 `Sub` 呼叫 `VodUtil.getSubMimeType(ext)`；JSON 的 `subs[].format` 使用 MIME。
 
 ## 容易寫錯的地方
 

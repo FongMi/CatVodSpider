@@ -42,8 +42,8 @@ public class AList extends Spider {
 
     private List<Filter> getFilter() {
         List<Filter> items = new ArrayList<>();
-        items.add(new Filter("type", "排序類型", Arrays.asList(new Value("預設", ""), new Value("名稱", "name"), new Value("大小", "size"), new Value("修改時間", "date"))));
-        items.add(new Filter("order", "排序方式", Arrays.asList(new Value("預設", ""), new Value("⬆", "asc"), new Value("⬇", "desc"))));
+        items.add(Filter.create().key("type").name("排序類型").value(Arrays.asList(Value.create().n("預設").v(""), Value.create().n("名稱").v("name"), Value.create().n("大小").v("size"), Value.create().n("修改時間").v("date"))));
+        items.add(Filter.create().key("order").name("排序方式").value(Arrays.asList(Value.create().n("預設").v(""), Value.create().n("⬆").v("asc"), Value.create().n("⬇").v("desc"))));
         return items;
     }
 
@@ -54,7 +54,7 @@ public class AList extends Spider {
     }
 
     private Drive getDrive(String name) {
-        return drives.get(drives.indexOf(new Drive(name))).check(net);
+        return drives.get(drives.indexOf(Drive.create().name(name))).check(net);
     }
 
     private String post(Drive drive, String url, String param) {
@@ -116,7 +116,7 @@ public class AList extends Spider {
         List<String> playUrls = new ArrayList<>();
         List<Item> parents = getList(path, false);
         for (Item item : parents) if (item.isMedia(drive.isNew())) playUrls.add(item.getName() + "$" + encodeVodId(item.getVodId(path) + findSubs(path, parents)));
-        Vod vod = new Vod().setPlayFrom(key).setId(id).setName(name).setPlayUrl(TextUtils.join("#", playUrls));
+        Vod vod = Vod.create().playFrom(key).id(id).name(name).playUrl(TextUtils.join("#", playUrls));
         return Response.create().vod(vod).string();
     }
 
@@ -166,7 +166,7 @@ public class AList extends Spider {
             params.put("username", drive.getLogin().getUsername());
             params.put("password", drive.getLogin().getPassword());
             String response = net.post(drive.loginApi(), params.toString());
-            drive.setToken(new JSONObject(response).getJSONObject("data").getString("token"));
+            drive.token(new JSONObject(response).getJSONObject("data").getString("token"));
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -240,7 +240,7 @@ public class AList extends Spider {
             String name = split[0];
             String ext = split[1];
             String url = getDetail(split[2]).getUrl();
-            sub.add(new Sub().setName(name).setFormat(VodUtil.getSubMimeType(ext)).setUrl(url));
+            sub.add(Sub.create().name(name).format(ext).url(url));
         }
         return sub;
     }

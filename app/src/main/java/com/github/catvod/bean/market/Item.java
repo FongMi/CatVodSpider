@@ -19,8 +19,16 @@ public class Item {
     @SerializedName("version")
     private String version;
 
-    public Item(String url) {
+    private Item() {
+    }
+
+    public static Item create() {
+        return new Item();
+    }
+
+    public Item url(String url) {
         this.url = url;
+        return this;
     }
 
     public String getName() {
@@ -44,7 +52,7 @@ public class Item {
     }
 
     public Vod vod() {
-        return new Vod("", getName(), getIcon(), getVersion()).setStyle(new Style("rect", 1.0f)).setAction(getUrl());
+        return Vod.create().id("").name(getName()).pic(getIcon()).remarks(getVersion()).style(Style.create().type("rect").ratio(1.0f)).action(getUrl());
     }
 
     @Override

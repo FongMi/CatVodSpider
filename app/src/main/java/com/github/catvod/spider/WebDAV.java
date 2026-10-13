@@ -34,8 +34,8 @@ public class WebDAV extends Spider {
 
     private List<Filter> getFilter() {
         List<Filter> items = new ArrayList<>();
-        items.add(new Filter("type", "排序類型", Arrays.asList(new Value("預設", ""), new Value("名稱", "name"), new Value("大小", "size"), new Value("修改時間", "date"))));
-        items.add(new Filter("order", "排序方式", Arrays.asList(new Value("預設", ""), new Value("⬆", "asc"), new Value("⬇", "desc"))));
+        items.add(Filter.create().key("type").name("排序類型").value(Arrays.asList(Value.create().n("預設").v(""), Value.create().n("名稱").v("name"), Value.create().n("大小").v("size"), Value.create().n("修改時間").v("date"))));
+        items.add(Filter.create().key("order").name("排序方式").value(Arrays.asList(Value.create().n("預設").v(""), Value.create().n("⬆").v("asc"), Value.create().n("⬇").v("desc"))));
         return items;
     }
 
@@ -54,7 +54,7 @@ public class WebDAV extends Spider {
     }
 
     private Drive getDrive(String name) {
-        return drives.get(drives.indexOf(new Drive(name)));
+        return drives.get(drives.indexOf(Drive.create().name(name)));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class WebDAV extends Spider {
                 playUrls.add(item.getName() + "$" + drive.getName() + item.getPath() + findSubs(drive, item, subs));
             }
         }
-        Vod vod = new Vod(name, name, Image.VIDEO).setPlayFrom(key).setPlayUrl(TextUtils.join("#", playUrls));
+        Vod vod = Vod.create().id(name).name(name).pic(Image.VIDEO).playFrom(key).playUrl(TextUtils.join("#", playUrls));
         return Response.create().vod(vod).string();
     }
 
@@ -176,7 +176,7 @@ public class WebDAV extends Spider {
             String name = split[0];
             String ext = split[1];
             String url = Proxy.getUrl(siteKey, "&url=" + split[2]);
-            sub.add(new Sub().setName(name).setFormat(VodUtil.getSubMimeType(ext)).setUrl(url));
+            sub.add(Sub.create().name(name).format(ext).url(url));
         }
         return sub;
     }

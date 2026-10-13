@@ -27,13 +27,21 @@ public class Config {
     private List<Data> data;
     private Uri uri;
 
+    private Config() {
+    }
+
+    public static Config create() {
+        return new Config();
+    }
+
     public static List<Config> arrayFrom(String str) {
         Type listType = TypeToken.getParameterized(List.class, Config.class).getType();
         return new Gson().fromJson(str, listType);
     }
 
-    public Config(String url) {
+    public Config url(String url) {
         this.url = url;
+        return this;
     }
 
     public String getName() {
@@ -75,7 +83,7 @@ public class Config {
                 String user = userMatcher.matches() ? userMatcher.group(1) : "";
                 String mac = macMatcher.matches() ? macMatcher.group(1) : "";
                 if (!user.isEmpty() && !mac.isEmpty()) {
-                    User u = new User(user, mac).getToken(net, getUrl());
+                    User u = User.create().id(user).mac(mac).getToken(net, getUrl());
                     if (!u.getToken().isEmpty()) getUsers().add(u);
                 }
             }
@@ -84,7 +92,7 @@ public class Config {
 
     public User getUser(Net net) {
         if (getUsers().isEmpty()) loadUser(net);
-        return getUsers().isEmpty() ? new User("", "") : getUsers().get(ThreadLocalRandom.current().nextInt(getUsers().size()));
+        return getUsers().isEmpty() ? User.create().id("").mac("") : getUsers().get(ThreadLocalRandom.current().nextInt(getUsers().size()));
     }
 
     public String getAuth(Net net, String id, String token) {

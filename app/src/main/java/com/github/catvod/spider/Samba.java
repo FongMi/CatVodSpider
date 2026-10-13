@@ -33,7 +33,7 @@ public class Samba extends Spider {
     }
 
     private Drive getDrive(String name) {
-        return drives.get(drives.indexOf(new Drive(name)));
+        return drives.get(drives.indexOf(Drive.create().name(name)));
     }
 
     private boolean isFolder(FileIdBothDirectoryInformation item) {
@@ -66,7 +66,7 @@ public class Samba extends Spider {
         for (FileIdBothDirectoryInformation item : getList(drive, path)) {
             String vodId = getPath(key, path, item.getFileName());
             boolean folder = isFolder(item);
-            list.add(new Vod(vodId, item.getFileName(), folder ? Image.FOLDER : Image.VIDEO, "").setTag(folder ? "folder" : "file"));
+            list.add(Vod.create().id(vodId).name(item.getFileName()).pic(folder ? Image.FOLDER : Image.VIDEO).remarks("").tag(folder ? "folder" : "file"));
         }
         return Response.create().vods(list).page().string();
     }
@@ -85,7 +85,7 @@ public class Samba extends Spider {
                 playUrls.add(item.getFileName() + "$" + getPath(drive.getServer(), parent, item.getFileName()));
             }
         }
-        Vod vod = new Vod().setId(name).setName(name).setPlayFrom(key).setPlayUrl(TextUtils.join("#", playUrls));
+        Vod vod = Vod.create().id(name).name(name).playFrom(key).playUrl(TextUtils.join("#", playUrls));
         return Response.create().vod(vod).string();
     }
 

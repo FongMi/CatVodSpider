@@ -69,7 +69,7 @@ public class Market extends Spider {
 
     private void checkCopy(String url) {
         for (Data data : datas) {
-            int index = data.getList().indexOf(new Item(url));
+            int index = data.getList().indexOf(Item.create().url(url));
             if (index == -1) continue;
             String text = data.getList().get(index).getCopy();
             if (!text.isEmpty()) {

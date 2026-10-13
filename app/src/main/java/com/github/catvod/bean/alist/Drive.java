@@ -37,6 +37,13 @@ public class Drive {
     @SerializedName("hidden")
     private Boolean hidden;
 
+    private Drive() {
+    }
+
+    public static Drive create() {
+        return new Drive();
+    }
+
     public static List<Drive> arrayFrom(String str) {
         Type listType = TypeToken.getParameterized(List.class, Drive.class).getType();
         return new Gson().fromJson(str, listType);
@@ -50,8 +57,9 @@ public class Drive {
         return login;
     }
 
-    public Drive(String name) {
+    public Drive name(String name) {
         this.name = name;
+        return this;
     }
 
     public String getName() {
@@ -66,24 +74,27 @@ public class Drive {
         return version;
     }
 
-    public void setVersion(int version) {
+    public Drive version(int version) {
         this.version = version;
+        return this;
     }
 
     public String getPath() {
         return TextUtils.isEmpty(path) ? "" : path;
     }
 
-    public void setPath(String path) {
+    public Drive path(String path) {
         this.path = TextUtils.isEmpty(path) ? "" : path;
+        return this;
     }
 
     public String getToken() {
         return TextUtils.isEmpty(token) ? "" : token;
     }
 
-    public void setToken(String token) {
+    public Drive token(String token) {
         this.token = token;
+        return this;
     }
 
     public Boolean search() {
@@ -99,7 +110,7 @@ public class Drive {
     }
 
     public Class toType() {
-        return new Class(getName(), getName(), "1");
+        return Class.create().id(getName()).name(getName()).flag("1");
     }
 
     public String getHost() {
@@ -127,8 +138,8 @@ public class Drive {
     }
 
     public Drive check(Net net) {
-        if (path == null) setPath(Uri.parse(getServer()).getPath());
-        if (version == 0) setVersion(net.get(settingsApi()).contains("v2.") ? 2 : 3);
+        if (path == null) path(Uri.parse(getServer()).getPath());
+        if (version == 0) version(net.get(settingsApi()).contains("v2.") ? 2 : 3);
         return this;
     }
 

@@ -40,6 +40,6 @@ public class Data {
     }
 
     public Class type() {
-        return new Class(getName(), getName());
+        return Class.create().id(getName()).name(getName());
     }
 }

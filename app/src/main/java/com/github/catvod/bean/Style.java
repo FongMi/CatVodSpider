@@ -9,12 +9,20 @@ public class Style {
     @SerializedName("ratio")
     private float ratio;
 
-    public Style(String type) {
-        this.type = type;
+    private Style() {
     }
 
-    public Style(String type, float ratio) {
-        this(type);
+    public static Style create() {
+        return new Style();
+    }
+
+    public Style type(String type) {
+        this.type = type;
+        return this;
+    }
+
+    public Style ratio(float ratio) {
         this.ratio = ratio;
+        return this;
     }
 }

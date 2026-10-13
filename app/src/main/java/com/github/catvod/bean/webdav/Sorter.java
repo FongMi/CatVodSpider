@@ -8,16 +8,28 @@ import java.util.List;
 
 public class Sorter implements Comparator<DavResource> {
 
-    private final String type;
-    private final String order;
+    private String type;
+    private String order;
 
-    public static void sort(String type, String order, List<DavResource> items) {
-        Collections.sort(items, new Sorter(type, order));
+    private Sorter() {
     }
 
-    public Sorter(String type, String order) {
+    public static Sorter create() {
+        return new Sorter();
+    }
+
+    public static void sort(String type, String order, List<DavResource> items) {
+        Collections.sort(items, Sorter.create().type(type).order(order));
+    }
+
+    public Sorter type(String type) {
         this.type = type;
+        return this;
+    }
+
+    public Sorter order(String order) {
         this.order = order;
+        return this;
     }
 
     @Override

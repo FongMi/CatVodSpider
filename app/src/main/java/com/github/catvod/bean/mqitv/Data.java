@@ -50,6 +50,6 @@ public class Data {
     }
 
     public Stat getStat() {
-        return stat == null ? new Stat() : stat;
+        return stat == null ? Stat.create() : stat;
     }
 }

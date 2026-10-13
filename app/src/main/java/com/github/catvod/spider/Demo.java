@@ -62,9 +62,9 @@ public class Demo extends Spider {
         Map<String, List<Filter>> filters = new LinkedHashMap<>();
         for (String[] name : DemoData.CATEGORIES) {
             boolean interactive = name[0].equals("folders") || name[0].equals("actions");
-            Class item = new Class(name[0], name[1], interactive ? "1" : null);
-            if (name[0].equals("class_landscape")) item.setLand(1).setRatio(1.78f);
-            if (name[0].equals("class_oval")) item.setCircle(1).setRatio(1.0f);
+            Class item = Class.create().id(name[0]).name(name[1]).flag(interactive ? "1" : null);
+            if (name[0].equals("class_landscape")) item.land(1).ratio(1.78f);
+            if (name[0].equals("class_oval")) item.circle(1).ratio(1.0f);
             if (!interactive && filter) filters.put(name[0], filterRows());
             classes.add(item);
         }
@@ -136,9 +136,9 @@ public class Demo extends Spider {
         List<String> actors = new ArrayList<>();
         for (JsonElement name : record.getAsJsonArray("actors")) actors.add(clickable("actor", name.getAsString()));
         Vod item = card(record, "portrait", "portrait")
-                .setTypeName(record.get("genre").getAsString()).setArea(record.get("area").getAsString())
-                .setDirector(clickable("director", record.get("director").getAsString())).setActor(String.join("、", actors))
-                .setContent(record.get("content").getAsString()).setPlayFrom(flags).setPlayUrl(urls);
+                .typeName(record.get("genre").getAsString()).area(record.get("area").getAsString())
+                .director(clickable("director", record.get("director").getAsString())).actor(String.join("、", actors))
+                .content(record.get("content").getAsString()).playFrom(flags).playUrl(urls);
         return Response.create().vod(item).string();
     }
 
@@ -436,13 +436,13 @@ public class Demo extends Spider {
     }
 
     private Vod card(JsonObject record, String style, String pictureStyle) throws Exception {
-        return new Vod("vod/" + record.get("id").getAsString(), record.get("name").getAsString(), picture(record, pictureStyle), record.get("remark").getAsString())
-                .setYear(record.get("year").getAsString()).setStyle(style.isEmpty() ? null : style(style));
+        return Vod.create().id("vod/" + record.get("id").getAsString()).name(record.get("name").getAsString()).pic(picture(record, pictureStyle)).remarks(record.get("remark").getAsString())
+                .year(record.get("year").getAsString()).style(style.isEmpty() ? null : style(style));
     }
 
     private Style style(String name) {
-        if (name.equals("list")) return new Style("list");
-        return new Style(name.equals("oval") ? "oval" : "rect", name.equals("oval") ? 1.0f : name.equals("landscape") ? 1.78f : 0.75f);
+        if (name.equals("list")) return Style.create().type("list");
+        return Style.create().type(name.equals("oval") ? "oval" : "rect").ratio(name.equals("oval") ? 1.0f : name.equals("landscape") ? 1.78f : 0.75f);
     }
 
     private String picture(JsonObject record, String style) throws Exception {
@@ -471,12 +471,12 @@ public class Demo extends Spider {
 
     private List<Filter> filterRows() throws Exception {
         List<Filter> rows = new ArrayList<>();
-        rows.add(new Filter("sort", "排序", List.of(new Value("最新", "latest"), new Value("最早", "oldest"), new Value("名稱", "name"))).setInit("latest"));
+        rows.add(Filter.create().key("sort").name("排序").value(List.of(Value.create().n("最新").v("latest"), Value.create().n("最早").v("oldest"), Value.create().n("名稱").v("name"))).init("latest"));
         for (String[] row : DemoData.FILTERS) {
             List<Value> values = new ArrayList<>();
-            values.add(new Value("全部", "all"));
-            for (int i = 2; i < row.length; i++) values.add(new Value(row[i], row[i]));
-            rows.add(new Filter(row[0], row[1], values).setInit("all"));
+            values.add(Value.create().n("全部").v("all"));
+            for (int i = 2; i < row.length; i++) values.add(Value.create().n(row[i]).v(row[i]));
+            rows.add(Filter.create().key(row[0]).name(row[1]).value(values).init("all"));
         }
         return rows;
     }
@@ -484,8 +484,8 @@ public class Demo extends Spider {
     private List<Vod> folderCards() throws Exception {
         List<Vod> items = new ArrayList<>();
         for (String[] group : DemoData.FOLDERS) {
-            for (int i = 1; i < group.length; i++) items.add(new Vod("folder/" + group[0] + "/" + Uri.encode(group[i]), group[i] + "資料夾", "", "依分類開啟")
-                    .setTag("folder").setStyle(style("list")));
+            for (int i = 1; i < group.length; i++) items.add(Vod.create().id("folder/" + group[0] + "/" + Uri.encode(group[i])).name(group[i] + "資料夾").pic("").remarks("依分類開啟")
+                    .tag("folder").style(style("list")));
         }
         return items;
     }
@@ -493,7 +493,7 @@ public class Demo extends Spider {
     private List<Vod> actionCards() throws Exception {
         List<Vod> items = new ArrayList<>();
         for (String[] value : DemoData.ACTIONS) {
-            items.add(new Vod("action/" + value[0], value[1], "", value[2]).setStyle(style("list")).setAction(value[0]));
+            items.add(Vod.create().id("action/" + value[0]).name(value[1]).pic("").remarks(value[2]).style(style("list")).action(value[0]));
         }
         return items;
     }

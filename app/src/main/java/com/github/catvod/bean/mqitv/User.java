@@ -12,9 +12,21 @@ public class User {
     private String mac;
     private String token;
 
-    public User(String id, String mac) {
+    private User() {
+    }
+
+    public static User create() {
+        return new User();
+    }
+
+    public User id(String id) {
         this.id = id;
+        return this;
+    }
+
+    public User mac(String mac) {
         this.mac = mac;
+        return this;
     }
 
     public String getId() {

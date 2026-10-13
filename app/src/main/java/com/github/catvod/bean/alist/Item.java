@@ -32,6 +32,13 @@ public class Item {
     @SerializedName(value = "modified", alternate = "updated_at")
     private String modified;
 
+    private Item() {
+    }
+
+    public static Item create() {
+        return new Item();
+    }
+
     public static Item objectFrom(String str) {
         return new Gson().fromJson(str, Item.class);
     }
@@ -49,8 +56,9 @@ public class Item {
         return TextUtils.isEmpty(path) ? "" : path;
     }
 
-    public void setPath(String path) {
+    public Item path(String path) {
         this.path = path;
+        return this;
     }
 
     public int getType() {
@@ -115,10 +123,10 @@ public class Item {
     }
 
     public Vod getVod(String id) {
-        return new Vod(getVodId(id), getName(), getPic(), getRemark()).setTag(isFolder() ? "folder" : "file");
+        return Vod.create().id(getVodId(id)).name(getName()).pic(getPic()).remarks(getRemark()).tag(isFolder() ? "folder" : "file");
     }
 
     public Vod getVod(Drive drive) {
-        return new Vod(getVodPath(drive.getName()), getName(), getPic(), drive.getName()).setTag(isFolder() ? "folder" : "file");
+        return Vod.create().id(getVodPath(drive.getName())).name(getName()).pic(getPic()).remarks(drive.getName()).tag(isFolder() ? "folder" : "file");
     }
 }

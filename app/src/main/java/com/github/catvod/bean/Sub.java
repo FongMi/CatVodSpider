@@ -1,5 +1,6 @@
 package com.github.catvod.bean;
 
+import com.github.catvod.utils.VodUtil;
 import com.google.gson.annotations.SerializedName;
 
 public class Sub {
@@ -15,27 +16,34 @@ public class Sub {
     @SerializedName("flag")
     private Integer flag;
 
-    public Sub setUrl(String url) {
+    private Sub() {
+    }
+
+    public static Sub create() {
+        return new Sub();
+    }
+
+    public Sub url(String url) {
         this.url = url;
         return this;
     }
 
-    public Sub setName(String name) {
+    public Sub name(String name) {
         this.name = name;
         return this;
     }
 
-    public Sub setLang(String lang) {
+    public Sub lang(String lang) {
         this.lang = lang;
         return this;
     }
 
-    public Sub setFormat(String format) {
-        this.format = format;
+    public Sub format(String ext) {
+        this.format = VodUtil.getSubMimeType(ext);
         return this;
     }
 
-    public Sub setFlag(int flag) {
+    public Sub flag(int flag) {
         this.flag = flag;
         return this;
     }

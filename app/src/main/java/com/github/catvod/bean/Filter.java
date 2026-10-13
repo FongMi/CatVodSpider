@@ -15,13 +15,29 @@ public class Filter {
     @SerializedName("value")
     private List<Value> value;
 
-    public Filter(String key, String name, List<Value> value) {
-        this.key = key;
-        this.name = name;
-        this.value = value;
+    private Filter() {
     }
 
-    public Filter setInit(String init) {
+    public static Filter create() {
+        return new Filter();
+    }
+
+    public Filter key(String key) {
+        this.key = key;
+        return this;
+    }
+
+    public Filter name(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Filter value(List<Value> value) {
+        this.value = value;
+        return this;
+    }
+
+    public Filter init(String init) {
         this.init = init;
         return this;
     }

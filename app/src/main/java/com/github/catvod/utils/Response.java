@@ -1,9 +1,13 @@
 package com.github.catvod.utils;
 
 import com.github.catvod.bean.Class;
+import com.github.catvod.bean.Danmaku;
+import com.github.catvod.bean.Drm;
 import com.github.catvod.bean.Filter;
+import com.github.catvod.bean.SkipSegment;
 import com.github.catvod.bean.Sub;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.bean.Web;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -26,7 +30,7 @@ public class Response {
     }
 
     public static String notify(String msg) {
-        return create().put("msg", msg).string();
+        return create().msg(msg).string();
     }
 
     public static Response page(List<Vod> items, int page, int limit) {
@@ -61,7 +65,7 @@ public class Response {
         return put("filters", filters);
     }
 
-    public Response url(String url) {
+    public Response url(Object url) {
         return put("url", url);
     }
 
@@ -71,6 +75,66 @@ public class Response {
 
     public Response subs(List<Sub> subs) {
         return put("subs", subs);
+    }
+
+    public Response danmaku(List<Danmaku> danmaku) {
+        return put("danmaku", danmaku);
+    }
+
+    public Response drm(Drm drm) {
+        return put("drm", drm);
+    }
+
+    public Response skips(List<SkipSegment> skips) {
+        return put("skips", skips);
+    }
+
+    public Response web(Web web) {
+        return put("web", web);
+    }
+
+    public Response msg(String msg) {
+        return put("msg", msg);
+    }
+
+    public Response playUrl(String playUrl) {
+        return put("playUrl", playUrl);
+    }
+
+    public Response artwork(String artwork) {
+        return put("artwork", artwork);
+    }
+
+    public Response jxFrom(String jxFrom) {
+        return put("jxFrom", jxFrom);
+    }
+
+    public Response flag(String flag) {
+        return put("flag", flag);
+    }
+
+    public Response desc(String desc) {
+        return put("desc", desc);
+    }
+
+    public Response format(String format) {
+        return put("format", format);
+    }
+
+    public Response click(String click) {
+        return put("click", click);
+    }
+
+    public Response key(String key) {
+        return put("key", key);
+    }
+
+    public Response position(long position) {
+        return put("position", position);
+    }
+
+    public Response code(int code) {
+        return put("code", code);
     }
 
     public Response parse() {

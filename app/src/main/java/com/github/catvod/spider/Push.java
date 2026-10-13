@@ -41,16 +41,16 @@ public class Push extends Spider {
     }
 
     private Vod vod(String url) {
-        Vod vod = new Vod(url, url.startsWith("file://") ? new File(url).getName() : "", Image.PUSH).setTypeName("FongMi");
+        Vod vod = Vod.create().id(url).name(url.startsWith("file://") ? new File(url).getName() : "").pic(Image.PUSH).typeName("FongMi");
         if (url.contains("://") && url.contains("#")) url = url.replace("#", "***");
         if (isThunder(url)) {
-            return vod.setPlayUrl(url).setPlayFrom("迅雷");
+            return vod.playUrl(url).playFrom("迅雷");
         } else if (url.contains("youtube.com")) {
-            return vod.setPlayUrl(url).setPlayFrom("YouTube");
+            return vod.playUrl(url).playFrom("YouTube");
         } else if (url.contains("$")) {
-            return vod.setPlayFrom("直連").setPlayUrl(TextUtils.join("#", url.split("\n")));
+            return vod.playFrom("直連").playUrl(TextUtils.join("#", url.split("\n")));
         } else {
-            return vod.setPlayUrl(TextUtils.join("$$$", Arrays.asList(url, url, url))).setPlayFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
+            return vod.playUrl(TextUtils.join("$$$", Arrays.asList(url, url, url))).playFrom(TextUtils.join("$$$", Arrays.asList("直連", "嗅探", "解析")));
         }
     }
 
@@ -81,7 +81,7 @@ public class Push extends Spider {
         JsonObject result = Json.parse(net.req(url, "{\"timeout\":15000}")).getAsJsonObject();
         if (!"200".equals(result.get("code").getAsString()) || result.get("content").getAsString().length() < 100) return;
         String name = Uri.parse(url).getLastPathSegment();
-        subs.add(new Sub().setName(name).setFormat(VodUtil.getSubMimeType(ext)).setUrl(url));
+        subs.add(Sub.create().name(name).format(ext).url(url));
     }
 
     private void setFileSub(String url, List<Sub> subs) {
@@ -90,7 +90,7 @@ public class Push extends Spider {
         for (File f : Path.list(parent)) {
             String ext = VodUtil.getExt(f.getName());
             if (!f.isFile() || !VodUtil.isSub(ext)) continue;
-            subs.add(new Sub().setName(VodUtil.removeExt(f.getName())).setFormat(VodUtil.getSubMimeType(ext)).setUrl("file://" + f.getAbsolutePath()));
+            subs.add(Sub.create().name(VodUtil.removeExt(f.getName())).format(ext).url("file://" + f.getAbsolutePath()));
         }
     }
 }

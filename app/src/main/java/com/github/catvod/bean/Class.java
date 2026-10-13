@@ -21,36 +21,48 @@ public class Class {
     @SerializedName("ratio")
     private Float ratio;
 
-    public Class(String typeId, String typeName) {
-        this(typeId, typeName, null);
+    private Class() {
     }
 
-    public Class(String typeId, String typeName, String typeFlag) {
+    public static Class create() {
+        return new Class();
+    }
+
+    public Class id(String typeId) {
         this.typeId = typeId;
+        return this;
+    }
+
+    public Class name(String typeName) {
         this.typeName = typeName;
+        return this;
+    }
+
+    public Class flag(String typeFlag) {
         this.typeFlag = typeFlag;
+        return this;
     }
 
     public String getTypeId() {
         return typeId == null ? "" : typeId;
     }
 
-    public Class setFilters(List<Filter> filters) {
+    public Class filters(List<Filter> filters) {
         this.filters = filters;
         return this;
     }
 
-    public Class setLand(int land) {
+    public Class land(int land) {
         this.land = land;
         return this;
     }
 
-    public Class setCircle(int circle) {
+    public Class circle(int circle) {
         this.circle = circle;
         return this;
     }
 
-    public Class setRatio(float ratio) {
+    public Class ratio(float ratio) {
         this.ratio = ratio;
         return this;
     }

@@ -31,13 +31,21 @@ public class Drive {
     private transient Session session;
     private transient String subPath;
 
+    private Drive() {
+    }
+
+    public static Drive create() {
+        return new Drive();
+    }
+
     public static List<Drive> arrayFrom(String str) {
         Type listType = TypeToken.getParameterized(List.class, Drive.class).getType();
         return new Gson().fromJson(str, listType);
     }
 
-    public Drive(String name) {
+    public Drive name(String name) {
         this.name = name;
+        return this;
     }
 
     private String getName() {
@@ -58,7 +66,7 @@ public class Drive {
     }
 
     public Class toType() {
-        return new Class(getName(), getName(), "1");
+        return Class.create().id(getName()).name(getName()).flag("1");
     }
 
     private void init() throws IOException {
