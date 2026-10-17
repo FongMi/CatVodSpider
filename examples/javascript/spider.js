@@ -342,7 +342,8 @@ function createSpider(site = {}) {
                 });
                 if (response.error) return {msg: `HTTP 請求失敗：${response.error}`};
                 const code = Number(response.code) || 0;
-                return {msg: `HTTP ${code}，回應長度 ${response.content.length}，已啟用 WebView Cookie`};
+                const length = response.content instanceof ArrayBuffer ? response.content.byteLength : response.content.length;
+                return {msg: `HTTP ${code}，回應長度 ${length}，已啟用 WebView Cookie`};
             } catch (error) {
                 return {msg: `HTTP 請求失敗：${errorName(error)}`};
             }

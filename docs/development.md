@@ -21,6 +21,8 @@
 
 Python 資料方法回傳 dict／list；QuickJS 回傳物件／陣列，Promise 由 App 等待；Java Demo 用 Gson 組裝標準 JSON 字串。proxy 與布林接口維持各自格式。QuickJS 的 detail 收單一 ID，Python／Java 收 ID 集合。
 
+`destroy()` 用來關閉自行建立的資源。QuickJS 的 destroy hook（含回傳的 Promise）有 5 秒期限，逾時仍會釋放 runtime；呼叫前已取消網路工作，不在此安排新請求。
+
 Java 使用本專案 `com.github.catvod.bean` 的純資料模型，以 `Vod.create().id("123").name("影片")` 填值；模型統一以 `create()` 建立，鏈式方法不加 `set` 前綴。篩選選項使用 `Value`，影片樣式使用 `Style`，資料夾分類樣式使用 `Cate`。`com.github.catvod.utils.Response` 用 Gson 組裝 JSON、分頁與輸出，兩者隨爬蟲 JAR 打包；App 的 `Result` 只負責接收及解析。
 
 `Response.create().vod(vod).string()` 回傳詳情，`Response.create().classes(classes).filters(filters).string()` 回傳分類與篩選。其他欄位可用 `put(name, value)`；明確的 `0`／`false` 保留，值為 `null` 的模型欄位省略。也可直接使用 Gson 組裝標準 JSON，不必依賴 App 的 Java 模型。
@@ -99,14 +101,19 @@ Python 使用 `self.net`；QuickJS 使用注入的 `net`；Java 使用繼承的 
 | `method、data、postType` | POST 資料；postType 為 json／form／form-data |
 | `body` | 原始文字，搭配 Content-Type，與 data 擇一 |
 | `buffer` | 0 文字、1 byte 陣列、2 Base64；3 在 Python 回傳 bytes、QuickJS 回傳 ArrayBuffer |
+| `redirect` | 預設 1 跟隨重新導向，0 不跟隨 |
 | `timeout、callTimeout` | 連線讀寫／整次請求逾時，單位毫秒 |
 | `cookie` | true 使用 WebView Cookie |
 
-QuickJS 的 http／json／batch／map／ws／cached／download／sleep／openStream／stream 回傳 Promise，取結果時用 await；req 預設同步，refresh 直接返回。獨立請求可並行，不要同步等待同一 JS 執行緒的 callback。
+QuickJS 的 http／json／batch／map／ws／cached／download／sleep／openStream／stream 回傳 Promise，取結果時用 await；req 預設同步，refresh 直接返回。獨立請求可並行等待 I/O，JS 與 callback 仍在同一執行緒依序執行；不要同步等待同一 JS 執行緒的 callback。
 
 Demo 的 `binary` 操作使用 `buffer: 3`。QuickJS 回傳 ArrayBuffer，長度用 `content.byteLength`，讀取內容用 `new Uint8Array(content)`；Python 回傳 bytes，可用 `memoryview(content)[start:end]` 建立切片檢視。建立檢視不複製原有資料，跨語言傳遞不保證 zero copy。
 
-隔離 Cookie 用 `net.session()`，Python 用 with，QuickJS／Java 用 try/finally 關閉。
+Python／QuickJS 用 `net.getUserAgent()` 取得 App 的 User-Agent，再按站點需要放進 headers；不會自動套用到每個請求。
+
+Cookie 使用 `net.getCookie(url)` 讀取、`net.setCookie(url, cookie)` 寫入。cookie 是單筆 Set-Cookie 格式，寫入回傳布林值；清除可寫入 `Max-Age=0` 的過期 Cookie。站點 net 讀寫 WebView Cookie，請求加 `cookie:true` 才會自動帶入與更新。
+
+隔離 Cookie 用 `net.session()`，在回傳的物件上請求、讀寫 Cookie 與快取；不共用 WebView Cookie 或站點 TTL 快取，也不支援 persist。session 自動帶入與更新自己的 Cookie。Python 用 with，QuickJS／Java 用 try/finally 呼叫 close；關閉會取消其請求、等待、串流與連線，釋放自己的 Cookie 和快取，之後不可繼續使用。
 
 Java 只要正文可用 `net.get(url)`、`net.get(url, headers)`、`net.post(url, json, headers)`。網路失敗拋出例外，HTTP 非 2xx 仍保留正文；需要判斷狀態碼時用 net.req。
 
@@ -126,7 +133,17 @@ connect 沿用 headers／params／cookie／session；data 或 body 可指定開�
 
 Java／Python 回呼不保證在主執行緒，操作 UI 時須切回主執行緒。QuickJS 回呼回到其 JS 執行緒，並在爬蟲方法返回後繼續有效。回呼保持簡短；QuickJS 待處理事件超過 256 筆會回報錯誤並取消連線。
 
-下載用 Python／QuickJS `net.download(url, path, options)`、Java `net.download(url, optionsJson, file)`，直接寫檔。相對路徑以 App cache 為基準，父目錄需存在，失敗後的部分檔案由呼叫者處理。
+下載用 Python／QuickJS `net.download(url, path, options)`、Java `net.download(url, optionsJson, file)`，直接寫檔。相對路徑以 App cache 為基準，父目錄需存在；完整傳輸後才取代目標檔案。下載不回傳 HTTP 狀態，也不會僅因非 2xx 拒絕，檔案內容由呼叫者確認。
+
+下載可傳 HTTP options，另支援以下選項：
+
+| options | 用途 |
+| --- | --- |
+| `maxBytes` | 寫入上限，正整數 bytes；省略時不設上限 |
+| `size` | 預期完整大小，正整數 bytes；與實際大小不符時失敗 |
+| `threads` | 0（預設）自動選擇，1 單路，2..4 指定分段並行上限 |
+
+共用下載器管理暫存檔，依 GET、Range 與 ETag／Last-Modified 等條件決定續傳與分段；帶 `cookie:true` 或使用 session 時不續傳。Demo 的 download 操作使用預設選項，Python 讀取完成後移除暫存目錄，QuickJS 保留在 App cache。
 
 `net.sleep(ms)` 可取消，取消後不繼續請求。
 
@@ -190,6 +207,8 @@ Python Demo 的 `ttl_text` 操作直接展示這段文字，與 `ttl_cache`／`t
 Local 保存小型設定：Python `self.local`、QuickJS／Java `local` 使用 `get(key)、set(key, value)、delete(key)`，App 按 Site.key 隔離。Python／QuickJS 直接存 JSON 值，Java 使用 JSON 字串；不存在的 key 回傳 None／null。清快取不會刪除 Local。
 
 完整清單分頁使用 Python `self.page(items, pg, limit)`、QuickJS `page(items, pg, limit)`、Java `Response.page(items, page, limit).string()`。網站已分頁時使用 `Response.create().vods(items).page(page, pagecount, limit, total).string()`，未知 total 時只填已知欄位。完整單頁清單可用 `.page()`，只輸出 page=1 與 pagecount=1。超連結用 Python `self.link`、QuickJS `link`、Java `Json.link`。
+
+Python／QuickJS 的 page 也可傳第四個參數 `total`。省略時切分完整清單；傳入精確總筆數時，items 使用網站回傳的當頁資料，不再切片。total 未知時直接回傳已知的 page／pagecount／limit，不估算總筆數。
 
 ## 網頁、直播與 proxy
 
