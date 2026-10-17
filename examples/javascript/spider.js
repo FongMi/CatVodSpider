@@ -247,7 +247,8 @@ function createSpider(site = {}) {
     }
 
     async function action(value) {
-        if (["json", "session", "parallel", "binary", "request_sync"].includes(value)) return networkAction(value);
+        if (value === "html_query") return htmlQueryAction();
+        if (["json", "session", "parallel", "parallel_map", "binary", "request_sync", "stream_read", "proxy_stream"].includes(value)) return networkAction(value);
         if (value === "download") {
             await net.download(ensureHttpUrl(options.request_url || options.web_url, "request_url"), "spider-demo.bin");
             return {msg: "下載完成，檔案已寫入 App 快取"};
@@ -409,9 +410,15 @@ function createSpider(site = {}) {
         return urls.length ? [{name: "範例直播", channel: [{name: "示範頻道", urls}]}] : [];
     }
 
-    function proxy(params) {
+    async function proxy(params) {
         const headers = {"X-Demo": "1"};
         if (params.demo === "json") return [200, "application/json; charset=utf-8", '{"name":"demo","ok":true}', headers];
+        if (params.demo === "stream") {
+            const response = await net.stream(ensureHttpUrl(options.request_url || options.web_url, "request_url"), {
+                timeout: REQUEST_TIMEOUT_MS, callTimeout: REQUEST_TIMEOUT_MS,
+            });
+            return [response.code, response.contentType, response.stream, response.headers];
+        }
         if (params.demo === "playlist" && options.media_url) {
             return [200, "application/vnd.apple.mpegurl", "#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=1280000\n" + ensureHttpUrl(options.media_url, "media_url") + "\n", headers];
         }
@@ -422,17 +429,69 @@ function createSpider(site = {}) {
         return {updated: Date.now(), items: [1, true, null]};
     }
 
+    function htmlQueryAction() {
+        const source = `
+            <article class="video" data-id="demo-01">
+                <h2> 星光探險隊 </h2>
+                <span class="actor">小安</span><span class="actor">小晴</span>
+            </article>`;
+        const {videos} = htmlQuery(source, {
+            queries: {
+                videos: {
+                    selector: "article.video",
+                    fields: {
+                        id: {attribute: "data-id"},
+                        title: {selector: "h2"},
+                        actors: {selector: ".actor", all: true},
+                    },
+                },
+            },
+        });
+        const list = videos.map(row => ({
+            vod_id: row.id,
+            vod_name: row.title.trim(),
+            vod_actor: row.actors.map(name => name.trim()).join(" / "),
+        }));
+        return {msg: JSON.stringify(list)};
+    }
+
+    async function countStreamBytes(url) {
+        const reader = await net.openStream(url, {timeout: REQUEST_TIMEOUT_MS, callTimeout: REQUEST_TIMEOUT_MS});
+        try {
+            checkResponse(reader);
+            let length = 0;
+            for (;;) {
+                const chunk = await reader.read(65536);
+                if (chunk === null) return length;
+                length += chunk.byteLength;
+            }
+        } finally { reader.close(); }
+    }
+
     async function networkAction(value) {
         try {
             if (value === "json") {
                 const data = await net.json(ensureHttpUrl(options.json_url, "json_url"), {timeout: REQUEST_TIMEOUT_MS});
                 return {msg: "JSON 請求成功：" + typeof data};
             }
-            const url = ensureHttpUrl(options.request_url || options.web_url, "request_url");
+            const url = value === "proxy_stream" ? getProxyUrl({demo: "stream"}) : ensureHttpUrl(options.request_url || options.web_url, "request_url");
+            if (value === "stream_read" || value === "proxy_stream") {
+                const length = await countStreamBytes(url);
+                return {msg: `串流讀取完成：${length} bytes`};
+            }
             if (value === "parallel") {
                 const values = await net.batch([0, 1, 2].map(() => ({url, options: {timeout: REQUEST_TIMEOUT_MS}})));
                 values.forEach(checkResponse);
                 return {msg: "並行完成 3 次請求"};
+            }
+            if (value === "parallel_map") {
+                const urls = [url, ensureHttpUrl(options.json_url, "json_url")];
+                const values = await net.map(urls, async (target, index) => {
+                    const response = await net.http(target, {timeout: REQUEST_TIMEOUT_MS});
+                    checkResponse(response);
+                    return {index, code: response.code};
+                }, 2);
+                return {msg: "並行映射完成：" + JSON.stringify(values)};
             }
             if (value === "session") {
                 const flow = net.session();
@@ -442,10 +501,11 @@ function createSpider(site = {}) {
                     return {msg: "隔離 Session 請求完成，Cookie " + (flow.getCookie(url).includes("demo_session=1") ? "存在" : "不存在")};
                 } finally { flow.close(); }
             }
-            const settings = {timeout: REQUEST_TIMEOUT_MS, buffer: value === "binary" ? 1 : 0};
+            const settings = {timeout: REQUEST_TIMEOUT_MS, buffer: value === "binary" ? 3 : 0};
             const response = value === "request_sync" ? net.req(url, settings) : await net.http(url, settings);
             checkResponse(response);
-            return {msg: `HTTP ${response.code}，回應長度 ${response.content.length}`};
+            const length = value === "binary" ? response.content.byteLength : response.content.length;
+            return {msg: `HTTP ${response.code}，回應長度 ${length}`};
         } catch (error) {
             return {msg: "網路示範失敗：" + String(error.message || error)};
         }
@@ -632,8 +692,12 @@ function createSpider(site = {}) {
             ["request_sync", "同步 HTTP", "同步取得完整回應"],
             ["session", "隔離 Session", "在獨立 Cookie 流程完成請求並關閉"],
             ["parallel", "並行請求", "同時取得 3 份回應"],
+            ["parallel_map", "並行映射", "net.map 限制並行數，執行回呼並按輸入順序回傳"],
             ["download", "下載檔案", "串流寫入 App 快取"],
-            ["binary", "二進位回應", "buffer=1，取得 byte 陣列"],
+            ["binary", "二進位回應", "buffer=3，取得 ArrayBuffer"],
+            ["html_query", "HTML 欄位解析", "一次解析 HTML，取出標題、ID 與演員"],
+            ["stream_read", "分塊讀取", "每次最多讀取 64 KiB，結束或失敗時關閉"],
+            ["proxy_stream", "串流代理", "原樣轉送 request_url，再分塊讀取本機 proxy"],
             ["ttl_persist", "持久化快取", "重建爬蟲後仍可讀取"],
             ["ttl_background", "立即回快取、背景更新", "先 peek，再交給 refresh 背景更新"],
             ["ttl_clear_all", "清除全部 TTL 快取", "只清目前站點的 TTL 資料"],

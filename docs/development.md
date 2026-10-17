@@ -1,6 +1,6 @@
 # 爬蟲開發
 
-先從 [README](../README.md) 選擇範例並載入配置。三份 Demo 的分類與操作入口一致，展示清單、播放、網路、儲存與網頁功能；實際爬蟲只保留需要的部分。
+先從 [README](../README.md) 選擇範例並載入配置。三份 Demo 展示共通的分類、清單、播放、網路、儲存與網頁功能，另有各語言的專用操作；實際爬蟲只保留需要的部分。
 
 ## 入口
 
@@ -80,6 +80,8 @@ VOD 的 `style.type` 支援 rect／oval／list，同頁保持一致；分類使�
 
 沒有播放網址時顯示提示；有 sniff_url 時回傳 parse=1。直播未填播放網址時回傳空清單。HLS 代理線需使用以 .m3u8 結尾的 media_url。完整附加欄位的組裝方式見對應 Demo 的播放方法。
 
+QuickJS 的 HTML 解析、二進位、並行映射與串流操作，需搭配支援這些介面的 runtime 模組。
+
 字幕的 flag=1 為預設選取，flag=2 為強制字幕。skips 的 start／end 是影片開頭起算的毫秒；播放到 start 時跳至 end，ending 可省略 end。
 
 ## 網路
@@ -96,17 +98,21 @@ Python 使用 `self.net`；QuickJS 使用注入的 `net`；Java 使用繼承的 
 | `params` | 自動編碼 query，陣列值重複同一個 key |
 | `method、data、postType` | POST 資料；postType 為 json／form／form-data |
 | `body` | 原始文字，搭配 Content-Type，與 data 擇一 |
-| `buffer` | 0 文字、1 byte 陣列、2 Base64；Python 的 3 回傳 bytes |
+| `buffer` | 0 文字、1 byte 陣列、2 Base64；3 在 Python 回傳 bytes、QuickJS 回傳 ArrayBuffer |
 | `timeout、callTimeout` | 連線讀寫／整次請求逾時，單位毫秒 |
 | `cookie` | true 使用 WebView Cookie |
 
-QuickJS 的 http／json／batch／ws／cached／download／sleep 回傳 Promise，取結果時用 await；req 預設同步，refresh 直接返回。獨立請求可並行，不要同步等待同一 JS 執行緒的 callback。
+QuickJS 的 http／json／batch／map／ws／cached／download／sleep／openStream／stream 回傳 Promise，取結果時用 await；req 預設同步，refresh 直接返回。獨立請求可並行，不要同步等待同一 JS 執行緒的 callback。
+
+Demo 的 `binary` 操作使用 `buffer: 3`。QuickJS 回傳 ArrayBuffer，長度用 `content.byteLength`，讀取內容用 `new Uint8Array(content)`；Python 回傳 bytes，可用 `memoryview(content)[start:end]` 建立切片檢視。建立檢視不複製原有資料，跨語言傳遞不保證 zero copy。
 
 隔離 Cookie 用 `net.session()`，Python 用 with，QuickJS／Java 用 try/finally 關閉。
 
 Java 只要正文可用 `net.get(url)`、`net.get(url, headers)`、`net.post(url, json, headers)`。網路失敗拋出例外，HTTP 非 2xx 仍保留正文；需要判斷狀態碼時用 net.req。
 
 批次用 `net.batch(requests, limit)`，每筆為 `{url, options}`，預設最多 4 筆並行、按輸入順序回傳。Python／QuickJS 回傳結果陣列；Java 傳 requests JSON、回傳 Net.Result[]。每筆結果都要檢查狀態。
+
+QuickJS 需要在每筆請求後解析或轉換資料時，可用 `await net.map(items, async (item, index) => result, limit)`；預設並行上限 4，按輸入順序回傳結果。回呼拋出錯誤時整批拒絕並停止啟動後續項目，已啟動的工作繼續完成。Demo 的 `parallel_map` 使用上限 2 請求 request_url 與 json_url，回傳各項索引與狀態；回呼自行檢查 HTTP 狀態。
 
 WebSocket 一次交換用 `net.ws(url, options)`，成功回應 code=101，首個完整訊息放在 content 後關閉。
 
@@ -124,9 +130,54 @@ Java／Python 回呼不保證在主執行緒，操作 UI 時須切回主執行�
 
 `net.sleep(ms)` 可取消，取消後不繼續請求。
 
+## QuickJS 分塊讀取
+
+`await net.openStream(url, options)` 取得 `code、headers、contentType、read、close`。`await reader.read(size)` 回傳 ArrayBuffer，EOF 回傳 null；預設每塊 65,536 bytes，size 範圍為 1..1,048,576，同一 reader 同時只能有一次 read。
+
+```javascript
+const reader = await net.openStream(url, {timeout: 15000, callTimeout: 15000});
+try {
+    if (reader.code < 200 || reader.code >= 300) throw new Error(`HTTP ${reader.code}`);
+    for (;;) {
+        const chunk = await reader.read(65536);
+        if (chunk === null) break;
+        // 在此處理 new Uint8Array(chunk)，不要累積整份回應。
+    }
+} finally { reader.close(); }
+```
+
+Demo 的 `stream_read` 逐塊計算 request_url 的 bytes，不保存完整正文；`proxy_stream` 經本機代理完成同樣操作。兩者用有限長度的 HTTP 回應測試，整次請求限 15 秒。`net.stream` 則把正文交給 App 的 proxy，不提供 read；用法見下方 proxy 說明。
+
+## QuickJS HTML 欄位解析
+
+全域 `htmlQuery(html, plan)` 一次解析 HTML，回傳普通物件；不發出網路請求，也不保留 DOM。Demo 的 `html_query` 操作不需要外部站點，示範取 ID、標題及多位演員：
+
+```javascript
+const {videos} = htmlQuery(html, {
+    queries: {
+        videos: {
+            selector: "article.video",
+            fields: {
+                id: {attribute: "data-id"},
+                title: {selector: "h2"},
+                actors: {selector: ".actor", all: true},
+            },
+        },
+    },
+});
+```
+
+每個 query 的 selector 選列，fields 的 selector 選該列的子孫；省略欄位 selector 就讀該列本身。attribute 讀屬性，省略則讀文字；all:true 回傳陣列。缺少節點／屬性回傳 null，all:true 沒有匹配時回傳空陣列。
+
+必填欄位驗證、trim、相對 URL 補全及去重由爬蟲處理；解析失敗不能偽裝成成功空列表。選擇器與 HTML 使用 Jsoup 規則，欄位與限制見 [HTML 查詢參考](html-query.md)。
+
 ## 快取與儲存
 
 `net.cached(key, options, loader)` 儲存 loader 回傳的 JSON 資料，同 key 合併載入。Java 的回傳值使用 JSON 字串。
+
+Python 的 `self.net.cachedText(key, options, loader)` 回傳同一快取項目的 JSON 文字；loader 仍回傳 dict／list 等 JSON 資料。大型目錄可依文字內容是否改變，重用爬蟲私有的解析結果與搜尋索引。每次使用仍須呼叫 cachedText，由原生快取決定有效期、更新與清除；destroy 時釋放私有快照。`cached()` 維持每次回傳獨立可修改物件的行為。
+
+Python Demo 的 `ttl_text` 操作直接展示這段文字，與 `ttl_cache`／`ttl_peek` 共用 `demo:ttl`；`ttl_clear` 會清除同一項目。此操作需要提供 cachedText 的 Python runtime 模組；一般已解析資料繼續使用 cached，不必每次先 cachedText 再 json.loads。
 
 | options | 用途 |
 | --- | --- |
@@ -154,7 +205,18 @@ Cookie 同組全部需要、不同組任一組即可；需有新值且頁面同�
 
 直播回傳 `[{name, channel: [{name, urls}]}]`，多線路網址加 `$線路名稱`；TXT／M3U 也可直接回傳文字。
 
-本機代理網址用 `getProxyUrl(params)`，Python 需加 self，Java 傳 Map。App 自動加入 do／siteKey 並編碼 query。proxy 回傳 `[status, mime, body, headers]`；Python body 可用 bytes，QuickJS 可用文字或 byte 陣列，Java 用 InputStream。EPG 在產生的網址後接 `&date={date}`，由 App 代入日期。
+本機代理網址用 `getProxyUrl(params)`，Python 需加 self，Java 傳 Map。App 自動加入 do／siteKey 並編碼 query。proxy 回傳 `[status, mime, body, headers]`；Python body 可用 bytes，QuickJS 可用文字、byte 陣列、ArrayBuffer 或 TypedArray，Java 用 InputStream。EPG 在產生的網址後接 `&date={date}`，由 App 代入日期。
+
+QuickJS 原樣轉送上游正文時，可直接交出 `net.stream` 的 handle：
+
+```javascript
+async function proxy(params) {
+    const response = await net.stream(url, {timeout: 15000, callTimeout: 15000});
+    return [response.code, response.contentType, response.stream, response.headers];
+}
+```
+
+成功回傳後由 App 接管並關閉 stream；如果不回傳這個正文，呼叫 `response.stream.close()`。handle 只能在當次 proxy 呼叫交付一次，不可存入 Local／快取或傳到其他呼叫。Demo 的 `demo=stream` 分支原樣轉送 request_url，既有 playlist 分支仍負責產生 HLS 清單；需要改寫正文時使用文字或 bytes 模式。
 
 ## Android UI
 

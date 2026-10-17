@@ -369,6 +369,9 @@ class Spider(BaseSpider):
         if action == "ttl_cache":
             value = self.net.cached("demo:ttl", {"ttl": 60000}, lambda: {"value": "範例資料"})
             return {"msg": "TTL 快取：" + value["value"]}
+        if action == "ttl_text":
+            text = self.net.cachedText("demo:ttl", {"ttl": 60000}, lambda: {"value": "範例資料"})
+            return {"msg": "JSON 快取文字：" + text}
         if action == "ttl_peek":
             value = self.net.peek("demo:ttl")
             return {"msg": "目前沒有 TTL 快取" if value is None else "已有 TTL 快取：" + value["value"]}
@@ -497,7 +500,7 @@ class Spider(BaseSpider):
                     self._check_response(flow.req(self.request_url, {"timeout": REQUEST_TIMEOUT_MS}))
                     exists = "demo_session=1" in flow.getCookie(self.request_url)
                 return {"msg": "隔離 Session 請求完成，Cookie " + ("存在" if exists else "不存在")}
-            options = {"timeout": REQUEST_TIMEOUT_MS, "buffer": 1 if action == "binary" else 0}
+            options = {"timeout": REQUEST_TIMEOUT_MS, "buffer": 3 if action == "binary" else 0}
             value = self.net.req(self.request_url, options)
             self._check_response(value)
             return {"msg": "HTTP %s，回應長度 %s" % (value["code"], len(value["content"]))}
@@ -695,7 +698,7 @@ class Spider(BaseSpider):
                 ("session", "隔離 Session", "在獨立 Cookie 流程完成請求並關閉"),
                 ("parallel", "並行請求", "同時取得 3 份回應"),
                 ("download", "下載檔案", "串流寫入暫存檔，用完移除"),
-                ("binary", "二進位回應", "buffer=1，取得 byte 陣列"),
+                ("binary", "二進位回應", "buffer=3，直接取得 bytes"),
                 ("ttl_persist", "持久化快取", "重建爬蟲後仍可讀取"),
                 ("ttl_background", "立即回快取、背景更新", "先 peek，再交給 refresh 背景更新"),
                 ("ttl_clear_all", "清除全部 TTL 快取", "只清目前站點的 TTL 資料"),
@@ -714,6 +717,7 @@ class Spider(BaseSpider):
                 ("socket-stop", "WebSocket 停止連線", "關閉連線並釋放資源"),
                 ("sleep", "可取消等待", "等待 250 毫秒；爬蟲關閉或任務中斷會取消"),
                 ("ttl_cache", "TTL 快取", "有效期內重用資料；過期背景更新"),
+                ("ttl_text", "JSON 快取文字", "cachedText 回傳原生快取文字，共用 TTL 快取項目"),
                 ("ttl_peek", "讀取已有快取", "只讀已有值，不發出請求或延長 TTL"),
                 ("ttl_clear", "清除 TTL 快取", "清除同一個 key，並取消正在載入的資料"),
                 ("cache_write", "寫入 Local", "保存 JSON 物件、陣列及純量"),
