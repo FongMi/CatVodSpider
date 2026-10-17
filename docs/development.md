@@ -1,6 +1,19 @@
 # 爬蟲開發
 
-先從 [README](../README.md) 選擇範例並載入配置。三份 Demo 展示共通的分類、清單、播放、網路、儲存與網頁功能，另有各語言的專用操作；實際爬蟲只保留需要的部分。
+先從 [README](../README.md) 選擇 Demo 並載入配置。範例統一放在 Demo 程式碼，本文只說明接口、參數與限制；實際爬蟲只保留需要的功能。
+
+## 執行環境
+
+目前 TV 專案使用以下語言基準，App 與對應 runtime 模組需配套更新：
+
+| 語言 | 環境與寫法 |
+| --- | --- |
+| Python | CPython 3.10、Chaquopy 17.1.0；可用 `match/case`、`str \| None` 等 3.10 語法，爬蟲入口維持同步 `def`，網路使用 `self.net` |
+| QuickJS | QuickJS-NG 0.17.0 基底，含上游更新；使用 ES module 的 `export default`，支援 `async/await`、`?.`、`??`，網路使用注入的 `net` |
+
+Python 入口使用同步 `def`，App 不等待 coroutine。主機驗證也使用 Python 3.10。
+
+QuickJS 使用 App 注入的 API。TextEncoder／TextDecoder 提供 UTF-8 編解碼與分塊解碼；其他編碼、編碼串流與 Intl 未提供。
 
 ## 入口
 
@@ -21,9 +34,11 @@
 
 Python 資料方法回傳 dict／list；QuickJS 回傳物件／陣列，Promise 由 App 等待；Java Demo 用 Gson 組裝標準 JSON 字串。proxy 與布林接口維持各自格式。QuickJS 的 detail 收單一 ID，Python／Java 收 ID 集合。
 
-Java 使用本專案 `com.github.catvod.bean` 的純資料模型，以 `Vod.create().id("123").name("影片")` 填值；模型統一以 `create()` 建立，鏈式方法不加 `set` 前綴。篩選選項使用 `Value`，影片樣式使用 `Style`，資料夾分類樣式使用 `Cate`。`com.github.catvod.utils.Response` 用 Gson 組裝 JSON、分頁與輸出，兩者隨爬蟲 JAR 打包；App 的 `Result` 只負責接收及解析。
+`destroy()` 用來關閉自行建立的資源。QuickJS 的 destroy hook（含回傳的 Promise）有 5 秒期限，逾時仍會釋放 runtime；呼叫前已取消網路工作，不在此安排新請求。
 
-`Response.create().vod(vod).string()` 回傳詳情，`Response.create().classes(classes).filters(filters).string()` 回傳分類與篩選。其他欄位可用 `put(name, value)`；明確的 `0`／`false` 保留，值為 `null` 的模型欄位省略。也可直接使用 Gson 組裝標準 JSON，不必依賴 App 的 Java 模型。
+Java 使用本專案 `com.github.catvod.bean` 模型，以 `create()` 建立並鏈式填值，方法不加 `set` 前綴。`com.github.catvod.utils.Response` 用 Gson 組裝 JSON 與分頁，兩者隨爬蟲 JAR 打包；App 的 `Result` 只負責接收解析。
+
+`Response.vod()` 填詳情，`classes()`／`filters()` 填分類與篩選，`put(name, value)` 填其他欄位，`string()` 輸出 JSON。明確的 `0`／`false` 保留，null 模型欄位省略；也可直接用 Gson 組裝標準 JSON。
 
 `Response.url()` 接受播放網址字串或 `Url` 多畫質模型，傳入 `null` 時移除 URL 欄位。
 
@@ -39,21 +54,13 @@ Java 使用本專案 `com.github.catvod.bean` 的純資料模型，以 `Vod.crea
 | 多畫質 | `Url.create().values().position()`，values 使用 `Value`，交給 `Response.url()` |
 | 網頁 | `Web.create().url().mode().cookie()`，cookie 使用 `Web.Cookie.create().url().keys()`，交給 `Response.web()` |
 
-例如播放回傳可直接鏈式組裝：
-
-```java
-return Response.create().url("https://example.com/video.m3u8")
-        .danmaku(List.of(Danmaku.create().name("彈幕").url("https://example.com/danmaku.xml")))
-        .subs(List.of(Sub.create().name("繁體中文").url("https://example.com/sub.vtt").format("vtt").flag(1)))
-        .skips(List.of(SkipSegment.create().type("opening").start(0).end(90000)))
-        .position(0).string();
-```
+播放附加欄位的實作見 [Java Demo](../app/src/main/java/com/github/catvod/spider/Demo.java) 的 `playerContent`。
 
 `Response` 也提供 `playUrl、artwork、jxFrom、flag、desc、format、click、key、position、code、msg` 鏈式方法。上述播放與網頁模型未填的可選欄位省略；`ending` 片段可不呼叫 `.end()`，Web Cookie 未填 `.url()` 時使用網頁網址。多畫質的 position 是從 0 開始的索引，與回應頂層以毫秒計的起播 position 不同。
 
 Java 的 `Sub.format(ext)` 傳入字幕副檔名，例如 `vtt`、`srt`、`ass`，由模型呼叫 `VodUtil.getSubMimeType(ext)` 轉成 MIME；回傳 JSON 的 `subs[].format` 仍使用 MIME。
 
-有分頁的分類與搜尋回傳 `list、page、pagecount、limit`；有精確總筆數時加 `total`。完整單頁清單回傳 `list、page=1、pagecount=1`，`limit` 與 `total` 可省略。`page < pagecount` 才會繼續載入，不另寫 loadMore。網站已分頁時直接回傳當頁，不再次切片，也不以頁數乘頁大小推算 total；最小 JSON 見[技能的分頁範例](../.agents/skills/catvod-spider/SKILL.md#網站已分頁)。`filters` 的鍵對應分類 `type_id`，只加入站點支援的篩選。
+分類與搜尋回傳 `list、page、pagecount、limit`，有精確總筆數才加 `total`。完整單頁清單可只填 `list、page=1、pagecount=1`。網站已分頁時直接回傳當頁，不再次切片或推算 total；App 以 `page < pagecount` 決定載入下一頁。`filters` 的鍵對應分類 `type_id`。實作見 Demo 的分類與搜尋入口。
 
 線路用 `$$$` 分隔，每線集數用 `#`，每集為 `名稱$播放值`。清理名稱中的分隔符；播放值可用自訂 ID，在播放時取得實際網址。
 
@@ -80,17 +87,13 @@ VOD 的 `style.type` 支援 rect／oval／list，同頁保持一致；分類使�
 
 沒有播放網址時顯示提示；有 sniff_url 時回傳 parse=1。直播未填播放網址時回傳空清單。HLS 代理線需使用以 .m3u8 結尾的 media_url。完整附加欄位的組裝方式見對應 Demo 的播放方法。
 
-QuickJS 的 HTML 解析、二進位、並行映射與串流操作，需搭配支援這些介面的 runtime 模組。
-
 字幕的 flag=1 為預設選取，flag=2 為強制字幕。skips 的 start／end 是影片開頭起算的毫秒；播放到 start 時跳至 end，ending 可省略 end。
 
 ## 網路
 
 Python 使用 `self.net`；QuickJS 使用注入的 `net`；Java 使用繼承的 `net`。下文以 net 簡寫，Java 的 options 使用 JSON 字串。
 
-只取 JSON 時使用 `net.json(url, options)`，實作見三語言 Demo 的 JSON 請求操作。
-
-連線失敗、HTTP 非 2xx 或無效 JSON 會拋出例外。需要自行處理狀態碼、錯誤正文或 bytes 時，用 Python `self.net.req`、QuickJS `await net.http`、Java `net.req`；分開檢查回應的 error 與 code。Java 先解析回傳的 JSON 字串。回應格式與不依賴 TV repo 的主機驗證方法見[接口驗證](../.agents/skills/catvod-spider/references/validation.md)。
+只取 JSON 用 `net.json(url, options)`；連線失敗、HTTP 非 2xx 或無效 JSON 會拋出例外。需要狀態碼、錯誤正文或 bytes 時，用 Python／Java `net.req`、QuickJS `await net.http`，分開檢查 error 與 code；Java 先解析 JSON 字串。實作見 Demo 的 `json`／`request` 操作，驗證方式見[接口驗證](../.agents/skills/catvod-spider/references/validation.md)。
 
 | HTTP options | 用途 |
 | --- | --- |
@@ -99,14 +102,19 @@ Python 使用 `self.net`；QuickJS 使用注入的 `net`；Java 使用繼承的 
 | `method、data、postType` | POST 資料；postType 為 json／form／form-data |
 | `body` | 原始文字，搭配 Content-Type，與 data 擇一 |
 | `buffer` | 0 文字、1 byte 陣列、2 Base64；3 在 Python 回傳 bytes、QuickJS 回傳 ArrayBuffer |
+| `redirect` | 預設 1 跟隨重新導向，0 不跟隨 |
 | `timeout、callTimeout` | 連線讀寫／整次請求逾時，單位毫秒 |
 | `cookie` | true 使用 WebView Cookie |
 
-QuickJS 的 http／json／batch／map／ws／cached／download／sleep／openStream／stream 回傳 Promise，取結果時用 await；req 預設同步，refresh 直接返回。獨立請求可並行，不要同步等待同一 JS 執行緒的 callback。
+QuickJS 的 http／json／batch／map／ws／cached／download／sleep／openStream／stream 回傳 Promise，取結果時用 await；req 預設同步，refresh 直接返回。獨立請求可並行等待 I/O，JS 與 callback 仍在同一執行緒依序執行；不要同步等待同一 JS 執行緒的 callback。
 
-Demo 的 `binary` 操作使用 `buffer: 3`。QuickJS 回傳 ArrayBuffer，長度用 `content.byteLength`，讀取內容用 `new Uint8Array(content)`；Python 回傳 bytes，可用 `memoryview(content)[start:end]` 建立切片檢視。建立檢視不複製原有資料，跨語言傳遞不保證 zero copy。
+Python／QuickJS Demo 的 `binary` 操作使用 `buffer: 3`。QuickJS 回傳 ArrayBuffer，長度用 `content.byteLength`，讀取內容用 `new Uint8Array(content)`；Python 回傳 bytes，可用 `memoryview(content)[start:end]` 建立切片檢視。建立檢視不複製原有資料，跨語言傳遞不保證 zero copy。
 
-隔離 Cookie 用 `net.session()`，Python 用 with，QuickJS／Java 用 try/finally 關閉。
+Python／QuickJS 用 `net.getUserAgent()` 取得 App 的 User-Agent，再按站點需要放進 headers；不會自動套用到每個請求。
+
+Cookie 使用 `net.getCookie(url)` 讀取、`net.setCookie(url, cookie)` 寫入。cookie 是單筆 Set-Cookie 格式，寫入回傳布林值；清除可寫入 `Max-Age=0` 的過期 Cookie。站點 net 讀寫 WebView Cookie，請求加 `cookie:true` 才會自動帶入與更新。
+
+隔離 Cookie 用 `net.session()`，在回傳的物件上請求、讀寫 Cookie 與快取；不共用 WebView Cookie 或站點 TTL 快取，也不支援 persist。session 自動帶入與更新自己的 Cookie。Python 用 with，QuickJS／Java 用 try/finally 呼叫 close；關閉會取消其請求、等待、串流與連線，釋放自己的 Cookie 和快取，之後不可繼續使用。
 
 Java 只要正文可用 `net.get(url)`、`net.get(url, headers)`、`net.post(url, json, headers)`。網路失敗拋出例外，HTTP 非 2xx 仍保留正文；需要判斷狀態碼時用 net.req。
 
@@ -126,58 +134,35 @@ connect 沿用 headers／params／cookie／session；data 或 body 可指定開�
 
 Java／Python 回呼不保證在主執行緒，操作 UI 時須切回主執行緒。QuickJS 回呼回到其 JS 執行緒，並在爬蟲方法返回後繼續有效。回呼保持簡短；QuickJS 待處理事件超過 256 筆會回報錯誤並取消連線。
 
-下載用 Python／QuickJS `net.download(url, path, options)`、Java `net.download(url, optionsJson, file)`，直接寫檔。相對路徑以 App cache 為基準，父目錄需存在，失敗後的部分檔案由呼叫者處理。
+下載用 Python／QuickJS `net.download(url, path, options)`、Java `net.download(url, optionsJson, file)`，直接寫檔。相對路徑以 App cache 為基準，父目錄需存在；完整傳輸後才取代目標檔案。下載不回傳 HTTP 狀態，也不會僅因非 2xx 拒絕，檔案內容由呼叫者確認。
+
+下載可傳 HTTP options，另支援以下選項：
+
+| options | 用途 |
+| --- | --- |
+| `maxBytes` | 寫入上限，正整數 bytes；省略時不設上限 |
+| `size` | 預期完整大小，正整數 bytes；與實際大小不符時失敗 |
+| `threads` | 0（預設）自動選擇，1 單路，2..4 指定分段並行上限 |
+
+共用下載器管理暫存檔，依 GET、Range 與 ETag／Last-Modified 等條件決定續傳與分段；帶 `cookie:true` 或使用 session 時不續傳。Demo 的 download 操作使用預設選項，Python 讀取完成後移除暫存目錄，QuickJS 保留在 App cache。
 
 `net.sleep(ms)` 可取消，取消後不繼續請求。
 
 ## QuickJS 分塊讀取
 
-`await net.openStream(url, options)` 取得 `code、headers、contentType、read、close`。`await reader.read(size)` 回傳 ArrayBuffer，EOF 回傳 null；預設每塊 65,536 bytes，size 範圍為 1..1,048,576，同一 reader 同時只能有一次 read。
+`await net.openStream(url, options)` 取得 `code、headers、contentType、read、close`。`read(size)` 回傳 Promise，結果為 ArrayBuffer，null 表示 EOF；預設每塊 65,536 bytes，size 為 1..1,048,576，同一 reader 同時只能有一次 read。用完或失敗時都要在 finally 關閉。
 
-```javascript
-const reader = await net.openStream(url, {timeout: 15000, callTimeout: 15000});
-try {
-    if (reader.code < 200 || reader.code >= 300) throw new Error(`HTTP ${reader.code}`);
-    for (;;) {
-        const chunk = await reader.read(65536);
-        if (chunk === null) break;
-        // 在此處理 new Uint8Array(chunk)，不要累積整份回應。
-    }
-} finally { reader.close(); }
-```
-
-Demo 的 `stream_read` 逐塊計算 request_url 的 bytes，不保存完整正文；`proxy_stream` 經本機代理完成同樣操作。兩者用有限長度的 HTTP 回應測試，整次請求限 15 秒。`net.stream` 則把正文交給 App 的 proxy，不提供 read；用法見下方 proxy 說明。
+[QuickJS Demo](../examples/javascript/spider.js) 的 `countStreamBytes`／`stream_read` 逐塊計算 bytes，`proxy_stream` 經本機代理完成同樣操作。整次請求限 15 秒，適用有限長度的回應；原樣轉送使用下方的 `net.stream`。
 
 ## QuickJS HTML 欄位解析
 
-全域 `htmlQuery(html, plan)` 一次解析 HTML，回傳普通物件；不發出網路請求，也不保留 DOM。Demo 的 `html_query` 操作不需要外部站點，示範取 ID、標題及多位演員：
-
-```javascript
-const {videos} = htmlQuery(html, {
-    queries: {
-        videos: {
-            selector: "article.video",
-            fields: {
-                id: {attribute: "data-id"},
-                title: {selector: "h2"},
-                actors: {selector: ".actor", all: true},
-            },
-        },
-    },
-});
-```
-
-每個 query 的 selector 選列，fields 的 selector 選該列的子孫；省略欄位 selector 就讀該列本身。attribute 讀屬性，省略則讀文字；all:true 回傳陣列。缺少節點／屬性回傳 null，all:true 沒有匹配時回傳空陣列。
-
-必填欄位驗證、trim、相對 URL 補全及去重由爬蟲處理；解析失敗不能偽裝成成功空列表。選擇器與 HTML 使用 Jsoup 規則，欄位與限制見 [HTML 查詢參考](html-query.md)。
+`htmlQuery(html, plan)` 一次解析 HTML 並回傳普通物件，不發請求、不保留 DOM。實作見 [QuickJS Demo](../examples/javascript/spider.js) 的 `htmlQueryAction`／`html_query`；欄位、回傳值與限制見 [HTML 查詢參考](html-query.md)。必填值驗證、trim、相對 URL 與去重由爬蟲處理。
 
 ## 快取與儲存
 
 `net.cached(key, options, loader)` 儲存 loader 回傳的 JSON 資料，同 key 合併載入。Java 的回傳值使用 JSON 字串。
 
-Python 的 `self.net.cachedText(key, options, loader)` 回傳同一快取項目的 JSON 文字；loader 仍回傳 dict／list 等 JSON 資料。大型目錄可依文字內容是否改變，重用爬蟲私有的解析結果與搜尋索引。每次使用仍須呼叫 cachedText，由原生快取決定有效期、更新與清除；destroy 時釋放私有快照。`cached()` 維持每次回傳獨立可修改物件的行為。
-
-Python Demo 的 `ttl_text` 操作直接展示這段文字，與 `ttl_cache`／`ttl_peek` 共用 `demo:ttl`；`ttl_clear` 會清除同一項目。此操作需要提供 cachedText 的 Python runtime 模組；一般已解析資料繼續使用 cached，不必每次先 cachedText 再 json.loads。
+Python `self.net.cachedText(key, options, loader)` 回傳同一項目的 JSON 文字，loader 仍回傳 JSON 資料。大型目錄可按文字重用私有索引，但每次須經原生快取判斷有效期，destroy 時釋放快照。實作見 [Python Demo](../examples/python/spider.py) 的 `ttl_text`；一般資料用 `cached`，每次取得獨立可修改物件。
 
 | options | 用途 |
 | --- | --- |
@@ -191,15 +176,13 @@ Local 保存小型設定：Python `self.local`、QuickJS／Java `local` 使用 `
 
 完整清單分頁使用 Python `self.page(items, pg, limit)`、QuickJS `page(items, pg, limit)`、Java `Response.page(items, page, limit).string()`。網站已分頁時使用 `Response.create().vods(items).page(page, pagecount, limit, total).string()`，未知 total 時只填已知欄位。完整單頁清單可用 `.page()`，只輸出 page=1 與 pagecount=1。超連結用 Python `self.link`、QuickJS `link`、Java `Json.link`。
 
+Python／QuickJS 的 page 也可傳第四個參數 `total`。省略時切分完整清單；傳入精確總筆數時，items 使用網站回傳的當頁資料，不再切片。total 未知時直接回傳已知的 page／pagecount／limit，不估算總筆數。
+
 ## 網頁、直播與 proxy
 
-action 回傳 JSON 即可開網頁或顯示提示：
+action 回傳 `web` 開網頁、`msg` 顯示提示。實作見 Demo 的 `web`／`web_view`／`toast` 操作。
 
-```json
-{"web": {"url": "https://example.com/login", "cookie": [{"keys": ["sid", "token"]}]}}
-```
-
-url 限 HTTP(S)。一般網頁省略 mode，獨立內容使用 `"mode": "view"`，不啟動外部 App、不自動全螢幕。返回先退出全螢幕，再依網頁歷史回上一頁，沒有歷史才關閉。提示回傳 `{"msg": "訊息"}`；Java 可用 `Response.notify("訊息")`。
+url 限 HTTP(S)。一般網頁省略 mode，獨立內容設 mode=view，不啟動外部 App、不自動全螢幕。返回先退出全螢幕，再依歷史回上一頁，沒有歷史才關閉。Java 提示可用 `Response.notify()`。
 
 Cookie 同組全部需要、不同組任一組即可；需有新值且頁面同源。各組可指定 url，未指定時用開啟網址。這是登入完成條件，與 HTTP 的 cookie:true 分開。
 
@@ -207,23 +190,12 @@ Cookie 同組全部需要、不同組任一組即可；需有新值且頁面同�
 
 本機代理網址用 `getProxyUrl(params)`，Python 需加 self，Java 傳 Map。App 自動加入 do／siteKey 並編碼 query。proxy 回傳 `[status, mime, body, headers]`；Python body 可用 bytes，QuickJS 可用文字、byte 陣列、ArrayBuffer 或 TypedArray，Java 用 InputStream。EPG 在產生的網址後接 `&date={date}`，由 App 代入日期。
 
-QuickJS 原樣轉送上游正文時，可直接交出 `net.stream` 的 handle：
-
-```javascript
-async function proxy(params) {
-    const response = await net.stream(url, {timeout: 15000, callTimeout: 15000});
-    return [response.code, response.contentType, response.stream, response.headers];
-}
-```
-
-成功回傳後由 App 接管並關閉 stream；如果不回傳這個正文，呼叫 `response.stream.close()`。handle 只能在當次 proxy 呼叫交付一次，不可存入 Local／快取或傳到其他呼叫。Demo 的 `demo=stream` 分支原樣轉送 request_url，既有 playlist 分支仍負責產生 HLS 清單；需要改寫正文時使用文字或 bytes 模式。
+QuickJS 原樣轉送用 `net.stream`，見 [QuickJS Demo](../examples/javascript/spider.js) 的 `proxy`／`demo=stream` 分支。成功交付後由 App 關閉 stream；不交付時自行 close。handle 只能在當次 proxy 使用一次，不可存入 Local／快取或跨呼叫重用。改寫正文時使用文字或 bytes。
 
 ## Android UI
 
 Java／Python 的 `getActivity()` 即時取得目前 Activity，可能為 null／None。自訂 Dialog 在主執行緒執行時才取得，不保存 Activity 或自行註冊生命週期 callback。Java 工具類可用 `Runtime.activity()`，Application Context 用 `Runtime.context()`。
 
-Java 的執行中提示用 `Runtime.toast("訊息")`；Python 可用 `jclass("com.github.catvod.Runtime").toast("訊息")`，需先 `from java import jclass`。App 自動切主執行緒。QuickJS 使用 action JSON，沒有 Java 反射。
-
-共用 SDK 使用 `com.github.catvod.Runtime` 提供 Context、Activity 與 Toast，Java 需匯入這個類別。JAR 自己的 `com.github.catvod.spider.Init.init(Context)` 是獨立的可選初始化入口。
+共用 SDK 的 `com.github.catvod.Runtime` 提供 Context、Activity 與 Toast；Python 透過 `java.jclass` 呼叫，Toast 由 App 切到主執行緒。實作見 Java／Python Demo 的 `native_toast`／`dialog`。QuickJS 使用 action 回傳值。JAR 的 `com.github.catvod.spider.Init.init(Context)` 是獨立的可選初始化入口。
 
 Java 分享檔案使用 AndroidX FileProvider，authority 為 `context.getPackageName() + ".provider"`，Intent 加 `FLAG_GRANT_READ_URI_PERMISSION`；可分享目錄由 TV 的 file_paths.xml 決定。新增 Android 呼叫需在 TV 的混淆版驗證。

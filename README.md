@@ -26,11 +26,13 @@ Java 最低支援 Android 7.0。在本專案根目錄執行：
 
 打包會執行 R8，成品為 `jar/custom_spider.jar` 與 `jar/custom_spider.jar.md5`。
 
-共用接口 SDK 由 TV 專案根目錄的 `./gradlew apiJar` 產出，路徑為 `build/outputs/api/catvod-api.jar`。更新接口時，將該檔案同步到本專案的 `app/libs/catvod-api.jar`，再重新打包。
+| SDK | 來源 |
+| --- | --- |
+| `app/libs/catvod-api.jar` | TV 的 `apiJar`，產出於 `build/outputs/api/catvod-api.jar` |
 
-Android 的 Context、Activity 與 Toast 使用共用 SDK 的 `com.github.catvod.Runtime`，呼叫方式為 `Runtime.context()`、`Runtime.activity()`、`Runtime.toast("訊息")`。Java／Python 的 UI 使用方式見[開發說明](docs/development.md#android-ui)。
+SDK 以 `compileOnly` 引用，不打包進爬蟲 JAR；更新後重新打包。
 
-Java 的資料模型由本專案 `com.github.catvod.bean` 維護，[Response](app/src/main/java/com/github/catvod/utils/Response.java) 使用 Gson 組裝標準 JSON。bean 與 Response 隨爬蟲 JAR 打包，SDK 只提供執行接口，使用 `compileOnly`。
+Java 的 `com.github.catvod.bean` 與 [Response](app/src/main/java/com/github/catvod/utils/Response.java) 隨爬蟲 JAR 打包。Android UI 用法見[開發說明](docs/development.md#android-ui)。
 
 匯出到其他目錄可執行 `build.bat "D:\Output"`，也可傳入完整 JAR 路徑。
 

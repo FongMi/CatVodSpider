@@ -1,10 +1,10 @@
 # QuickJS HTML 查詢
 
-`htmlQuery(source, plan)` 接收 HTML 字串與可序列化為 JSON 的查詢物件，一次解析後回傳普通物件，不保留 DOM。基本用法見[開發說明](development.md#quickjs-html-欄位解析)與 JS Demo 的 `html_query` 操作。
+`htmlQuery(source, plan)` 一次解析 HTML，回傳普通物件，不保留 DOM。plan 須可序列化為 JSON；範例見 [QuickJS Demo](../examples/javascript/spider.js) 的 `htmlQueryAction`／`html_query`。
 
 ## 查詢與欄位
 
-plan 必須包含 queries 物件，每個具名查詢需要 selector 與 fields，可選填 maxRows。多組查詢共用同一次解析，結果按查詢名稱回傳陣列。
+plan 的 queries 物件可包含多組查詢，共用一次解析；各組需 selector 與 fields，可填 maxRows，結果以查詢名稱回傳陣列。
 
 查詢的 selector 選列，fields 的 selector 選該列的子孫，不包含該列本身。欄位選項如下：
 
