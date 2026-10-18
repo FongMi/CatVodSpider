@@ -9,7 +9,6 @@ compileSdk = "37"
 gson = "2.14.0"
 jsoup = "1.23.2"
 okhttp = "5.5.0"
-quickjsWrapper = "3.2.3"
 sardineAndroid = "0.9"
 slf4j = "2.0.20"
 smbj = "0.15.0"
@@ -23,7 +22,6 @@ androidx-core = { module = "androidx.core:core", version.ref = "core" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
-quickjs-wrapper = { module = "wang.harlon.quickjs:wrapper-java", version.ref = "quickjsWrapper" }
 sardine-android = { module = "com.github.thegrizzlylabs:sardine-android", version.ref = "sardineAndroid" }
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 smbj = { module = "com.hierynomus:smbj", version.ref = "smbj" }

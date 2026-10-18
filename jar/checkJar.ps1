@@ -1,6 +1,6 @@
 param(
     [string] $Jar = (Join-Path $PSScriptRoot "custom_spider.jar"),
-    [string] $Sdk = (Join-Path $PSScriptRoot "..\app\libs\catvod-api.jar"),
+    [string[]] $Sdk = @((Join-Path $PSScriptRoot "../app/libs/catvod-api.jar"), (Join-Path $PSScriptRoot "../app/libs/quickjs-api.jar")),
     [string] $Apk = (Join-Path $PSScriptRoot "..\app\build\outputs\apk\release\app-release-unsigned.apk")
 )
 
@@ -41,7 +41,7 @@ function GetDexHeaders([string] $Path) {
 $apktool = Join-Path $PSScriptRoot "3rd\apktool_2.11.0.jar"
 if (-not (Test-Path -LiteralPath $Jar)) { Fail "missing jar: $Jar" }
 if (-not (Test-Path -LiteralPath $apktool)) { Fail "missing apktool: $apktool" }
-if (-not (Test-Path -LiteralPath $Sdk)) { Fail "missing SDK: $Sdk" }
+foreach ($api in $Sdk) { if (-not (Test-Path -LiteralPath $api)) { Fail "missing SDK: $api" } }
 if (-not (Test-Path -LiteralPath $Apk)) { Fail "missing release APK: $Apk" }
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -51,13 +51,15 @@ if ($apkHeaders.Count -eq 0) { Fail "missing release DEX" }
 if (($apkHeaders -join ',') -ne ($jarHeaders -join ',')) { Fail "DEX names or versions differ from release APK" }
 
 $sdkClasses = [Collections.Generic.HashSet[string]]::new()
-$sdkArchive = [IO.Compression.ZipFile]::OpenRead((Resolve-Path -LiteralPath $Sdk).Path)
-try {
-    foreach ($entry in $sdkArchive.Entries) {
-        if ($entry.FullName.EndsWith('.class')) { [void] $sdkClasses.Add($entry.FullName.Substring(0, $entry.FullName.Length - 6)) }
+foreach ($api in $Sdk) {
+    $sdkArchive = [IO.Compression.ZipFile]::OpenRead((Resolve-Path -LiteralPath $api).Path)
+    try {
+        foreach ($entry in $sdkArchive.Entries) {
+            if ($entry.FullName.EndsWith('.class')) { [void] $sdkClasses.Add($entry.FullName.Substring(0, $entry.FullName.Length - 6)) }
+        }
+    } finally {
+        $sdkArchive.Dispose()
     }
-} finally {
-    $sdkArchive.Dispose()
 }
 
 $Jar = (Resolve-Path -LiteralPath $Jar).Path
@@ -120,7 +122,6 @@ try {
         "com/google/gson/",
         "com/hierynomus/",
         "com/thegrizzlylabs/sardineandroid/",
-        "com/whl/quickjs/",
         "dalvik/",
         "j$/",
         "java/",

@@ -29,8 +29,9 @@ Java 最低支援 Android 7.0。在本專案根目錄執行：
 | SDK | 來源 |
 | --- | --- |
 | `app/libs/catvod-api.jar` | TV 的 `apiJar`，產出於 `build/outputs/api/catvod-api.jar` |
+| `app/libs/quickjs-api.jar` | quickjs-wrapper [Actions](https://github.com/FongMi/quickjs-wrapper/actions/workflows/build.yml) 的 Java API JAR |
 
-SDK 以 `compileOnly` 引用，不打包進爬蟲 JAR；更新後重新打包。
+SDK 以 `compileOnly` 引用，不打包進爬蟲 JAR；更新後重新打包。Function JAR 使用 `com.fongmi.quickjs` API。
 
 Java 的 `com.github.catvod.bean` 與 [Response](app/src/main/java/com/github/catvod/utils/Response.java) 隨爬蟲 JAR 打包。Android UI 用法見[開發說明](docs/development.md#android-ui)。
 

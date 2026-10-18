@@ -67,7 +67,7 @@ def verifySpiderJar = tasks.register('verifySpiderJar', Exec) {
     group = 'verification'
     description = 'Checks the generated spider JAR structure and references.'
     dependsOn generateSpiderJar
-    inputs.files(spiderJarFile, spiderCheckScript, apktoolJar, releaseApk, project(':app').layout.projectDirectory.file('libs/catvod-api.jar'))
+    inputs.files(spiderJarFile, spiderCheckScript, apktoolJar, releaseApk, project(':app').layout.projectDirectory.file('libs/catvod-api.jar'), project(':app').layout.projectDirectory.file('libs/quickjs-api.jar'))
     outputs.file(spiderMd5File)
     outputs.upToDateWhen { false }
     doFirst {

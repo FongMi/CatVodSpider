@@ -13,7 +13,19 @@
 
 Python 入口使用同步 `def`，App 不等待 coroutine。主機驗證也使用 Python 3.10。
 
-QuickJS 使用 App 注入的 API。TextEncoder／TextDecoder 提供 UTF-8 編解碼與分塊解碼；其他編碼、編碼串流與 Intl 未提供。
+QuickJS 的宿主功能由 App 注入，需使用 v11 配套的 wrapper、runtime 與 TV 介接：
+
+| 功能 | 支援範圍 |
+| --- | --- |
+| 計時與輸出 | timeout／interval、額外參數與共用取消 ID；console 的 assert、dir、count、time、trace、group、table，clear 只重設縮排 |
+| 網址與事件 | URL／URLSearchParams、Event／EventTarget／CustomEvent、AbortController／AbortSignal（timeout、any、reason） |
+| 資料與串流 | structuredClone、Blob／File／FormData、Web Streams 與 BYOB；clone 不支援 function／SharedArrayBuffer |
+| 編碼 | UTF-8 TextEncoder、多編碼 TextDecoder（含 GBK／GB18030／Big5）、TextEncoderStream／TextDecoderStream |
+| HTTP | Headers／Request／Response；網路請求使用注入的 `net.http`／`net.json` |
+| 加密 | getRandomValues／randomUUID、SHA、HMAC、AES-GCM／CBC、raw／octet JWK、wrap／unwrap；不支援 RSA、橢圓曲線或 KDF；GCM tag 為 96、104、112、120、128 bits，附加於密文末端 |
+| 模組 | JSON module import attributes，type 為 json |
+
+大型資料用 `net.openStream`，proxy 轉送用 `net.stream`。不是 Node.js 環境。`Intl` 與 `Atomics.waitAsync` 未提供。
 
 ## 入口
 
