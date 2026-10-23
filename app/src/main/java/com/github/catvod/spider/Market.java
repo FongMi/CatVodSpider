@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.github.catvod.Runtime;
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.market.Data;
@@ -133,8 +135,8 @@ public class Market extends Spider {
             String name = getFileName(url);
             folder = prepareFolder();
             target = new File(folder, name);
-            String extension = name.toLowerCase(Locale.ROOT).endsWith(".apk") ? ".apk" : ".tmp";
-            temporary = File.createTempFile(".market-", extension, folder);
+            String ext = name.toLowerCase(Locale.ROOT).endsWith(".apk") ? ".apk" : ".tmp";
+            temporary = File.createTempFile(".market-", ext, folder);
             download = Download.create(url, temporary);
             anchor = activity.getWindow().getDecorView();
             status = new TextView(activity);
@@ -305,11 +307,11 @@ public class Market extends Spider {
         }
 
         @Override
-        public void onViewAttachedToWindow(View view) {
+        public void onViewAttachedToWindow(@NonNull View view) {
         }
 
         @Override
-        public void onViewDetachedFromWindow(View view) {
+        public void onViewDetachedFromWindow(@NonNull View view) {
             close();
         }
     }

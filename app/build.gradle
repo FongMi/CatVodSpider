@@ -56,11 +56,11 @@ android {
 
 dependencies {
     sardine libs.sardine.android
+    compileOnly files(sardineJar).builtBy(extractSardine)
     compileOnly files('libs/catvod-api.jar', 'libs/quickjs-api.jar')
+    compileOnly(libs.okhttp) { transitive = false }
     compileOnly libs.androidx.annotation
     compileOnly libs.androidx.core
-    compileOnly(libs.okhttp) { transitive = false }
-    compileOnly files(sardineJar).builtBy(extractSardine)
     compileOnly libs.gson
     compileOnly libs.guava
     compileOnly libs.smbj

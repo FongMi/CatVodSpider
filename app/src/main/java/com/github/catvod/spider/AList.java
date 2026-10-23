@@ -116,7 +116,6 @@ public class AList extends Spider {
         List<Item> folders = new ArrayList<>();
         List<Item> files = new ArrayList<>();
         List<Vod> list = new ArrayList<>();
-
         for (Item item : getList(tid, true)) {
             if (item.isFolder()) folders.add(item);
             else files.add(item);
@@ -125,7 +124,6 @@ public class AList extends Spider {
             Sorter.sort(type, order, folders);
             Sorter.sort(type, order, files);
         }
-
         for (Item item : folders) list.add(item.getVod(tid));
         for (Item item : files) list.add(item.getVod(tid));
         return Response.create().vods(list).page().string();
