@@ -62,6 +62,7 @@ dependencies {
     compileOnly(libs.okhttp) { transitive = false }
     compileOnly files(sardineJar).builtBy(extractSardine)
     compileOnly libs.gson
+    compileOnly libs.guava
     compileOnly libs.smbj
     compileOnly libs.slf4j
     implementation libs.jsoup

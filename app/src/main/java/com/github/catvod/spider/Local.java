@@ -21,6 +21,7 @@ import com.github.catvod.utils.VodUtil;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,7 +90,7 @@ public class Local extends Spider {
 
     @Override
     public Object[] proxy(Map<String, String> params) {
-        String path = new String(Base64.decode(params.get("path"), Base64.DEFAULT | Base64.URL_SAFE));
+        String path = new String(Base64.decode(params.get("path"), Base64.URL_SAFE), StandardCharsets.UTF_8);
         Object[] result = new Object[3];
         result[0] = 200;
         result[1] = "application/octet-stream";
@@ -109,7 +110,7 @@ public class Local extends Spider {
     }
 
     private Vod create(File file) {
-        String pic = file.isFile() ? Proxy.getUrl(siteKey, "&path=" + Base64.encodeToString(file.getAbsolutePath().getBytes(), Base64.DEFAULT | Base64.URL_SAFE)) : Image.FOLDER;
+        String pic = file.isFile() ? getProxyUrl(Map.of("path", Base64.encodeToString(file.getAbsolutePath().getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP | Base64.URL_SAFE))) : Image.FOLDER;
         return Vod.create().id(file.getAbsolutePath()).name(file.getName()).pic(pic).remarks(format.format(file.lastModified())).tag(file.isDirectory() ? "folder" : "file");
     }
 

@@ -7,6 +7,7 @@ targetSdk = "37"
 compileSdk = "37"
 
 gson = "2.14.0"
+guava = "33.7.2-android"
 jsoup = "1.23.2"
 okhttp = "5.5.0"
 sardineAndroid = "0.9"
@@ -20,6 +21,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 androidx-core = { module = "androidx.core:core", version.ref = "core" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 sardine-android = { module = "com.github.thegrizzlylabs:sardine-android", version.ref = "sardineAndroid" }

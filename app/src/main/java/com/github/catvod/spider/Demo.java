@@ -10,10 +10,15 @@ import android.os.Looper;
 import com.github.catvod.Runtime;
 import com.github.catvod.bean.Class;
 import com.github.catvod.bean.Danmaku;
+import com.github.catvod.bean.Drm;
 import com.github.catvod.bean.Filter;
+import com.github.catvod.bean.SkipSegment;
 import com.github.catvod.bean.Style;
+import com.github.catvod.bean.Sub;
+import com.github.catvod.bean.Url;
 import com.github.catvod.bean.Value;
 import com.github.catvod.bean.Vod;
+import com.github.catvod.bean.Web;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.Net;
 import com.github.catvod.net.NetOptions;
@@ -164,26 +169,32 @@ public class Demo extends Spider {
         if (record == null || episode < 1 || episode > record.getAsJsonArray("episodes").size()) return Response.notify("找不到此範例集數");
         String key = parts[3].equals("backup") ? "backup_media_url" : "media_url";
         String url = option(key);
-        JsonObject choices = parts[3].equals("main") && options.has("media_urls") ? qualities(options.getAsJsonObject("media_urls")) : null;
-        if (choices != null) url = choices.getAsJsonArray("values").get(choices.get("position").getAsInt()).getAsJsonObject().get("v").getAsString();
-        JsonElement headers = options.get(parts[3].equals("backup") ? "backup_media_headers" : "media_headers");
-        if (headers == null || !headers.isJsonObject()) headers = new JsonObject();
+        JsonObject choices = parts[3].equals("main") && options.has("media_urls") ? options.getAsJsonObject("media_urls") : null;
+        Url qualities = choices == null ? null : qualities(choices);
+        if (choices != null) url = choices.getAsJsonArray("values").get(choices.has("position") ? choices.get("position").getAsInt() : 0).getAsJsonObject().get("v").getAsString();
+        Map<String, String> headers = mediaHeaders(parts[3].equals("backup") ? "backup_media_headers" : "media_headers");
         if (url.isEmpty() && parts[3].equals("main") && !option("sniff_url").isEmpty())
-            return GSON.toJson(Map.of("parse", 1, "jx", 0, "url", httpUrl(option("sniff_url"), "sniff_url"), "header", headers));
+            return Response.create().parse().url(httpUrl(option("sniff_url"), "sniff_url")).header(headers).string();
         if (url.isEmpty()) return Response.notify("請先設定 ext." + key + " 再測試播放");
-        JsonObject result = GSON.toJsonTree(Map.of("parse", 0, "jx", 0,
-                "url", parts[3].equals("proxy") ? getProxyUrl(Map.of("demo", "playlist")) : httpUrl(url, key),
-                "header", headers, "artwork", picture(record, "landscape"),
-                "desc", record.get("name").getAsString() + "・" + record.getAsJsonArray("episodes").get(episode - 1).getAsString())).getAsJsonObject();
-        if (options.has("skips")) result.add("skips", skips(options.getAsJsonArray("skips")));
-        if (choices != null) result.add("url", choices);
-        for (String field : List.of("subs", "danmaku", "drm", "format")) {
-            String source = field.equals("subs") ? "subtitles" : field.equals("format") ? "media_format" : field;
-            if (options.has(source)) result.add(field, options.get(source));
-        }
-        if (options.has("live_danmaku") && options.get("live_danmaku").getAsBoolean()) result.add("danmaku", GSON.toJsonTree(List.of(Danmaku.create().name("即時彈幕").url(getDanmakuUrl("demo")))));
-        if (options.has("start_position_ms")) result.addProperty("position", milliseconds(options.get("start_position_ms")));
-        return GSON.toJson(result);
+        Response result = Response.create().url(parts[3].equals("proxy") ? getProxyUrl(Map.of("demo", "playlist")) : httpUrl(url, key))
+                .header(headers).artwork(picture(record, "landscape"))
+                .desc(record.get("name").getAsString() + "・" + record.getAsJsonArray("episodes").get(episode - 1).getAsString());
+        if (options.has("skips")) result.skips(skips(options.getAsJsonArray("skips")));
+        if (qualities != null) result.url(qualities);
+        if (options.has("subtitles") && !options.get("subtitles").isJsonNull()) result.subs(Arrays.asList(GSON.fromJson(options.get("subtitles"), Sub[].class)));
+        if (options.has("danmaku") && !options.get("danmaku").isJsonNull()) result.danmaku(Arrays.asList(GSON.fromJson(options.get("danmaku"), Danmaku[].class)));
+        if (options.has("drm")) result.drm(GSON.fromJson(options.get("drm"), Drm.class));
+        if (options.has("media_format") && !options.get("media_format").isJsonNull()) result.format(option("media_format"));
+        if (options.has("live_danmaku") && options.get("live_danmaku").getAsBoolean()) result.danmaku(List.of(Danmaku.create().name("即時彈幕").url(getDanmakuUrl("demo"))));
+        if (options.has("start_position_ms")) result.position(milliseconds(options.get("start_position_ms")));
+        return result.string();
+    }
+
+    private Map<String, String> mediaHeaders(String key) {
+        Map<String, String> headers = new LinkedHashMap<>();
+        JsonElement value = options.get(key);
+        if (value != null && value.isJsonObject()) for (Map.Entry<String, JsonElement> entry : value.getAsJsonObject().entrySet()) headers.put(entry.getKey(), entry.getValue().getAsString());
+        return headers;
     }
 
     @Override
@@ -461,12 +472,11 @@ public class Demo extends Spider {
 
     private String web(boolean view) throws Exception {
         String url = view && !option("game_url").isEmpty() ? httpUrl(option("game_url"), "game_url") : webUrl();
-        JsonObject web = new JsonObject();
-        web.addProperty("url", url);
-        if (view) web.addProperty("mode", "view");
-        else if (options.has("web_cookie")) web.add("cookie", options.getAsJsonArray("web_cookie"));
-        else if (!option("cookie_name").isEmpty()) web.add("cookie", GSON.toJsonTree(List.of(Map.of("keys", List.of(cookieName())))));
-        return GSON.toJson(Map.of("web", web));
+        Web web = Web.create().url(url);
+        if (view) web.mode("view");
+        else if (options.has("web_cookie")) web.cookie(Arrays.asList(GSON.fromJson(options.get("web_cookie"), Web.Cookie[].class)));
+        else if (!option("cookie_name").isEmpty()) web.cookie(List.of(Web.Cookie.create().keys(List.of(cookieName()))));
+        return Response.create().web(web).string();
     }
 
     private boolean cookieExists() {
@@ -514,30 +524,36 @@ public class Demo extends Spider {
         return Response.notify(passed ? "App 與加密 bridge 測試通過" : "App 或加密 bridge 測試失敗");
     }
 
-    private JsonArray skips(JsonArray values) throws Exception {
+    private List<SkipSegment> skips(JsonArray values) throws Exception {
+        List<SkipSegment> segments = new ArrayList<>();
         for (JsonElement element : values) {
             JsonObject value = element.getAsJsonObject();
-            if (!List.of("opening", "middle", "ending").contains(value.getAsJsonPrimitive("type").getAsString())) throw new IllegalArgumentException("skips.type 格式錯誤");
+            String type = value.getAsJsonPrimitive("type").getAsString();
+            if (!List.of("opening", "middle", "ending").contains(type)) throw new IllegalArgumentException("skips.type 格式錯誤");
             long start = milliseconds(value.get("start"));
-            if (!value.has("end") && value.getAsJsonPrimitive("type").getAsString().equals("ending") && start > 0) continue;
-            if (milliseconds(value.get("end")) <= start) throw new IllegalArgumentException("skips.end 必須晚於 start");
+            SkipSegment segment = SkipSegment.create().type(type).start(start);
+            if (!value.has("end") && type.equals("ending") && start > 0) {
+                segments.add(segment);
+                continue;
+            }
+            long end = milliseconds(value.get("end"));
+            if (end <= start) throw new IllegalArgumentException("skips.end 必須晚於 start");
+            segments.add(segment.end(end));
         }
-        return values.deepCopy();
+        return segments;
     }
 
-    private JsonObject qualities(JsonObject value) throws Exception {
+    private Url qualities(JsonObject value) throws Exception {
         JsonArray values = value.getAsJsonArray("values");
         if (values.isEmpty()) throw new IllegalArgumentException("media_urls.values 不可為空");
+        List<Value> qualities = new ArrayList<>();
         for (JsonElement element : values) {
             JsonObject item = element.getAsJsonObject();
-            item.getAsJsonPrimitive("n").getAsString();
-            httpUrl(item.getAsJsonPrimitive("v").getAsString(), "media_urls.v");
+            qualities.add(Value.create().n(item.getAsJsonPrimitive("n").getAsString()).v(httpUrl(item.getAsJsonPrimitive("v").getAsString(), "media_urls.v")));
         }
         long position = value.has("position") ? milliseconds(value.get("position")) : 0;
         if (position >= values.size()) throw new IllegalArgumentException("media_urls.position 必須是有效畫質索引");
-        JsonObject result = value.deepCopy();
-        result.addProperty("position", position);
-        return result;
+        return Url.create().values(qualities).position((int) position);
     }
 
     private long milliseconds(JsonElement value) {

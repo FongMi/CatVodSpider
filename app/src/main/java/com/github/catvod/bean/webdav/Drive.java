@@ -65,7 +65,7 @@ public class Drive {
     }
 
     public String getPath() {
-        return TextUtils.isEmpty(path) ? "" : path;
+        return path == null ? Uri.parse(getServer()).getPath() : path;
     }
 
     public Drive path(String path) {
@@ -74,7 +74,11 @@ public class Drive {
     }
 
     public String getHost() {
-        return getServer().replace(getPath(), "");
+        return Uri.parse(getServer()).buildUpon().path(null).query(null).fragment(null).build().toString();
+    }
+
+    public String getUrl(String path) {
+        return Uri.parse(getHost()).buildUpon().path(path).build().toString();
     }
 
     public Sardine getWebdav() {
@@ -89,7 +93,6 @@ public class Drive {
     private void init() {
         webdav = new OkHttpSardine();
         webdav.setCredentials(getUser(), getPass());
-        path(Uri.parse(getServer()).getPath());
     }
 
     public Vod vod(DavResource item, String vodPic) {

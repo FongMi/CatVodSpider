@@ -20,6 +20,7 @@ description: Develop or upgrade Java, Python and QuickJS TV spiders using the TV
 - proxy 自訂串流用 Python `self.net.stream(generator())` 或 QuickJS `net.stream(asyncGenerator())`，逐塊 yield bytes。產生器延後至播放器讀取才執行，可跨請求；reader 在產生器內開啟，以 with／finally 關閉，不累積整段直播。App 處理交付、取消與關閉，站點續接及封包改寫留在爬蟲；需配套 runtime。
 - QuickJS 批次 HTML 欄位可用全域 `htmlQuery`，同一 plan 放多組 queries；自行驗證必填值、trim 與補相對 URL。它使用 Jsoup 規則，不是 Cheerio 相容介面；用法與限制見開發說明。
 - 固定 HTTP 批次用共用 `net.batch`；QuickJS 每項還要解析或轉換時用 `net.map(items, async (item, index) => result, limit)`，保持並行上限並檢查每項 HTTP 狀態。
+- Java 互動式下載使用共用 SDK 的 `Download.create(url, file).start(callback)`，沿用 `pause()`、`paused()`、`start(callback)` 與 `cancel()`；不要自行實作分段、續傳或進度計算的網路層。UI 在主執行緒使用當前 Activity，關閉對話框與 destroy 時取消工作；驗證內容後才取代正式檔案。
 - 保持精簡、扁平，按實際操作切 function。不要為一個簡單操作增加類別或抽象層。
 - Java 字幕用 `Sub.create().format(ext)` 傳副檔名，由 `Sub` 呼叫 `VodUtil.getSubMimeType(ext)`；JSON 的 `subs[].format` 使用 MIME。
 

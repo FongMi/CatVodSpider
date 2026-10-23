@@ -145,6 +145,8 @@ QuickJS 每筆請求後還需解析時，用 `await net.map(items, async (item, 
 
 下載用 Python／QuickJS `net.download(url, path, options)`、Java `net.download(url, optionsJson, file)`，直接寫檔。相對路徑以 App cache 為基準，父目錄需存在；完整傳輸後才取代目標檔案。下載不回傳 HTTP 狀態，也不會僅因非 2xx 拒絕，檔案內容由呼叫者確認。
 
+Java 需要進度與暫停控制時，使用共用 SDK 的 `Download.create(url, file).start(callback)`，以 `pause()` 暫停、收到 `paused()` 後再次 `start(callback)` 繼續，`cancel()` 取消。預設拒絕非 2xx 與空檔，回呼在主執行緒執行；`progress(total, downloaded, speed)` 的單位是 bytes 與 bytes/s，未知 total 為負數。檔案內容仍須驗證。對話框、暫存檔與資源釋放見 [Market](../app/src/main/java/com/github/catvod/spider/Market.java)。
+
 下載可傳 HTTP options，另支援以下選項：
 
 | options | 用途 |

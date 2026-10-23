@@ -11,23 +11,29 @@ import com.github.catvod.bean.Vod;
 import com.github.catvod.bean.webdav.Drive;
 import com.github.catvod.bean.webdav.Sorter;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.net.Net;
+import com.github.catvod.net.NetOptions;
 import com.github.catvod.utils.Image;
 import com.github.catvod.utils.Response;
 import com.github.catvod.utils.VodUtil;
+import com.google.gson.Gson;
 import com.thegrizzlylabs.sardineandroid.DavResource;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
+
+import okhttp3.Credentials;
 
 public class WebDAV extends Spider {
 
+    private static final Gson GSON = new Gson();
     private List<Drive> drives;
     private List<String> allExt;
     private String extend;
@@ -59,7 +65,7 @@ public class WebDAV extends Spider {
 
     @Override
     public void init(Context context, String extend) {
-        this.allExt = new ArrayList<>(Arrays.asList("ass", "ssa", "srt"));
+        this.allExt = new ArrayList<>(VodUtil.SUB);
         this.allExt.addAll(VodUtil.MEDIA);
         this.extend = extend;
         fetchRule();
@@ -121,32 +127,48 @@ public class WebDAV extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         String[] ids = id.split("~~~");
-        return Response.create().url(Proxy.getUrl(siteKey, "&url=" + ids[0])).subs(getSub(ids)).string();
+        return Response.create().url(getProxyUrl(Map.of("url", ids[0]))).subs(getSub(ids)).string();
     }
 
     @Override
-    public Object[] proxy(Map<String, String> params) throws IOException {
+    public Object[] proxy(Map<String, String> params) throws Exception {
         String url = params.get("url");
         String key = url.contains("/") ? url.substring(0, url.indexOf("/")) : url;
         url = url.substring(key.length());
         Drive drive = getDrive(key);
-        Object[] result = new Object[3];
-        result[0] = 200;
-        result[1] = "application/octet-stream";
-        result[2] = drive.getWebdav().get(drive.getHost() + url, getHeaders(params));
-        return result;
+        Map<String, String> headers = getHeaders(params);
+        if (!drive.getUser().isEmpty() || !drive.getPass().isEmpty()) headers.put("Authorization", Credentials.basic(drive.getUser(), drive.getPass()));
+        CompletableFuture<Net.StreamResult> pending = net.requestStreamAsync(drive.getUrl(url), NetOptions.from(GSON.toJson(Map.of("headers", headers, "timeout", 15000))));
+        Net.StreamResult response = awaitStream(pending);
+        Map<String, String> returned = new LinkedHashMap<>();
+        response.headers.forEach((name, value) -> returned.put(name, value instanceof List<?> values ? values.get(values.size() - 1).toString() : value.toString()));
+        return new Object[]{response.code, response.contentType, response, returned};
+    }
+
+    private Net.StreamResult awaitStream(CompletableFuture<Net.StreamResult> pending) throws Exception {
+        try {
+            return pending.get();
+        } catch (InterruptedException e) {
+            cancelStream(pending, e);
+            Thread.currentThread().interrupt();
+            throw e;
+        }
+    }
+
+    private void cancelStream(CompletableFuture<Net.StreamResult> pending, InterruptedException interrupted) {
+        if (pending.cancel(true) || pending.isCompletedExceptionally()) return;
+        try {
+            pending.join().close();
+        } catch (RuntimeException | Error error) {
+            interrupted.addSuppressed(error);
+        }
     }
 
     private List<DavResource> getList(Drive drive, String path, List<String> ext) throws IOException {
-        path = drive.getHost() + (path.startsWith(drive.getPath()) ? path : drive.getPath() + path);
+        path = drive.getUrl(path.startsWith(drive.getPath()) ? path : drive.getPath() + path);
         List<DavResource> items = drive.getWebdav().list(path);
         if (!items.isEmpty()) items.remove(0); //Remove parent
-        Iterator<DavResource> iterator = items.iterator();
-        while (iterator.hasNext()) {
-            DavResource item = iterator.next();
-            if (!item.isDirectory() && !item.getName().contains(".")) iterator.remove();
-            if (!item.isDirectory() && !ext.contains(getExt(item))) iterator.remove();
-        }
+        items.removeIf(item -> !item.isDirectory() && (!item.getName().contains(".") || !ext.contains(getExt(item))));
         return items;
     }
 
@@ -175,7 +197,7 @@ public class WebDAV extends Spider {
             String[] split = text.split("@@@");
             String name = split[0];
             String ext = split[1];
-            String url = Proxy.getUrl(siteKey, "&url=" + split[2]);
+            String url = getProxyUrl(Map.of("url", split[2]));
             sub.add(Sub.create().name(name).format(ext).url(url));
         }
         return sub;
@@ -183,7 +205,7 @@ public class WebDAV extends Spider {
 
     private Map<String, String> getHeaders(Map<String, String> params) {
         Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        List<String> keys = Arrays.asList("referer", "icy-metadata", "range", "connection", "accept-encoding", "user-agent");
+        List<String> keys = Arrays.asList("referer", "icy-metadata", "range", "if-range", "accept-encoding", "user-agent");
         for (String key : params.keySet()) if (keys.contains(key)) headers.put(key, params.get(key));
         return headers;
     }

@@ -114,7 +114,7 @@ public class Drive {
     }
 
     public String getHost() {
-        return getServer().replace(getPath(), "");
+        return Uri.parse(getServer()).buildUpon().path(null).query(null).fragment(null).build().toString();
     }
 
     public String settingsApi() {
@@ -143,13 +143,15 @@ public class Drive {
         return this;
     }
 
-    public String params(String keyword) {
+    public String params(String keyword, int page, int limit) {
         if (isNew()) {
             Map<String, Object> params = new HashMap<>();
             params.put("keywords", keyword);
-            params.put("page", 1);
+            params.put("page", page);
             params.put("parent", "/");
-            params.put("per_page", 100);
+            params.put("per_page", limit);
+            params.put("scope", 0);
+            params.put("password", findPass("/"));
             return new Gson().toJson(params);
         } else {
             Map<String, Object> params = new HashMap<>();
