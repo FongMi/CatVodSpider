@@ -13,6 +13,7 @@ from base.spider import Spider as BaseSpider
 PAGE_SIZE = 4
 SEARCH_ALL_KEYWORD = "示範"
 REQUEST_TIMEOUT_MS = 15000
+VIDEO_SUFFIXES = (".m3u8", ".mpd", ".mp4", ".mkv", ".flv", ".mp3", ".m4a", ".aac")
 CACHE_KEY = "python_spider_demo_message"
 CACHE_VALUE = {"value": "範例資料", "items": [1, True, None]}
 COOKIE_NAME_PATTERN = re.compile(r"^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$")
@@ -141,6 +142,8 @@ class Spider(BaseSpider):
             options = {}
         if not isinstance(options, dict):
             raise ValueError("Site.ext 必須是 JSON 物件")
+        if "request_options" in options and not isinstance(options["request_options"], dict):
+            raise ValueError("request_options 必須是物件")
 
         self.options = options
         self.socket = None
@@ -290,7 +293,7 @@ class Spider(BaseSpider):
         if qualities:
             url = qualities["values"][qualities["position"]]["v"]
         sniff_url = str(self.options.get("sniff_url") or "").strip() if source == "main" else ""
-        header_key = "media_headers" if source == "main" else "backup_media_headers"
+        header_key = "backup_media_headers" if source == "backup" else "media_headers"
         headers = self._string_map(self.options.get(header_key), header_key)
         if not url and sniff_url:
             self._absolute_url(sniff_url, "sniff_url")
@@ -310,6 +313,8 @@ class Spider(BaseSpider):
 
         if "skips" in self.options:
             result["skips"] = self._skips(self.options["skips"])
+        if self.options.get("timeshift") is not None:
+            result["timeshift"] = self.options["timeshift"]
         media_format = str(self.options.get("media_format") or "").strip()
         if media_format:
             result["format"] = media_format
@@ -335,8 +340,13 @@ class Spider(BaseSpider):
         return result
 
     def action(self, action):
-        if action in ("json", "session", "parallel", "binary", "request_sync", "stream_read", "proxy_stream", "proxy_body"):
+        if action in ("json", "session", "parallel", "parallel_map", "binary", "request_sync", "stream_read", "proxy_stream", "proxy_body"):
             return self._network_action(action)
+        if action == "script":
+            value = self.js.eval("({value: value + 1, digest: md5X(text)})", {
+                "globals": {"value": 41, "text": "demo"}, "timeout": 1000
+            })
+            return {"msg": "腳本執行結果：" + json.dumps(value, ensure_ascii=False)}
         if action == "download":
             with tempfile.TemporaryDirectory() as directory:
                 target = Path(directory) / "demo.bin"
@@ -391,8 +401,6 @@ class Spider(BaseSpider):
         if action == "site_key":
             return {"msg": "目前 Site key：" + str(getattr(self, "siteKey", ""))}
         if action == "web":
-            if not self.options.get("web_url"):
-                return {"msg": "請先在 ext 設定 web_url"}
             web = {"url": self.web_url}
             if self.options.get("web_cookie"):
                 web["cookie"] = self.options["web_cookie"]
@@ -524,6 +532,10 @@ class Spider(BaseSpider):
                 for value in values:
                     self._check_response(value)
                 return {"msg": "並行完成 3 次請求"}
+            if action == "parallel_map":
+                urls = [self.request_url, self._absolute_url(self.options.get("json_url"), "json_url")]
+                values = self.net.map(urls, self._request_summary, 2)
+                return {"msg": "並行映射完成：" + json.dumps(values, ensure_ascii=False)}
             if action == "session":
                 with self.net.session() as flow:
                     if not flow.setCookie(self.request_url, "demo_session=1; Path=/"):
@@ -531,12 +543,16 @@ class Spider(BaseSpider):
                     self._check_response(flow.req(self.request_url, {"timeout": REQUEST_TIMEOUT_MS}))
                     exists = "demo_session=1" in flow.getCookie(self.request_url)
                 return {"msg": "隔離 Session 請求完成，Cookie " + ("存在" if exists else "不存在")}
-            options = {"timeout": REQUEST_TIMEOUT_MS, "buffer": 3 if action == "binary" else 0}
-            value = self.net.req(self.request_url, options)
+            value = self._request(cookie=False, buffer=3 if action == "binary" else None)
             self._check_response(value)
             return {"msg": "HTTP %s，回應長度 %s" % (value["code"], len(value["content"]))}
         except Exception as error:
             return {"msg": "網路示範失敗：" + str(error)}
+
+    def _request_summary(self, url, index):
+        value = self.net.req(url, {"timeout": REQUEST_TIMEOUT_MS})
+        self._check_response(value)
+        return {"index": index, "code": value["code"]}
 
     @staticmethod
     def _check_response(value):
@@ -577,7 +593,7 @@ class Spider(BaseSpider):
         return (
             parsed.scheme in ("http", "https")
             and bool(parsed.netloc)
-            and path.endswith(".m3u8")
+            and path.endswith(VIDEO_SUFFIXES)
             and "/ad/" not in path
         )
 
@@ -775,6 +791,8 @@ class Spider(BaseSpider):
                 ("cookie_clear", "清除 Cookie", "寫入過期 Cookie 並確認結果"),
                 ("session", "隔離 Session", "使用獨立 Cookie，用完關閉"),
                 ("parallel", "批次請求", "並行取得 3 份回應"),
+                ("parallel_map", "並行映射", "限制並行數，依序回傳解析結果"),
+                ("script", "執行 JavaScript", "隔離執行，傳入變數與逾時"),
                 ("download", "下載檔案", "下載至暫存檔，用完移除"),
                 ("stream_read", "分塊讀取", "每塊最多 64 KiB，用完關閉"),
                 ("proxy_stream", "串流代理", "由本機 proxy 轉送 request_url"),
@@ -919,7 +937,7 @@ class Spider(BaseSpider):
                 return value
         return ""
 
-    def _request(self):
+    def _request(self, cookie=True, buffer=None):
         headers = self._string_map(self.options.get("request_headers"), "request_headers")
         if not any(key.lower() == "user-agent" for key in headers):
             headers["User-Agent"] = str(self.net.getUserAgent() or USER_AGENT)
@@ -927,11 +945,13 @@ class Spider(BaseSpider):
             "method": str(self.options.get("request_method") or "GET"),
             "headers": headers,
             "timeout": REQUEST_TIMEOUT_MS,
-            "cookie": True,
+            "cookie": cookie,
             "callTimeout": REQUEST_TIMEOUT_MS,
         }
         extra = self.options.get("request_options", {})
         if not isinstance(extra, dict):
             raise ValueError("request_options 必須是物件")
         options.update(extra)
+        if buffer is not None:
+            options["buffer"] = buffer
         return self.net.req(self.request_url, options)

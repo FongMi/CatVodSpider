@@ -57,15 +57,21 @@ public class Demo extends Spider {
 
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().serializeNulls().create();
     private static final int PAGE_SIZE = 4;
-    private NetSocket socket;
+    private static final List<String> VIDEO_SUFFIXES = List.of(".m3u8", ".mpd", ".mp4", ".mkv", ".flv", ".mp3", ".m4a", ".aac");
+    private static final List<String> PLAY_SOURCES = List.of("main", "backup", "proxy");
+    private static final List<String> SKIP_TYPES = List.of("opening", "middle", "ending");
+
     private JsonObject socketState = new JsonObject();
     private JsonObject options;
     private JsonArray catalog;
+    private NetSocket socket;
 
     @Override
     public void init(Context context, String extend) throws Exception {
         options = JsonParser.parseString(extend.isEmpty() ? "{}" : extend).getAsJsonObject();
         if (options.has("request_options") && !options.get("request_options").isJsonObject()) throw new IllegalArgumentException("request_options 必須是物件");
+        options.addProperty("web_url", httpUrl(option("web_url").isEmpty() ? "https://example.com/" : option("web_url"), "web_url"));
+        options.addProperty("request_url", httpUrl(option("request_url").isEmpty() ? webUrl() : option("request_url"), "request_url"));
         catalog = JsonParser.parseString(DemoData.CATALOG).getAsJsonArray();
     }
 
@@ -93,25 +99,42 @@ public class Demo extends Spider {
 
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) throws Exception {
-        List<JsonObject> records = new ArrayList<>();
-        List<Vod> items = new ArrayList<>();
         if (tid.equals("actions")) return Response.page(actionCards(), Integer.parseInt(pg), PAGE_SIZE).string();
         if (tid.equals("folders")) return Response.page(folderCards(), Integer.parseInt(pg), PAGE_SIZE).string();
         boolean folder = tid.startsWith("folder/") || tid.startsWith("actor/") || tid.startsWith("director/");
-        for (JsonElement element : catalog) {
-            JsonObject record = element.getAsJsonObject();
-            if (folder ? matchesFolder(record, tid) : (tid.startsWith("vod_") || tid.startsWith("class_")) && matchesFilters(record, extend)) records.add(record);
-        }
-        String sort = extend.getOrDefault("sort", "latest");
-        Comparator<JsonObject> order = sort.equals("name") ? Comparator.comparing(v -> v.get("name").getAsString())
-                : Comparator.comparing((JsonObject v) -> v.get("year").getAsString()).thenComparing(v -> v.get("id").getAsString());
-        if (!sort.equals("name") && !sort.equals("oldest")) order = order.reversed();
+        List<JsonObject> records = categoryRecords(tid, extend, folder);
+        Comparator<JsonObject> order = categoryOrder(extend.getOrDefault("sort", "latest"));
         if (!folder) records.sort(order);
-        String style = folder ? "list" : tid.equals("vod_portrait") ? "portrait" : tid.equals("vod_landscape") ? "landscape"
-                : tid.equals("vod_oval") ? "oval" : tid.equals("vod_list") ? "list" : "";
+        String style = folder ? "list" : categoryStyle(tid);
         String picture = tid.equals("class_landscape") ? "landscape" : tid.equals("class_oval") ? "oval" : style;
+        List<Vod> items = new ArrayList<>();
         for (JsonObject record : records) items.add(card(record, style, picture));
         return Response.page(items, Integer.parseInt(pg), PAGE_SIZE).string();
+    }
+
+    private List<JsonObject> categoryRecords(String tid, Map<String, String> filter, boolean folder) {
+        List<JsonObject> records = new ArrayList<>();
+        boolean content = !categoryStyle(tid).isEmpty() || tid.equals("class_landscape") || tid.equals("class_oval");
+        for (JsonElement element : catalog) {
+            JsonObject record = element.getAsJsonObject();
+            if (folder ? matchesFolder(record, tid) : content && matchesFilters(record, filter)) records.add(record);
+        }
+        return records;
+    }
+
+    private Comparator<JsonObject> categoryOrder(String sort) {
+        Comparator<JsonObject> order = sort.equals("name") ? Comparator.comparing(v -> v.get("name").getAsString()) : Comparator.comparing((JsonObject v) -> v.get("year").getAsString()).thenComparing(v -> v.get("id").getAsString());
+        return !sort.equals("name") && !sort.equals("oldest") ? order.reversed() : order;
+    }
+
+    private String categoryStyle(String tid) {
+        return switch (tid) {
+            case "vod_portrait" -> "portrait";
+            case "vod_landscape" -> "landscape";
+            case "vod_oval" -> "oval";
+            case "vod_list" -> "list";
+            default -> "";
+        };
     }
 
     @Override
@@ -120,8 +143,7 @@ public class Demo extends Spider {
         String query = key.trim().toLowerCase(Locale.ROOT);
         for (int i = 0; !query.isEmpty() && i < catalog.size(); i++) {
             JsonObject record = catalog.get(i).getAsJsonObject();
-            String text = "示範 " + record.get("name").getAsString() + " " + record.get("genre").getAsString() + " " + record.get("area").getAsString()
-                    + " " + record.get("year").getAsString() + " " + record.get("director").getAsString() + " " + record.getAsJsonArray("actors");
+            String text = "示範 " + record.get("name").getAsString() + " " + record.get("genre").getAsString() + " " + record.get("area").getAsString() + " " + record.get("year").getAsString() + " " + record.get("director").getAsString() + " " + record.getAsJsonArray("actors");
             if (text.toLowerCase(Locale.ROOT).contains(query)) items.add(card(record, "list", "list"));
         }
         return Response.page(items, Integer.parseInt(pg), PAGE_SIZE).string();
@@ -135,7 +157,7 @@ public class Demo extends Spider {
     @Override
     public String detailContent(List<String> ids) throws Exception {
         JsonObject record = record(ids.get(0).replaceFirst("^vod/", ""));
-        if (record == null) return Response.notify("找不到此範例影片");
+        if (record == null) return Response.create().vods(List.of()).msg("找不到此範例影片").string();
         String flags = "主要線";
         String urls = episodeLine(record, "main");
         if (!option("backup_media_url").isEmpty()) {
@@ -148,46 +170,47 @@ public class Demo extends Spider {
         }
         List<String> actors = new ArrayList<>();
         for (JsonElement name : record.getAsJsonArray("actors")) actors.add(clickable("actor", name.getAsString()));
-        Vod item = card(record, "portrait", "portrait")
-                .typeName(record.get("genre").getAsString()).area(record.get("area").getAsString())
-                .director(clickable("director", record.get("director").getAsString())).actor(String.join("、", actors))
-                .content(record.get("content").getAsString()).playFrom(flags).playUrl(urls);
+        Vod item = card(record, "portrait", "portrait").typeName(record.get("genre").getAsString()).area(record.get("area").getAsString()).director(clickable("director", record.get("director").getAsString())).actor(String.join("、", actors)).content(record.get("content").getAsString()).playFrom(flags).playUrl(urls);
         return Response.create().vod(item).string();
     }
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) throws Exception {
         String[] parts = id.split("/");
-        if (parts.length != 4 || !parts[0].equals("play") || !List.of("main", "backup", "proxy").contains(parts[3])) return Response.notify("無效的範例播放 ID");
+        if (parts.length != 4 || !parts[0].equals("play") || !PLAY_SOURCES.contains(parts[3])) return Response.notify("無效的範例播放 ID");
         JsonObject record = record(parts[1]);
-        int episode;
-        try {
-            episode = Integer.parseInt(parts[2]);
-        } catch (NumberFormatException e) {
-            episode = 0;
-        }
+        int episode = episodeNumber(parts[2]);
         if (record == null || episode < 1 || episode > record.getAsJsonArray("episodes").size()) return Response.notify("找不到此範例集數");
-        String key = parts[3].equals("backup") ? "backup_media_url" : "media_url";
+        String source = parts[3];
+        String key = source.equals("backup") ? "backup_media_url" : "media_url";
         String url = option(key);
-        JsonObject choices = parts[3].equals("main") && options.has("media_urls") ? options.getAsJsonObject("media_urls") : null;
-        Url qualities = choices == null ? null : qualities(choices);
-        if (choices != null) url = choices.getAsJsonArray("values").get(choices.has("position") ? choices.get("position").getAsInt() : 0).getAsJsonObject().get("v").getAsString();
-        Map<String, String> headers = mediaHeaders(parts[3].equals("backup") ? "backup_media_headers" : "media_headers");
-        if (url.isEmpty() && parts[3].equals("main") && !option("sniff_url").isEmpty())
-            return Response.create().parse().url(httpUrl(option("sniff_url"), "sniff_url")).header(headers).string();
-        if (url.isEmpty()) return Response.notify("請先設定 ext." + key + " 再測試播放");
-        Response result = Response.create().url(parts[3].equals("proxy") ? getProxyUrl(Map.of("demo", "playlist")) : httpUrl(url, key))
-                .header(headers).artwork(picture(record, "landscape"))
-                .desc(record.get("name").getAsString() + "・" + record.getAsJsonArray("episodes").get(episode - 1).getAsString());
+        Url qualities = source.equals("main") && options.has("media_urls") ? qualities(options.getAsJsonObject("media_urls")) : null;
+        Map<String, String> headers = mediaHeaders(source.equals("backup") ? "backup_media_headers" : "media_headers");
+        if (qualities == null && url.isEmpty() && source.equals("main") && !option("sniff_url").isEmpty()) return Response.create().parse().url(httpUrl(option("sniff_url"), "sniff_url")).header(headers).string();
+        if (qualities == null && url.isEmpty()) return Response.notify("請先設定 ext." + key + " 再測試播放");
+        Object media = qualities != null ? qualities : source.equals("proxy") ? getProxyUrl(Map.of("demo", "playlist")) : httpUrl(url, key);
+        Response result = Response.create().url(media).header(headers).artwork(picture(record, "landscape")).desc(record.get("name").getAsString() + "・" + record.getAsJsonArray("episodes").get(episode - 1).getAsString());
         if (options.has("skips")) result.skips(skips(options.getAsJsonArray("skips")));
-        if (qualities != null) result.url(qualities);
+        if (options.has("timeshift")) result.put("timeshift", options.get("timeshift"));
+        applyPlaybackOptions(result);
+        return result.string();
+    }
+
+    private int episodeNumber(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private void applyPlaybackOptions(Response result) {
         if (options.has("subtitles") && !options.get("subtitles").isJsonNull()) result.subs(Arrays.asList(GSON.fromJson(options.get("subtitles"), Sub[].class)));
         if (options.has("danmaku") && !options.get("danmaku").isJsonNull()) result.danmaku(Arrays.asList(GSON.fromJson(options.get("danmaku"), Danmaku[].class)));
         if (options.has("drm")) result.drm(GSON.fromJson(options.get("drm"), Drm.class));
         if (options.has("media_format") && !options.get("media_format").isJsonNull()) result.format(option("media_format"));
         if (options.has("live_danmaku") && options.get("live_danmaku").getAsBoolean()) result.danmaku(List.of(Danmaku.create().name("即時彈幕").url(getDanmakuUrl("demo"))));
         if (options.has("start_position_ms")) result.position(milliseconds(options.get("start_position_ms")));
-        return result.string();
     }
 
     private Map<String, String> mediaHeaders(String key) {
@@ -200,8 +223,7 @@ public class Demo extends Spider {
     @Override
     public String liveContent(String url) throws Exception {
         List<String> urls = new ArrayList<>();
-        for (String[] entry : new String[][]{{"media_url", "主要線"}, {"backup_media_url", "備用線"}})
-            if (!option(entry[0]).isEmpty()) urls.add(httpUrl(option(entry[0]), entry[0]) + "$" + entry[1]);
+        for (String[] entry : new String[][]{{"media_url", "主要線"}, {"backup_media_url", "備用線"}}) if (!option(entry[0]).isEmpty()) urls.add(httpUrl(option(entry[0]), entry[0]) + "$" + entry[1]);
         return GSON.toJson(urls.isEmpty() ? List.of() : List.of(Map.of("name", "範例直播", "channel", List.of(Map.of("name", "示範頻道", "urls", urls)))));
     }
 
@@ -229,6 +251,9 @@ public class Demo extends Spider {
     @Override
     public String action(String value) throws Exception {
         switch (value) {
+            case "script":
+                String evaluated = js.eval("({value: value + 1, digest: md5X(text)})", GSON.toJson(Map.of("globals", Map.of("value", 41, "text", "demo"), "timeout", 1000)));
+                return Response.notify("腳本執行結果：" + evaluated);
             case "site_key":
                 return Response.notify("目前 Site key：" + siteKey);
             case "toast":
@@ -306,23 +331,30 @@ public class Demo extends Spider {
     }
 
     private String networkAction(String value) throws Exception {
-        if (value.equals("socket-start")) return connectSocket();
-        if (value.equals("socket-stop")) {
-            if (socket != null) socket.close();
-            socket = null;
-            return Response.notify("WebSocket 已停止");
-        }
-        if (value.equals("socket-state")) {
-            JsonObject state = socketState;
-            synchronized (state) {
-                return Response.notify(state.toString());
+        switch (value) {
+            case "socket-start" -> {
+                return connectSocket();
+            }
+            case "socket-stop" -> {
+                if (socket != null) socket.close();
+                socket = null;
+                return Response.notify("WebSocket 已停止");
+            }
+            case "socket-state" -> {
+                JsonObject state = socketState;
+                synchronized (state) {
+                    return Response.notify(state.toString());
+                }
+            }
+            case "json" -> {
+                return Response.notify("JSON 請求成功：" + JsonParser.parseString(net.json(httpUrl(option("json_url"), "json_url"), "{}")).getClass().getSimpleName());
+            }
+            case "websocket" -> {
+                return websocket();
             }
         }
-        if (value.equals("json")) return Response.notify("JSON 請求成功：" + JsonParser.parseString(net.json(httpUrl(option("json_url"), "json_url"), "{}")).getClass().getSimpleName());
-        if (value.equals("websocket")) return websocket();
         String url = httpUrl(option("request_url", option("web_url")), "request_url");
         switch (value) {
-
             case "stream_read":
                 return Response.notify("串流讀取完成：" + countStreamBytes(url) + " bytes");
             case "proxy_stream":
@@ -339,6 +371,10 @@ public class Demo extends Spider {
                     if ((Integer) response.code < 200 || (Integer) response.code >= 300) throw new IllegalStateException("HTTP " + response.code);
                 }
                 return Response.notify("並行完成 3 次請求");
+            case "parallel_map":
+                List<String> urls = List.of(url, httpUrl(option("json_url"), "json_url"));
+                List<Map<String, Object>> values = net.map(urls, this::requestSummary, 2);
+                return Response.notify("並行映射完成：" + GSON.toJson(values));
             case "session":
                 try (Net flow = net.session()) {
                     if (!flow.setCookie(url, "demo_session=1; Path=/")) throw new IllegalStateException("Session Cookie 寫入失敗");
@@ -350,6 +386,12 @@ public class Demo extends Spider {
             default:
                 return Response.notify("範例不支援此操作");
         }
+    }
+
+    private Map<String, Object> requestSummary(String url, int index) throws Exception {
+        JsonObject response = JsonParser.parseString(net.req(url, "{\"timeout\":15000}")).getAsJsonObject();
+        checkResponse(response);
+        return Map.of("index", index, "code", response.get("code").getAsInt());
     }
 
     private Net.StreamResult openStream(String url) throws Exception {
@@ -368,20 +410,20 @@ public class Demo extends Spider {
             if (response.code < 200 || response.code >= 300) throw new IllegalStateException("HTTP " + response.code);
             byte[] buffer = new byte[65536];
             long length = 0;
-            for (int count; (count = response.read(buffer)) != -1;) length += count;
+            for (int count; (count = response.read(buffer)) != -1; ) length += count;
             return length;
         }
     }
 
     private String request(String url, String value) throws Exception {
-        JsonObject settings = GSON.toJsonTree(Map.of("timeout", 15000, "callTimeout", 15000, "cookie", value.equals("request"),
-                "method", option("request_method", "GET"))).getAsJsonObject();
+        JsonObject settings = GSON.toJsonTree(Map.of("timeout", 15000, "callTimeout", 15000, "cookie", value.equals("request"), "method", option("request_method", "GET"))).getAsJsonObject();
         if (options.has("request_headers") && options.get("request_headers").isJsonObject()) settings.add("headers", options.get("request_headers"));
         if (options.has("request_options")) for (Map.Entry<String, JsonElement> entry : options.getAsJsonObject("request_options").entrySet()) settings.add(entry.getKey(), entry.getValue());
         if (value.equals("binary")) settings.addProperty("buffer", 1);
         JsonObject data = JsonParser.parseString(net.req(url, GSON.toJson(settings))).getAsJsonObject();
         checkResponse(data);
-        return Response.notify("HTTP " + data.get("code").getAsInt() + "，回應長度 " + (value.equals("binary") ? data.getAsJsonArray("content").size() : data.get("content").getAsString().length()));
+        JsonElement content = data.get("content");
+        return Response.notify("HTTP " + data.get("code").getAsInt() + "，回應長度 " + (content.isJsonArray() ? content.getAsJsonArray().size() : content.getAsString().length()));
     }
 
     private String websocket() throws Exception {
@@ -492,13 +534,13 @@ public class Demo extends Spider {
     }
 
     private String webUrl() {
-        return httpUrl(option("web_url"), "web_url");
+        return httpUrl(option("web_url", "https://example.com/"), "web_url");
     }
 
     private String download() throws Exception {
         File file = File.createTempFile("spider-demo-", ".bin", Runtime.context().getCacheDir());
         try {
-            net.download(httpUrl(option("request_url"), "request_url"), "{}", file);
+            net.download(httpUrl(option("request_url", webUrl()), "request_url"), "{}", file);
             return Response.notify("下載完成：" + file.length() + " bytes");
         } finally {
             file.delete();
@@ -518,29 +560,26 @@ public class Demo extends Spider {
     }
 
     private String runtime() {
-        String plain = Crypto.aes("GCM", false, "0388dace60b6a392f328c2b971b2fe78ab6e47d42cec13bdf53a67b21257bddf", false,
-                "00000000000000000000000000000000", "000000000000000000000000", true);
+        String plain = Crypto.aes("GCM", false, "0388dace60b6a392f328c2b971b2fe78ab6e47d42cec13bdf53a67b21257bddf", false, "00000000000000000000000000000000", "000000000000000000000000", true);
         boolean passed = Crypto.sha256("abc").equals("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad") && plain.equals("AAAAAAAAAAAAAAAAAAAAAA==") && !Crypto.randomUrlSafe(16).isEmpty();
         return Response.notify(passed ? "App 與加密 bridge 測試通過" : "App 或加密 bridge 測試失敗");
     }
 
     private List<SkipSegment> skips(JsonArray values) throws Exception {
         List<SkipSegment> segments = new ArrayList<>();
-        for (JsonElement element : values) {
-            JsonObject value = element.getAsJsonObject();
-            String type = value.getAsJsonPrimitive("type").getAsString();
-            if (!List.of("opening", "middle", "ending").contains(type)) throw new IllegalArgumentException("skips.type 格式錯誤");
-            long start = milliseconds(value.get("start"));
-            SkipSegment segment = SkipSegment.create().type(type).start(start);
-            if (!value.has("end") && type.equals("ending") && start > 0) {
-                segments.add(segment);
-                continue;
-            }
-            long end = milliseconds(value.get("end"));
-            if (end <= start) throw new IllegalArgumentException("skips.end 必須晚於 start");
-            segments.add(segment.end(end));
-        }
+        for (JsonElement element : values) segments.add(skipSegment(element.getAsJsonObject()));
         return segments;
+    }
+
+    private SkipSegment skipSegment(JsonObject value) {
+        String type = value.getAsJsonPrimitive("type").getAsString();
+        if (!SKIP_TYPES.contains(type)) throw new IllegalArgumentException("skips.type 格式錯誤");
+        long start = milliseconds(value.get("start"));
+        SkipSegment segment = SkipSegment.create().type(type).start(start);
+        if (!value.has("end") && type.equals("ending") && start > 0) return segment;
+        long end = milliseconds(value.get("end"));
+        if (end <= start) throw new IllegalArgumentException("skips.end 必須晚於 start");
+        return segment.end(end);
     }
 
     private Url qualities(JsonObject value) throws Exception {
@@ -557,8 +596,7 @@ public class Demo extends Spider {
     }
 
     private long milliseconds(JsonElement value) {
-        if (value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber() || !value.getAsString().matches("-?(0|[1-9][0-9]*)"))
-            throw new IllegalArgumentException("時間必須是非負整數毫秒");
+        if (value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber() || !value.getAsString().matches("-?(0|[1-9][0-9]*)")) throw new IllegalArgumentException("時間必須是非負整數毫秒");
         long milliseconds = Long.parseLong(value.getAsString());
         if (milliseconds < 0) throw new IllegalArgumentException("時間必須是非負整數毫秒");
         return milliseconds;
@@ -570,8 +608,7 @@ public class Demo extends Spider {
     }
 
     private Vod card(JsonObject record, String style, String pictureStyle) throws Exception {
-        return Vod.create().id("vod/" + record.get("id").getAsString()).name(record.get("name").getAsString()).pic(picture(record, pictureStyle)).remarks(record.get("remark").getAsString())
-                .year(record.get("year").getAsString()).style(style.isEmpty() ? null : style(style));
+        return Vod.create().id("vod/" + record.get("id").getAsString()).name(record.get("name").getAsString()).pic(picture(record, pictureStyle)).remarks(record.get("remark").getAsString()).year(record.get("year").getAsString()).style(style.isEmpty() ? null : style(style));
     }
 
     private Style style(String name) {
@@ -597,9 +634,7 @@ public class Demo extends Spider {
         if (tid.startsWith("folder/genre/")) return record.get("genre").getAsString().equals(Uri.decode(tid.substring(13)));
         if (tid.startsWith("folder/area/")) return record.get("area").getAsString().equals(Uri.decode(tid.substring(12)));
         if (tid.startsWith("director/")) return record.get("director").getAsString().equals(Uri.decode(tid.substring(9)));
-        if (tid.startsWith("actor/")) {
-            for (JsonElement actor : record.getAsJsonArray("actors")) if (actor.getAsString().equals(Uri.decode(tid.substring(6)))) return true;
-        }
+        if (tid.startsWith("actor/")) for (JsonElement actor : record.getAsJsonArray("actors")) if (actor.getAsString().equals(Uri.decode(tid.substring(6)))) return true;
         return false;
     }
 
@@ -618,9 +653,8 @@ public class Demo extends Spider {
     private List<Vod> folderCards() throws Exception {
         List<Vod> items = new ArrayList<>();
         for (String[] group : DemoData.FOLDERS) {
-            for (int i = 1; i < group.length; i++)
-                items.add(Vod.create().id("folder/" + group[0] + "/" + Uri.encode(group[i])).name(group[i] + "資料夾").pic("").remarks("依分類開啟")
-                        .tag("folder").style(style("list")));
+            String remark = group[0].equals("genre") ? "依類型開啟" : "依地區開啟";
+            for (int i = 1; i < group.length; i++) items.add(Vod.create().id("folder/" + group[0] + "/" + Uri.encode(group[i])).name(group[i] + "資料夾").pic("").remarks(remark).tag("folder").style(style("list")));
         }
         return items;
     }
@@ -671,8 +705,11 @@ public class Demo extends Spider {
 
     @Override
     public boolean isVideoFormat(String url) {
-        String path = Uri.parse(url).getPath();
-        return path != null && path.toLowerCase(Locale.ROOT).endsWith(".m3u8") && !path.contains("/ad/");
+        Uri target = Uri.parse(url);
+        String path = target.getPath();
+        if (path == null) return false;
+        String normalized = path.toLowerCase(Locale.ROOT);
+        return ("http".equalsIgnoreCase(target.getScheme()) || "https".equalsIgnoreCase(target.getScheme())) && target.getHost() != null && VIDEO_SUFFIXES.stream().anyMatch(normalized::endsWith) && !normalized.contains("/ad/");
     }
 
     @Override

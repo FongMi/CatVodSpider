@@ -3,6 +3,7 @@
 const PAGE_SIZE = 4;
 const SEARCH_ALL_KEYWORD = "示範";
 const REQUEST_TIMEOUT_MS = 15000;
+const VIDEO_SUFFIXES = [".m3u8", ".mpd", ".mp4", ".mkv", ".flv", ".mp3", ".m4a", ".aac"];
 const CACHE_KEY = "message";
 
 // 真實爬蟲可把這個陣列換成 API 或 HTML 解析結果，其餘介面保持不變。
@@ -83,9 +84,9 @@ function createSpider(site = {}) {
         const imageBase = stringValue(options.image_base).replace(/\/+$/, "");
         if (imageBase) ensureHttpUrl(imageBase, "image_base");
         options.image_base = imageBase;
-        if (stringValue(options.web_url)) ensureHttpUrl(options.web_url, "web_url");
+        options.web_url = ensureHttpUrl(options.web_url || "https://example.com/", "web_url");
+        options.request_url = ensureHttpUrl(options.request_url || options.web_url, "request_url");
         if (stringValue(options.cookie_name)) ensureCookieName(options.cookie_name);
-        if (stringValue(options.request_url)) ensureHttpUrl(options.request_url, "request_url");
     }
 
     function home(filter) {
@@ -216,7 +217,7 @@ function createSpider(site = {}) {
         if (!url) return {parse: 0, msg: `請先設定 ext.${optionKey} 再測試播放`};
         ensureHttpUrl(url, optionKey);
 
-        const headerKey = source === "main" ? "media_headers" : "backup_media_headers";
+        const headerKey = source === "backup" ? "backup_media_headers" : "media_headers";
         const result = {
             parse: 0,
             jx: 0,
@@ -227,6 +228,7 @@ function createSpider(site = {}) {
         };
 
         if (options.skips != null) result.skips = skips(options.skips);
+        if (options.timeshift != null) result.timeshift = options.timeshift;
         const mediaFormat = stringValue(options.media_format).trim();
         if (mediaFormat) result.format = mediaFormat;
         const subtitleItems = subtitles(options.subtitles);
@@ -290,6 +292,12 @@ function createSpider(site = {}) {
         if (value === "sleep") {
             await net.sleep(250);
             return {msg: "等待完成（250 毫秒）"};
+        }
+        if (value === "script") {
+            const data = await js.eval("({value: value + 1, digest: md5X(text)})", {
+                globals: {value: 41, text: "demo"}, timeout: 1000
+            });
+            return {msg: "腳本執行結果：" + JSON.stringify(data)};
         }
         if (value === "toast") {
             return {msg: "這是 QuickJS action 回傳、由 App 顯示的 Toast"};
@@ -376,7 +384,6 @@ function createSpider(site = {}) {
                 const userAgent = stringValue(net.getUserAgent());
                 const hashOk = sha256X("abc") === "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
                 const randomOk = stringValue(randomX(16)).length > 0;
-                // Binary plaintext uses Base64; the Java/JS string bridge changes NUL bytes.
                 const plain = aesX(
                     "GCM", false,
                     "0388dace60b6a392f328c2b971b2fe78ab6e47d42cec13bdf53a67b21257bddf",
@@ -524,10 +531,16 @@ function createSpider(site = {}) {
                     return {msg: "隔離 Session 請求完成，Cookie " + (flow.getCookie(url).includes("demo_session=1") ? "存在" : "不存在")};
                 } finally { flow.close(); }
             }
-            const settings = {timeout: REQUEST_TIMEOUT_MS, buffer: value === "binary" ? 3 : 0};
+            const settings = {
+                timeout: REQUEST_TIMEOUT_MS, callTimeout: REQUEST_TIMEOUT_MS, cookie: false,
+                method: stringValue(options.request_method) || "GET",
+                headers: stringMap(options.request_headers, "request_headers"),
+                ...(options.request_options || {}),
+            };
+            if (value === "binary") settings.buffer = 3;
             const response = value === "request_sync" ? net.req(url, settings) : await net.http(url, settings);
             checkResponse(response);
-            const length = value === "binary" ? response.content.byteLength : response.content.length;
+            const length = response.content instanceof ArrayBuffer ? response.content.byteLength : response.content.length;
             return {msg: `HTTP ${response.code}，回應長度 ${length}`};
         } catch (error) {
             return {msg: "網路示範失敗：" + String(error.message || error)};
@@ -563,9 +576,13 @@ function createSpider(site = {}) {
     }
 
     function isVideo(url) {
-        const path = stringValue(url).split(/[?#]/, 1)[0].toLowerCase();
-        return [".m3u8", ".mpd", ".mp4", ".mkv", ".flv", ".mp3", ".m4a", ".aac"]
-            .some((suffix) => path.endsWith(suffix));
+        try {
+            const target = new URL(url);
+            const path = target.pathname.toLowerCase();
+            return ["http:", "https:"].includes(target.protocol) && VIDEO_SUFFIXES.some(suffix => path.endsWith(suffix)) && !path.includes("/ad/");
+        } catch (error) {
+            return false;
+        }
     }
 
     function subscribeDanmaku(id, emit) {
@@ -756,7 +773,8 @@ function createSpider(site = {}) {
             ["cookie_clear", "清除 Cookie", "寫入過期 Cookie 並確認結果"],
             ["session", "隔離 Session", "使用獨立 Cookie，用完關閉"],
             ["parallel", "批次請求", "並行取得 3 份回應"],
-            ["parallel_map", "批次處理", "限量並行，按輸入順序回傳"],
+            ["parallel_map", "並行映射", "限制並行數，依序回傳解析結果"],
+            ["script", "執行 JavaScript", "隔離執行，傳入變數與逾時"],
             ["download", "下載檔案", "下載至 App 快取"],
             ["stream_read", "分塊讀取", "每塊最多 64 KiB，用完關閉"],
             ["proxy_stream", "串流代理", "由本機 proxy 轉送 request_url"],
@@ -777,7 +795,7 @@ function createSpider(site = {}) {
             ["cache_delete", "刪除 Local", "刪除範例值"],
             ["html_query", "HTML 欄位解析", "一次解析 HTML，取出標題、ID 與演員"],
             ["proxy", "本機 proxy", "透過 App HTTP server 呼叫此爬蟲"],
-            ["runtime", "測試 App 與加密 bridge", "驗證 User-Agent、SHA-256、亂數與 AES-GCM"],
+            ["runtime", "測試 App 與加密 bridge", "驗證 SHA-256 與 AES-GCM"],
             ["toast", "顯示 Toast", "action 回傳 msg，由 App 顯示"],
             ["site_key", "顯示 Site key", "由 App 在 init 前注入的 siteKey"],
             ["web", "開啟網頁", "action 回傳 web，由 App 開啟"],
@@ -959,7 +977,5 @@ function stringValue(value) {
 function isObject(value) {
     return value !== null && typeof value === "object" && !Array.isArray(value);
 }
-
-
 
 export default createSpider;

@@ -54,6 +54,8 @@ final class DemoData {
             {"cookie_clear", "清除 Cookie", "寫入過期 Cookie 並確認結果"},
             {"session", "隔離 Session", "使用獨立 Cookie，用完關閉"},
             {"parallel", "批次請求", "並行取得 3 份回應"},
+            {"parallel_map", "並行映射", "限制並行數，依序回傳解析結果"},
+            {"script", "執行 JavaScript", "隔離執行，傳入變數與逾時"},
             {"download", "下載檔案", "下載至暫存檔，用完移除"},
             {"stream_read", "分塊讀取", "每塊最多 64 KiB，用完關閉"},
             {"proxy_stream", "串流代理", "由本機 proxy 轉送 request_url"},
