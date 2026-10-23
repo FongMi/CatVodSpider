@@ -9,12 +9,14 @@ import android.os.Looper;
 
 import com.github.catvod.Runtime;
 import com.github.catvod.bean.Class;
+import com.github.catvod.bean.Danmaku;
 import com.github.catvod.bean.Filter;
 import com.github.catvod.bean.Style;
 import com.github.catvod.bean.Value;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.Net;
+import com.github.catvod.net.NetOptions;
 import com.github.catvod.net.NetSocket;
 import com.github.catvod.utils.Crypto;
 import com.github.catvod.utils.Json;
@@ -25,6 +27,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -37,6 +41,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 /**
  * TV Java 功能範例；配置與接口說明見 docs/development.md。
@@ -174,6 +181,7 @@ public class Demo extends Spider {
             String source = field.equals("subs") ? "subtitles" : field.equals("format") ? "media_format" : field;
             if (options.has(source)) result.add(field, options.get(source));
         }
+        if (options.has("live_danmaku") && options.get("live_danmaku").getAsBoolean()) result.add("danmaku", GSON.toJsonTree(List.of(Danmaku.create().name("即時彈幕").url(getDanmakuUrl("demo")))));
         if (options.has("start_position_ms")) result.addProperty("position", milliseconds(options.get("start_position_ms")));
         return GSON.toJson(result);
     }
@@ -188,6 +196,10 @@ public class Demo extends Spider {
 
     @Override
     public Object[] proxy(Map<String, String> params) throws Exception {
+        if ("stream".equals(params.get("demo"))) {
+            Net.StreamResult response = openStream(httpUrl(option("request_url", option("web_url")), "request_url"));
+            return new Object[]{response.code, response.contentType, response, response.headers};
+        }
         String body = "未知的範例 proxy";
         String mime = "text/plain; charset=utf-8";
         int status = 404;
@@ -300,6 +312,10 @@ public class Demo extends Spider {
         String url = httpUrl(option("request_url", option("web_url")), "request_url");
         switch (value) {
 
+            case "stream_read":
+                return Response.notify("串流讀取完成：" + countStreamBytes(url) + " bytes");
+            case "proxy_stream":
+                return Response.notify("串流讀取完成：" + countStreamBytes(getProxyUrl(Map.of("demo", "stream"))) + " bytes");
             case "text_get":
                 return Response.notify("GET 正文長度：" + net.get(url).length());
             case "text_post":
@@ -325,6 +341,27 @@ public class Demo extends Spider {
         }
     }
 
+    private Net.StreamResult openStream(String url) throws Exception {
+        CompletableFuture<Net.StreamResult> pending = net.requestStreamAsync(url, NetOptions.from(GSON.toJson(Map.of("timeout", 15000, "callTimeout", 15000))));
+        try {
+            return pending.get();
+        } catch (InterruptedException error) {
+            pending.cancel(true);
+            Thread.currentThread().interrupt();
+            throw error;
+        }
+    }
+
+    private long countStreamBytes(String url) throws Exception {
+        try (Net.StreamResult response = openStream(url)) {
+            if (response.code < 200 || response.code >= 300) throw new IllegalStateException("HTTP " + response.code);
+            byte[] buffer = new byte[65536];
+            long length = 0;
+            for (int count; (count = response.read(buffer)) != -1;) length += count;
+            return length;
+        }
+    }
+
     private String request(String url, String value) throws Exception {
         JsonObject settings = GSON.toJsonTree(Map.of("timeout", 15000, "callTimeout", 15000, "cookie", value.equals("request"),
                 "method", option("request_method", "GET"))).getAsJsonObject();
@@ -346,6 +383,37 @@ public class Demo extends Spider {
         return Response.notify("WebSocket " + response.get("code").getAsInt() + "，回應長度 " + response.get("content").getAsString().length());
     }
 
+    @Override
+    public AutoCloseable danmaku(String id, Consumer<JSONObject> emit) throws Exception {
+        if (option("ws_url").isEmpty()) throw new IllegalArgumentException("請先在 ext 設定 ws_url");
+        JsonObject settings = GSON.toJsonTree(Map.of("timeout", 15000, "ping", 30000, "reconnect", true)).getAsJsonObject();
+        if (options.has("ws_idle")) settings.add("idle", options.get("ws_idle"));
+        if (options.has("ws_data")) settings.add("data", options.get("ws_data"));
+        if (options.has("ws_headers")) settings.add("headers", options.get("ws_headers"));
+        AtomicBoolean ready = new AtomicBoolean();
+        AtomicBoolean stopped = new AtomicBoolean();
+        NetSocket connection = net.connect(option("ws_url"), GSON.toJson(settings), (socket, event) -> danmakuEvent(event, emit, ready, stopped));
+        return () -> {
+            stopped.set(true);
+            connection.cancel();
+        };
+    }
+
+    private void danmakuEvent(NetSocket.Event event, Consumer<JSONObject> emit, AtomicBoolean ready, AtomicBoolean stopped) {
+        if (stopped.get()) return;
+        if (event.type.equals("message") && !event.binary) {
+            if (ready.compareAndSet(false, true)) emit.accept(new JSONObject(Map.of("state", "ready")));
+            emit.accept(new JSONObject(Map.of("text", event.content, "color", 0x66ccff, "size", 25, "type", 1, "colors", List.of(0x66ccff, 0xcc99ff))));
+        } else if (event.type.equals("retry")) {
+            ready.set(false);
+            emit.accept(new JSONObject(Map.of("state", "retrying", "msg", "彈幕連線中斷，等待恢復")));
+        } else if (event.type.equals("error") || event.type.equals("close")) {
+            stopped.set(true);
+            String msg = event.error == null ? "彈幕連線已關閉" : event.error;
+            emit.accept(new JSONObject(Map.of("state", "error", "msg", msg.substring(0, Math.min(msg.length(), 512)))));
+        }
+    }
+
     private String connectSocket() throws Exception {
         if (option("ws_url").isEmpty()) return Response.notify("請先在 ext 設定 ws_url");
         if (socket != null) socket.cancel();
@@ -353,8 +421,10 @@ public class Demo extends Spider {
         state.addProperty("state", "連線中");
         state.addProperty("text", 0);
         state.addProperty("binary", 0);
+        state.addProperty("retries", 0);
         socketState = state;
-        JsonObject settings = GSON.toJsonTree(Map.of("timeout", 15000, "ping", 30000)).getAsJsonObject();
+        JsonObject settings = GSON.toJsonTree(Map.of("timeout", 15000, "ping", 30000, "reconnect", true)).getAsJsonObject();
+        if (options.has("ws_idle")) settings.add("idle", options.get("ws_idle"));
         if (options.has("ws_data")) settings.add("data", options.get("ws_data"));
         if (options.has("ws_headers") && options.get("ws_headers").isJsonObject()) settings.add("headers", options.get("ws_headers"));
         socket = net.connect(options.getAsJsonPrimitive("ws_url").getAsString(), GSON.toJson(settings), (connection, event) -> socketEvent(connection, event, state));
@@ -373,6 +443,11 @@ public class Demo extends Spider {
                     state.addProperty(key, state.get(key).getAsInt() + 1);
                 }
                 case "error" -> state.addProperty("error", event.error);
+                case "retry" -> {
+                    state.addProperty("state", "重新連線中");
+                    state.addProperty("retries", state.get("retries").getAsInt() + 1);
+                    state.addProperty("retryCode", event.code);
+                }
                 case "close" -> state.addProperty("state", "已關閉");
             }
         }

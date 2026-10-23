@@ -16,7 +16,8 @@ description: Develop or upgrade Java, Python and QuickJS TV spiders using the TV
 - Context、Activity 與 Toast 使用共用 SDK 的 `com.github.catvod.Runtime`；爬蟲 JAR 不打包宿主 SDK 類別。JAR 自己的 `com.github.catvod.spider.Init` 是獨立的可選初始化入口。
 - Java 使用本專案 `com.github.catvod.bean` 的純資料模型，以 `Vod.create().id(...).name(...)` 鏈式填值，模型統一以 `create()` 建立，方法不加 `set` 前綴。播放附加資料使用 `Sub`、`Danmaku`、`Drm`、`SkipSegment`、`Url`，網頁操作使用 `Web`；`Response` 用 Gson 組裝標準 JSON。模型隨爬蟲 JAR 打包，不引用 App bean；App 的 `Result` 只負責接收解析，不放爬蟲 builder。
 - JSON API 優先用 `net.json`；需要狀態碼、錯誤正文或 bytes 時用 `net.req`／QuickJS `net.http`。網路失敗、403、登入頁及解析失敗不可偽裝成成功空列表，不增加無根據的重試或站點 workaround。
-- 二進位回應用 `buffer:3`，Python 取得 bytes，可用 memoryview 建立切片檢視；QuickJS 取得 ArrayBuffer，以 Uint8Array 檢視。QuickJS 逐塊處理用 `net.openStream`，read 到 null 為 EOF，以 finally 關閉；proxy 原樣轉送用 `net.stream`，成功回傳 handle 後由 App 接管，不保留到其他呼叫。
+- 二進位回應用 `buffer:3`，Python 取得 bytes，可用 memoryview 建立切片檢視；QuickJS 取得 ArrayBuffer，以 Uint8Array 檢視。逐塊處理用 `net.openStream`，Python read 到 None、QuickJS 到 null 為 EOF，以 with／finally 關閉；proxy 原樣轉送用 `net.stream`，成功交付後由 App 接管，不保留到其他呼叫。
+- proxy 自訂串流用 Python `self.net.stream(generator())` 或 QuickJS `net.stream(asyncGenerator())`，逐塊 yield bytes。產生器延後至播放器讀取才執行，可跨請求；reader 在產生器內開啟，以 with／finally 關閉，不累積整段直播。App 處理交付、取消與關閉，站點續接及封包改寫留在爬蟲；需配套 runtime。
 - QuickJS 批次 HTML 欄位可用全域 `htmlQuery`，同一 plan 放多組 queries；自行驗證必填值、trim 與補相對 URL。它使用 Jsoup 規則，不是 Cheerio 相容介面；用法與限制見開發說明。
 - 固定 HTTP 批次用共用 `net.batch`；QuickJS 每項還要解析或轉換時用 `net.map(items, async (item, index) => result, limit)`，保持並行上限並檢查每項 HTTP 狀態。
 - 保持精簡、扁平，按實際操作切 function。不要為一個簡單操作增加類別或抽象層。
@@ -29,7 +30,10 @@ description: Develop or upgrade Java, Python and QuickJS TV spiders using the TV
 - 使用共用快取、Local、超連結及 `getProxyUrl`；不要自己拼 proxy 的 do／siteKey。搜尋語系由 Site.lang 決定，爬蟲不轉字。
 - Python 大型 JSON 目錄可用 `self.net.cachedText` 取得快取文字，再按內容重用私有索引；每次讀取仍通過原生快取，destroy 釋放快照，不另設有效期。一般資料繼續使用回傳獨立物件的 `cached`。
 - 播放網址可能過期，使用短 TTL、`stale:false`，不持久化。Cookie、token 與簽名網址不放進 log 或長期 Local。自己建立的 session 與資源要關閉，取消後不繼續請求。
-- WebSocket 一次交換用 `net.ws`，持續收訊用 `net.connect(url, options, callback)`。callback 收到連線與事件；使用回呼傳入的連線 send，切台或 destroy 時關閉。平台訂閱、解碼與應用層心跳由爬蟲處理。
+- WebSocket 一次交換用 `net.ws`，持續收訊用 `net.connect(url, options, callback)`，需要斷線恢復時設 `reconnect:true`。使用回呼傳入的連線 send，每次 open 重新訂閱，retry 清除心跳與殘包，切台或 destroy 時關閉。平台訂閱、解碼與應用層心跳由爬蟲處理。
+- 來源保證有持續訊息或應用心跳回覆時，可設定 `idle` 接收逾時毫秒數，預設 0 關閉。文字／二進位訊息會重設期限，send 或協定 Ping／Pong 不會；逾時交共用網路層重連，不另建重試計時器。
+- 即時彈幕用 `getDanmakuUrl(id)` 與 `danmaku(id, emit)`；Python／QuickJS 回傳停止函式，Java 回傳 AutoCloseable。emit 欄位與狀態見[即時彈幕](../../../docs/development.md#即時彈幕)。
+- ready 須確認訂閱可用，不能僅以 WebSocket open 判斷。停止時取消自己的連線與心跳，不關閉站點 net；平台協定與樣式轉換由爬蟲處理。
 - 開網頁和完成提示回傳 action 的 `web`／`msg`。Java／Python 自訂 Dialog 在主執行緒執行時才取得 Activity，可能為 null／None，不保存 Activity。
 - Function JAR 引用 `com.fongmi.quickjs` 的 `QuickJSContext`、`JSArray` 等 API，編譯時使用 Actions 產生的 `quickjs-api.jar` 與共用 CatVod SDK；更新後重新編譯，不打包 SDK 類別。
 - 共用 `aesX`／Crypto bridge 的 GCM 密文末端含 16-byte tag，二進位明文用 Base64；Web Crypto 的 tagLength 依開發說明。

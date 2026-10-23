@@ -320,6 +320,8 @@ class Spider(BaseSpider):
         danmaku = self._danmaku(self.options.get("danmaku"))
         if danmaku:
             result["danmaku"] = danmaku
+        if self.options.get("live_danmaku") is True:
+            result["danmaku"] = [{"name": "即時彈幕", "url": self.getDanmakuUrl("demo")}]
         drm = self._drm(self.options.get("drm"))
         if drm:
             result["drm"] = drm
@@ -333,7 +335,7 @@ class Spider(BaseSpider):
         return result
 
     def action(self, action):
-        if action in ("json", "session", "parallel", "binary", "request_sync"):
+        if action in ("json", "session", "parallel", "binary", "request_sync", "stream_read", "proxy_stream", "proxy_body"):
             return self._network_action(action)
         if action == "download":
             with tempfile.TemporaryDirectory() as directory:
@@ -469,6 +471,12 @@ class Spider(BaseSpider):
         headers = {"X-Demo": "1"}
         if kind == "json":
             return [200, "application/json; charset=utf-8", '{"name":"demo","ok":true}', headers]
+        if kind == "stream":
+            response = self.net.stream(self.request_url, {"timeout": REQUEST_TIMEOUT_MS, "callTimeout": REQUEST_TIMEOUT_MS})
+            return [response["code"], response["contentType"], response["stream"], response["headers"]]
+        if kind == "body":
+            response = self.net.stream(self._stream_body())
+            return [200, response["contentType"], response["stream"], headers]
         if kind == "playlist" and self.options.get("media_url"):
             url = self._absolute_url(self.options["media_url"], "media_url")
             return [200, "application/vnd.apple.mpegurl", "#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=1280000\n" + url + "\n", headers]
@@ -482,12 +490,35 @@ class Spider(BaseSpider):
         self.net.sleep(250)
         return self._cache_value()
 
+    def _stream_body(self):
+        for _ in range(2):
+            with self.net.openStream(self.request_url, {"timeout": REQUEST_TIMEOUT_MS, "callTimeout": REQUEST_TIMEOUT_MS}) as reader:
+                self._check_response({"code": reader.code})
+                while True:
+                    chunk = reader.read()
+                    if chunk is None:
+                        break
+                    yield chunk
+
+    def _count_stream_bytes(self, url):
+        with self.net.openStream(url, {"timeout": REQUEST_TIMEOUT_MS, "callTimeout": REQUEST_TIMEOUT_MS}) as reader:
+            self._check_response({"code": reader.code})
+            length = 0
+            while True:
+                chunk = reader.read()
+                if chunk is None:
+                    return length
+                length += len(chunk)
+
     def _network_action(self, action):
         try:
             if action == "json":
                 url = self._absolute_url(self.options.get("json_url"), "json_url")
                 value = self.net.json(url, {"timeout": REQUEST_TIMEOUT_MS})
                 return {"msg": "JSON 請求成功：" + type(value).__name__}
+            if action in ("stream_read", "proxy_stream", "proxy_body"):
+                url = self.request_url if action == "stream_read" else self.getProxyUrl({"demo": "body" if action == "proxy_body" else "stream"})
+                return {"msg": "串流讀取完成：%s bytes" % self._count_stream_bytes(url)}
             if action == "parallel":
                 values = self.net.batch([{ "url": self.request_url, "options": {"timeout": REQUEST_TIMEOUT_MS}} for _ in range(3)])
                 for value in values:
@@ -550,6 +581,43 @@ class Spider(BaseSpider):
             and "/ad/" not in path
         )
 
+    def danmaku(self, id, emit):
+        if not self.options.get("ws_url"):
+            raise ValueError("請先在 ext 設定 ws_url")
+        ready = False
+        stopped = False
+
+        def receive(socket, event):
+            nonlocal ready, stopped
+            if stopped:
+                return
+            if event["type"] == "message" and not event["binary"]:
+                if not ready:
+                    emit({"state": "ready"})
+                ready = True
+                emit({"text": event["content"], "color": 0x66ccff, "size": 25, "type": 1, "colors": [0x66ccff, 0xcc99ff]})
+            elif event["type"] == "retry":
+                ready = False
+                emit({"state": "retrying", "msg": "彈幕連線中斷，等待恢復"})
+            elif event["type"] in ("error", "close"):
+                stopped = True
+                emit({"state": "error", "msg": str(event.get("error") or "彈幕連線已關閉")[:512]})
+
+        def stop():
+            nonlocal stopped
+            stopped = True
+            connection.cancel()
+
+        connection = self.net.connect(self.options["ws_url"], {
+            "headers": self._string_map(self.options.get("ws_headers"), "ws_headers"),
+            "data": self.options.get("ws_data"),
+            "timeout": REQUEST_TIMEOUT_MS,
+            "ping": 30000,
+            "idle": self.options.get("ws_idle", 0),
+            "reconnect": True,
+        }, receive)
+        return stop
+
     def destroy(self):
         if self.socket is not None:
             self.socket.cancel()
@@ -561,12 +629,14 @@ class Spider(BaseSpider):
             return {"msg": "請先在 ext 設定 ws_url"}
         if self.socket is not None:
             self.socket.cancel()
-        state = {"state": "連線中", "text": 0, "binary": 0}
+        state = {"state": "連線中", "text": 0, "binary": 0, "retries": 0}
         self.socket_state = state
         settings = {
             "headers": self._string_map(self.options.get("ws_headers"), "ws_headers"),
             "timeout": REQUEST_TIMEOUT_MS,
             "ping": 30000,
+            "idle": self.options.get("ws_idle", 0),
+            "reconnect": True,
         }
         if "ws_data" in self.options:
             settings["data"] = self.options["ws_data"]
@@ -583,6 +653,10 @@ class Spider(BaseSpider):
             state["binary" if event["binary"] else "text"] += 1
         elif event["type"] == "error":
             state["error"] = event["error"]
+        elif event["type"] == "retry":
+            state["state"] = "重新連線中"
+            state["retries"] += 1
+            state["retryCode"] = event["code"]
         elif event["type"] == "close":
             state["state"] = "已關閉"
 
@@ -693,36 +767,39 @@ class Spider(BaseSpider):
             for action, name, remark in (
                 ("web_view", "開啟獨立內容", "mode=view，返回依網頁歷史"),
                 ("native_toast", "執行中 Toast", "呼叫 App 的 Runtime.toast"),
-                ("json", "JSON 請求", "net.json 驗證 HTTP 與 JSON"),
-                ("request_sync", "同步 HTTP", "同步取得完整回應"),
-                ("session", "隔離 Session", "在獨立 Cookie 流程完成請求並關閉"),
-                ("parallel", "並行請求", "同時取得 3 份回應"),
-                ("download", "下載檔案", "串流寫入暫存檔，用完移除"),
+                ("json", "JSON 請求", "驗證 HTTP 狀態與 JSON"),
+                ("request_sync", "同步 HTTP", "同步取得狀態、標頭與正文"),
+                ("request", "HTTP + Cookie", "帶入 WebView Cookie，取得狀態與長度"),
                 ("binary", "二進位回應", "buffer=3，直接取得 bytes"),
-                ("ttl_persist", "持久化快取", "重建爬蟲後仍可讀取"),
-                ("ttl_background", "立即回快取、背景更新", "先 peek，再交給 refresh 背景更新"),
-                ("ttl_clear_all", "清除全部 TTL 快取", "只清目前站點的 TTL 資料"),
+                ("cookie", "檢查 Cookie", "查看指定 Cookie 是否存在"),
+                ("cookie_clear", "清除 Cookie", "寫入過期 Cookie 並確認結果"),
+                ("session", "隔離 Session", "使用獨立 Cookie，用完關閉"),
+                ("parallel", "批次請求", "並行取得 3 份回應"),
+                ("download", "下載檔案", "下載至暫存檔，用完移除"),
+                ("stream_read", "分塊讀取", "每塊最多 64 KiB，用完關閉"),
+                ("proxy_stream", "串流代理", "由本機 proxy 轉送 request_url"),
+                ("proxy_body", "串流輸出", "依序讀取兩次 request_url，輸出至同一 proxy"),
+                ("websocket", "WebSocket 交換", "取得首個完整訊息後關閉"),
+                ("socket-start", "WebSocket 連線", "持續收訊並發送二進位範例"),
+                ("socket-state", "WebSocket 狀態", "查看文字與二進位訊息數"),
+                ("socket-stop", "停止 WebSocket", "關閉連線並釋放資源"),
+                ("sleep", "可取消等待", "等待 250 毫秒，取消即停止"),
+                ("ttl_cache", "TTL 快取", "有效期內重用，過期背景更新"),
+                ("ttl_text", "JSON 快取文字", "cachedText 取得原文，共用 TTL"),
+                ("ttl_peek", "讀取已有快取", "只讀已有值，保留原有效期"),
+                ("ttl_background", "背景更新快取", "peek 讀舊值，refresh 背景更新"),
+                ("ttl_persist", "持久化快取", "重新載入爬蟲後仍可讀取"),
+                ("ttl_clear", "清除 TTL 快取", "清除範例 key 並取消載入"),
+                ("ttl_clear_all", "清除全部 TTL", "清除目前站點的 TTL 快取"),
+                ("cache_write", "寫入 Local", "保存 JSON 物件、陣列與純量"),
+                ("cache_read", "讀取 Local", "讀取範例值"),
+                ("cache_delete", "刪除 Local", "刪除範例值"),
                 ("proxy", "本機 proxy", "透過 App HTTP server 呼叫此爬蟲"),
                 ("runtime", "測試 App 與加密 bridge", "驗證 SHA-256 與 AES-GCM"),
                 ("toast", "顯示 Toast", "action 回傳 msg，由 App 顯示"),
                 ("dialog", "顯示 Dialog", "主執行緒取得目前 Activity，再建立對話框"),
                 ("site_key", "顯示 Site key", "由 App 在 init 前注入的 siteKey"),
                 ("web", "開啟網頁", "action 回傳 web，由 App 開啟"),
-                ("cookie", "檢查登入 Cookie", "只顯示是否存在，不顯示 Cookie 內容"),
-                ("cookie_clear", "清除登入 Cookie", "寫入過期 Cookie 並確認結果"),
-                ("request", "HTTP + Cookie 請求", "使用 self.net.req，只顯示狀態與長度"),
-                ("websocket", "WebSocket 訊息交換", "使用 self.net.ws，只顯示狀態與長度"),
-                ("socket-start", "WebSocket 持續連線", "持續收訊並發送二進位範例"),
-                ("socket-state", "WebSocket 連線狀態", "查看文字與二進位訊息數"),
-                ("socket-stop", "WebSocket 停止連線", "關閉連線並釋放資源"),
-                ("sleep", "可取消等待", "等待 250 毫秒；爬蟲關閉或任務中斷會取消"),
-                ("ttl_cache", "TTL 快取", "有效期內重用資料；過期背景更新"),
-                ("ttl_text", "JSON 快取文字", "cachedText 回傳原生快取文字，共用 TTL 快取項目"),
-                ("ttl_peek", "讀取已有快取", "只讀已有值，不發出請求或延長 TTL"),
-                ("ttl_clear", "清除 TTL 快取", "清除同一個 key，並取消正在載入的資料"),
-                ("cache_write", "寫入 Local", "保存 JSON 物件、陣列及純量"),
-                ("cache_read", "讀取 Local", "使用 self.local.get 讀取相同 key"),
-                ("cache_delete", "刪除 Local", "使用 self.local.delete 清除資料"),
             )
         ]
 

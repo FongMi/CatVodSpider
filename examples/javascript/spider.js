@@ -233,6 +233,7 @@ function createSpider(site = {}) {
         if (subtitleItems.length) result.subs = subtitleItems;
         const danmakuItems = danmaku(options.danmaku);
         if (danmakuItems.length) result.danmaku = danmakuItems;
+        if (options.live_danmaku === true) result.danmaku = [{name: "即時彈幕", url: getDanmakuUrl("demo")}];
         const drmItem = drm(options.drm);
         if (drmItem) result.drm = drmItem;
 
@@ -248,7 +249,7 @@ function createSpider(site = {}) {
 
     async function action(value) {
         if (value === "html_query") return htmlQueryAction();
-        if (["json", "session", "parallel", "parallel_map", "binary", "request_sync", "stream_read", "proxy_stream"].includes(value)) return networkAction(value);
+        if (["json", "session", "parallel", "parallel_map", "binary", "request_sync", "stream_read", "proxy_stream", "proxy_body"].includes(value)) return networkAction(value);
         if (value === "download") {
             await net.download(ensureHttpUrl(options.request_url || options.web_url, "request_url"), "spider-demo.bin");
             return {msg: "下載完成，檔案已寫入 App 快取"};
@@ -420,6 +421,10 @@ function createSpider(site = {}) {
             });
             return [response.code, response.contentType, response.stream, response.headers];
         }
+        if (params.demo === "body") {
+            const response = await net.stream(streamBody(ensureHttpUrl(options.request_url || options.web_url, "request_url")));
+            return [200, response.contentType, response.stream, headers];
+        }
         if (params.demo === "playlist" && options.media_url) {
             return [200, "application/vnd.apple.mpegurl", "#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=1280000\n" + ensureHttpUrl(options.media_url, "media_url") + "\n", headers];
         }
@@ -456,6 +461,22 @@ function createSpider(site = {}) {
         return {msg: JSON.stringify(list)};
     }
 
+    async function* streamBody(url) {
+        for (let i = 0; i < 2; i++) {
+            const reader = await net.openStream(url, {timeout: REQUEST_TIMEOUT_MS, callTimeout: REQUEST_TIMEOUT_MS});
+            try {
+                checkResponse(reader);
+                for (;;) {
+                    const chunk = await reader.read();
+                    if (chunk === null) break;
+                    yield chunk;
+                }
+            } finally {
+                reader.close();
+            }
+        }
+    }
+
     async function countStreamBytes(url) {
         const reader = await net.openStream(url, {timeout: REQUEST_TIMEOUT_MS, callTimeout: REQUEST_TIMEOUT_MS});
         try {
@@ -475,8 +496,9 @@ function createSpider(site = {}) {
                 const data = await net.json(ensureHttpUrl(options.json_url, "json_url"), {timeout: REQUEST_TIMEOUT_MS});
                 return {msg: "JSON 請求成功：" + typeof data};
             }
-            const url = value === "proxy_stream" ? getProxyUrl({demo: "stream"}) : ensureHttpUrl(options.request_url || options.web_url, "request_url");
-            if (value === "stream_read" || value === "proxy_stream") {
+            const proxy = value === "proxy_stream" || value === "proxy_body";
+            const url = proxy ? getProxyUrl({demo: value === "proxy_body" ? "body" : "stream"}) : ensureHttpUrl(options.request_url || options.web_url, "request_url");
+            if (value === "stream_read" || proxy) {
                 const length = await countStreamBytes(url);
                 return {msg: `串流讀取完成：${length} bytes`};
             }
@@ -546,6 +568,37 @@ function createSpider(site = {}) {
             .some((suffix) => path.endsWith(suffix));
     }
 
+    function subscribeDanmaku(id, emit) {
+        if (!options.ws_url) throw new Error("請先在 ext 設定 ws_url");
+        let ready = false;
+        let stopped = false;
+        const connection = net.connect(options.ws_url, {
+            headers: stringMap(options.ws_headers, "ws_headers"),
+            data: options.ws_data,
+            timeout: REQUEST_TIMEOUT_MS,
+            ping: 30000,
+            idle: options.ws_idle ?? 0,
+            reconnect: true,
+        }, (socket, event) => {
+            if (stopped) return;
+            if (event.type === "message" && !event.binary) {
+                if (!ready) emit({state: "ready"});
+                ready = true;
+                emit({text: event.content, color: 0x66ccff, size: 25, type: 1, colors: [0x66ccff, 0xcc99ff]});
+            } else if (event.type === "retry") {
+                ready = false;
+                emit({state: "retrying", msg: "彈幕連線中斷，等待恢復"});
+            } else if (event.type === "error" || event.type === "close") {
+                stopped = true;
+                emit({state: "error", msg: String(event.error || "彈幕連線已關閉").slice(0, 512)});
+            }
+        });
+        return () => {
+            stopped = true;
+            connection.cancel();
+        };
+    }
+
     function destroy() {
         socket?.cancel();
         socket = null;
@@ -556,13 +609,15 @@ function createSpider(site = {}) {
         const url = stringValue(options.ws_url).trim();
         if (!url) return {msg: "請先在 ext 設定 ws_url"};
         socket?.cancel();
-        const state = {state: "連線中", text: 0, binary: 0};
+        const state = {state: "連線中", text: 0, binary: 0, retries: 0};
         socketState = state;
         socket = net.connect(url, {
             data: options.ws_data,
             headers: stringMap(options.ws_headers, "ws_headers"),
             timeout: REQUEST_TIMEOUT_MS,
             ping: 30000,
+            idle: options.ws_idle ?? 0,
+            reconnect: true,
         }, (connection, event) => socketEvent(connection, event, state));
         return {msg: "WebSocket 已開始連線"};
     }
@@ -575,6 +630,10 @@ function createSpider(site = {}) {
             state[event.binary ? "binary" : "text"]++;
         } else if (event.type === "error") {
             state.error = event.error;
+        } else if (event.type === "retry") {
+            state.state = "重新連線中";
+            state.retries++;
+            state.retryCode = event.code;
         } else if (event.type === "close") {
             state.state = "已關閉";
         }
@@ -689,38 +748,39 @@ function createSpider(site = {}) {
     function actionCards() {
         return [
             ["web_view", "開啟獨立內容", "mode=view，返回依網頁歷史"],
-            ["json", "JSON 請求", "net.json 驗證 HTTP 與 JSON"],
-            ["request_sync", "同步 HTTP", "同步取得完整回應"],
-            ["session", "隔離 Session", "在獨立 Cookie 流程完成請求並關閉"],
-            ["parallel", "並行請求", "同時取得 3 份回應"],
-            ["parallel_map", "並行映射", "net.map 限制並行數，執行回呼並按輸入順序回傳"],
-            ["download", "下載檔案", "串流寫入 App 快取"],
+            ["json", "JSON 請求", "驗證 HTTP 狀態與 JSON"],
+            ["request_sync", "同步 HTTP", "同步取得狀態、標頭與正文"],
+            ["request", "HTTP + Cookie", "帶入 WebView Cookie，取得狀態與長度"],
             ["binary", "二進位回應", "buffer=3，取得 ArrayBuffer"],
+            ["cookie", "檢查 Cookie", "查看指定 Cookie 是否存在"],
+            ["cookie_clear", "清除 Cookie", "寫入過期 Cookie 並確認結果"],
+            ["session", "隔離 Session", "使用獨立 Cookie，用完關閉"],
+            ["parallel", "批次請求", "並行取得 3 份回應"],
+            ["parallel_map", "批次處理", "限量並行，按輸入順序回傳"],
+            ["download", "下載檔案", "下載至 App 快取"],
+            ["stream_read", "分塊讀取", "每塊最多 64 KiB，用完關閉"],
+            ["proxy_stream", "串流代理", "由本機 proxy 轉送 request_url"],
+            ["proxy_body", "串流輸出", "依序讀取兩次 request_url，輸出至同一 proxy"],
+            ["websocket", "WebSocket 交換", "取得首個完整訊息後關閉"],
+            ["socket-start", "WebSocket 連線", "持續收訊並發送二進位範例"],
+            ["socket-state", "WebSocket 狀態", "查看文字與二進位訊息數"],
+            ["socket-stop", "停止 WebSocket", "關閉連線並釋放資源"],
+            ["sleep", "可取消等待", "等待 250 毫秒，取消即停止"],
+            ["ttl_cache", "TTL 快取", "有效期內重用，過期背景更新"],
+            ["ttl_peek", "讀取已有快取", "只讀已有值，保留原有效期"],
+            ["ttl_background", "背景更新快取", "peek 讀舊值，refresh 背景更新"],
+            ["ttl_persist", "持久化快取", "重新載入爬蟲後仍可讀取"],
+            ["ttl_clear", "清除 TTL 快取", "清除範例 key 並取消載入"],
+            ["ttl_clear_all", "清除全部 TTL", "清除目前站點的 TTL 快取"],
+            ["cache_write", "寫入 Local", "保存 JSON 物件、陣列與純量"],
+            ["cache_read", "讀取 Local", "讀取範例值"],
+            ["cache_delete", "刪除 Local", "刪除範例值"],
             ["html_query", "HTML 欄位解析", "一次解析 HTML，取出標題、ID 與演員"],
-            ["stream_read", "分塊讀取", "每次最多讀取 64 KiB，結束或失敗時關閉"],
-            ["proxy_stream", "串流代理", "原樣轉送 request_url，再分塊讀取本機 proxy"],
-            ["ttl_persist", "持久化快取", "重建爬蟲後仍可讀取"],
-            ["ttl_background", "立即回快取、背景更新", "先 peek，再交給 refresh 背景更新"],
-            ["ttl_clear_all", "清除全部 TTL 快取", "只清目前站點的 TTL 資料"],
             ["proxy", "本機 proxy", "透過 App HTTP server 呼叫此爬蟲"],
             ["runtime", "測試 App 與加密 bridge", "驗證 User-Agent、SHA-256、亂數與 AES-GCM"],
             ["toast", "顯示 Toast", "action 回傳 msg，由 App 顯示"],
             ["site_key", "顯示 Site key", "由 App 在 init 前注入的 siteKey"],
             ["web", "開啟網頁", "action 回傳 web，由 App 開啟"],
-            ["cookie", "檢查登入 Cookie", "只顯示是否存在，不顯示 Cookie 內容"],
-            ["cookie_clear", "清除登入 Cookie", "寫入過期 Cookie 並確認結果"],
-            ["request", "HTTP + Cookie 請求", "使用 net.http Promise，只顯示狀態與長度"],
-            ["websocket", "WebSocket 訊息交換", "使用 net.ws Promise，只顯示狀態與長度"],
-            ["socket-start", "WebSocket 持續連線", "持續收訊並發送二進位範例"],
-            ["socket-state", "WebSocket 連線狀態", "查看文字與二進位訊息數"],
-            ["socket-stop", "WebSocket 停止連線", "關閉連線並釋放資源"],
-            ["sleep", "可取消等待", "等待 250 毫秒；爬蟲關閉或任務中斷會取消"],
-            ["ttl_cache", "TTL 快取", "有效期內重用資料；過期背景更新"],
-            ["ttl_peek", "讀取已有快取", "只讀已有值，不發出請求或延長 TTL"],
-            ["ttl_clear", "清除 TTL 快取", "清除同一個 key，並取消正在載入的資料"],
-            ["cache_write", "寫入 Local", "保存 JSON 物件、陣列及純量"],
-            ["cache_read", "讀取 Local", "讀取相同 key"],
-            ["cache_delete", "刪除 Local", "清除範例狀態"],
         ].map(([value, name, remark]) => ({
             vod_id: `action/${value}`,
             vod_name: name,
@@ -807,6 +867,7 @@ function createSpider(site = {}) {
         detail,
         search,
         play,
+        danmaku: subscribeDanmaku,
         live,
         proxy,
         action,
