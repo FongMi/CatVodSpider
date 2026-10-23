@@ -1,50 +1,41 @@
 ---
 name: catvod-spider
-description: Develop or upgrade Java, Python and QuickJS TV spiders using the TV shared APIs and CatVodSpider examples.
+description: Develop or upgrade Java, Python and QuickJS TV spiders using the shared APIs and CatVodSpider examples.
 ---
 
 # CatVodSpider
 
-範例與打包見 [README](../../../README.md)，接口與參數見 [開發說明](../../../docs/development.md)。從對應 Demo 開始，只保留需要的功能；代碼範例集中在 Demo，文件只保留接口、參數與限制。
+從 [README](../../../README.md#開始開發) 選擇對應 Demo；接口、參數與語言差異以[開發說明](../../../docs/development.md)為準。代碼範例集中在 Demo，實際爬蟲只保留需要的功能。
 
-## 寫法
+## 開發流程
 
-- 依[執行環境](../../../docs/development.md#執行環境)所列的版本選用語法與宿主 API。Python 入口用同步 `def`，App 不等待 coroutine；QuickJS 可回傳 Promise，由 App 等待。
-- QuickJS 的 URL、Abort、Streams 與 Web Crypto 需 v11 配套 runtime；依開發說明確認 App 版本與限制。
-- 優先官方 API，確認分類、篩選、搜尋、詳情與播放的資料來源。列表 ID 接到 detail，每集播放值接到 play；只實現站點支援的功能與權限。
-- 使用 App 注入的 Python `self.net`、QuickJS `net`、Java 繼承的 `net`。不要另建網路封裝或複製 App 的內部實作。
-- Context、Activity 與 Toast 使用共用 SDK 的 `com.github.catvod.Runtime`；爬蟲 JAR 不打包宿主 SDK 類別。JAR 自己的 `com.github.catvod.spider.Init` 是獨立的可選初始化入口。
-- Java 使用本專案 `com.github.catvod.bean` 的純資料模型，以 `Vod.create().id(...).name(...)` 鏈式填值，模型統一以 `create()` 建立，方法不加 `set` 前綴。播放附加資料使用 `Sub`、`Danmaku`、`Drm`、`SkipSegment`、`Url`，網頁操作使用 `Web`；`Response` 用 Gson 組裝標準 JSON。模型隨爬蟲 JAR 打包，不引用 App bean；App 的 `Result` 只負責接收解析，不放爬蟲 builder。
-- JSON API 優先用 `net.json`；需要狀態碼、錯誤正文或 bytes 時用 `net.req`／QuickJS `net.http`。網路失敗、403、登入頁及解析失敗不可偽裝成成功空列表，不增加無根據的重試或站點 workaround。
-- 二進位回應用 `buffer:3`，Python 取得 bytes，可用 memoryview 建立切片檢視；QuickJS 取得 ArrayBuffer，以 Uint8Array 檢視。逐塊處理用 `net.openStream`，Python read 到 None、QuickJS 到 null 為 EOF，以 with／finally 關閉；proxy 原樣轉送用 `net.stream`，成功交付後由 App 接管，不保留到其他呼叫。
-- proxy 自訂串流用 Python `self.net.stream(generator())` 或 QuickJS `net.stream(asyncGenerator())`，逐塊 yield bytes。產生器延後至播放器讀取才執行，可跨請求；reader 在產生器內開啟，以 with／finally 關閉，不累積整段直播。App 處理交付、取消與關閉，站點續接及封包改寫留在爬蟲；需配套 runtime。
-- QuickJS 批次 HTML 欄位可用全域 `htmlQuery`，同一 plan 放多組 queries；自行驗證必填值、trim 與補相對 URL。它使用 Jsoup 規則，不是 Cheerio 相容介面；用法與限制見開發說明。
-- 固定 HTTP 批次用共用 `net.batch`；QuickJS 每項還要解析或轉換時用 `net.map(items, async (item, index) => result, limit)`，保持並行上限並檢查每項 HTTP 狀態。
-- Java 互動式下載使用共用 SDK 的 `Download.create(url, file).start(callback)`，沿用 `pause()`、`paused()`、`start(callback)` 與 `cancel()`；不要自行實作分段、續傳或進度計算的網路層。UI 在主執行緒使用當前 Activity，關閉對話框與 destroy 時取消工作；驗證內容後才取代正式檔案。
-- 保持精簡、扁平，按實際操作切 function。不要為一個簡單操作增加類別或抽象層。
-- Java 字幕用 `Sub.create().format(ext)` 傳副檔名，由 `Sub` 呼叫 `VodUtil.getSubMimeType(ext)`；JSON 的 `subs[].format` 使用 MIME。
+1. 先確認站點的分類、篩選、搜尋、詳情與播放來源，優先官方 API，只實現來源支援的功能與權限。
+2. 依[執行環境](../../../docs/development.md#執行環境)選用語法與宿主 API。Python 入口維持同步 `def`；QuickJS 可回傳 Promise，由 App 等待，不是 Node.js 環境。
+3. 接通列表 ID → 詳情 → 每集播放值 → 播放網址，再補篩選、分頁與需要的互動。共通能力及語言專屬範例見 [Demo 功能](../../../docs/development.md#demo-功能)。
+4. 保持精簡、扁平，按實際操作切 function。使用 App 注入的 self.net／net，不複製內部實作或另建網路封裝。
 
-## 容易寫錯的地方
+## 網路與資源
 
-- Python 回傳 dict／list，QuickJS 回傳物件／陣列，Java 回傳 JSON 字串；proxy 與布林接口例外。QuickJS 的 detail 收單一 ID，Python／Java 收 ID 集合。
-- 分類與搜尋都要接分頁；`filters` 的鍵對應 `type_id`。完整清單先切片，網站已分頁時直接回傳當頁；同頁 VOD 樣式一致。
-- 使用共用快取、Local、超連結及 `getProxyUrl`；不要自己拼 proxy 的 do／siteKey。搜尋語系由 Site.lang 決定，爬蟲不轉字。
-- Python 大型 JSON 目錄可用 `self.net.cachedText` 取得快取文字，再按內容重用私有索引；每次讀取仍通過原生快取，destroy 釋放快照，不另設有效期。一般資料繼續使用回傳獨立物件的 `cached`。
-- 播放網址可能過期，使用短 TTL、`stale:false`，不持久化。Cookie、token 與簽名網址不放進 log 或長期 Local。自己建立的 session 與資源要關閉，取消後不繼續請求。
-- WebSocket 一次交換用 `net.ws`，持續收訊用 `net.connect(url, options, callback)`，需要斷線恢復時設 `reconnect:true`。使用回呼傳入的連線 send，每次 open 重新訂閱，retry 清除心跳與殘包，切台或 destroy 時關閉。平台訂閱、解碼與應用層心跳由爬蟲處理。
-- 來源保證有持續訊息或應用心跳回覆時，可設定 `idle` 接收逾時毫秒數，預設 0 關閉。文字／二進位訊息會重設期限，send 或協定 Ping／Pong 不會；逾時交共用網路層重連，不另建重試計時器。
-- 即時彈幕用 `getDanmakuUrl(id)` 與 `danmaku(id, emit)`；Python／QuickJS 回傳停止函式，Java 回傳 AutoCloseable。emit 欄位與狀態見[即時彈幕](../../../docs/development.md#即時彈幕)。
-- ready 須確認訂閱可用，不能僅以 WebSocket open 判斷。停止時取消自己的連線與心跳，不關閉站點 net；平台協定與樣式轉換由爬蟲處理。
-- 開網頁和完成提示回傳 action 的 `web`／`msg`。Java／Python 自訂 Dialog 在主執行緒執行時才取得 Activity，可能為 null／None，不保存 Activity。
-- Function JAR 引用 `com.fongmi.quickjs` 的 `QuickJSContext`、`JSArray` 等 API，編譯時使用 Actions 產生的 `quickjs-api.jar` 與共用 CatVod SDK；更新後重新編譯，不打包 SDK 類別。
-- 共用 `aesX`／Crypto bridge 的 GCM 密文末端含 16-byte tag，二進位明文用 Base64；Web Crypto 的 tagLength 依開發說明。
+- JSON 用 net.json；需要狀態碼、錯誤正文或 bytes 時，用 Java／Python net.req、QuickJS await net.http。先檢查 error 與 code，403、登入頁及解析失敗不能偽裝成成功空列表，不增加無根據的重試。
+- 固定 HTTP 批次用 net.batch；每項還需快取、簽名或解析時用 net.map。保留輸入順序與並行上限，Java／Python 回呼在背景執行緒執行，避免修改共用狀態。
+- 二進位、分塊讀取、下載、Cookie／Session、WebSocket 與快取統一依[網路](../../../docs/development.md#網路)。reader 用 with／finally 關閉；proxy 成功交付 stream 後由 App 接管，不能留給其他呼叫使用。
+- 自訂串流的 reader 在產生器內開啟，逐塊輸出，不累積整段直播。App 管理傳輸與取消，站點續接與封包改寫留在爬蟲。Python 與 QuickJS 的每塊型別不同，依文件選用。
+- 使用共用 TTL、Local 與 Session。播放網址用短 TTL、stale:false，不持久化；Cookie、token、簽名網址不寫入日誌或長期 Local。Python cachedText 的私有索引仍須經原生快取判斷有效期，destroy 釋放快照。
+- WebSocket 持續收訊用 net.connect，需要恢復時設 reconnect:true；使用回呼傳入的 socket，每次 open 重新訂閱，retry 停止心跳並清除殘包。只有保證持續收訊的來源才設定 idle，不另建重連計時器。
+- 短段 JavaScript 用 [js.eval](../../../docs/development.md#執行-javascript)，以 globals 傳資料；不要自行建立 QuickJS 或拼接參數。環境及期限由 App 管理，需配套模組。
 
-## 網站已分頁
+## 回傳與互動
 
-分類與搜尋直接回傳當頁的 list、page、pagecount、limit，不再切片。limit 是頁大小，total 只填精確總數，未知時省略。回傳型別與其他分頁方式見[入口](../../../docs/development.md#入口)。
+- 回傳型別及入口對照見[入口](../../../docs/development.md#入口)。Java／Python detail 收 ID 集合，QuickJS 收單一 ID；proxy、布林接口與彈幕停止函式各有自己的格式。
+- 分類與搜尋都要接分頁，filters 的鍵對應 type_id。完整清單用共用 page；網站已分頁就直接回傳當頁，total 只填精確總數。同頁 VOD 樣式一致，搜尋語系由 Site.lang 處理，爬蟲不轉字。
+- Java 使用本專案 com.github.catvod.bean 與 Response，以 create() 和無 set 前綴的鏈式方法組裝；它們隨爬蟲 JAR 打包，宿主 SDK 使用 compileOnly。字幕 Sub.format(ext) 收副檔名，JSON 的 subs[].format 使用 MIME。
+- 超連結用共用 link，本機代理用 getProxyUrl，不自行拼 do／siteKey。網頁操作回傳 action 的 web／msg，格式見[網頁與本機代理](../../../docs/development.md#網頁與本機代理)。
+- [直播回看](../../../docs/development.md#直播回看)以 timeshift 交給 App 管理時間軸與取消；節目表回看仍用 catchup。[即時彈幕](../../../docs/development.md#即時彈幕)透過 getDanmakuUrl 與 danmaku(id, emit)，協定、解碼及樣式轉換留在爬蟲；ready 須確認訂閱可用，不能僅以 WebSocket open 判斷。停止時只取消自己的連線與心跳，不關閉站點 net。
+- Java／Python 的 Context、Activity、Toast 使用 com.github.catvod.Runtime。Dialog 在主執行緒執行時才取得 Activity，可能為 null／None，不保存 Activity；JAR 自己的 Init 是可選入口，詳見 [Android UI](../../../docs/development.md#android-ui)。Java 互動式下載及取消見[下載](../../../docs/development.md#下載)。
+- QuickJS 的 HTML 欄位解析用 htmlQuery，Jsoup 規則不保證 Cheerio 相容；必填值、trim、相對 URL 與去重由爬蟲處理。限制見 [HTML 查詢](../../../docs/html-query.md)。
 
 ## 驗證
 
-依 [接口驗證](references/validation.md)，用真實回應核對列表 → 詳情 → 播放值，並檢查首頁、下一頁、尾頁與無結果。403、登入頁和解析失敗不能變成成功空列表。
+依[接口驗證](references/validation.md)核對首頁、篩選、搜尋、下一頁、尾頁、無結果及列表 → 詳情 → 播放。主機適配器只驗證解析與輸出，不能證明 App 載入、快取、取消、Cookie 或播放成功。
 
-主機適配器只驗證解析與輸出，不能證明 App 載入、快取、取消、Cookie 或播放成功。交付依 [AGENTS.md](../../../AGENTS.md)，分開回報主機與 App 的實際結果。
+測試位置、打包及交付依 [AGENTS.md](../../../AGENTS.md)，分開回報主機與 App 的實際結果。

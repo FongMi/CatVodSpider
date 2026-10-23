@@ -6,13 +6,13 @@ TV 的 Java、Python 與 QuickJS 爬蟲及範例，基於 [CatVod](https://githu
 
 | 語言 | 範例 |
 | --- | --- |
+| Java | [Demo.java](app/src/main/java/com/github/catvod/spider/Demo.java) |
 | Python | [examples/python/spider.py](examples/python/spider.py) |
 | QuickJS | [examples/javascript/spider.js](examples/javascript/spider.js) |
-| Java | [Demo.java](app/src/main/java/com/github/catvod/spider/Demo.java) |
 
-複製對應範例，換成站點資料，只保留需要的功能。接口與 Demo 選項見[開發說明](docs/development.md)。
+複製對應範例，換成站點資料，只保留需要的功能。共通功能、語言差異及 ext 選項見[開發說明](docs/development.md#demo-功能)。
 
-修改 [examples/config.json](examples/config.json) 的 `api` 與 `ext`，再讓 TV 載入這份配置。Python／QuickJS 可直接載入；Java 需先打包。
+修改 [examples/config.json](examples/config.json) 的 `api` 與 `ext`，再讓 TV 載入這份配置。Java 需先打包；Python／QuickJS 可直接載入。
 
 使用本機路徑或網站皆可，保留 `examples` 與 `jar` 的相對位置。現有 Java 爬蟲配置見 [json/config.json](json/config.json)。
 

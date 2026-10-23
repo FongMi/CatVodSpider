@@ -4,7 +4,7 @@
 
 ## HTTP 回應
 
-Python `self.net.req` 回傳 dict，QuickJS `await net.http` 回傳物件，Java `net.req` 回傳 JSON 字串。文字回應包含 code、content；先處理 error，再檢查 code。`net.json` 回傳解析後的資料，HTTP 非 2xx 或無效 JSON 會失敗。
+Java `net.req` 回傳 JSON 字串，Python `self.net.req` 回傳 dict，QuickJS `await net.http` 回傳物件。文字回應包含 code、content；先處理 error，再檢查 code。`net.json` 回傳解析後的資料，HTTP 非 2xx 或無效 JSON 會失敗。
 
 保存實際請求的 URL、狀態碼與原始正文供比對；Cookie、token、簽名網址不寫入驗證紀錄。
 
