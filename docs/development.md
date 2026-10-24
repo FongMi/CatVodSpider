@@ -91,7 +91,7 @@ VOD 的 `style.type` 支援 rect／oval／list，同頁保持一致；分類使�
 | 功能 | 操作／入口 |
 | --- | --- |
 | 列表與樣式 | 首頁、分類、資料夾、演員／導演連結；搜尋「示範」檢查分頁 |
-| 播放 | 主要／備用／代理線、多畫質、字幕、DRM、片段跳過、起播位置、直播回看 |
+| 播放 | 主要／備用／代理線、多畫質、字幕、DRM、片段跳過、起播位置、直播回看、播放詳情更新 |
 | HTTP | json、request_sync、request、binary、cookie、cookie_clear、session |
 | 並行與下載 | parallel、parallel_map、download、sleep |
 | 串流 | stream_read、proxy_stream；本機 proxy 轉送與分塊讀取 |
@@ -106,6 +106,28 @@ VOD 的 `style.type` 支援 rect／oval／list，同頁保持一致；分類使�
 | Java | text_get／text_post 取得正文；native_toast／dialog 呼叫 Android；binary 使用 buffer=1；串流使用 InputStream |
 | Python | ttl_text 讀取 JSON 快取文字；native_toast／dialog 呼叫 Android；proxy_body 使用 generator；binary 回傳 bytes |
 | QuickJS | html_query 解析 HTML 欄位；proxy_body 使用 async generator；binary 回傳 ArrayBuffer；下載保留在 App cache |
+
+## 播放詳情更新
+
+在 `playerContent(flag, id, vipFlags)`／`play(flag, id, vipFlags)` 的回傳結果中，以 `list[0]` 帶回 VOD 詳情。`vod_id` 可省略，提供時會連動歷史與收藏識別。
+
+以下 `vod` 為詳情資料，`url` 為播放網址。
+
+```java
+return Response.create().url(url).vod(vod).string();
+```
+
+```python
+return {"parse": 0, "url": url, "list": [vod]}
+```
+
+```javascript
+return {parse: 0, url, list: [vod]};
+```
+
+Node.js 的 `/play` 與 type=4 HTTP API 使用相同 JSON 格式。App 採用結果時更新 VOD；預載結果在切集時套用，取消或過期的結果會丟棄。
+
+episode 依相同 `vod_play_from` 合併，相同名稱與播放值去重，其餘追加，保留目前選集位置。
 
 ## Demo 選項
 

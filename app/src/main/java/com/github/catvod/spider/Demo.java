@@ -158,6 +158,10 @@ public class Demo extends Spider {
     public String detailContent(List<String> ids) throws Exception {
         JsonObject record = record(ids.get(0).replaceFirst("^vod/", ""));
         if (record == null) return Response.create().vods(List.of()).msg("找不到此範例影片").string();
+        return Response.create().vod(detailVod(record)).string();
+    }
+
+    private Vod detailVod(JsonObject record) throws Exception {
         String flags = "主要線";
         String urls = episodeLine(record, "main");
         if (!option("backup_media_url").isEmpty()) {
@@ -170,8 +174,7 @@ public class Demo extends Spider {
         }
         List<String> actors = new ArrayList<>();
         for (JsonElement name : record.getAsJsonArray("actors")) actors.add(clickable("actor", name.getAsString()));
-        Vod item = card(record, "portrait", "portrait").typeName(record.get("genre").getAsString()).area(record.get("area").getAsString()).director(clickable("director", record.get("director").getAsString())).actor(String.join("、", actors)).content(record.get("content").getAsString()).playFrom(flags).playUrl(urls);
-        return Response.create().vod(item).string();
+        return card(record, "portrait", "portrait").typeName(record.get("genre").getAsString()).area(record.get("area").getAsString()).director(clickable("director", record.get("director").getAsString())).actor(String.join("、", actors)).content(record.get("content").getAsString()).playFrom(flags).playUrl(urls);
     }
 
     @Override
@@ -186,10 +189,10 @@ public class Demo extends Spider {
         String url = option(key);
         Url qualities = source.equals("main") && options.has("media_urls") ? qualities(options.getAsJsonObject("media_urls")) : null;
         Map<String, String> headers = mediaHeaders(source.equals("backup") ? "backup_media_headers" : "media_headers");
-        if (qualities == null && url.isEmpty() && source.equals("main") && !option("sniff_url").isEmpty()) return Response.create().parse().url(httpUrl(option("sniff_url"), "sniff_url")).header(headers).string();
+        if (qualities == null && url.isEmpty() && source.equals("main") && !option("sniff_url").isEmpty()) return Response.create().parse().url(httpUrl(option("sniff_url"), "sniff_url")).header(headers).vod(detailVod(record)).string();
         if (qualities == null && url.isEmpty()) return Response.notify("請先設定 ext." + key + " 再測試播放");
         Object media = qualities != null ? qualities : source.equals("proxy") ? getProxyUrl(Map.of("demo", "playlist")) : httpUrl(url, key);
-        Response result = Response.create().url(media).header(headers).artwork(picture(record, "landscape")).desc(record.get("name").getAsString() + "・" + record.getAsJsonArray("episodes").get(episode - 1).getAsString());
+        Response result = Response.create().url(media).header(headers).vod(detailVod(record)).artwork(picture(record, "landscape")).desc(record.get("name").getAsString() + "・" + record.getAsJsonArray("episodes").get(episode - 1).getAsString());
         if (options.has("skips")) result.skips(skips(options.getAsJsonArray("skips")));
         if (options.has("timeshift")) result.put("timeshift", options.get("timeshift"));
         applyPlaybackOptions(result);

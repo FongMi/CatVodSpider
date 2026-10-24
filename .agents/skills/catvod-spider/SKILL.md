@@ -27,6 +27,7 @@ description: Develop or upgrade Java, Python and QuickJS TV spiders using the sh
 ## 回傳與互動
 
 - 回傳型別及入口對照見[入口](../../../docs/development.md#入口)。Java／Python detail 收 ID 集合，QuickJS 收單一 ID；proxy、布林接口與彈幕停止函式各有自己的格式。
+- [播放詳情更新](../../../docs/development.md#播放詳情更新)使用播放結果的 list[0]；App 採用結果時套用，預載資料在切集時更新，取消或過期的結果丟棄。episode 依播放分組合併並去重。
 - 分類與搜尋都要接分頁，filters 的鍵對應 type_id。完整清單用共用 page；網站已分頁就直接回傳當頁，total 只填精確總數。同頁 VOD 樣式一致，搜尋語系由 Site.lang 處理，爬蟲不轉字。
 - Java 使用本專案 com.github.catvod.bean 與 Response，以 create() 和無 set 前綴的鏈式方法組裝；它們隨爬蟲 JAR 打包，宿主 SDK 使用 compileOnly。字幕 Sub.format(ext) 收副檔名，JSON 的 subs[].format 使用 MIME。
 - 超連結用共用 link，本機代理用 getProxyUrl，不自行拼 do／siteKey。網頁操作回傳 action 的 web／msg，格式見[網頁與本機代理](../../../docs/development.md#網頁與本機代理)。

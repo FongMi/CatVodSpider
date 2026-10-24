@@ -251,6 +251,9 @@ class Spider(BaseSpider):
         if record is None:
             return {"list": [], "msg": "找不到此範例影片"}
 
+        return {"list": [self._detail_vod(record)]}
+
+    def _detail_vod(self, record):
         flags = ["主要線"]
         urls = [self._episode_line(record, "main")]
         if str(self.options.get("backup_media_url") or "").strip():
@@ -271,7 +274,7 @@ class Spider(BaseSpider):
             "vod_play_from": "$$$".join(flags),
             "vod_play_url": "$$$".join(urls),
         })
-        return {"list": [item]}
+        return item
 
     def playerContent(self, flag, id, vipFlags):
         parts = str(id or "").split("/")
@@ -297,7 +300,7 @@ class Spider(BaseSpider):
         headers = self._string_map(self.options.get(header_key), header_key)
         if not url and sniff_url:
             self._absolute_url(sniff_url, "sniff_url")
-            return {"parse": 1, "jx": 0, "url": sniff_url, "header": headers}
+            return {"parse": 1, "jx": 0, "url": sniff_url, "header": headers, "list": [self._detail_vod(record)]}
         if not url:
             return {"parse": 0, "msg": "請先設定 ext.%s 再測試播放" % option_key}
         self._absolute_url(url, option_key)
@@ -307,6 +310,7 @@ class Spider(BaseSpider):
             "jx": 0,
             "url": self.getProxyUrl({"demo": "playlist"}) if source == "proxy" else qualities or url,
             "header": headers,
+            "list": [self._detail_vod(record)],
             "artwork": self._picture(record, "landscape"),
             "desc": "%s・%s" % (record["name"], record["episodes"][episode_index - 1]),
         }

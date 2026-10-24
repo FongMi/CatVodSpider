@@ -162,6 +162,10 @@ function createSpider(site = {}) {
         const record = findRecord(ident);
         if (!record) return {list: [], msg: "找不到此範例影片"};
 
+        return {list: [detailVod(record)]};
+    }
+
+    function detailVod(record) {
         const flags = ["主要線"];
         const urls = [episodeLine(record, "main")];
         if (stringValue(options.backup_media_url).trim()) {
@@ -184,7 +188,7 @@ function createSpider(site = {}) {
             vod_play_from: flags.join("$$$"),
             vod_play_url: urls.join("$$$"),
         });
-        return {list: [item]};
+        return item;
     }
 
     function search(key, quick, pg = "1") {
@@ -213,7 +217,7 @@ function createSpider(site = {}) {
         const optionKey = source === "backup" ? "backup_media_url" : "media_url";
         const choices = source === "main" && options.media_urls != null ? qualities(options.media_urls) : null;
         const url = choices ? choices.values[choices.position].v : stringValue(options[optionKey]).trim();
-        if (!url && source === "main" && options.sniff_url) return {parse: 1, jx: 0, url: ensureHttpUrl(options.sniff_url, "sniff_url"), header: stringMap(options.media_headers, "media_headers")};
+        if (!url && source === "main" && options.sniff_url) return {parse: 1, jx: 0, url: ensureHttpUrl(options.sniff_url, "sniff_url"), header: stringMap(options.media_headers, "media_headers"), list: [detailVod(record)]};
         if (!url) return {parse: 0, msg: `請先設定 ext.${optionKey} 再測試播放`};
         ensureHttpUrl(url, optionKey);
 
@@ -223,6 +227,7 @@ function createSpider(site = {}) {
             jx: 0,
             url: source === "proxy" ? getProxyUrl({demo: "playlist"}) : choices || url,
             header: stringMap(options[headerKey], headerKey),
+            list: [detailVod(record)],
             artwork: picture(record, "landscape"),
             desc: `${record.name}・${record.episodes[episodeIndex - 1]}`,
         };
