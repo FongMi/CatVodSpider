@@ -170,7 +170,7 @@ Java 只要正文可用 `net.get(url)`、`net.get(url, headers)`、`net.post(url
 | `headers` | 標頭物件 |
 | `params` | 自動編碼 query，陣列值重複同一個 key |
 | `method、data、postType` | POST 資料；postType 為 json／form／form-data |
-| `body` | 原始文字，搭配 Content-Type，與 data 擇一 |
+| `body` | 原始文字或位元組陣列，搭配 Content-Type，與 data 擇一；陣列每項為 0～255 整數 |
 | `buffer` | 0 文字、1 byte 陣列、2 Base64；3 在 Python 回傳 bytes、QuickJS 回傳 ArrayBuffer |
 | `redirect` | 預設 1 跟隨重新導向，0 不跟隨 |
 | `timeout、callTimeout` | 連線讀寫／整次請求逾時，單位毫秒 |
@@ -179,6 +179,18 @@ Java 只要正文可用 `net.get(url)`、`net.get(url, headers)`、`net.post(url
 QuickJS 的 http／json／batch／map／ws／cached／download／sleep／openStream／stream 回傳 Promise，取結果時用 await；req 預設同步，refresh 直接返回。獨立請求可並行等待 I/O，JS 與 callback 仍在同一執行緒依序執行；不要同步等待同一 JS 執行緒的 callback。
 
 Python／QuickJS Demo 的 `binary` 操作使用 `buffer: 3`。Python 回傳 bytes，可用 `memoryview(content)[start:end]` 建立切片檢視；QuickJS 回傳 ArrayBuffer，長度用 `content.byteLength`，讀取內容用 `new Uint8Array(content)`。建立檢視不複製原有資料，跨語言傳遞不保證 zero copy。
+
+三語言 Demo 的 `request` 可在 `ext.request_options` 設定原始二進位 POST：
+
+```json
+{
+  "method": "POST",
+  "headers": {"Content-Type": "application/octet-stream"},
+  "body": [0, 127, 128, 255]
+}
+```
+
+Python bytes 先用 list 轉換，QuickJS Uint8Array 先用 Array.from 轉換；buffer 只控制回應格式。
 
 Python／QuickJS 用 `net.getUserAgent()` 取得 App 的 User-Agent，再按站點需要放進 headers；不會自動套用到每個請求。
 

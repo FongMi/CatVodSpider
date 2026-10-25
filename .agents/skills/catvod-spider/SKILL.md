@@ -17,6 +17,7 @@ description: Develop or upgrade Java, Python and QuickJS TV spiders using the sh
 ## 網路與資源
 
 - JSON 用 net.json；需要狀態碼、錯誤正文或 bytes 時，用 Java／Python net.req、QuickJS await net.http。先檢查 error 與 code，403、登入頁及解析失敗不能偽裝成成功空列表，不增加無根據的重試。
+- 原始 POST 用 body，與 data 擇一並提供 Content-Type；二進位正文用 0～255 整數陣列，不能把 Uint8Array 當 JSON data 傳送。
 - 固定 HTTP 批次用 net.batch；每項還需快取、簽名或解析時用 net.map。保留輸入順序與並行上限，Java／Python 回呼在背景執行緒執行，避免修改共用狀態。
 - 二進位、分塊讀取、下載、Cookie／Session、WebSocket 與快取統一依[網路](../../../docs/development.md#網路)。reader 用 with／finally 關閉；proxy 成功交付 stream 後由 App 接管，不能留給其他呼叫使用。
 - 自訂串流的 reader 在產生器內開啟，逐塊輸出，不累積整段直播。App 管理傳輸與取消，站點續接與封包改寫留在爬蟲。Python 與 QuickJS 的每塊型別不同，依文件選用。
