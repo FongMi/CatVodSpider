@@ -99,13 +99,13 @@ VOD 的 `style.type` 支援 rect／oval／list，同頁保持一致；分類使�
 | 快取與儲存 | ttl_cache／ttl_peek／ttl_background／ttl_persist／ttl_clear／ttl_clear_all；cache_write／cache_read／cache_delete 操作 Local |
 | 腳本與互動 | script、runtime、proxy、toast、site_key、web、web_view；live_danmaku 選項啟用即時彈幕 |
 
-語言差異保留在對應 Demo：
+三語言的 dialog、qrcode、dialog_steps 分別示範表單與欄位更新、QR Code 與文字複製、圖片更新與連續對話框。語言差異保留在對應 Demo：
 
 | 語言 | 專屬操作與差異 |
 | --- | --- |
-| Java | text_get／text_post 取得正文；native_toast／dialog 呼叫 Android；binary 使用 buffer=1；串流使用 InputStream |
-| Python | ttl_text 讀取 JSON 快取文字；native_toast／dialog 呼叫 Android；proxy_body 使用 generator；binary 回傳 bytes |
-| QuickJS | html_query 解析 HTML 欄位；proxy_body 使用 async generator；binary 回傳 ArrayBuffer；下載保留在 App cache |
+| Java | text_get／text_post 取得正文；native_toast 呼叫 Android；dialog 同步取得表單結果；binary 使用 buffer=1；串流使用 InputStream |
+| Python | ttl_text 讀取 JSON 快取文字；native_toast 呼叫 Android；dialog 同步取得表單結果；proxy_body 使用 generator；binary 回傳 bytes |
+| QuickJS | dialog 以 Promise 取得表單結果；html_query 解析 HTML 欄位；proxy_body 使用 async generator；binary 回傳 ArrayBuffer；下載保留在 App cache |
 
 ## 播放詳情更新
 
@@ -358,6 +358,73 @@ Cookie 同組全部需要、不同組任一組即可；需有新值且頁面同�
 
 Java／Python 的 `getActivity()` 即時取得目前 Activity，可能為 null／None。自訂 Dialog 在主執行緒執行時才取得，不保存 Activity 或自行註冊生命週期 callback。Java 工具類可用 `Runtime.activity()`，Application Context 用 `Runtime.context()`。
 
-共用 SDK 的 `com.github.catvod.Runtime` 提供 Context、Activity 與 Toast；Python 透過 `java.jclass` 呼叫，Toast 由 App 切到主執行緒。實作見 Java／Python Demo 的 `native_toast`／`dialog`。QuickJS 使用 action 回傳值。JAR 的 `com.github.catvod.spider.Init.init(Context)` 是獨立的可選初始化入口。
+共用 SDK 的 `com.github.catvod.Runtime` 提供 Context、Activity 與 Toast；Python 透過 `java.jclass` 呼叫，Toast 由 App 切到主執行緒。原生 Toast 用法見 Java／Python Demo；常用對話框使用下方的共用 Dialog。QuickJS 的 Toast 用 action 回傳 `msg`。JAR 的 `com.github.catvod.spider.Init.init(Context)` 是獨立的可選初始化入口。
+
+三語言共用 Dialog 參數與宿主介面，顯示文字、QR Code、圖片或表單，回傳 `{button, values}`。button 為按鈕 id，values 以欄位 name 對應字串，多選使用字串陣列；允許的返回或點外側操作、預設取消按鈕及頁面銷毀時回傳 null／None。
+
+| 語言 | 呼叫與回呼 |
+| --- | --- |
+| Java | `dialog.show(options)`；options／結果為 JSONObject，取消回傳 null |
+| Python | `self.dialog(options)`；options／結果為 dict，取消回傳 None |
+| QuickJS | `await dialog(options)`；options／結果為物件，取消回傳 null |
+
+onAction 為選填：Java／Python 以第二參數傳入，QuickJS 放在 options 內。Java 的回呼使用 Dialog.Callback，接收 JSONObject、回傳 JSONObject／null，可拋出例外；Python 接收 dict、回傳 dict／None；QuickJS 可回傳 Promise。
+
+Java／Python 在爬蟲工作執行緒同步呼叫，回呼也在原工作執行緒執行，宿主負責 UI 切換；不要在主執行緒阻塞等待。
+
+Java 需使用配套 App 與新版編譯 SDK，Python／QuickJS 需使用配套 App 與模組。Java 的 Dialog 由宿主爬蟲載入器管理，Python 由 runtime 管理；釋放會關閉自己的待處理視窗。
+
+沒有可用 Activity、參數或回呼錯誤、宿主不支援時，Java／Python 拋出例外，QuickJS Promise reject；呼叫取消或爬蟲釋放會關窗並停止等待。Java／Python 回呼須配合工作執行緒中斷；QuickJS 回呼另受 JS 執行期限控制。
+
+| 參數 | 型別與行為 |
+| --- | --- |
+| title／message | 選填字串，標題與說明 |
+| image | 選填 base64 圖片 data URI，如 data:image/png;base64,...；由爬蟲準備內容，使用 Android 支援的點陣圖片；空字串移除圖片 |
+| qrcode | 選填非空白字串；在本機產生 QR Code，內容不必是網址；無法編碼時回報錯誤 |
+| copyable | 選填布林值，預設 false；可選取 message，並提供複製全文按鈕；複製不關窗，也不呼叫 onAction |
+| cancelable | 選填布林值，預設 true；允許返回取消，false 時也阻止點外側取消；頁面銷毀及呼叫取消仍會清理視窗 |
+| inputs | 選填陣列；每項 name 必填且不可重複，label 預設 name；value 為字串，預設空字串；多選為字串陣列，預設空陣列 |
+| inputs[].helperText | 選填字串，欄位下方的說明文字；省略或空字串時隱藏，錯誤清除後恢復顯示 |
+| inputs[].type | text（預設）、phone、number、password 為單行，textarea 為多行，select 為單選，multiselect 為多選清單；格式與業務驗證由爬蟲負責 |
+| inputs[].options | select／multiselect 必填非空陣列；每項 value 為非空白且唯一的字串，label 預設 value 且不可空白；顯示 label。單選回傳字串，多選依 options 順序回傳字串陣列；非空初始值須存在於選項，多選不可重複 |
+| inputs[].enabled | 選填布林值，預設 true；允許操作欄位；停用時略過內建驗證，values 仍包含其值 |
+| inputs[].required | 選填布林值，預設 false；不可為空或全空白，多選至少一項 |
+| inputs[].minLength／maxLength | 選填非負整數，僅適用字串欄位，以 Unicode 字元計算；minLength 預設 0，maxLength 預設不限制且不可小於 minLength；留空時略過 minLength |
+| inputs[].minItems／maxItems | 多選欄位的選填非負整數限制，以已選數量計算；minItems 預設 0，maxItems 預設不限制且不可小於 minItems；留空時略過 minItems |
+| buttons | 選填陣列，1～3 項，依序對應 positive、negative、neutral；每項 id／label 必填且不可為空，id 不可重複；省略時提供確定（ok）與取消 |
+| buttons[].close | 選填布林值，預設 true；false 時保留視窗，必須提供 onAction |
+| buttons[].enabled | 選填布林值，預設 true；允許操作按鈕 |
+| buttons[].validate | 選填欄位 name 陣列，預設驗證全部欄位；空陣列略過驗證，可只驗證目前操作需要的欄位 |
+| onAction | 選填回呼，接收 `{button, values}`，驗證通過後才呼叫；Java／Python 以第二參數傳入同步回呼，QuickJS 放在 options 內並可回傳 Promise |
+
+onAction 可回傳 `{message, qrcode, image, values, errors, inputs, buttons, close}`：message／qrcode／image 更新顯示內容，values 更新欄位值，errors 以欄位 name 對應錯誤文字，inputs／buttons 更新 enabled，close 覆蓋按鈕的關窗設定。有非空錯誤時保留視窗與輸入值；回傳 null／None 沿用按鈕設定，QuickJS 也可回傳 undefined。
+
+回呼期間停用欄位與按鈕並顯示處理中，結束後恢復各自的 enabled；返回及點外側依 cancelable 處理。可修正的欄位錯誤用 errors 顯示；回呼拋出例外時關窗並回報錯誤。
+
+初始 value 與回呼更新使用相同型別；布林參數不接受字串或數字。
+
+依序呼叫 Dialog 可串接連續對話框，QuickJS 使用 await；前一個視窗完成關閉後才回傳。每一步檢查 null／None，可在取消時停止後續步驟。步驟、資料傳遞與請求仍由爬蟲控制，範例見三語言 Demo 的 dialog_steps。
+
+image 由爬蟲取得圖片內容後提供 data URI；onAction 可更新，省略時保留原圖，空字串移除。解碼失敗時，尚未結束的 dialog 會關窗並回報錯誤；關窗會取消並釋放自己的圖片請求。
+
+回傳 values 只更新指定欄位；空字串可清空文字或取消單選，空陣列可清空多選。整批先核對欄位、型別與選項再套用，未知欄位、型別錯誤、不存在或重複的選項會關窗並回報錯誤。更新不觸發 onAction，必填與長度檢查仍在按鈕操作時執行；帶入或重設按鈕可設 validate:[]。更新欄位會清除其舊錯誤，同次回傳的 errors 隨後套用；關窗結果包含更新後的 values。
+
+textarea 保留換行；select 的長度驗證依回傳 value 計算。兩者沿用 required、按鈕指定驗證欄位及 errors 提示，未選取的非必填 select 回傳空字串。
+
+回傳 inputs 陣列以 name、buttons 陣列以 id 指定既有控制項，只更新 enabled，如 `{inputs:[{name:"text",enabled:true}],buttons:[{id:"confirm",enabled:true}]}`。省略時保留原設定，未知控制項、重複更新或無效布林值會關窗並回報錯誤。
+
+multiselect 開啟原生勾選清單，確認後才套用；取消保留原值。
+
+上下鍵移動焦點，多行輸入在首尾行才移出欄位；確認鍵開啟單選／多選清單，返回後回到原欄位。
+
+回傳 qrcode 可更新或新增 QR Code，須為可編碼的非空白字串，否則關窗並回報錯誤；省略則保留原 QR Code。更新 QR Code 保留輸入值，按鈕設定 close:false 或回傳 close:false 可繼續操作。
+
+message、QR Code、圖片與輸入欄位共用捲動區域。copyable 為 true 且 message 非空時顯示複製按鈕；onAction 更新 message 後複製的是最新全文，保留換行與前導零。要複製 QR Code 原始內容，可將相同字串填入 message；省略 qrcode 即為純文字或表單 Dialog。
+
+等待使用者期間暫停目前呼叫及其 App 工作的執行期限，onAction 執行及 QuickJS 等待 Promise 時依剩餘時間繼續計時；網路期限照常生效。站點請求與業務驗證留在爬蟲。
+
+三語言 Demo 的 dialog 示範帶入資料、欄位錯誤與確認，qrcode 示範 QR Code 更新與文字複製，dialog_steps 示範圖片更新與連續對話框；範例不記錄或保存輸入內容。
+
+手機驗證可把 phone 與 code 放在同一表單，發碼按鈕設定 `close:false`、`validate:["phone"]`。登入請求成功後回傳 `close:true`，並在 dialog 確認回傳後才保存憑據；取消時不套用登入結果。驗證碼保持字串，保留前導零。
 
 Java 分享檔案使用 AndroidX FileProvider，authority 為 `context.getPackageName() + ".provider"`，Intent 加 `FLAG_GRANT_READ_URI_PERMISSION`；可分享目錄由 TV 的 file_paths.xml 決定。新增 Android 呼叫需在 TV 的混淆版驗證。

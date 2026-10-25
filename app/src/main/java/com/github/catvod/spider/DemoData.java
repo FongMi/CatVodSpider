@@ -41,6 +41,20 @@ final class DemoData {
             {"area", "台灣", "日本", "韓國"}
     };
 
+    static final String DIALOG_FORM = """
+            {"title":"表單範例","message":"先帶入範例，再修改或確認；返回可取消。","cancelable":true,
+            "inputs":[
+            {"name":"text","label":"內容","helperText":"可輸入多行文字，換行會保留","type":"textarea","enabled":false,"required":true,"maxLength":80},
+            {"name":"choice","label":"選項","type":"select","required":true,"options":[{"value":"first","label":"選項一"},{"value":"second","label":"選項二"}]},
+            {"name":"choices","label":"多選","type":"multiselect","required":true,"maxItems":2,"options":[{"value":"first","label":"選項一"},{"value":"second","label":"選項二"},{"value":"third","label":"選項三"}]}
+            ],"buttons":[{"id":"fill","label":"帶入範例","close":false,"validate":[]},{"id":"confirm","label":"確認","enabled":false},{"id":"error","label":"錯誤提示","close":false,"validate":[]}]}
+            """;
+
+    static final String[] DIALOG_IMAGES = {
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAwCAIAAABhdOiYAAAAbklEQVR4nO3QwQkAIAwEQUuzdDvTDgQJRtE59hsIU1qtmlSOf3B5gAABAvQlUF8ZIECAAAHKFUm7BQQIECBAgAABAgToKaDIAAECBAjQZqC0W0CAAAECBAgQIECAAAECBAgQIAECBAjQLQECFGsAofuPsjrQFugAAAAASUVORK5CYII=",
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAwCAIAAABhdOiYAAAAeUlEQVR4nO3VwQ2AIBBFQUqyJEu1M+lAs5Cs4M7Pu5LAXGjHeemh9vkNFg8QIECAagDdEwMECBAgQLlAaWcBAQIECBAgQIAAAfoVUGiZIoAAAQIEyC8GCBAgQIAAAQIECNDYI0PLFAEECBCgkkCbBggQIECAFg7QSx0xt+dr9Gzw2wAAAABJRU5ErkJggg=="
+    };
+
     static final String[][] ACTIONS = {
             {"web_view", "開啟獨立內容", "mode=view，返回依網頁歷史"},
             {"native_toast", "執行中 Toast", "呼叫 App 的 Runtime.toast"},
@@ -76,7 +90,9 @@ final class DemoData {
             {"proxy", "本機 proxy", "透過 App HTTP server 呼叫此爬蟲"},
             {"runtime", "測試 App 與加密 bridge", "驗證 SHA-256 與 AES-GCM"},
             {"toast", "顯示 Toast", "action 回傳 msg，由 App 顯示"},
-            {"dialog", "顯示 Dialog", "主執行緒取得目前 Activity，再建立對話框"},
+            {"dialog", "自訂 Dialog", "同一視窗驗證輸入、非同步回呼與欄位錯誤提示"},
+            {"dialog_steps", "連續 Dialog", "圖片更新、欄位說明與兩步對話框"},
+            {"qrcode", "顯示 QR Code", "同一視窗更新 QR Code 並複製說明文字"},
             {"site_key", "顯示 Site key", "由 App 在 init 前注入的 siteKey"},
             {"web", "開啟網頁", "action 回傳 web，由 App 開啟"}
     };

@@ -1,11 +1,7 @@
 package com.github.catvod.spider;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.github.catvod.Runtime;
 import com.github.catvod.bean.Class;
@@ -48,6 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
@@ -265,8 +262,11 @@ public class Demo extends Spider {
                 Runtime.toast("Java 執行中的提示");
                 return "{}";
             case "dialog":
-                showDialog();
-                return "{}";
+                return showDialog();
+            case "dialog_steps":
+                return showDialogSteps();
+            case "qrcode":
+                return showQRCode();
             case "web":
                 return web(false);
             case "web_view":
@@ -554,12 +554,51 @@ public class Demo extends Spider {
         return GSON.toJson(Map.of("updated", System.currentTimeMillis(), "items", Arrays.asList(1, true, null)));
     }
 
-    private void showDialog() {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            Activity activity = getActivity();
-            if (activity == null) return;
-            new AlertDialog.Builder(activity).setTitle("Java Dialog").setMessage("使用目前 Activity 顯示的自訂對話框").setPositiveButton("確定", null).show();
+    private String showDialog() throws Exception {
+        JSONObject result = dialog.show(new JSONObject(DemoData.DIALOG_FORM), this::onDialog);
+        return result == null ? "{}" : Response.notify("已確認表單；輸入內容不會記錄或保存");
+    }
+
+    private JSONObject onDialog(JSONObject event) throws Exception {
+        net.sleep(250);
+        return switch (event.getString("button")) {
+            case "fill" -> new JSONObject("""
+                    {"values":{"text":"範例內容","choice":"first","choices":["first","second"]},
+                    "inputs":[{"name":"text","enabled":true}],"buttons":[{"id":"confirm","enabled":true}]}
+                    """);
+            case "error" -> new JSONObject("{\"errors\":{\"text\":\"這是欄位錯誤提示示範\"}}");
+            default -> new JSONObject().put("close", true);
+        };
+    }
+
+    private String showQRCode() throws Exception {
+        AtomicInteger version = new AtomicInteger(1);
+        String initial = "https://example.com/?v=" + version.get();
+        JSONObject options = new JSONObject("""
+                {"title":"QR Code 範例","copyable":true,
+                "buttons":[{"id":"refresh","label":"更新","close":false},{"id":"close","label":"關閉"}]}
+                """).put("message", initial).put("qrcode", initial);
+        dialog.show(options, event -> {
+            if (!event.getString("button").equals("refresh")) return null;
+            net.sleep(250);
+            String content = "https://example.com/?v=" + version.incrementAndGet();
+            return new JSONObject().put("qrcode", content).put("message", content);
         });
+        return "{}";
+    }
+
+    private String showDialogSteps() throws Exception {
+        AtomicInteger index = new AtomicInteger();
+        JSONObject options = new JSONObject("""
+                {"title":"第一步","message":"可更新示意圖片，輸入內容後繼續。",
+                "inputs":[{"name":"text","label":"內容","helperText":"確認後進入下一步","required":true}],
+                "buttons":[{"id":"next","label":"下一步"},{"id":"refresh","label":"更新圖片","close":false,"validate":[]}]}
+                """).put("image", DemoData.DIALOG_IMAGES[0]);
+        JSONObject first = dialog.show(options, event -> event.getString("button").equals("refresh")
+                ? new JSONObject().put("image", DemoData.DIALOG_IMAGES[index.updateAndGet(value -> 1 - value)]) : null);
+        if (first == null) return "{}";
+        JSONObject second = dialog.show(new JSONObject().put("title", "第二步").put("message", first.getJSONObject("values").getString("text")).put("copyable", true));
+        return second == null ? "{}" : Response.notify("已完成兩步對話框；輸入內容不會記錄或保存");
     }
 
     private String runtime() {

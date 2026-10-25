@@ -400,8 +400,11 @@ class Spider(BaseSpider):
         if action == "toast":
             return {"msg": "這是 Python action 回傳、由 App 顯示的 Toast"}
         if action == "dialog":
-            self._show_dialog()
-            return {}
+            return self._show_dialog()
+        if action == "dialog_steps":
+            return self._show_dialog_steps()
+        if action == "qrcode":
+            return self._show_qrcode()
         if action == "site_key":
             return {"msg": "目前 Site key：" + str(getattr(self, "siteKey", ""))}
         if action == "web":
@@ -681,19 +684,74 @@ class Spider(BaseSpider):
             state["state"] = "已關閉"
 
     def _show_dialog(self):
-        from android.app import AlertDialog
-        from android.os import Handler, Looper
-        from java import dynamic_proxy
-        from java.lang import Runnable
-        spider = self
+        result = self.dialog({
+            "title": "表單範例", "message": "先帶入範例，再修改或確認；返回可取消。", "cancelable": True,
+            "inputs": [
+                {"name": "text", "label": "內容", "helperText": "可輸入多行文字，換行會保留", "type": "textarea", "enabled": False, "required": True, "maxLength": 80},
+                {"name": "choice", "label": "選項", "type": "select", "required": True,
+                 "options": [{"value": "first", "label": "選項一"}, {"value": "second", "label": "選項二"}]},
+                {"name": "choices", "label": "多選", "type": "multiselect", "required": True, "maxItems": 2,
+                 "options": [{"value": "first", "label": "選項一"}, {"value": "second", "label": "選項二"}, {"value": "third", "label": "選項三"}]},
+            ],
+            "buttons": [
+                {"id": "fill", "label": "帶入範例", "close": False, "validate": []},
+                {"id": "confirm", "label": "確認", "enabled": False},
+                {"id": "error", "label": "錯誤提示", "close": False, "validate": []},
+            ],
+        }, self._dialog_action)
+        return {} if result is None else {"msg": "已確認表單；輸入內容不會記錄或保存"}
 
-        class ShowDialog(dynamic_proxy(Runnable)):
-            def run(self):
-                activity = spider.getActivity()
-                if activity is not None:
-                    AlertDialog.Builder(activity).setTitle("Python Dialog").setMessage("使用目前 Activity 顯示的自訂對話框").setPositiveButton("確定", None).show()
+    def _dialog_action(self, event):
+        self.net.sleep(250)
+        if event["button"] == "fill":
+            return {
+                "values": {"text": "範例內容", "choice": "first", "choices": ["first", "second"]},
+                "inputs": [{"name": "text", "enabled": True}],
+                "buttons": [{"id": "confirm", "enabled": True}],
+            }
+        if event["button"] == "error":
+            return {"errors": {"text": "這是欄位錯誤提示示範"}}
+        return {"close": True}
 
-        Handler(Looper.getMainLooper()).post(ShowDialog())
+    def _show_qrcode(self):
+        version = 1
+        initial = "https://example.com/?v=1"
+
+        def on_action(event):
+            nonlocal version
+            if event["button"] != "refresh":
+                return None
+            self.net.sleep(250)
+            version += 1
+            content = "https://example.com/?v=" + str(version)
+            return {"qrcode": content, "message": content}
+
+        self.dialog({
+            "title": "QR Code 範例", "message": initial, "qrcode": initial, "copyable": True,
+            "buttons": [{"id": "refresh", "label": "更新", "close": False}, {"id": "close", "label": "關閉"}],
+        }, on_action)
+        return {}
+
+    def _show_dialog_steps(self):
+        index = 0
+        images = ['data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAwCAIAAABhdOiYAAAAbklEQVR4nO3QwQkAIAwEQUuzdDvTDgQJRtE59hsIU1qtmlSOf3B5gAABAvQlUF8ZIECAAAHKFUm7BQQIECBAgAABAgToKaDIAAECBAjQZqC0W0CAAAECBAgQIECAAAECBAgQIAECBAjQLQECFGsAofuPsjrQFugAAAAASUVORK5CYII=', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAwCAIAAABhdOiYAAAAeUlEQVR4nO3VwQ2AIBBFQUqyJEu1M+lAs5Cs4M7Pu5LAXGjHeemh9vkNFg8QIECAagDdEwMECBAgQLlAaWcBAQIECBAgQIAAAfoVUGiZIoAAAQIEyC8GCBAgQIAAAQIECNDYI0PLFAEECBCgkkCbBggQIECAFg7QSx0xt+dr9Gzw2wAAAABJRU5ErkJggg==']
+
+        def on_action(event):
+            nonlocal index
+            if event["button"] != "refresh":
+                return None
+            index = 1 - index
+            return {"image": images[index]}
+
+        first = self.dialog({
+            "title": "第一步", "message": "可更新示意圖片，輸入內容後繼續。", "image": images[index],
+            "inputs": [{"name": "text", "label": "內容", "helperText": "確認後進入下一步", "required": True}],
+            "buttons": [{"id": "next", "label": "下一步"}, {"id": "refresh", "label": "更新圖片", "close": False, "validate": []}],
+        }, on_action)
+        if first is None:
+            return {}
+        second = self.dialog({"title": "第二步", "message": first["values"]["text"], "copyable": True})
+        return {} if second is None else {"msg": "已完成兩步對話框；輸入內容不會記錄或保存"}
 
     @staticmethod
     def _absolute_url(value, name):
@@ -819,7 +877,9 @@ class Spider(BaseSpider):
                 ("proxy", "本機 proxy", "透過 App HTTP server 呼叫此爬蟲"),
                 ("runtime", "測試 App 與加密 bridge", "驗證 SHA-256 與 AES-GCM"),
                 ("toast", "顯示 Toast", "action 回傳 msg，由 App 顯示"),
-                ("dialog", "顯示 Dialog", "主執行緒取得目前 Activity，再建立對話框"),
+                ("dialog", "自訂 Dialog", "同一視窗驗證輸入、非同步回呼與欄位錯誤提示"),
+                ("dialog_steps", "連續 Dialog", "圖片更新、欄位說明與兩步對話框"),
+                ("qrcode", "顯示 QR Code", "同一視窗更新 QR Code 並複製說明文字"),
                 ("site_key", "顯示 Site key", "由 App 在 init 前注入的 siteKey"),
                 ("web", "開啟網頁", "action 回傳 web，由 App 開啟"),
             )

@@ -307,6 +307,73 @@ function createSpider(site = {}) {
         if (value === "toast") {
             return {msg: "這是 QuickJS action 回傳、由 App 顯示的 Toast"};
         }
+        if (value === "dialog_steps") {
+            const images = ["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAwCAIAAABhdOiYAAAAbklEQVR4nO3QwQkAIAwEQUuzdDvTDgQJRtE59hsIU1qtmlSOf3B5gAABAvQlUF8ZIECAAAHKFUm7BQQIECBAgAABAgToKaDIAAECBAjQZqC0W0CAAAECBAgQIECAAAECBAgQIAECBAjQLQECFGsAofuPsjrQFugAAAAASUVORK5CYII=", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAwCAIAAABhdOiYAAAAeUlEQVR4nO3VwQ2AIBBFQUqyJEu1M+lAs5Cs4M7Pu5LAXGjHeemh9vkNFg8QIECAagDdEwMECBAgQLlAaWcBAQIECBAgQIAAAfoVUGiZIoAAAQIEyC8GCBAgQIAAAQIECNDYI0PLFAEECBCgkkCbBggQIECAFg7QSx0xt+dr9Gzw2wAAAABJRU5ErkJggg=="];
+            let index = 0;
+            const first = await dialog({
+                title: "第一步",
+                message: "可更新示意圖片，輸入內容後繼續。",
+                image: images[index],
+                inputs: [{name: "text", label: "內容", helperText: "確認後進入下一步", required: true}],
+                buttons: [{id: "next", label: "下一步"}, {id: "refresh", label: "更新圖片", close: false, validate: []}],
+                onAction({button}) {
+                    if (button !== "refresh") return;
+                    index = 1 - index;
+                    return {image: images[index]};
+                }
+            });
+            if (first === null) return {};
+            const second = await dialog({title: "第二步", message: first.values.text, copyable: true});
+            return second === null ? {} : {msg: "已完成兩步對話框；輸入內容不會記錄或保存"};
+        }
+        if (value === "qrcode") {
+            let version = 1;
+            const initial = `https://example.com/?v=${version}`;
+            await dialog({
+                title: "QR Code 範例",
+                message: initial,
+                qrcode: initial,
+                copyable: true,
+                buttons: [{id: "refresh", label: "更新", close: false}, {id: "close", label: "關閉"}],
+                async onAction({button}) {
+                    if (button !== "refresh") return;
+                    await net.sleep(250);
+                    const content = `https://example.com/?v=${++version}`;
+                    return {qrcode: content, message: content};
+                }
+            });
+            return {};
+        }
+        if (value === "dialog") {
+            const result = await dialog({
+                title: "表單範例",
+                message: "先帶入範例，再修改或確認；返回可取消。",
+                cancelable: true,
+                inputs: [
+                    {name: "text", label: "內容", helperText: "可輸入多行文字，換行會保留", type: "textarea", enabled: false, required: true, maxLength: 80},
+                    {name: "choice", label: "選項", type: "select", required: true,
+                        options: [{value: "first", label: "選項一"}, {value: "second", label: "選項二"}]},
+                    {name: "choices", label: "多選", type: "multiselect", required: true, maxItems: 2,
+                        options: [{value: "first", label: "選項一"}, {value: "second", label: "選項二"}, {value: "third", label: "選項三"}]}
+                ],
+                buttons: [
+                    {id: "fill", label: "帶入範例", close: false, validate: []},
+                    {id: "confirm", label: "確認", enabled: false},
+                    {id: "error", label: "錯誤提示", close: false, validate: []}
+                ],
+                async onAction({button}) {
+                    await net.sleep(250);
+                    if (button === "fill") return {
+                        values: {text: "範例內容", choice: "first", choices: ["first", "second"]},
+                        inputs: [{name: "text", enabled: true}],
+                        buttons: [{id: "confirm", enabled: true}]
+                    };
+                    if (button === "error") return {errors: {text: "這是欄位錯誤提示示範"}};
+                    return {close: true};
+                }
+            });
+            return result === null ? {} : {msg: "已確認表單；輸入內容不會記錄或保存"};
+        }
         if (value === "site_key") {
             return {msg: `目前 Site key：${siteKey}`};
         }
@@ -802,6 +869,9 @@ function createSpider(site = {}) {
             ["proxy", "本機 proxy", "透過 App HTTP server 呼叫此爬蟲"],
             ["runtime", "測試 App 與加密 bridge", "驗證 SHA-256 與 AES-GCM"],
             ["toast", "顯示 Toast", "action 回傳 msg，由 App 顯示"],
+            ["dialog", "自訂 Dialog", "同一視窗驗證輸入、非同步回呼與欄位錯誤提示"],
+            ["dialog_steps", "連續 Dialog", "圖片更新、欄位說明與兩步對話框"],
+            ["qrcode", "顯示 QR Code", "同一視窗更新 QR Code 並複製說明文字"],
             ["site_key", "顯示 Site key", "由 App 在 init 前注入的 siteKey"],
             ["web", "開啟網頁", "action 回傳 web，由 App 開啟"],
         ].map(([value, name, remark]) => ({
