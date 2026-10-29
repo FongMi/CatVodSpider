@@ -153,9 +153,13 @@ public class Demo extends Spider {
 
     @Override
     public String detailContent(List<String> ids) throws Exception {
-        JsonObject record = record(ids.get(0).replaceFirst("^vod/", ""));
-        if (record == null) return Response.create().vods(List.of()).msg("找不到此範例影片").string();
-        return Response.create().vod(detailVod(record)).string();
+        List<Vod> items = new ArrayList<>();
+        for (String id : ids) {
+            JsonObject record = record(id.replaceFirst("^vod/", ""));
+            if (record == null) return Response.create().vods(List.of()).msg("找不到此範例影片").string();
+            items.add(detailVod(record));
+        }
+        return Response.create().vods(items).string();
     }
 
     private Vod detailVod(JsonObject record) throws Exception {
@@ -555,7 +559,7 @@ public class Demo extends Spider {
     }
 
     private String showDialog() throws Exception {
-        JSONObject result = dialog.show(new JSONObject(DemoData.DIALOG_FORM), this::onDialog);
+        JSONObject result = dialog(new JSONObject(DemoData.DIALOG_FORM), this::onDialog);
         return result == null ? "{}" : Response.notify("已確認表單；輸入內容不會記錄或保存");
     }
 
@@ -578,7 +582,7 @@ public class Demo extends Spider {
                 {"title":"QR Code 範例","copyable":true,
                 "buttons":[{"id":"refresh","label":"更新","close":false},{"id":"close","label":"關閉"}]}
                 """).put("message", initial).put("qrcode", initial);
-        dialog.show(options, event -> {
+        dialog(options, event -> {
             if (!event.getString("button").equals("refresh")) return null;
             net.sleep(250);
             String content = "https://example.com/?v=" + version.incrementAndGet();
@@ -594,10 +598,10 @@ public class Demo extends Spider {
                 "inputs":[{"name":"text","label":"內容","helperText":"確認後進入下一步","required":true}],
                 "buttons":[{"id":"next","label":"下一步"},{"id":"refresh","label":"更新圖片","close":false,"validate":[]}]}
                 """).put("image", DemoData.DIALOG_IMAGES[0]);
-        JSONObject first = dialog.show(options, event -> event.getString("button").equals("refresh")
+        JSONObject first = dialog(options, event -> event.getString("button").equals("refresh")
                 ? new JSONObject().put("image", DemoData.DIALOG_IMAGES[index.updateAndGet(value -> 1 - value)]) : null);
         if (first == null) return "{}";
-        JSONObject second = dialog.show(new JSONObject().put("title", "第二步").put("message", first.getJSONObject("values").getString("text")).put("copyable", true));
+        JSONObject second = dialog(new JSONObject().put("title", "第二步").put("message", first.getJSONObject("values").getString("text")).put("copyable", true));
         return second == null ? "{}" : Response.notify("已完成兩步對話框；輸入內容不會記錄或保存");
     }
 

@@ -2,8 +2,8 @@
 
 import json
 import re
-import time
 import tempfile
+import time
 from pathlib import Path
 from urllib.parse import quote, unquote, urlsplit
 
@@ -17,11 +17,6 @@ VIDEO_SUFFIXES = (".m3u8", ".mpd", ".mp4", ".mkv", ".flv", ".mp3", ".m4a", ".aac
 CACHE_KEY = "python_spider_demo_message"
 CACHE_VALUE = {"value": "範例資料", "items": [1, True, None]}
 COOKIE_NAME_PATTERN = re.compile(r"^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$")
-USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/124.0.0.0 Safari/537.36"
-)
 
 # 真實爬蟲可把這個 tuple 換成 API 或 HTML 解析結果，其餘介面保持不變。
 CATALOG = (
@@ -134,15 +129,15 @@ def _filter_rows():
 
 class Spider(BaseSpider):
     def init(self, extend=""):
-        if isinstance(extend, dict):
-            options = extend
-        elif extend:
-            options = json.loads(extend)
-        else:
-            options = {}
+        if not isinstance(extend, str):
+            raise ValueError("Site.ext 必須是 JSON 物件")
+        try:
+            options = json.loads(extend) if extend else {}
+        except json.JSONDecodeError:
+            raise ValueError("Site.ext 必須是 JSON 物件") from None
         if not isinstance(options, dict):
             raise ValueError("Site.ext 必須是 JSON 物件")
-        if "request_options" in options and not isinstance(options["request_options"], dict):
+        if options.get("request_options") is not None and not isinstance(options["request_options"], dict):
             raise ValueError("request_options 必須是物件")
 
         self.options = options
@@ -158,9 +153,6 @@ class Spider(BaseSpider):
 
         self._absolute_url(self.web_url, "web_url")
         self._absolute_url(self.request_url, "request_url")
-
-    def getName(self):
-        return "Python 完整範例"
 
     def homeContent(self, filter):
         result = {
@@ -246,12 +238,13 @@ class Spider(BaseSpider):
         return self.page(matches, pg, PAGE_SIZE)
 
     def detailContent(self, ids):
-        ident = str(ids[0] if ids else "").removeprefix("vod/")
-        record = self._record(ident)
-        if record is None:
-            return {"list": [], "msg": "找不到此範例影片"}
-
-        return {"list": [self._detail_vod(record)]}
+        items = []
+        for video_id in ids:
+            record = self._record(str(video_id).removeprefix("vod/"))
+            if record is None:
+                return {"list": [], "msg": "找不到此範例影片"}
+            items.append(self._detail_vod(record))
+        return {"list": items}
 
     def _detail_vod(self, record):
         flags = ["主要線"]
@@ -260,7 +253,7 @@ class Spider(BaseSpider):
             flags.append("備用線")
             urls.append(self._episode_line(record, "backup"))
 
-        if self.options.get("media_url", "").split("?", 1)[0].lower().endswith(".m3u8"):
+        if str(self.options.get("media_url") or "").split("?", 1)[0].lower().endswith(".m3u8"):
             flags.append("代理線")
             urls.append(self._episode_line(record, "proxy"))
         item = self._card(record, "portrait")
@@ -376,12 +369,7 @@ class Spider(BaseSpider):
             jclass("com.github.catvod.Runtime").toast("Python 執行中的提示")
             return {}
         if action == "runtime":
-            from java import jclass
-            crypto = jclass("com.github.catvod.utils.Crypto")
-            plain = crypto.aes("GCM", False, "0388dace60b6a392f328c2b971b2fe78ab6e47d42cec13bdf53a67b21257bddf", False,
-                               "00000000000000000000000000000000", "000000000000000000000000", True)
-            passed = crypto.sha256("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad" and plain == "AAAAAAAAAAAAAAAAAAAAAA=="
-            return {"msg": "App 與加密 bridge 測試通過" if passed else "App 或加密 bridge 測試失敗"}
+            return self._check_runtime()
         if action == "ttl_cache":
             value = self.net.cached("demo:ttl", {"ttl": 60000}, lambda: {"value": "範例資料"})
             return {"msg": "TTL 快取：" + value["value"]}
@@ -400,9 +388,9 @@ class Spider(BaseSpider):
         if action == "toast":
             return {"msg": "這是 Python action 回傳、由 App 顯示的 Toast"}
         if action == "dialog":
-            return self._show_dialog()
+            return self._show_form()
         if action == "dialog_steps":
-            return self._show_dialog_steps()
+            return self._show_steps()
         if action == "qrcode":
             return self._show_qrcode()
         if action == "site_key":
@@ -429,14 +417,7 @@ class Spider(BaseSpider):
             except Exception as error:
                 return {"msg": "WebView Cookie 清除失敗：" + type(error).__name__}
         if action == "request":
-            try:
-                response = self._request()
-                if response.get("error"):
-                    return {"msg": "HTTP 請求失敗：" + str(response["error"])}
-                return {"msg": "HTTP %s，回應 %s bytes，已啟用 WebView Cookie" % (
-                    response["code"], len(response["content"].encode("utf-8") if isinstance(response["content"], str) else response["content"]))}
-            except Exception as error:
-                return {"msg": "HTTP 請求失敗：" + type(error).__name__}
+            return self._request()
         if action == "socket-stop":
             if self.socket is not None:
                 self.socket.close()
@@ -447,42 +428,95 @@ class Spider(BaseSpider):
         if action == "socket-start":
             return self._connect_socket()
         if action == "websocket":
-            if not self.options.get("ws_url"):
-                return {"msg": "請先在 ext 設定 ws_url"}
-            try:
-                data = self.options.get("ws_data")
-                response = self.net.ws(self.options["ws_url"], {
-                    "data": "" if data is None else data,
-                    "headers": self._string_map(self.options.get("ws_headers"), "ws_headers"),
-                    "timeout": REQUEST_TIMEOUT_MS,
-                })
-                if response.get("error"):
-                    return {"msg": "WebSocket 交換失敗：" + str(response["error"])}
-                return {"msg": "WebSocket %s，回應 %s bytes" % (
-                    response["code"], len(response["content"].encode("utf-8")))}
-            except Exception as error:
-                return {"msg": "WebSocket 交換失敗：" + type(error).__name__}
+            return self._exchange_socket()
         if action == "cache_write":
             self.local.set(self.cache_key, CACHE_VALUE)
             return {"msg": "已寫入 Python Local"}
         if action == "cache_read":
             value = self.local.get(self.cache_key)
-            return {"msg": str(value) if value is not None else "Python Local 尚無資料"}
+            return {"msg": json.dumps(value, ensure_ascii=False, separators=(",", ":")) if value is not None else "Python Local 尚無資料"}
         if action == "cache_delete":
             self.local.delete(self.cache_key)
             return {"msg": "已刪除 Python Local 資料"}
         return {"msg": "不支援此操作"}
 
-    def manualVideoCheck(self):
-        return True
+    def _show_form(self):
+        result = self.dialog({
+            "title": "表單範例", "message": "先帶入範例，再修改或確認；返回可取消。", "cancelable": True,
+            "inputs": [
+                {"name": "text", "label": "內容", "helperText": "可輸入多行文字，換行會保留", "type": "textarea", "enabled": False, "required": True, "maxLength": 80},
+                {"name": "choice", "label": "選項", "type": "select", "required": True,
+                 "options": [{"value": "first", "label": "選項一"}, {"value": "second", "label": "選項二"}]},
+                {"name": "choices", "label": "多選", "type": "multiselect", "required": True, "maxItems": 2,
+                 "options": [{"value": "first", "label": "選項一"}, {"value": "second", "label": "選項二"}, {"value": "third", "label": "選項三"}]},
+            ],
+            "buttons": [
+                {"id": "fill", "label": "帶入範例", "close": False, "validate": []},
+                {"id": "confirm", "label": "確認", "enabled": False},
+                {"id": "error", "label": "錯誤提示", "close": False, "validate": []},
+            ],
+        }, self._on_dialog)
+        return {} if result is None else {"msg": "已確認表單；輸入內容不會記錄或保存"}
+
+    def _on_dialog(self, event):
+        self.net.sleep(250)
+        if event["button"] == "fill":
+            return {
+                "values": {"text": "範例內容", "choice": "first", "choices": ["first", "second"]},
+                "inputs": [{"name": "text", "enabled": True}],
+                "buttons": [{"id": "confirm", "enabled": True}],
+            }
+        if event["button"] == "error":
+            return {"errors": {"text": "這是欄位錯誤提示示範"}}
+        return {"close": True}
+
+    def _show_qrcode(self):
+        version = 1
+        initial = "https://example.com/?v=1"
+
+        def on_action(event):
+            nonlocal version
+            if event["button"] != "refresh":
+                return None
+            self.net.sleep(250)
+            version += 1
+            content = "https://example.com/?v=" + str(version)
+            return {"qrcode": content, "message": content}
+
+        self.dialog({
+            "title": "QR Code 範例", "message": initial, "qrcode": initial, "copyable": True,
+            "buttons": [{"id": "refresh", "label": "更新", "close": False}, {"id": "close", "label": "關閉"}],
+        }, on_action)
+        return {}
+
+    def _show_steps(self):
+        index = 0
+        images = ['data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAwCAIAAABhdOiYAAAAbklEQVR4nO3QwQkAIAwEQUuzdDvTDgQJRtE59hsIU1qtmlSOf3B5gAABAvQlUF8ZIECAAAHKFUm7BQQIECBAgAABAgToKaDIAAECBAjQZqC0W0CAAAECBAgQIECAAAECBAgQIAECBAjQLQECFGsAofuPsjrQFugAAAAASUVORK5CYII=', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAwCAIAAABhdOiYAAAAeUlEQVR4nO3VwQ2AIBBFQUqyJEu1M+lAs5Cs4M7Pu5LAXGjHeemh9vkNFg8QIECAagDdEwMECBAgQLlAaWcBAQIECBAgQIAAAfoVUGiZIoAAAQIEyC8GCBAgQIAAAQIECNDYI0PLFAEECBCgkkCbBggQIECAFg7QSx0xt+dr9Gzw2wAAAABJRU5ErkJggg==']
+
+        def on_action(event):
+            nonlocal index
+            if event["button"] != "refresh":
+                return None
+            index = 1 - index
+            return {"image": images[index]}
+
+        first = self.dialog({
+            "title": "第一步", "message": "可更新示意圖片，輸入內容後繼續。", "image": images[index],
+            "inputs": [{"name": "text", "label": "內容", "helperText": "確認後進入下一步", "required": True}],
+            "buttons": [{"id": "next", "label": "下一步"}, {"id": "refresh", "label": "更新圖片", "close": False, "validate": []}],
+        }, on_action)
+        if first is None:
+            return {}
+        second = self.dialog({"title": "第二步", "message": first["values"]["text"], "copyable": True})
+        return {} if second is None else {"msg": "已完成兩步對話框；輸入內容不會記錄或保存"}
 
     def liveContent(self, url=""):
         urls = [self._absolute_url(self.options[key], key) + "$" + name
                 for key, name in (("media_url", "主要線"), ("backup_media_url", "備用線")) if self.options.get(key)]
         return [{"name": "範例直播", "channel": [{"name": "示範頻道", "urls": urls}]}] if urls else []
 
-    def localProxy(self, param):
-        kind = param.get("demo")
+    def proxy(self, params):
+        kind = params.get("demo")
         headers = {"X-Demo": "1"}
         if kind == "json":
             return [200, "application/json; charset=utf-8", '{"name":"demo","ok":true}', headers]
@@ -525,6 +559,59 @@ class Spider(BaseSpider):
                     return length
                 length += len(chunk)
 
+    def _request(self):
+        try:
+            response = self.net.req(self.request_url, self._request_options(True))
+            if response.get("error"):
+                return {"msg": "HTTP 請求失敗：" + str(response["error"])}
+            return {"msg": "HTTP %s，回應 %s bytes，已啟用 WebView Cookie" % (
+                response["code"], len(response["content"].encode("utf-8") if isinstance(response["content"], str) else response["content"]))}
+        except Exception as error:
+            return {"msg": "HTTP 請求失敗：" + type(error).__name__}
+
+    def _exchange_socket(self):
+        if not self.options.get("ws_url"):
+            return {"msg": "請先在 ext 設定 ws_url"}
+        try:
+            data = self.options.get("ws_data")
+            response = self.net.ws(self.options["ws_url"], {
+                "data": "" if data is None else data,
+                "headers": self._string_map(self.options.get("ws_headers"), "ws_headers"),
+                "timeout": REQUEST_TIMEOUT_MS,
+            })
+            if response.get("error"):
+                return {"msg": "WebSocket 交換失敗：" + str(response["error"])}
+            return {"msg": "WebSocket %s，回應 %s bytes" % (
+                response["code"], len(response["content"].encode("utf-8")))}
+        except Exception as error:
+            return {"msg": "WebSocket 交換失敗：" + type(error).__name__}
+
+    def _check_runtime(self):
+        try:
+            from java import jclass
+            crypto = jclass("com.github.catvod.utils.Crypto")
+            plain = crypto.aes("GCM", False, "0388dace60b6a392f328c2b971b2fe78ab6e47d42cec13bdf53a67b21257bddf", False,
+                               "00000000000000000000000000000000", "000000000000000000000000", True)
+            passed = crypto.sha256("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad" and plain == "AAAAAAAAAAAAAAAAAAAAAA=="
+            return {"msg": "App 與加密 bridge 測試通過" if passed else "App 或加密 bridge 測試失敗"}
+        except Exception as error:
+            return {"msg": "App 或加密 bridge 測試失敗：" + type(error).__name__}
+
+    def _request_options(self, cookie):
+        headers = self._string_map(self.options.get("request_headers"), "request_headers")
+        if cookie and not any(key.lower() == "user-agent" for key in headers):
+            user_agent = str(self.net.getUserAgent() or "")
+            if user_agent:
+                headers["User-Agent"] = user_agent
+        return {
+            "method": str(self.options.get("request_method") or "GET"),
+            "headers": headers,
+            "timeout": REQUEST_TIMEOUT_MS,
+            "callTimeout": REQUEST_TIMEOUT_MS,
+            "cookie": cookie,
+            **(self.options.get("request_options") or {}),
+        }
+
     def _network_action(self, action):
         try:
             if action == "json":
@@ -550,7 +637,10 @@ class Spider(BaseSpider):
                     self._check_response(flow.req(self.request_url, {"timeout": REQUEST_TIMEOUT_MS}))
                     exists = "demo_session=1" in flow.getCookie(self.request_url)
                 return {"msg": "隔離 Session 請求完成，Cookie " + ("存在" if exists else "不存在")}
-            value = self._request(cookie=False, buffer=3 if action == "binary" else None)
+            settings = self._request_options(False)
+            if action == "binary":
+                settings["buffer"] = 3
+            value = self.net.req(self.request_url, settings)
             self._check_response(value)
             return {"msg": "HTTP %s，回應長度 %s" % (value["code"], len(value["content"]))}
         except Exception as error:
@@ -594,15 +684,17 @@ class Spider(BaseSpider):
                 raise ValueError("skips.end 必須晚於 start")
         return [item.copy() for item in value]
 
+    def manualVideoCheck(self):
+        return True
+
     def isVideoFormat(self, url):
-        parsed = urlsplit(str(url or ""))
-        path = parsed.path.lower()
-        return (
-            parsed.scheme in ("http", "https")
-            and bool(parsed.netloc)
-            and path.endswith(VIDEO_SUFFIXES)
-            and "/ad/" not in path
-        )
+        try:
+            parsed = urlsplit(str(url or ""))
+            parsed.port
+            path = parsed.path.lower()
+            return parsed.scheme in ("http", "https") and bool(parsed.netloc) and path.endswith(VIDEO_SUFFIXES) and "/ad/" not in path
+        except ValueError:
+            return False
 
     def danmaku(self, id, emit):
         if not self.options.get("ws_url"):
@@ -682,76 +774,6 @@ class Spider(BaseSpider):
             state["retryCode"] = event["code"]
         elif event["type"] == "close":
             state["state"] = "已關閉"
-
-    def _show_dialog(self):
-        result = self.dialog({
-            "title": "表單範例", "message": "先帶入範例，再修改或確認；返回可取消。", "cancelable": True,
-            "inputs": [
-                {"name": "text", "label": "內容", "helperText": "可輸入多行文字，換行會保留", "type": "textarea", "enabled": False, "required": True, "maxLength": 80},
-                {"name": "choice", "label": "選項", "type": "select", "required": True,
-                 "options": [{"value": "first", "label": "選項一"}, {"value": "second", "label": "選項二"}]},
-                {"name": "choices", "label": "多選", "type": "multiselect", "required": True, "maxItems": 2,
-                 "options": [{"value": "first", "label": "選項一"}, {"value": "second", "label": "選項二"}, {"value": "third", "label": "選項三"}]},
-            ],
-            "buttons": [
-                {"id": "fill", "label": "帶入範例", "close": False, "validate": []},
-                {"id": "confirm", "label": "確認", "enabled": False},
-                {"id": "error", "label": "錯誤提示", "close": False, "validate": []},
-            ],
-        }, self._dialog_action)
-        return {} if result is None else {"msg": "已確認表單；輸入內容不會記錄或保存"}
-
-    def _dialog_action(self, event):
-        self.net.sleep(250)
-        if event["button"] == "fill":
-            return {
-                "values": {"text": "範例內容", "choice": "first", "choices": ["first", "second"]},
-                "inputs": [{"name": "text", "enabled": True}],
-                "buttons": [{"id": "confirm", "enabled": True}],
-            }
-        if event["button"] == "error":
-            return {"errors": {"text": "這是欄位錯誤提示示範"}}
-        return {"close": True}
-
-    def _show_qrcode(self):
-        version = 1
-        initial = "https://example.com/?v=1"
-
-        def on_action(event):
-            nonlocal version
-            if event["button"] != "refresh":
-                return None
-            self.net.sleep(250)
-            version += 1
-            content = "https://example.com/?v=" + str(version)
-            return {"qrcode": content, "message": content}
-
-        self.dialog({
-            "title": "QR Code 範例", "message": initial, "qrcode": initial, "copyable": True,
-            "buttons": [{"id": "refresh", "label": "更新", "close": False}, {"id": "close", "label": "關閉"}],
-        }, on_action)
-        return {}
-
-    def _show_dialog_steps(self):
-        index = 0
-        images = ['data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAwCAIAAABhdOiYAAAAbklEQVR4nO3QwQkAIAwEQUuzdDvTDgQJRtE59hsIU1qtmlSOf3B5gAABAvQlUF8ZIECAAAHKFUm7BQQIECBAgAABAgToKaDIAAECBAjQZqC0W0CAAAECBAgQIECAAAECBAgQIAECBAjQLQECFGsAofuPsjrQFugAAAAASUVORK5CYII=', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAwCAIAAABhdOiYAAAAeUlEQVR4nO3VwQ2AIBBFQUqyJEu1M+lAs5Cs4M7Pu5LAXGjHeemh9vkNFg8QIECAagDdEwMECBAgQLlAaWcBAQIECBAgQIAAAfoVUGiZIoAAAQIEyC8GCBAgQIAAAQIECNDYI0PLFAEECBCgkkCbBggQIECAFg7QSx0xt+dr9Gzw2wAAAABJRU5ErkJggg==']
-
-        def on_action(event):
-            nonlocal index
-            if event["button"] != "refresh":
-                return None
-            index = 1 - index
-            return {"image": images[index]}
-
-        first = self.dialog({
-            "title": "第一步", "message": "可更新示意圖片，輸入內容後繼續。", "image": images[index],
-            "inputs": [{"name": "text", "label": "內容", "helperText": "確認後進入下一步", "required": True}],
-            "buttons": [{"id": "next", "label": "下一步"}, {"id": "refresh", "label": "更新圖片", "close": False, "validate": []}],
-        }, on_action)
-        if first is None:
-            return {}
-        second = self.dialog({"title": "第二步", "message": first["values"]["text"], "copyable": True})
-        return {} if second is None else {"msg": "已完成兩步對話框；輸入內容不會記錄或保存"}
 
     @staticmethod
     def _absolute_url(value, name):
@@ -1000,22 +1022,3 @@ class Spider(BaseSpider):
             if separator and key == name:
                 return value
         return ""
-
-    def _request(self, cookie=True, buffer=None):
-        headers = self._string_map(self.options.get("request_headers"), "request_headers")
-        if not any(key.lower() == "user-agent" for key in headers):
-            headers["User-Agent"] = str(self.net.getUserAgent() or USER_AGENT)
-        options = {
-            "method": str(self.options.get("request_method") or "GET"),
-            "headers": headers,
-            "timeout": REQUEST_TIMEOUT_MS,
-            "cookie": cookie,
-            "callTimeout": REQUEST_TIMEOUT_MS,
-        }
-        extra = self.options.get("request_options", {})
-        if not isinstance(extra, dict):
-            raise ValueError("request_options 必須是物件")
-        options.update(extra)
-        if buffer is not None:
-            options["buffer"] = buffer
-        return self.net.req(self.request_url, options)

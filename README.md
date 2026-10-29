@@ -35,8 +35,6 @@ SDK 以 `compileOnly` 引用，不打包進爬蟲 JAR；更新後重新打包。
 
 Java 的 `com.github.catvod.bean` 與 [Response](app/src/main/java/com/github/catvod/utils/Response.java) 隨爬蟲 JAR 打包。
 
-三語言共用 Dialog 參數：Java 用 `dialog.show(...)`，Python 用 `self.dialog(...)`，QuickJS 用 `await dialog(...)`；完整表單、QR Code 與連續對話框見各語言 Demo。Android UI 用法與配套 App／模組需求見[開發說明](docs/development.md#android-ui)。
-
 匯出到其他目錄可執行 `build.bat "D:\Output"`，也可傳入完整 JAR 路徑。
 
 ## 使用 AI

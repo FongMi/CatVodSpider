@@ -67,15 +67,20 @@ public class Local extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        String url = ids.get(0);
+        List<Vod> items = new ArrayList<>();
+        for (String id : ids) items.add(detailVod(id));
+        return Response.create().vods(items).string();
+    }
+
+    private Vod detailVod(String url) {
         if (url.startsWith("http")) {
             String name = Uri.parse(url).getLastPathSegment();
-            return Response.create().vod(create(name, url)).string();
+            return create(name, url);
         } else {
-            File file = new File(ids.get(0));
+            File file = new File(url);
             File parent = file.getParentFile();
             List<File> files = parent == null ? Collections.emptyList() : Path.list(parent);
-            return Response.create().vod(create(parent != null ? parent : file, files)).string();
+            return create(parent != null ? parent : file, files);
         }
     }
 

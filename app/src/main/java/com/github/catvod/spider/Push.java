@@ -22,7 +22,9 @@ public class Push extends Spider {
 
     @Override
     public String detailContent(List<String> ids) {
-        return Response.create().vod(vod(ids.get(0))).string();
+        List<Vod> items = new ArrayList<>();
+        for (String id : ids) items.add(vod(id));
+        return Response.create().vods(items).string();
     }
 
     @Override

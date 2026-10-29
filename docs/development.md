@@ -1,6 +1,6 @@
 # 爬蟲開發
 
-先從 [README](../README.md) 選擇 Demo 並載入配置。範例統一放在 Demo 程式碼，本文只說明接口、參數與限制；實際爬蟲只保留需要的功能。
+範例與配置見 [README](../README.md)。
 
 ## 執行環境
 
@@ -8,15 +8,15 @@
 
 | 語言 | 環境與寫法 |
 | --- | --- |
-| Java | Java 17 語法、Android 7.0 起；繼承 Spider，使用注入的 net，以 spiderJar 打包並執行 R8 |
-| Python | CPython 3.10、Chaquopy 17.1.0；可用 `match/case`、`str \| None` 等 3.10 語法，爬蟲入口維持同步 `def`，網路使用 `self.net` |
-| QuickJS | QuickJS-NG 0.17.0 基底，含上游更新；使用 ES module 的 `export default`，支援 `async/await`、`?.`、`??`，網路使用注入的 `net` |
+| Java | Java 17 語法、Android 7.0 起；繼承 Spider，以 spiderJar 打包並執行 R8 |
+| Python | CPython 3.10、Chaquopy 17.2.0；可用 `match/case`、`str \| None`，入口維持同步 `def`，App 不等待 coroutine |
+| QuickJS | QuickJS-NG 0.17.0 基底，含上游更新；從 `catvod` 匯入 Spider，預設匯出繼承它的類別，支援 `async/await`、`?.`、`??` |
 
 Java SDK 以 compileOnly 引用，取得與更新方式見 [README](../README.md#打包-jar)。Function JAR 使用 com.fongmi.quickjs 的 QuickJSContext、JSArray 等 API，配套更新後重新編譯，不打包 SDK 類別。
 
-主機驗證使用 Python 3.10；App 不等待 Python coroutine。
+QuickJS 的 `constructor` 維持同步，非同步初始化放在 `async init(extend)`。輔助模組可從 `catvod` 匯入 net、local、js、dialog、htmlQuery、link、page；這些名稱不注入全域。
 
-QuickJS 的宿主功能由 App 注入，需使用 v11 配套的 wrapper、runtime 與 TV 介接：
+QuickJS 宿主功能需使用 v11 配套的 wrapper、runtime 與 TV 介接；本次新接口尚無對應的已發布模組版本。
 
 | 功能 | 支援範圍 |
 | --- | --- |
@@ -24,11 +24,11 @@ QuickJS 的宿主功能由 App 注入，需使用 v11 配套的 wrapper、runtim
 | 網址與事件 | URL／URLSearchParams、Event／EventTarget／CustomEvent、AbortController／AbortSignal（timeout、any、reason） |
 | 資料與串流 | structuredClone、Blob／File／FormData、Web Streams 與 BYOB；clone 不支援 function／SharedArrayBuffer |
 | 編碼 | UTF-8 TextEncoder、多編碼 TextDecoder（含 GBK／GB18030／Big5）、TextEncoderStream／TextDecoderStream |
-| HTTP | Headers／Request／Response；網路請求使用注入的 `net.http`／`net.json` |
+| HTTP | Headers／Request／Response |
 | 加密 | getRandomValues／randomUUID、SHA、HMAC、AES-GCM／CBC、raw／octet JWK、wrap／unwrap；不支援 RSA、橢圓曲線或 KDF；GCM tag 為 96、104、112、120、128 bits，附加於密文末端 |
 | 模組 | JSON module import attributes，type 為 json |
 
-大型資料用 `net.openStream`，proxy 轉送用 `net.stream`。不是 Node.js 環境。`Intl` 與 `Atomics.waitAsync` 未提供。
+不是 Node.js 環境。`Intl` 與 `Atomics.waitAsync` 未提供。
 
 共用 aesX／Crypto bridge 的 GCM 密文末端含 16-byte tag，二進位明文用 Base64；Web Crypto 的 tagLength 依上表。
 
@@ -36,27 +36,33 @@ QuickJS 的宿主功能由 App 注入，需使用 v11 配套的 wrapper、runtim
 
 | 用途 | Java | Python | QuickJS |
 | --- | --- | --- | --- |
-| 初始化 | `init(context, extend)` | `init(extend)` | `init(ext)`；`default(site)` 建立實例 |
-| 分類與篩選 | `homeContent(filter)` | `homeContent(filter)` | `home(filter)` |
-| 推薦 | `homeVideoContent()` | `homeVideoContent()` | `homeVod()` |
-| 分類列表 | `categoryContent(tid, pg, filter, extend)` | `categoryContent(tid, pg, filter, extend)` | `category(tid, pg, filter, extend)` |
-| 搜尋 | `searchContent(key, quick, pg)` | `searchContent(key, quick, pg)` | `search(key, quick, pg)` |
-| 詳情 | `detailContent(ids)` | `detailContent(ids)` | `detail(id)` |
-| 播放 | `playerContent(flag, id, vipFlags)` | `playerContent(flag, id, vipFlags)` | `play(flag, id, vipFlags)` |
-| 即時彈幕 | `danmaku(id, Consumer<JSONObject>)` | `danmaku(id, emit)` | `danmaku(id, emit)` |
-| 操作 | `action(value)` | `action(value)` | `action(value)` |
-| 直播 | `liveContent(url)` | `liveContent(url)` | `live(url)` |
-| 本機代理 | `proxy(params)` | `localProxy(params)` | `proxy(params)` |
-| 嗅探判斷 | `manualVideoCheck()`／`isVideoFormat(url)` | `manualVideoCheck()`／`isVideoFormat(url)` | `sniffer()`／`isVideo(url)` |
+| 初始化 | `init(context, extend)` | `init(extend)` | `init(extend)` |
+| 分類與篩選 | `homeContent(filter)` | `homeContent(filter)` | `homeContent(filter)` |
+| 推薦 | `homeVideoContent()` | `homeVideoContent()` | `homeVideoContent()` |
+| 分類列表 | `categoryContent(tid, pg, filter, extend)` | `categoryContent(tid, pg, filter, extend)` | `categoryContent(tid, pg, filter, extend)` |
+| 搜尋 | `searchContent(key, quick, pg)` | `searchContent(key, quick, pg)` | `searchContent(key, quick, pg = "1")` |
+| 詳情 | `detailContent(ids)` | `detailContent(ids)` | `detailContent(ids)` |
+| 播放 | `playerContent(flag, id, vipFlags)` | `playerContent(flag, id, vipFlags)` | `playerContent(flag, id, vipFlags)` |
+| 即時彈幕 | `danmaku(id, emit)` | `danmaku(id, emit)` | `danmaku(id, emit)` |
+| 操作 | `action(action)` | `action(action)` | `action(action)` |
+| 直播 | `liveContent(url)` | `liveContent(url)` | `liveContent(url)` |
+| 本機代理 | `proxy(params)` | `proxy(params)` | `proxy(params)` |
+| 嗅探判斷 | `manualVideoCheck()`／`isVideoFormat(url)` | `manualVideoCheck()`／`isVideoFormat(url)` | `manualVideoCheck()`／`isVideoFormat(url)` |
 | 釋放 | `destroy()` | `destroy()` | `destroy()` |
 
-Java Demo 用 Gson 組裝標準 JSON 字串；Python 資料方法回傳 dict／list；QuickJS 回傳物件／陣列，Promise 由 App 等待。proxy 與布林接口維持各自格式。Java／Python 的 detail 收 ID 集合，QuickJS 收單一 ID。
+Java 資料方法回傳 JSON 字串；Python 回傳 dict／list；QuickJS 回傳物件／陣列或既有 JSON 字串，App 等待同步值、Promise 或 thenable。proxy 與布林接口維持各自格式，detailContent 接收完整 ID 集合。
+
+Python／QuickJS 的 init 原樣接收 ext 字串，需要 JSON 時由來源解析。categoryContent 的 extend 是字串鍵值篩選物件，playerContent 的 vipFlags 是完整陣列。QuickJS 類別方法已綁定實例，可直接把 this.method 傳給 map 或事件回呼。
+
+只覆寫來源需要的入口。基底預設首頁回傳空 class，列表入口回傳空 list，播放／操作回傳空物件，直播回傳空字串，代理回傳 404 與空正文；Python／QuickJS 的 init 可省略。
+
+App 爬蟲測試頁依上表傳入參數；搜尋可傳 `[key, quick]` 或 `[key, quick, pg]`，省略 pg 時使用字串 "1"，布林值使用 true／false。本機歷史與案例會在讀入時轉換舊方法名稱，保留來源、參數與預期結果。
 
 `destroy()` 用來關閉自行建立的資源。QuickJS 的 destroy hook（含回傳的 Promise）有 5 秒期限，逾時仍會釋放 runtime；呼叫前已取消網路工作，不在此安排新請求。
 
 Java 使用本專案 `com.github.catvod.bean` 模型，以 `create()` 建立並鏈式填值，方法不加 `set` 前綴。`com.github.catvod.utils.Response` 用 Gson 組裝 JSON 與分頁，兩者隨爬蟲 JAR 打包；App 的 `Result` 只負責接收解析。
 
-`Response.vod()` 填詳情，`classes()`／`filters()` 填分類與篩選，`put(name, value)` 填其他欄位，`string()` 輸出 JSON。明確的 `0`／`false` 保留，null 模型欄位省略；也可直接用 Gson 組裝標準 JSON。
+`Response.vod()` 填詳情，`classes()`／`filters()` 填分類與篩選，`put(name, value)` 填其他欄位，`string()` 輸出 JSON。明確的 `0`／`false` 保留，null 模型欄位省略。
 
 `Response.url()` 接受播放網址字串或 `Url` 多畫質模型，傳入 `null` 時移除 URL 欄位。
 
@@ -78,7 +84,7 @@ Java 使用本專案 `com.github.catvod.bean` 模型，以 `create()` 建立並�
 
 Java 的 `Sub.format(ext)` 傳入字幕副檔名，例如 `vtt`、`srt`、`ass`，由模型呼叫 `VodUtil.getSubMimeType(ext)` 轉成 MIME；回傳 JSON 的 `subs[].format` 仍使用 MIME。
 
-分類與搜尋回傳 `list、page、pagecount、limit`，有精確總筆數才加 `total`。完整單頁清單可只填 `list、page=1、pagecount=1`。網站已分頁時直接回傳當頁，不再次切片或推算 total；App 以 `page < pagecount` 決定載入下一頁。`filters` 的鍵對應分類 `type_id`。實作見 Demo 的分類與搜尋入口。
+`filters` 的鍵對應分類 `type_id`。
 
 線路用 `$$$` 分隔，每線集數用 `#`，每集為 `名稱$播放值`。清理名稱中的分隔符；播放值可用自訂 ID，在播放時取得實際網址。
 
@@ -92,24 +98,24 @@ VOD 的 `style.type` 支援 rect／oval／list，同頁保持一致；分類使�
 | --- | --- |
 | 列表與樣式 | 首頁、分類、資料夾、演員／導演連結；搜尋「示範」檢查分頁 |
 | 播放 | 主要／備用／代理線、多畫質、字幕、DRM、片段跳過、起播位置、直播回看、播放詳情更新 |
-| HTTP | json、request_sync、request、binary、cookie、cookie_clear、session |
+| HTTP | json、request、binary、cookie、cookie_clear、session |
 | 並行與下載 | parallel、parallel_map、download、sleep |
-| 串流 | stream_read、proxy_stream；本機 proxy 轉送與分塊讀取 |
+| 串流 | stream_read、proxy_stream、proxy_body；分塊讀取、轉送與自訂正文 |
 | WebSocket | websocket 單次交換；socket-start／socket-state／socket-stop 持續收訊 |
 | 快取與儲存 | ttl_cache／ttl_peek／ttl_background／ttl_persist／ttl_clear／ttl_clear_all；cache_write／cache_read／cache_delete 操作 Local |
-| 腳本與互動 | script、runtime、proxy、toast、site_key、web、web_view；live_danmaku 選項啟用即時彈幕 |
+| 腳本與互動 | script、runtime、proxy、toast、site_key、web、web_view、dialog、qrcode、dialog_steps；live_danmaku 選項啟用即時彈幕 |
 
-三語言的 dialog、qrcode、dialog_steps 分別示範表單與欄位更新、QR Code 與文字複製、圖片更新與連續對話框。語言差異保留在對應 Demo：
+額外操作依語言區分：
 
-| 語言 | 專屬操作與差異 |
+| 語言 | 額外操作 |
 | --- | --- |
-| Java | text_get／text_post 取得正文；native_toast 呼叫 Android；dialog 同步取得表單結果；binary 使用 buffer=1；串流使用 InputStream |
-| Python | ttl_text 讀取 JSON 快取文字；native_toast 呼叫 Android；dialog 同步取得表單結果；proxy_body 使用 generator；binary 回傳 bytes |
-| QuickJS | dialog 以 Promise 取得表單結果；html_query 解析 HTML 欄位；proxy_body 使用 async generator；binary 回傳 ArrayBuffer；下載保留在 App cache |
+| Java | request_sync、text_get、text_post、native_toast |
+| Python | request_sync、ttl_text、native_toast |
+| QuickJS | html_query |
 
 ## 播放詳情更新
 
-在 `playerContent(flag, id, vipFlags)`／`play(flag, id, vipFlags)` 的回傳結果中，以 `list[0]` 帶回 VOD 詳情。`vod_id` 可省略，提供時會連動歷史與收藏識別。
+在 `playerContent(flag, id, vipFlags)` 的回傳結果中，以 `list[0]` 帶回 VOD 詳情。`vod_id` 可省略，提供時會連動歷史與收藏識別。
 
 以下 `vod` 為詳情資料，`url` 為播放網址。
 
@@ -138,10 +144,10 @@ episode 依相同 `vod_play_from` 合併，相同名稱與播放值去重，其�
 | `image_base` | 封面網址前綴，留空使用 App 預設圖 |
 | `web_url、game_url、cookie_name` | 一般網頁、獨立內容及單一登入 Cookie；game_url 留空時使用 web_url |
 | `web_cookie` | 登入 Cookie 分組陣列，取代 cookie_name |
-| `request_url、request_method、request_headers、request_options` | request／request_sync／binary 的網址、方法、標頭與 HTTP options；binary 固定使用自己的 buffer 型別 |
+| `request_url、request_method、request_headers、request_options` | HTTP 請求的網址、方法、標頭與 options；binary 固定使用自己的 buffer 型別 |
 | `json_url` | JSON API |
 | `ws_url、ws_data、ws_headers` | WebSocket |
-| `ws_idle` | 持續連線的接收逾時毫秒數，預設 0 關閉；僅用於確定有持續訊息或心跳回覆的來源 |
+| `ws_idle` | WebSocket 的 idle 逾時 |
 | `live_danmaku` | true 時，播放回應附上爬蟲即時彈幕來源，使用 ws_url 的文字訊息 |
 | `media_url、backup_media_url` | 主要與備用播放網址 |
 | `media_urls` | 多畫質 `{values: [{n, v}], position}`，取代主要線 media_url |
@@ -157,11 +163,11 @@ episode 依相同 `vod_play_from` 合併，相同名稱與播放值去重，其�
 
 ## 網路
 
-Java 使用繼承的 `net`；Python 使用 `self.net`；QuickJS 使用注入的 `net`。下文以 net 簡寫，時間單位為毫秒。Java 的 options 除特別標示外使用 JSON 字串。
+Java 使用繼承的 `net`；Python 使用 `self.net`；QuickJS 使用 `this.net`，輔助模組也可從 catvod 匯入 net。下文以 net 簡寫，時間單位為毫秒。Java 的 options 除特別標示外使用 JSON 字串。
 
 ### HTTP
 
-只取 JSON 用 `net.json(url, options)`；連線失敗、HTTP 非 2xx 或無效 JSON 會拋出例外。需要狀態碼、錯誤正文或 bytes 時，用 Java／Python `net.req`、QuickJS `await net.http`，分開檢查 error 與 code；Java 先解析 JSON 字串。實作見 Demo 的 `json`／`request` 操作，驗證方式見[接口驗證](../.agents/skills/catvod-spider/references/validation.md)。
+只取 JSON 用 `net.json(url, options)`；連線失敗、HTTP 非 2xx 或無效 JSON 會拋出例外。需要狀態碼、錯誤正文或 bytes 時，用 Java／Python `net.req`、QuickJS `await net.req`，分開檢查 error 與 code；Java 先解析 JSON 字串。實作見 Demo 的 `json`／`request` 操作，驗證方式見[接口驗證](../.agents/skills/catvod-spider/references/validation.md)。
 
 Java 只要正文可用 `net.get(url)`、`net.get(url, headers)`、`net.post(url, json, headers)`。網路失敗拋出例外，HTTP 非 2xx 仍保留正文；需要判斷狀態碼時用 net.req。
 
@@ -176,7 +182,7 @@ Java 只要正文可用 `net.get(url)`、`net.get(url, headers)`、`net.post(url
 | `timeout、callTimeout` | 連線讀寫／整次請求逾時，單位毫秒 |
 | `cookie` | true 使用 WebView Cookie |
 
-QuickJS 的 http／json／batch／map／ws／cached／download／sleep／openStream／stream 回傳 Promise，取結果時用 await；req 預設同步，refresh 直接返回。獨立請求可並行等待 I/O，JS 與 callback 仍在同一執行緒依序執行；不要同步等待同一 JS 執行緒的 callback。
+QuickJS 的 req／json／batch／map／ws／cached／download／sleep／openStream／stream 回傳 Promise，取結果時用 await；沒有同步 req 或 http 別名，refresh 直接返回。獨立請求可並行等待 I/O，JS 與 callback 仍在同一執行緒依序執行；不要同步等待同一 JS 執行緒的 callback。
 
 Python／QuickJS Demo 的 `binary` 操作使用 `buffer: 3`。Python 回傳 bytes，可用 `memoryview(content)[start:end]` 建立切片檢視；QuickJS 回傳 ArrayBuffer，長度用 `content.byteLength`，讀取內容用 `new Uint8Array(content)`。建立檢視不複製原有資料，跨語言傳遞不保證 zero copy。
 
@@ -198,7 +204,7 @@ Python／QuickJS 用 `net.getUserAgent()` 取得 App 的 User-Agent，再按站�
 
 Cookie 使用 `net.getCookie(url)` 讀取、`net.setCookie(url, cookie)` 寫入。cookie 是單筆 Set-Cookie 格式，寫入回傳布林值；清除可寫入 `Max-Age=0` 的過期 Cookie。站點 net 讀寫 WebView Cookie，請求加 `cookie:true` 才會自動帶入與更新。
 
-隔離 Cookie 用 `net.session()`，在回傳的物件上請求、讀寫 Cookie 與快取；不共用 WebView Cookie 或站點 TTL 快取，也不支援 persist。session 自動帶入與更新自己的 Cookie。Java 用 try-with-resources，Python 用 with，QuickJS 用 try/finally 呼叫 close；關閉會取消其請求、等待、串流與連線，釋放自己的 Cookie 和快取，之後不可繼續使用。
+隔離 Cookie 用 `net.session()`，在回傳的物件上請求、讀寫 Cookie 與快取，不共用 WebView Cookie 或站點 TTL 快取。session 自動帶入與更新自己的 Cookie。Java 用 try-with-resources，Python 用 with，QuickJS 用 try/finally 呼叫 close；關閉會取消其請求、等待、串流與連線，釋放自己的 Cookie 和快取，之後不可繼續使用。
 
 ### 並行與等待
 
@@ -212,7 +218,7 @@ Cookie 使用 `net.getCookie(url)` 讀取、`net.setCookie(url, cookie)` 寫入�
 
 下載用 Java `net.download(url, optionsJson, file)`、Python／QuickJS `net.download(url, path, options)`，直接寫檔。相對路徑以 App cache 為基準，父目錄需存在；完整傳輸後才取代目標檔案。下載不回傳 HTTP 狀態，也不會僅因非 2xx 拒絕，檔案內容由呼叫者確認。
 
-Java 需要進度與暫停控制時，使用共用 SDK 的 `Download.create(url, file).start(callback)`，以 `pause()` 暫停、收到 `paused()` 後再次 `start(callback)` 繼續，`cancel()` 取消。預設拒絕非 2xx 與空檔，回呼在主執行緒執行；`progress(total, downloaded, speed)` 的單位是 bytes 與 bytes/s，未知 total 為負數。檔案內容仍須驗證。對話框、暫存檔與資源釋放見 [Market](../app/src/main/java/com/github/catvod/spider/Market.java)。
+Java 需要進度與暫停控制時，使用共用 SDK 的 `Download.create(url, file).start(callback)`，以 `pause()` 暫停、收到 `paused()` 後再次 `start(callback)` 繼續，`cancel()` 取消。預設拒絕非 2xx 與空檔，回呼在主執行緒執行；`progress(total, downloaded, speed)` 的單位是 bytes 與 bytes/s，未知 total 為負數。對話框、暫存檔與資源釋放見 [Market](../app/src/main/java/com/github/catvod/spider/Market.java)。
 
 下載可傳 HTTP options，另支援以下選項：
 
@@ -246,7 +252,7 @@ Java 將 StreamResult 放入 proxy 第三格。Python／QuickJS 原樣轉送用 
 
 產生器在播放器讀取時才執行，可依序開啟多個上游請求，不接受 HTTP options。reader 在產生器內開啟，以 with／finally 關閉；App 關閉 body 時取消其等待中的串流請求與讀取，再關閉產生器。Python 無法強制中止任意計算或第三方阻塞操作。見 Python／QuickJS Demo 的 `proxy_body`。
 
-QuickJS 每次拉取沿用站點呼叫逾時，整段輸出不受最初 proxy 方法期限限制。上游直播可用 `callTimeout:0` 關閉整次 HTTP 期限，保留 timeout 防止讀取卡住。串流功能需更新配套 App 與對應模組。
+QuickJS 每次拉取沿用站點呼叫逾時，整段輸出不受最初 proxy 方法期限限制。上游直播可用 `callTimeout:0` 關閉整次 HTTP 期限，保留 timeout 防止讀取卡住。
 
 ### WebSocket
 
@@ -282,7 +288,7 @@ Python `self.net.cachedText(key, options, loader)` 回傳同一項目的 JSON �
 
 ### Local
 
-Local 保存小型設定：Java 使用 local、Python 使用 self.local、QuickJS 使用 local，皆提供 `get(key)、set(key, value)、delete(key)`，App 按 Site.key 隔離。Java 使用 JSON 字串，Python／QuickJS 直接存 JSON 值；不存在的 key 回傳 null（Python 為 None）。清快取不會刪除 Local。
+Local 保存小型設定：Java 使用 local、Python 使用 self.local、QuickJS 使用 this.local，皆提供 `get(key)、set(key, value)、delete(key)`，App 按 Site.key 隔離。Java 使用 JSON 字串，Python／QuickJS 直接存 JSON 值；不存在的 key 回傳 null（Python 為 None），set／delete 不回傳值。清快取不會刪除 Local。
 
 ## 執行 JavaScript
 
@@ -292,13 +298,13 @@ Local 保存小型設定：Java 使用 local、Python 使用 self.local、QuickJ
 
 ## 分頁與超連結
 
-完整清單分頁使用 Java `Response.page(items, page, limit).string()`、Python `self.page(items, pg, limit)`、QuickJS `page(items, pg, limit)`。網站已分頁時使用 `Response.create().vods(items).page(page, pagecount, limit, total).string()`，未知 total 時只填已知欄位。完整單頁清單可用 `.page()`，只輸出 page=1 與 pagecount=1。超連結用 Java `Json.link`、Python `self.link`、QuickJS `link`。
+分類與搜尋回傳 `list、page、pagecount、limit`，App 以 `page < pagecount` 決定載入下一頁。完整清單使用 Java `Response.page(items, page, limit).string()`、Python `self.page(items, pg, limit)`、QuickJS `page(items, pg, limit)`；完整單頁清單可用 `.page()`，只輸出 page=1 與 pagecount=1。
 
-Python／QuickJS 的 page 也可傳第四個參數 `total`。省略時切分完整清單；傳入精確總筆數時，items 使用網站回傳的當頁資料，不再切片。total 未知時直接回傳已知的 page／pagecount／limit，不估算總筆數。
+網站已分頁時，Java 使用 `Response.create().vods(items).page(page, pagecount, limit, total).string()`；Python／QuickJS 的 page 傳入第四個參數 `total`，須為精確總筆數，items 使用當頁資料，不再切片。total 未知時直接回傳已知的 page／pagecount／limit，不估算總筆數。超連結用 Java `Json.link`、Python `self.link`、QuickJS `link`。
 
 ## 直播回看
 
-在播放回應附上 `timeshift`，App 便會顯示可回拉的直播時間軸。來源須確實提供對應時間的內容；未填時沿用原本播放行為。
+播放回應的 `timeshift` 顯示直播回看時間軸，來源須提供對應時間的內容。
 
 直播列表的 `Channel.timeshift` 使用相同格式。節目表回看仍用 `catchup`，時間軸以該節目為範圍。
 
@@ -316,7 +322,7 @@ Python／QuickJS 的 page 也可傳第四個參數 `total`。省略時切分完�
 
 `start` 是本場直播開始的 Unix 毫秒，`window` 是最多可回看的毫秒數。`url` 使用 `getProxyUrl` 產生，保留 `{time}`（亦接受 URL 編碼）；App 以目標 Unix 毫秒取代後 GET，0 表示回到直播。端點回傳直接播放的 `url、header、format` JSON，按來源保留範圍調整邊界，不在本機累積直播。
 
-拖曳至最右側或回到預設位置會重新取得直播來源；連續拖曳與切台會取消舊請求。取源失敗顯示提示並保留目前播放。回看期間暫停爬蟲即時彈幕，回到直播後恢復；一般彈幕檔不受影響。此欄位需搭配支援直播回看的 App。
+拖曳至最右側或回到預設位置會重新取得直播來源；連續拖曳與切台會取消舊請求。取源失敗顯示提示並保留目前播放。回看期間暫停爬蟲即時彈幕，回到直播後恢復；一般彈幕檔不受影響。
 
 ## 即時彈幕
 
@@ -344,7 +350,7 @@ Java 回傳 AutoCloseable，Python／QuickJS 回傳停止函式。切台或關�
 
 connecting 由 App 設定，相同 state／msg 會合併，初始化失敗轉成 error。主動停止時清除狀態，不需回報 closed；狀態只記錄日誌。
 
-爬蟲負責解碼並把平台樣式轉成 RGB／sp；App 按使用者設定顯示，超量或過期訊息可能丟棄。需配套更新 App、runtime 與 catvod-api.jar。
+爬蟲負責解碼並把平台樣式轉成 RGB／sp；App 按使用者設定顯示，超量或過期訊息可能丟棄。
 
 三語言 Demo 的 live_danmaku 以收到首個文字訊息回報 ready；實際站點須依平台確認訂閱並解碼封包。
 
@@ -362,38 +368,40 @@ Cookie 同組全部需要、不同組任一組即可；需有新值且頁面同�
 
 直播回傳 `[{name, channel: [{name, urls}]}]`，多線路網址加 `$線路名稱`；TXT／M3U 也可直接回傳文字。
 
-本機代理網址用 `getProxyUrl(params)`，Java 傳 Map，Python 需加 self。App 自動加入 do／siteKey 並編碼 query。proxy 回傳 `[status, mime, body, headers]`；Java body 用 InputStream，Python 可用 bytes，QuickJS 可用文字、byte 陣列、ArrayBuffer 或 TypedArray。EPG 在產生的網址後接 `&date={date}`，由 App 代入日期。
+本機代理網址用 `getProxyUrl(params)`，Java 傳 Map，Python 需加 self；第二個參數 local 預設 true，傳 false 產生區域網路網址，Python 可寫 `self.getProxyUrl(params, local=False)`。App 自動加入 do／siteKey 並編碼 query，不能覆寫這兩個保留參數。proxy 回傳 `[status, mime, body, headers]`；Java body 用 InputStream，Python 可用 bytes，QuickJS 可用文字、byte 陣列、ArrayBuffer 或 TypedArray。EPG 在產生的網址後接 `&date={date}`，由 App 代入日期。
+
+`proxy(params)` 只接收一個扁平的字串鍵值集合：Java 為 `Map<String, String>`、Python 為 dict、QuickJS 為物件。HTTP 入口依序合併請求參數、標頭與檔案資訊，後者覆寫同名欄位；do／siteKey 等路由欄位也會傳入。來源依需要讀取 url、id、type 等業務欄位，網址參數已由 HTTP 層解碼，不重複 unquote／decodeURIComponent。
+
+Python／QuickJS 的回應 headers 接受字串或字串陣列，多值以 `, ` 合併；一般與串流回應使用相同規則，保留字串內容，無效型別會回報錯誤。Java 使用 `Map<String, String>`，多值由來源先合併。
 
 分塊轉送與產生器正文見[串流讀取與代理](#串流讀取與代理)。
 
 ## Android UI
 
-Java／Python 的 `getActivity()` 即時取得目前 Activity，可能為 null／None。自訂 Dialog 在主執行緒執行時才取得，不保存 Activity 或自行註冊生命週期 callback。Java 工具類可用 `Runtime.activity()`，Application Context 用 `Runtime.context()`。
+共用 SDK 的 `com.github.catvod.Runtime` 提供 `context()`、`activity()`、`toast()`，Python 透過 `java.jclass` 呼叫。context 為 Application Context，Toast 由 App 切到主執行緒；QuickJS 用 action 回傳 `msg`。JAR 的 `com.github.catvod.spider.Init.init(Context)` 是獨立的可選初始化入口。
 
-共用 SDK 的 `com.github.catvod.Runtime` 提供 Context、Activity 與 Toast；Python 透過 `java.jclass` 呼叫，Toast 由 App 切到主執行緒。原生 Toast 用法見 Java／Python Demo；常用對話框使用下方的共用 Dialog。QuickJS 的 Toast 用 action 回傳 `msg`。JAR 的 `com.github.catvod.spider.Init.init(Context)` 是獨立的可選初始化入口。
+Java 爬蟲可用 `getActivity()`，Python 用 `self.getActivity()`，可能回傳 null／None。自訂 UI 在主執行緒執行時才取得 Activity，不保存引用或自行註冊生命週期 callback。
 
 三語言共用 Dialog 參數與宿主介面，顯示文字、QR Code、圖片或表單，回傳 `{button, values}`。button 為按鈕 id，values 以欄位 name 對應字串，多選使用字串陣列；允許的返回或點外側操作、預設取消按鈕及頁面銷毀時回傳 null／None。
 
-| 語言 | 呼叫與回呼 |
+| 語言 | 呼叫與資料 |
 | --- | --- |
-| Java | `dialog.show(options)`；options／結果為 JSONObject，取消回傳 null |
-| Python | `self.dialog(options)`；options／結果為 dict，取消回傳 None |
-| QuickJS | `await dialog(options)`；options／結果為物件，取消回傳 null |
+| Java | `dialog(options, callback)`；options／事件／結果使用 JSONObject |
+| Python | `self.dialog(options, callback)`；使用 dict |
+| QuickJS | `await this.dialog(options, callback)`；使用物件 |
 
-onAction 為選填：Java／Python 以第二參數傳入，QuickJS 放在 options 內。Java 的回呼使用 Dialog.Callback，接收 JSONObject、回傳 JSONObject／null，可拋出例外；Python 接收 dict、回傳 dict／None；QuickJS 可回傳 Promise。
+callback 是選填第二參數，不放在 options 內，驗證通過後接收 `{button, values}`。Java 使用 `Dialog.Callback`，可拋出例外；QuickJS 可回傳 Promise。輔助模組可從 catvod 匯入 dialog。
 
 Java／Python 在爬蟲工作執行緒同步呼叫，回呼也在原工作執行緒執行，宿主負責 UI 切換；不要在主執行緒阻塞等待。
 
-Java 需使用配套 App 與新版編譯 SDK，Python／QuickJS 需使用配套 App 與模組。Java 的 Dialog 由宿主爬蟲載入器管理，Python 由 runtime 管理；釋放會關閉自己的待處理視窗。
-
-沒有可用 Activity、參數或回呼錯誤、宿主不支援時，Java／Python 拋出例外，QuickJS Promise reject；呼叫取消或爬蟲釋放會關窗並停止等待。Java／Python 回呼須配合工作執行緒中斷；QuickJS 回呼另受 JS 執行期限控制。
+沒有可用 Activity、參數或回呼錯誤、宿主不支援時，關窗並由 Java／Python 拋出例外、QuickJS Promise reject。呼叫取消或爬蟲釋放會關閉自己的視窗並停止等待；Java／Python 回呼須配合工作執行緒中斷，QuickJS 回呼受 JS 執行期限控制。
 
 | 參數 | 型別與行為 |
 | --- | --- |
 | title／message | 選填字串，標題與說明 |
 | image | 選填 base64 圖片 data URI，如 data:image/png;base64,...；由爬蟲準備內容，使用 Android 支援的點陣圖片；空字串移除圖片 |
 | qrcode | 選填非空白字串；在本機產生 QR Code，內容不必是網址；無法編碼時回報錯誤 |
-| copyable | 選填布林值，預設 false；可選取 message，並提供複製全文按鈕；複製不關窗，也不呼叫 onAction |
+| copyable | 選填布林值，預設 false；可選取 message，並提供複製全文按鈕；複製不關窗，也不呼叫 callback |
 | cancelable | 選填布林值，預設 true；允許返回取消，false 時也阻止點外側取消；頁面銷毀及呼叫取消仍會清理視窗 |
 | inputs | 選填陣列；每項 name 必填且不可重複，label 預設 name；value 為字串，預設空字串；多選為字串陣列，預設空陣列 |
 | inputs[].helperText | 選填字串，欄位下方的說明文字；省略或空字串時隱藏，錯誤清除後恢復顯示 |
@@ -404,22 +412,21 @@ Java 需使用配套 App 與新版編譯 SDK，Python／QuickJS 需使用配套 
 | inputs[].minLength／maxLength | 選填非負整數，僅適用字串欄位，以 Unicode 字元計算；minLength 預設 0，maxLength 預設不限制且不可小於 minLength；留空時略過 minLength |
 | inputs[].minItems／maxItems | 多選欄位的選填非負整數限制，以已選數量計算；minItems 預設 0，maxItems 預設不限制且不可小於 minItems；留空時略過 minItems |
 | buttons | 選填陣列，1～3 項，依序對應 positive、negative、neutral；每項 id／label 必填且不可為空，id 不可重複；省略時提供確定（ok）與取消 |
-| buttons[].close | 選填布林值，預設 true；false 時保留視窗，必須提供 onAction |
+| buttons[].close | 選填布林值，預設 true；false 時保留視窗，必須提供 callback |
 | buttons[].enabled | 選填布林值，預設 true；允許操作按鈕 |
 | buttons[].validate | 選填欄位 name 陣列，預設驗證全部欄位；空陣列略過驗證，可只驗證目前操作需要的欄位 |
-| onAction | 選填回呼，接收 `{button, values}`，驗證通過後才呼叫；Java／Python 以第二參數傳入同步回呼，QuickJS 放在 options 內並可回傳 Promise |
 
-onAction 可回傳 `{message, qrcode, image, values, errors, inputs, buttons, close}`：message／qrcode／image 更新顯示內容，values 更新欄位值，errors 以欄位 name 對應錯誤文字，inputs／buttons 更新 enabled，close 覆蓋按鈕的關窗設定。有非空錯誤時保留視窗與輸入值；回傳 null／None 沿用按鈕設定，QuickJS 也可回傳 undefined。
+callback 可回傳 `{message, qrcode, image, values, errors, inputs, buttons, close}`：message／qrcode／image 更新顯示內容，values 更新欄位值，errors 以欄位 name 對應錯誤文字，inputs／buttons 更新 enabled，close 覆蓋按鈕的關窗設定。有非空錯誤時保留視窗與輸入值；回傳 null／None 沿用按鈕設定，QuickJS 也可回傳 undefined。
 
-回呼期間停用欄位與按鈕並顯示處理中，結束後恢復各自的 enabled；返回及點外側依 cancelable 處理。可修正的欄位錯誤用 errors 顯示；回呼拋出例外時關窗並回報錯誤。
+回呼期間停用欄位與按鈕並顯示處理中，結束後恢復各自的 enabled；返回及點外側依 cancelable 處理。可修正的欄位錯誤用 errors 顯示。
 
 初始 value 與回呼更新使用相同型別；布林參數不接受字串或數字。
 
 依序呼叫 Dialog 可串接連續對話框，QuickJS 使用 await；前一個視窗完成關閉後才回傳。每一步檢查 null／None，可在取消時停止後續步驟。步驟、資料傳遞與請求仍由爬蟲控制，範例見三語言 Demo 的 dialog_steps。
 
-image 由爬蟲取得圖片內容後提供 data URI；onAction 可更新，省略時保留原圖，空字串移除。解碼失敗時，尚未結束的 dialog 會關窗並回報錯誤；關窗會取消並釋放自己的圖片請求。
+callback 可更新或新增 image／qrcode，省略時保留原值；image 空字串移除圖片，qrcode 須非空且可編碼。圖片解碼失敗時，未結束的視窗會回報錯誤；關窗取消並釋放自己的圖片請求。
 
-回傳 values 只更新指定欄位；空字串可清空文字或取消單選，空陣列可清空多選。整批先核對欄位、型別與選項再套用，未知欄位、型別錯誤、不存在或重複的選項會關窗並回報錯誤。更新不觸發 onAction，必填與長度檢查仍在按鈕操作時執行；帶入或重設按鈕可設 validate:[]。更新欄位會清除其舊錯誤，同次回傳的 errors 隨後套用；關窗結果包含更新後的 values。
+回傳 values 只更新指定欄位；空字串可清空文字或取消單選，空陣列可清空多選。整批先核對欄位、型別與選項再套用，未知欄位、型別錯誤、不存在或重複的選項會關窗並回報錯誤。更新不觸發 callback，必填與長度檢查仍在按鈕操作時執行；帶入或重設按鈕可設 validate:[]。更新欄位會清除其舊錯誤，同次回傳的 errors 隨後套用；關窗結果包含更新後的 values。
 
 textarea 保留換行；select 的長度驗證依回傳 value 計算。兩者沿用 required、按鈕指定驗證欄位及 errors 提示，未選取的非必填 select 回傳空字串。
 
@@ -429,11 +436,9 @@ multiselect 開啟原生勾選清單，確認後才套用；取消保留原值�
 
 上下鍵移動焦點，多行輸入在首尾行才移出欄位；確認鍵開啟單選／多選清單，返回後回到原欄位。
 
-回傳 qrcode 可更新或新增 QR Code，須為可編碼的非空白字串，否則關窗並回報錯誤；省略則保留原 QR Code。更新 QR Code 保留輸入值，按鈕設定 close:false 或回傳 close:false 可繼續操作。
+message、QR Code、圖片與輸入欄位共用捲動區域，更新 QR Code 保留輸入值。copyable 為 true 且 message 非空時顯示複製按鈕，複製最新全文並保留換行與前導零；要複製 QR Code 內容，可將相同字串填入 message。
 
-message、QR Code、圖片與輸入欄位共用捲動區域。copyable 為 true 且 message 非空時顯示複製按鈕；onAction 更新 message 後複製的是最新全文，保留換行與前導零。要複製 QR Code 原始內容，可將相同字串填入 message；省略 qrcode 即為純文字或表單 Dialog。
-
-等待使用者期間暫停目前呼叫及其 App 工作的執行期限，onAction 執行及 QuickJS 等待 Promise 時依剩餘時間繼續計時；網路期限照常生效。站點請求與業務驗證留在爬蟲。
+等待使用者期間暫停目前呼叫及其 App 工作的執行期限，callback 執行及 QuickJS 等待 Promise 時依剩餘時間繼續計時；網路期限照常生效。站點請求與業務驗證留在爬蟲。
 
 三語言 Demo 的 dialog 示範帶入資料、欄位錯誤與確認，qrcode 示範 QR Code 更新與文字複製，dialog_steps 示範圖片更新與連續對話框；範例不記錄或保存輸入內容。
 

@@ -1,6 +1,6 @@
 # QuickJS HTML 查詢
 
-`htmlQuery(source, plan)` 一次解析 HTML，回傳普通物件，不保留 DOM。plan 須可序列化為 JSON；範例見 [QuickJS Demo](../examples/javascript/spider.js) 的 `htmlQueryAction`／`html_query`。
+從 `catvod` 匯入 `htmlQuery`，以 `htmlQuery(source, plan)` 一次解析 HTML，回傳普通物件，不保留 DOM。plan 須可序列化為 JSON；範例見 [QuickJS Demo](../examples/javascript/spider.js) 的 `htmlQueryAction`／`html_query`。
 
 ## 查詢與欄位
 
