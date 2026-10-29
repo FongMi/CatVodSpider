@@ -14,7 +14,7 @@
 
 Java SDK 以 compileOnly 引用，取得與更新方式見 [README](../README.md#打包-jar)。Function JAR 使用 com.fongmi.quickjs 的 QuickJSContext、JSArray 等 API，配套更新後重新編譯，不打包 SDK 類別。
 
-QuickJS 的 `constructor` 維持同步，非同步初始化放在 `async init(extend)`。輔助模組可從 `catvod` 匯入 net、local、js、dialog、htmlQuery、link、page；這些名稱不注入全域。
+QuickJS 的 `constructor` 維持同步，非同步初始化放在 `async init(extend)`。輔助模組可從 `catvod` 匯入 net、local、js、dialog、htmlQuery、proxyUrl、link、page；這些名稱不注入全域。
 
 QuickJS 宿主功能需使用 v11 配套的 wrapper、runtime 與 TV 介接；本次新接口尚無對應的已發布模組版本。
 
@@ -320,7 +320,7 @@ Local 保存小型設定：Java 使用 local、Python 使用 self.local、QuickJ
 }
 ```
 
-`start` 是本場直播開始的 Unix 毫秒，`window` 是最多可回看的毫秒數。`url` 使用 `getProxyUrl` 產生，保留 `{time}`（亦接受 URL 編碼）；App 以目標 Unix 毫秒取代後 GET，0 表示回到直播。端點回傳直接播放的 `url、header、format` JSON，按來源保留範圍調整邊界，不在本機累積直播。
+`start` 是本場直播開始的 Unix 毫秒，`window` 是最多可回看的毫秒數。`url` 使用 `proxyUrl` 產生，保留 `{time}`（亦接受 URL 編碼）；App 以目標 Unix 毫秒取代後 GET，0 表示回到直播。端點回傳直接播放的 `url、header、format` JSON，按來源保留範圍調整邊界，不在本機累積直播。
 
 拖曳至最右側或回到預設位置會重新取得直播來源；連續拖曳與切台會取消舊請求。取源失敗顯示提示並保留目前播放。回看期間暫停爬蟲即時彈幕，回到直播後恢復；一般彈幕檔不受影響。
 
@@ -368,9 +368,11 @@ Cookie 同組全部需要、不同組任一組即可；需有新值且頁面同�
 
 直播回傳 `[{name, channel: [{name, urls}]}]`，多線路網址加 `$線路名稱`；TXT／M3U 也可直接回傳文字。
 
-本機代理網址用 `getProxyUrl(params)`，Java 傳 Map，Python 需加 self；第二個參數 local 預設 true，傳 false 產生區域網路網址，Python 可寫 `self.getProxyUrl(params, local=False)`。App 自動加入 do／siteKey 並編碼 query，不能覆寫這兩個保留參數。proxy 回傳 `[status, mime, body, headers]`；Java body 用 InputStream，Python 可用 bytes，QuickJS 可用文字、byte 陣列、ArrayBuffer 或 TypedArray。EPG 在產生的網址後接 `&date={date}`，由 App 代入日期。
+本機代理網址用 `proxyUrl(params, local)`，Python／QuickJS 分別用 `self.proxyUrl`／`this.proxyUrl`。params 的鍵和值都須為字串，不自動轉型；省略 params 或傳入 null／None 時視為空集合。local 只接受布林，預設 true 使用本機，false 使用區域網路 IP；Python 可寫 `self.proxyUrl(params, local=False)`。App 自動加入 do／siteKey 並編碼 query，params 不可覆寫這兩個保留參數。
 
 `proxy(params)` 只接收一個扁平的字串鍵值集合：Java 為 `Map<String, String>`、Python 為 dict、QuickJS 為物件。HTTP 入口依序合併請求參數、標頭與檔案資訊，後者覆寫同名欄位；do／siteKey 等路由欄位也會傳入。來源依需要讀取 url、id、type 等業務欄位，網址參數已由 HTTP 層解碼，不重複 unquote／decodeURIComponent。
+
+proxy 回傳 `[status, mime, body, headers]`，headers 選填。Java body 用 InputStream，Python 可用 bytes，QuickJS 可用文字、byte 陣列、ArrayBuffer 或 TypedArray。EPG 在產生的網址後接 `&date={date}`，由 App 代入日期。
 
 Python／QuickJS 的回應 headers 接受字串或字串陣列，多值以 `, ` 合併；一般與串流回應使用相同規則，保留字串內容，無效型別會回報錯誤。Java 使用 `Map<String, String>`，多值由來源先合併。
 
