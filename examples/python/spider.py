@@ -301,7 +301,7 @@ class Spider(BaseSpider):
         result = {
             "parse": 0,
             "jx": 0,
-            "url": self.getProxyUrl({"demo": "playlist"}) if source == "proxy" else qualities or url,
+            "url": self.proxyUrl({"demo": "playlist"}) if source == "proxy" else qualities or url,
             "header": headers,
             "list": [self._detail_vod(record)],
             "artwork": self._picture(record, "landscape"),
@@ -362,7 +362,7 @@ class Spider(BaseSpider):
         if action == "web_view":
             return {"web": {"url": self._absolute_url(self.options.get("game_url") or self.web_url, "game_url"), "mode": "view"}}
         if action == "proxy":
-            value = self.net.json(self.getProxyUrl({"demo": "json"}))
+            value = self.net.json(self.proxyUrl({"demo": "json"}))
             return {"msg": "本機 proxy：" + value["name"]}
         if action == "native_toast":
             from java import jclass
@@ -619,7 +619,7 @@ class Spider(BaseSpider):
                 value = self.net.json(url, {"timeout": REQUEST_TIMEOUT_MS})
                 return {"msg": "JSON 請求成功：" + type(value).__name__}
             if action in ("stream_read", "proxy_stream", "proxy_body"):
-                url = self.request_url if action == "stream_read" else self.getProxyUrl({"demo": "body" if action == "proxy_body" else "stream"})
+                url = self.request_url if action == "stream_read" else self.proxyUrl({"demo": "body" if action == "proxy_body" else "stream"})
                 return {"msg": "串流讀取完成：%s bytes" % self._count_stream_bytes(url)}
             if action == "parallel":
                 values = self.net.batch([{ "url": self.request_url, "options": {"timeout": REQUEST_TIMEOUT_MS}} for _ in range(3)])

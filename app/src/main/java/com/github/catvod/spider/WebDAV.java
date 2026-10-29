@@ -127,7 +127,7 @@ public class WebDAV extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         String[] ids = id.split("~~~");
-        return Response.create().url(getProxyUrl(Map.of("url", ids[0]))).subs(getSub(ids)).string();
+        return Response.create().url(proxyUrl(Map.of("url", ids[0]))).subs(getSub(ids)).string();
     }
 
     @Override
@@ -197,7 +197,7 @@ public class WebDAV extends Spider {
             String[] split = text.split("@@@");
             String name = split[0];
             String ext = split[1];
-            String url = getProxyUrl(Map.of("url", split[2]));
+            String url = proxyUrl(Map.of("url", split[2]));
             sub.add(Sub.create().name(name).format(ext).url(url));
         }
         return sub;

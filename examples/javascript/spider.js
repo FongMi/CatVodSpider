@@ -228,7 +228,7 @@ export default class Demo extends Spider {
         const result = {
             parse: 0,
             jx: 0,
-            url: source === "proxy" ? this.getProxyUrl({demo: "playlist"}) : choices || url,
+            url: source === "proxy" ? this.proxyUrl({demo: "playlist"}) : choices || url,
             header: stringMap(this.options[headerKey], headerKey),
             list: [this.detailVod(record)],
             artwork: this.picture(record, "landscape"),
@@ -282,7 +282,7 @@ export default class Demo extends Spider {
         }
         if (value === "web_view") return {web: {url: ensureHttpUrl(this.options.game_url || this.options.web_url, "game_url"), mode: "view"}};
         if (value === "proxy") {
-            const data = await this.net.json(this.getProxyUrl({demo: "json"}));
+            const data = await this.net.json(this.proxyUrl({demo: "json"}));
             return {msg: "本機 proxy：" + data.name};
         }
         if (value === "ttl_cache") {
@@ -594,7 +594,7 @@ export default class Demo extends Spider {
                 return {msg: "JSON 請求成功：" + typeof data};
             }
             const proxy = value === "proxy_stream" || value === "proxy_body";
-            const url = proxy ? this.getProxyUrl({demo: value === "proxy_body" ? "body" : "stream"}) : ensureHttpUrl(this.options.request_url || this.options.web_url, "request_url");
+            const url = proxy ? this.proxyUrl({demo: value === "proxy_body" ? "body" : "stream"}) : ensureHttpUrl(this.options.request_url || this.options.web_url, "request_url");
             if (value === "stream_read" || proxy) {
                 const length = await this.countStreamBytes(url);
                 return {msg: `串流讀取完成：${length} bytes`};

@@ -115,7 +115,7 @@ public class Local extends Spider {
     }
 
     private Vod create(File file) {
-        String pic = file.isFile() ? getProxyUrl(Map.of("path", Base64.encodeToString(file.getAbsolutePath().getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP | Base64.URL_SAFE))) : Image.FOLDER;
+        String pic = file.isFile() ? proxyUrl(Map.of("path", Base64.encodeToString(file.getAbsolutePath().getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP | Base64.URL_SAFE))) : Image.FOLDER;
         return Vod.create().id(file.getAbsolutePath()).name(file.getName()).pic(pic).remarks(format.format(file.lastModified())).tag(file.isDirectory() ? "folder" : "file");
     }
 

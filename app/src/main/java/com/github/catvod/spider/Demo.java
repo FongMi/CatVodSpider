@@ -192,7 +192,7 @@ public class Demo extends Spider {
         Map<String, String> headers = mediaHeaders(source.equals("backup") ? "backup_media_headers" : "media_headers");
         if (qualities == null && url.isEmpty() && source.equals("main") && !option("sniff_url").isEmpty()) return Response.create().parse().url(httpUrl(option("sniff_url"), "sniff_url")).header(headers).vod(detailVod(record)).string();
         if (qualities == null && url.isEmpty()) return Response.notify("請先設定 ext." + key + " 再測試播放");
-        Object media = qualities != null ? qualities : source.equals("proxy") ? getProxyUrl(Map.of("demo", "playlist")) : httpUrl(url, key);
+        Object media = qualities != null ? qualities : source.equals("proxy") ? proxyUrl(Map.of("demo", "playlist")) : httpUrl(url, key);
         Response result = Response.create().url(media).header(headers).vod(detailVod(record)).artwork(picture(record, "landscape")).desc(record.get("name").getAsString() + "・" + record.getAsJsonArray("episodes").get(episode - 1).getAsString());
         if (options.has("skips")) result.skips(skips(options.getAsJsonArray("skips")));
         if (options.has("timeshift")) result.put("timeshift", options.get("timeshift"));
@@ -288,7 +288,7 @@ public class Demo extends Spider {
                  "cache_write", "cache_read", "cache_delete":
                 return cacheAction(value);
             case "proxy":
-                return Response.notify("本機 proxy：" + JsonParser.parseString(net.json(getProxyUrl(Map.of("demo", "json")), "{}")).getAsJsonObject().get("name").getAsString());
+                return Response.notify("本機 proxy：" + JsonParser.parseString(net.json(proxyUrl(Map.of("demo", "json")), "{}")).getAsJsonObject().get("name").getAsString());
             case "download":
                 return download();
             case "runtime":
@@ -365,7 +365,7 @@ public class Demo extends Spider {
             case "stream_read":
                 return Response.notify("串流讀取完成：" + countStreamBytes(url) + " bytes");
             case "proxy_stream":
-                return Response.notify("串流讀取完成：" + countStreamBytes(getProxyUrl(Map.of("demo", "stream"))) + " bytes");
+                return Response.notify("串流讀取完成：" + countStreamBytes(proxyUrl(Map.of("demo", "stream"))) + " bytes");
             case "text_get":
                 return Response.notify("GET 正文長度：" + net.get(url).length());
             case "text_post":
