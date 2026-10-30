@@ -50,13 +50,13 @@ QuickJS 宿主功能需使用 v11 配套的 wrapper、runtime 與 TV 介接；�
 | 嗅探判斷 | `manualVideoCheck()`／`isVideoFormat(url)` | `manualVideoCheck()`／`isVideoFormat(url)` | `manualVideoCheck()`／`isVideoFormat(url)` |
 | 釋放 | `destroy()` | `destroy()` | `destroy()` |
 
-Java 資料方法回傳 JSON 字串；Python 回傳 dict／list；QuickJS 回傳物件／陣列或既有 JSON 字串，App 等待同步值、Promise 或 thenable。proxy 與布林接口維持各自格式，detailContent 接收完整 ID 集合。
+Java 資料方法回傳 JSON 字串；Python 回傳 dict／list；QuickJS 回傳物件／陣列，可同步回傳或使用 Promise／thenable，由 App 統一序列化。proxy 與布林接口維持各自格式，detailContent 接收完整 ID 集合。
 
 Python／QuickJS 的 init 原樣接收 ext 字串，需要 JSON 時由來源解析。categoryContent 的 extend 是字串鍵值篩選物件，playerContent 的 vipFlags 是完整陣列。QuickJS 類別方法已綁定實例，可直接把 this.method 傳給 map 或事件回呼。
 
 只覆寫來源需要的入口。基底預設首頁回傳空 class，列表入口回傳空 list，播放／操作回傳空物件，直播回傳空字串，代理回傳 404 與空正文；Python／QuickJS 的 init 可省略。
 
-App 爬蟲測試頁依上表傳入參數；搜尋可傳 `[key, quick]` 或 `[key, quick, pg]`，省略 pg 時使用字串 "1"，布林值使用 true／false。本機歷史與案例會在讀入時轉換舊方法名稱，保留來源、參數與預期結果。
+App 爬蟲測試頁依上表傳入參數；搜尋可傳 `[key, quick]` 或 `[key, quick, pg]`，省略 pg 時使用字串 "1"，布林值使用 true／false。本機歷史與案例只接受表中的完整入口名稱。
 
 `destroy()` 用來關閉自行建立的資源。QuickJS 的 destroy hook（含回傳的 Promise）有 5 秒期限，逾時仍會釋放 runtime；呼叫前已取消網路工作，不在此安排新請求。
 
