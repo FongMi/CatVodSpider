@@ -326,7 +326,7 @@ Local 保存小型設定：Java 使用 local、Python 使用 self.local、QuickJ
 
 ## 即時彈幕
 
-播放回應的 `danmaku[].url` 用 `getDanmakuUrl(id)` 產生，Python 使用 `self.getDanmakuUrl(id)`；App 呼叫該站點的 `danmaku(id, emit)`。HTTP(S) 來源仍按彈幕檔案載入。
+播放回應的 `danmaku[].url` 用 `danmakuUrl(id)` 產生，Python 使用 `self.danmakuUrl(id)`；App 呼叫該站點的 `danmaku(id, emit)`。HTTP(S) 來源仍按彈幕檔案載入。
 
 emit 傳入彈幕物件，例如 `{"text":"即時彈幕","color":6737151}`。Java 使用 JSONObject 並呼叫 `emit.accept(item)`、Python 使用 dict、QuickJS 使用物件。
 

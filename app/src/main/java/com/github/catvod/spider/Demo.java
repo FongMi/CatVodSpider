@@ -213,7 +213,7 @@ public class Demo extends Spider {
         if (options.has("danmaku") && !options.get("danmaku").isJsonNull()) result.danmaku(Arrays.asList(GSON.fromJson(options.get("danmaku"), Danmaku[].class)));
         if (options.has("drm")) result.drm(GSON.fromJson(options.get("drm"), Drm.class));
         if (options.has("media_format") && !options.get("media_format").isJsonNull()) result.format(option("media_format"));
-        if (options.has("live_danmaku") && options.get("live_danmaku").getAsBoolean()) result.danmaku(List.of(Danmaku.create().name("即時彈幕").url(getDanmakuUrl("demo"))));
+        if (options.has("live_danmaku") && options.get("live_danmaku").getAsBoolean()) result.danmaku(List.of(Danmaku.create().name("即時彈幕").url(danmakuUrl("demo"))));
         if (options.has("start_position_ms")) result.position(milliseconds(options.get("start_position_ms")));
     }
 

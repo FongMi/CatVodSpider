@@ -323,7 +323,7 @@ class Spider(BaseSpider):
         if danmaku:
             result["danmaku"] = danmaku
         if self.options.get("live_danmaku") is True:
-            result["danmaku"] = [{"name": "即時彈幕", "url": self.getDanmakuUrl("demo")}]
+            result["danmaku"] = [{"name": "即時彈幕", "url": self.danmakuUrl("demo")}]
         drm = self._drm(self.options.get("drm"))
         if drm:
             result["drm"] = drm

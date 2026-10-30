@@ -243,7 +243,7 @@ export default class Demo extends Spider {
         if (subtitleItems.length) result.subs = subtitleItems;
         const danmakuItems = this.danmakuItems(this.options.danmaku);
         if (danmakuItems.length) result.danmaku = danmakuItems;
-        if (this.options.live_danmaku === true) result.danmaku = [{name: "即時彈幕", url: this.getDanmakuUrl("demo")}];
+        if (this.options.live_danmaku === true) result.danmaku = [{name: "即時彈幕", url: this.danmakuUrl("demo")}];
         const drmItem = this.drm(this.options.drm);
         if (drmItem) result.drm = drmItem;
 
