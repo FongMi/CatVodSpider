@@ -100,7 +100,7 @@ VOD 的 `style.type` 支援 rect／oval／list，同頁保持一致；分類使�
 | 播放 | 主要／備用／代理線、多畫質、字幕、DRM、片段跳過、起播位置、直播回看、播放詳情更新 |
 | HTTP | json、request、binary、cookie、cookie_clear、session |
 | 並行與下載 | parallel、parallel_map、download、sleep |
-| 串流 | stream_read、proxy_stream、proxy_body；分塊讀取、轉送與自訂正文 |
+| 串流 | stream_read、proxy_stream；Python／QuickJS 另有 proxy_body 自訂正文 |
 | WebSocket | websocket 單次交換；socket-start／socket-state／socket-stop 持續收訊 |
 | 快取與儲存 | ttl_cache／ttl_peek／ttl_background／ttl_persist／ttl_clear／ttl_clear_all；cache_write／cache_read／cache_delete 操作 Local |
 | 腳本與互動 | script、runtime、proxy、toast、site_key、web、web_view、dialog、qrcode、dialog_steps；live_danmaku 選項啟用即時彈幕 |
@@ -292,7 +292,7 @@ Local 保存小型設定：Java 使用 local、Python 使用 self.local、QuickJ
 
 ## 執行 JavaScript
 
-短段腳本用 `js.eval(source, options)`；Java 的 options 與回傳值使用 JSON 字串，Python 加 self，QuickJS 加 await。每次建立隔離環境，回傳最後一個運算式的 JSON 值；undefined、函式、非有限數值及循環物件會失敗，不接受 Promise。內建 `md5X(text)`，不提供網路、DOM 或模組匯入。
+短段腳本用 `js.eval(source, options)`；Java 的 options 與回傳值使用 JSON 字串，Python 加 self，QuickJS 加 await。每次建立隔離環境，回傳最後一個運算式的 JSON 值；依 JSON.stringify 序列化，NaN／Infinity 轉成 null，物件中的 undefined／函式欄位省略，陣列中轉成 null。頂層 undefined／函式、BigInt、循環引用及 Promise 會失敗。內建 `md5X(text)`，不提供網路、DOM 或模組匯入。
 
 `options.globals` 傳入 JSON 變數，不拼接資料到程式碼，也不能覆蓋 md5X；`options.timeout` 為正整數毫秒，預設 5000。完成、逾時或取消時關閉環境；站點釋放會取消尚未完成的執行。三種語言都需要更新後的 App 與 QuickJS 模組，Python 另需 Python 模組。見 Demo 的 `script`。
 

@@ -46,6 +46,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * TV Java 功能範例；配置與接口說明見 docs/development.md。
@@ -235,7 +236,7 @@ public class Demo extends Spider {
     public Object[] proxy(Map<String, String> params) throws Exception {
         if ("stream".equals(params.get("demo"))) {
             Net.StreamResult response = openStream(httpUrl(option("request_url", option("web_url")), "request_url"));
-            return new Object[]{response.code, response.contentType, response, response.headers};
+            return new Object[]{response.code, response.contentType, response, proxyHeaders(response.headers)};
         }
         String body = "未知的範例 proxy";
         String mime = "text/plain; charset=utf-8";
@@ -250,6 +251,15 @@ public class Demo extends Spider {
             status = 200;
         }
         return new Object[]{status, mime, new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)), Map.of("X-Demo", "1")};
+    }
+
+    private Map<String, String> proxyHeaders(Map<String, Object> source) {
+        Map<String, String> headers = new LinkedHashMap<>();
+        for (Map.Entry<String, Object> entry : source.entrySet()) {
+            Object value = entry.getValue();
+            headers.put(entry.getKey(), value instanceof List<?> values ? values.stream().map(Object::toString).collect(Collectors.joining(", ")) : value.toString());
+        }
+        return headers;
     }
 
     @Override
