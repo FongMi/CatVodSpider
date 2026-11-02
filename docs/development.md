@@ -10,13 +10,13 @@
 | --- | --- |
 | Java | Java 17 語法、Android 7.0 起；繼承 Spider，以 spiderJar 打包並執行 R8 |
 | Python | CPython 3.10、Chaquopy 17.2.0；可用 `match/case`、`str \| None`，入口維持同步 `def`，App 不等待 coroutine |
-| QuickJS | QuickJS-NG 0.17.0 基底，含上游更新；從 `catvod` 匯入 Spider，預設匯出繼承它的類別，支援 `async/await`、`?.`、`??` |
+| QuickJS | QuickJS-NG 0.18.0 基底，含上游更新；從 `catvod` 匯入 Spider，預設匯出繼承它的類別，支援 `async/await`、`?.`、`??` |
 
 Java SDK 以 compileOnly 引用，取得與更新方式見 [README](../README.md#打包-jar)。Function JAR 使用 com.fongmi.quickjs 的 QuickJSContext、JSArray 等 API，配套更新後重新編譯，不打包 SDK 類別。
 
 QuickJS 的 `constructor` 維持同步，非同步初始化放在 `async init(extend)`。輔助模組可從 `catvod` 匯入 net、local、js、dialog、htmlQuery、proxyUrl、link、page；這些名稱不注入全域。
 
-QuickJS 宿主功能需使用 v11 配套的 wrapper、runtime 與 TV 介接；本次新接口尚無對應的已發布模組版本。
+QuickJS 的 Java SDK 與 runtime 使用同一來源配套，TV 介接需提供對應宿主接口。
 
 | 功能 | 支援範圍 |
 | --- | --- |
@@ -27,7 +27,7 @@ QuickJS 宿主功能需使用 v11 配套的 wrapper、runtime 與 TV 介接；�
 | HTTP | Headers／Request／Response |
 | 加密 | getRandomValues／randomUUID、SHA、HMAC、AES-GCM／CBC、raw／octet JWK、wrap／unwrap；不支援 RSA、橢圓曲線或 KDF；GCM tag 為 96、104、112、120、128 bits，附加於密文末端 |
 | 模組 | JSON module import attributes，type 為 json |
-| WASM | WebAssembly 的 Module／Instance／Memory／Table／Global、validate／compile／instantiate、compileStreaming／instantiateStreaming；限制見 [WebAssembly](#webassembly) |
+| WASM | WebAssembly 的 Module／Instance／Memory／Table／Global／Tag／Exception、validate／compile／instantiate、compileStreaming／instantiateStreaming；限制見 [WebAssembly](#webassembly) |
 
 不是 Node.js 環境。`Intl` 與 `Atomics.waitAsync` 未提供。
 
@@ -310,9 +310,17 @@ Local 保存小型設定：Java 使用 local、Python 使用 self.local、QuickJ
 
 Java／QuickJS 需配套的 QuickJS 模組。Java 以 try-with-resources 關閉 runtime、module 與 instance；`compileTimed／instantiateTimed／callTimed` 的第一個參數為逾時毫秒，0 表示無限。Python 使用 Python 模組提供的 `pywasm==1.0.8`，檔案可用 `pywasm.load(path)` 載入，不共用 wrapper 的預算、快取與取消機制。
 
+Java／QuickJS 支援 tail call、型別化函式參照與多記憶體；記憶體依匯出名稱存取。
+
 QuickJS 的 `WebAssembly` 是全域介面，`js.eval` 的隔離環境未安裝。binary 接受 ArrayBuffer 或其檢視，編譯時複製輸入；Module／Instance 可同步建立，`compile／instantiate` 回傳 Promise。`instantiate(module, imports)` 回傳 Instance；`Module.imports／exports／customSections` 可讀取模組資訊。
 
-QuickJS 的 imports 為 `{模組名稱: {匯入名稱: 值}}`，可傳同步函式、Memory、Table 或 Global。Module 可重用；各實例的資源獨立，明確匯入同一資源時才共用。i64 使用 BigInt，externref 保留 JS 值。舊有 `this.wasm.instantiate` 提供 `call／read／write／close`，匯入函式多一個實例參數，不與標準 API 混用。
+QuickJS 的 imports 為 `{模組名稱: {匯入名稱: 值}}`，可傳同步函式、Memory、Table、Global 或 Tag。Module 可重用；各實例的資源獨立，明確匯入同一資源時才共用。i64 使用 BigInt，externref 保留 JS 值，funcref 接受同一 runtime 的 WASM 匯出函式。舊有 `this.wasm.instantiate` 提供 `call／read／write／close`，匯入函式多一個實例參數，不與標準 API 混用。
+
+共享 Memory 用 `new WebAssembly.Memory({initial: 1, maximum: 4, shared: true})`，maximum 必填，buffer 為 SharedArrayBuffer；grow 後重取 memory.buffer，舊檢視長度不變。Java 用 `runtime.sharedMemory(initial, maximum)`，跨 runtime 用 `runtime.memory(sharedMemory)` 綁定同一個 SharedMemory。支援 Atomics、WASM wait／notify，不提供 Worker。
+
+WasmGC 的 struct／array 在 Java 為 `WasmRuntime.Reference`，QuickJS 為不透明物件，可傳回同一 runtime 的相容 WASM 參數；欄位由 WASM 存取，Java 用 close 釋放引用。
+
+Java 用 `runtime.tag(parameters)`／`runtime.exception(tag, ...args)`，例外為 `WasmRuntime.ExceptionValue`；QuickJS 用 `WebAssembly.Tag／Exception`。`is(tag)` 判別、`getArg(tag, index)` 取值；`WebAssembly.JSTag` 處理 JS 例外，未接住時保留原值。
 
 QuickJS 的 `wasm_stream` 示範 `instantiateStreaming`；`compileStreaming` 則回傳 Module。兩者回傳 Promise，接受真正的 Response 或其 Promise，狀態須為 2xx、Content-Type 為 `application/wasm`，body 須未讀取且未鎖定，區塊為 Uint8Array；目前收齊位元組後才解析。
 
@@ -325,8 +333,9 @@ QuickJS 的 `wasm_stream` 示範 `instantiateStreaming`；`compileStreaming` 則
 | 解析快取 | 最多 8 個模組，原始位元組合計 2 MiB |
 | Memory | 每份 64 MiB，合計 128 MiB |
 | Table | 每份 32,768 格，合計 65,536 格 |
+| GC heap | 合計 64 MiB（宿主估算） |
 
-未內建 WASI；不支援 SIMD、shared memory／threads、Memory64、WasmGC、多記憶體、例外標籤、tail call 及部分函式參照指令。
+未內建 WASI；不支援 SIMD、Memory64。exnref 依 JS API 規範不可直接作為 JS 函式參數或回傳值。
 
 ## 分頁與超連結
 
