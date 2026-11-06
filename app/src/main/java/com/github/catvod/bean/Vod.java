@@ -28,6 +28,8 @@ public class Vod {
     private String vodPlayFrom;
     @SerializedName("vod_play_url")
     private String vodPlayUrl;
+    @SerializedName("vod_play_id")
+    private String vodPlayId;
     @SerializedName("vod_tag")
     private String vodTag;
     @SerializedName("action")
@@ -107,6 +109,11 @@ public class Vod {
 
     public Vod playUrl(String vodPlayUrl) {
         this.vodPlayUrl = vodPlayUrl;
+        return this;
+    }
+
+    public Vod playId(String vodPlayId) {
+        this.vodPlayId = vodPlayId;
         return this;
     }
 

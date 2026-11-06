@@ -91,6 +91,16 @@ Java 的 `Sub.format(ext)` 傳入字幕副檔名，例如 `vtt`、`srt`、`ass`�
 
 VOD 的 `style.type` 支援 rect／oval／list，同頁保持一致；分類使用 land／circle／ratio。資料夾、action 卡片與演員超連結見 Demo。Site.lang 由 App 處理搜尋語系，爬蟲不轉字。
 
+## 指定播放
+
+推薦、分類與搜尋的 `list[]` 可用選填字串 `vod_play_id` 指定集數。Java 用 `.playId("episode-4")`；Python／QuickJS 在項目填 `"vod_play_id": "episode-4"`。`vod_id` 仍為作品 ID，`vod_remarks` 僅顯示角標。
+
+詳情的 `第4集$episode-4` 可指定播放值 `episode-4`，也接受 `第4集`、`第04集`、`EP04` 或 `4`；數字表示集數，非索引。
+
+App 先精確比對所有線路的原始播放值，再依完整集名、集數與文字相符程度選集，集名沿用 App 轉字規則。每階段優先本機歷史線路，其餘依詳情順序；找不到時提示重選，不改播第一集或其他來源。
+
+指定值優先於本機選集且只生效一次；同播放 ID 保留本機進度，換 ID 清除進度，不含官方觀看秒數。省略、null 或空字串時維持續播；folder 仍依列表名稱選集。
+
 ## Demo 功能
 
 三語言使用相同的 12 筆資料、分類 ID、篩選、搜尋與播放 ID；共通操作的 action 名稱及順序一致。從「互動功能」選擇以下操作：
